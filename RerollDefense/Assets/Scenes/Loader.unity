@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 835029132}
   - component: {fileID: 835029133}
   m_Layer: 0
-  m_Name: towerObject (1)
+  m_Name: dragObject2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -466,6 +466,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7d20129fdf47747911fb53e1254741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objName: 
+  objCost: 0
+  prefabPath: 
+  previousTilePosition: {x: 0, y: 0, z: 0}
+  relativeTiles: []
   test: {fileID: 1147004303}
 --- !u!1 &929877546
 GameObject:
@@ -480,7 +485,7 @@ GameObject:
   - component: {fileID: 929877550}
   - component: {fileID: 929877551}
   m_Layer: 0
-  m_Name: towerObject
+  m_Name: dragObject1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -591,6 +596,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7d20129fdf47747911fb53e1254741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objName: 
+  objCost: 0
+  prefabPath: 
+  previousTilePosition: {x: 0, y: 0, z: 0}
+  relativeTiles: []
   test: {fileID: 1147004303}
 --- !u!1 &1045465754
 GameObject:
@@ -5335,7 +5345,7 @@ GameObject:
   - component: {fileID: 1994346197}
   - component: {fileID: 1994346198}
   m_Layer: 0
-  m_Name: towerObject (2)
+  m_Name: dragObject3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5446,4 +5456,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7d20129fdf47747911fb53e1254741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objName: 
+  objCost: 0
+  prefabPath: 
+  previousTilePosition: {x: 0, y: 0, z: 0}
+  relativeTiles: []
   test: {fileID: 1147004303}

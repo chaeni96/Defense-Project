@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 public class TileMapManager : MonoBehaviour
 {
@@ -45,61 +44,74 @@ public class TileMapManager : MonoBehaviour
         setTileMap();
     }
 
-    //만들어둔 타일맵 초기세팅
+    // 타일맵 초기화
     public void setTileMap()
     {
-        //타일 데이터 초기화, 모든 타일 배치가능 상태로 설정
-
-        foreach (var position in tileMap.cellBounds.allPositionsWithin) //타일맵의 범위 내 모든 셀 좌표
+        // 타일 데이터 초기화, 모든 타일 배치 가능 상태로 설정
+        foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {
-            //해당 좌표에 타일이 실제 존재하면 배치가능 상태로 변경
             if (tileMap.HasTile(position))
             {
                 tileDataMap[position] = new TileData();
             }
-
         }
 
         ResetTileColors(new Color(1, 1, 1, 0));
-
     }
 
-    //특정 타일의 데이터 가지고오기
+    // 특정 위치의 타일 데이터 가져오기
     public TileData GetTileData(Vector3Int position)
     {
         return tileDataMap.ContainsKey(position) ? tileDataMap[position] : null;
     }
 
-    //특정 타일 배치 가능한지 확인
-
-    public bool IsTileAvailable(Vector3Int postion)
+    // 다중 타일 배치 가능 여부 확인
+    public bool AreTilesAvailable(Vector3Int basePosition, List<Vector3Int> relativeTiles)
     {
-        TileData tileData = GetTileData(postion);
-
-
-        if (tileData != null && tileData.isAvailable)
+        foreach (var relativeTile in relativeTiles)
         {
-            return true;
+            Vector3Int checkPosition = basePosition + relativeTile;
+            TileData tileData = GetTileData(checkPosition);
+
+            if (tileData == null || !tileData.isAvailable)
+            {
+                return false; // 하나라도 불가능하면 전체 불가능
+            }
         }
-        else
+        return true; // 모두 가능하면 true
+    }
+
+    // 다중 타일을 배치 불가능 상태로 설정
+    public void SetTilesUnavailable(Vector3Int basePosition, List<Vector3Int> relativeTiles)
+    {
+        foreach (var relativeTile in relativeTiles)
         {
-            return false;
+            Vector3Int updatePosition = basePosition + relativeTile;
+
+            if (tileDataMap.ContainsKey(updatePosition))
+            {
+                tileDataMap[updatePosition].isAvailable = false;
+            }
         }
     }
 
-    //특정 타일색 변경
-    public void SetTileColor(Vector3Int position, Color color)
+    // 다중 타일 색상 설정 (예: 배치 가능/불가능 시각화)
+    public void SetTileColors(Vector3Int basePosition, List<Vector3Int> relativeTiles, Color color)
     {
-        if (tileMap.HasTile(position))
+        foreach (var relativeTile in relativeTiles)
         {
-            tileMap.SetTileFlags(position, TileFlags.None);
+            Vector3Int tilePosition = basePosition + relativeTile;
 
-            tileMap.SetColor(position, color);
+            if (tileMap.HasTile(tilePosition))
+            {
+                tileMap.SetTileFlags(tilePosition, TileFlags.None);
+                tileMap.SetColor(tilePosition, color);
+            }
         }
     }
 
 
-    //모든 타일색 초기화
+    // 모든 타일 색상 초기화
     public void ResetTileColors(Color color)
     {
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
@@ -107,12 +119,12 @@ public class TileMapManager : MonoBehaviour
             if (tileMap.HasTile(position))
             {
                 tileMap.SetTileFlags(position, TileFlags.None);
-                tileMap.SetColor(position, color); //투명으로 바꾸기
+                tileMap.SetColor(position, color);
             }
         }
     }
 
-    //특정 타일 배치 불가능 상태로 변경
+    // 특정 타일 배치 불가능 상태로 설정 (단일 타일용)
     public void SetTileUnavailable(Vector3Int position)
     {
         if (tileDataMap.ContainsKey(position))
@@ -121,4 +133,19 @@ public class TileMapManager : MonoBehaviour
         }
     }
 
+
+    // 타일에 배치된 오브젝트를 등록
+    public void RegisterObjectOnTiles(Vector3Int basePosition, List<Vector3Int> relativeTiles, PlacedObject placedObject)
+    {
+        foreach (var relativeTile in relativeTiles)
+        {
+            Vector3Int tilePosition = basePosition + relativeTile;
+
+            if (tileDataMap.ContainsKey(tilePosition))
+            {
+                tileDataMap[tilePosition].IsOccupied = true;
+                tileDataMap[tilePosition].OccupyingObject = placedObject;
+            }
+        }
+    }
 }
