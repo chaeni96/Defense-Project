@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public interface IDraggable
+public interface IDraggable : IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    void OnDragStart();
-    void OnDragUpdate();
-    void OnDragEnd();
+
+    public void OnDragBegin();
+    public void OnDrag();
+
+    public void OnDragUp();
 }
