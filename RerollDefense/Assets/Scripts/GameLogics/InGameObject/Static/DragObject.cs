@@ -135,9 +135,7 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
 
     private void CreatePlacedObject()
     {
-        //타워에 따라 다른 프리팹 생성해야되는데 어드레서블사용해야함
         // PlacedObject 프리팹 생성
-        
         GameObject placedObjectInstance = ResourceManager.Instance.Instantiate(prefabKey);
 
         if(placedObjectInstance == null)

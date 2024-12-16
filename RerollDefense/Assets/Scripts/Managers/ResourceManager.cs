@@ -57,7 +57,7 @@ public class ResourceManager : MonoBehaviour
     //프리팹 생성 코드 -> 오브젝트 풀링으로 바꾸기 
     public GameObject Instantiate(string key, Transform parent = null, bool pooling = false)
     {
-        GameObject prefab = Load<GameObject>($"{key}");
+        GameObject prefab = Load<GameObject>($"{key}.prefab");
 
         if (prefab == null)
         {
