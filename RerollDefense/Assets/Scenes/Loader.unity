@@ -471,6 +471,8 @@ MonoBehaviour:
   prefabPath: 
   previousTilePosition: {x: 0, y: 0, z: 0}
   relativeTiles: []
+  tileShapeType: 3
+  prefabKey: 2x1TowerObject.prefab
   test: {fileID: 1147004303}
 --- !u!1 &929877546
 GameObject:
@@ -601,6 +603,8 @@ MonoBehaviour:
   prefabPath: 
   previousTilePosition: {x: 0, y: 0, z: 0}
   relativeTiles: []
+  tileShapeType: 0
+  prefabKey: 1x1TowerObject.prefab
   test: {fileID: 1147004303}
 --- !u!1 &1045465754
 GameObject:
@@ -5461,4 +5465,6 @@ MonoBehaviour:
   prefabPath: 
   previousTilePosition: {x: 0, y: 0, z: 0}
   relativeTiles: []
+  tileShapeType: 2
+  prefabKey: 1x3TowerObject.prefab
   test: {fileID: 1147004303}

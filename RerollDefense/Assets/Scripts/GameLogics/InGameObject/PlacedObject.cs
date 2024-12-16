@@ -16,7 +16,6 @@ public class PlacedObject : StaticObject
     {
         base.Initialize();
 
-
     }
 
     //TODO : 메서드 이름 변경하기, 데이터로 받아오기

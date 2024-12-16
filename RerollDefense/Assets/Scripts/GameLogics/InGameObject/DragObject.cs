@@ -16,13 +16,6 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
 
     D_UserData userData;
 
-    //test용 awake
-    private void Awake()
-    {
-        Initialize();
-    }
-
-
     public override void Initialize()
     {
         base.Initialize();
@@ -30,14 +23,6 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
         previousTilePosition = new Vector3Int(-1, -1, -1); // 유효하지 않는 값으로 초기화
         originalPos = transform.position;
         originColor = spriteRenderer.color;
-
-        //test
-        // 타워의 상대 타일 크기 초기화 (예: 1x2 크기)
-        relativeTiles = new List<Vector3Int>
-        {
-            new Vector3Int(0, 0, 0), // 기준 타일
-            new Vector3Int(0, 1, 0)  // 아래 타일
-        };
 
     }
 
@@ -152,8 +137,13 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
     {
         //타워에 따라 다른 프리팹 생성해야되는데 어드레서블사용해야함
         // PlacedObject 프리팹 생성
-        GameObject placedObjectPrefab = Resources.Load<GameObject>("Prefabs/Tower/1x2TowerObject"); // PlacedObject 프리팹 로드
-        GameObject placedObjectInstance = Instantiate(placedObjectPrefab);
+        
+        GameObject placedObjectInstance = ResourceManager.Instance.Instantiate(prefabKey);
+
+        if(placedObjectInstance == null)
+        {
+            Debug.LogError("프리팹 생성 실패");
+        }
 
         // PlacedObject 스크립트 가져오기
         PlacedObject placedObject = placedObjectInstance.GetComponent<PlacedObject>();

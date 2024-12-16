@@ -25,6 +25,11 @@ public class BasicObject : MonoBehaviour
 
     public BGId ID; // BGDatabase 고유 식별자
 
+    void Awake()
+    {
+        Initialize();
+        
+    }
 
     public virtual void Initialize()
     {
