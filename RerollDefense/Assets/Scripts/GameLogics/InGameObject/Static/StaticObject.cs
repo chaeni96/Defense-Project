@@ -14,40 +14,45 @@ public class StaticObject : BasicObject
 
 
     //TODO : 테스트용, 오브젝트 데이터 사용해야됨
-    public BGDatabaseEnum.TileShapeType tileShapeType;
+    //드래그오브젝트에 설치해야할 키값이 필요함
+    public string tileShapeName; //데이터베이스에서 불러올 이름
+
     public string prefabKey;
 
 
     public override void Initialize()
     {
         base.Initialize();
-        InitializeTileShape();
     }
 
-    private void InitializeTileShape()
+    protected void InitializeTileShape()
     {
-        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_ShapeID == tileShapeType);
+        // D_TileShpeData에서 tileShapeType에 해당하는 데이터를 가져옴
+        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
 
-        if(tileShapeData != null)
+        if (tileShapeData != null)
         {
-
-            Debug.Log($"TileShapeData 발견: ShapeID={tileShapeData.f_ShapeID}, Name={tileShapeData.f_ShapeName}");
+            Debug.Log($"TileShapeData 발견: {tileShapeData.f_name}");
 
             relativeTiles = new List<Vector3Int>();
 
-            foreach(var tile in tileShapeData.f_TilePostion)
+            // f_unitBuildData에 있는 위치 데이터를 반복해서 가져옴
+            foreach (var tile in tileShapeData.f_unitBuildData)
             {
+                // Vector2 데이터를 Vector3Int로 변환
+                Vector3Int relativeTile = new Vector3Int(
+                    Mathf.RoundToInt(tile.f_position.x),
+                    Mathf.RoundToInt(tile.f_position.y),
+                    0 // z축은 항상 0으로 설정
+                );
 
-                Vector3Int relativeTile = new Vector3Int((int)tile.x, (int)tile.y, (int)tile.z);
-
-                relativeTiles.Add(new Vector3Int((int)tile.x, (int)tile.y, (int)tile.z));
+                relativeTiles.Add(relativeTile);
                 Debug.Log($"추가된 타일 좌표: {relativeTile}");
-
             }
         }
         else
         {
-            Debug.LogError("TileShapeData 없음");
+            Debug.LogError($"TileShapeData를 찾을 수 없습니다. TileShapeType: {tileShapeName}");
         }
 
     }

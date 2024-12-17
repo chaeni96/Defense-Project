@@ -18,58 +18,25 @@ MonoBehaviour:
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
   - m_GUID: 3e62791ad18453d4fbcefad69b097cc7
-    m_Address: 1x1TowerObject.prefab
+    m_Address: ArcherUnit1.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 993cca2a737f9254b866f1dccef40dcf
-    m_Address: 1x2TowerObject.prefab
+  - m_GUID: 3ebf64b09f60c644fb2110edf6f20bdd
+    m_Address: WarriorUnit1.prefab
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 69cc5d6cc642bdb4a9d3ff5769318b85
-    m_Address: 1x3TowerObject.prefab
+  - m_GUID: cbda009ba5656094bab72347bac1dd67
+    m_Address: WizardUnit1.prefab
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 148373c23942c244c8c9d2ff59a7a8a6
-    m_Address: 2x1TowerObject.prefab
+  - m_GUID: a8cbd52c8c6540948820bf3e259b5318
+    m_Address: EnemyObject.prefab
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ccc43052f10d75a42b0208fea4db4f76
-    m_Address: 2x2TowerObject.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad8d713f2e8bdb540b55f1d2e71c7f1a
-    m_Address: 2x3TowerObject.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6a54fd4cf5cd974ea4067b028bd892f
-    m_Address: 3x1TowerObject .prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 17ff3d4b9d0293d4b8ab64485a193a8f
-    m_Address: 3x2TowerObject .prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d0ebbbc4a1336f64eb306671357c1e75
-    m_Address: 3x3TowerObject.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
