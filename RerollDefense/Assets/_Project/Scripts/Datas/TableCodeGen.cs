@@ -465,6 +465,14 @@ public partial class D_UnitShopChanceData : BGEntity
 	{
 		public const string Meta = "UnitShopChanceData";
 		public const string name = "name";
+		public const string shopLevel = "shopLevel";
+		public const string upgradeCost = "upgradeCost";
+		public const string normalGradeChance = "normalGradeChance";
+		public const string rareGradeChance = "rareGradeChance";
+		public const string epicGradeChance = "epicGradeChance";
+		public const string legendaryGradeChance = "legendaryGradeChance";
+		public const string mythicGradeChance = "mythicGradeChance";
+		public const string NewKey = "NewKey";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4664970763188900203UL,12080311741352732819UL), () => _metaDefault = null));
@@ -475,8 +483,59 @@ public partial class D_UnitShopChanceData : BGEntity
 		get => _f_name[Index];
 		set => _f_name[Index] = value;
 	}
+	public System.Int32 f_shopLevel
+	{
+		get => _f_shopLevel[Index];
+		set => _f_shopLevel[Index] = value;
+	}
+	public System.Int32 f_upgradeCost
+	{
+		get => _f_upgradeCost[Index];
+		set => _f_upgradeCost[Index] = value;
+	}
+	public System.Int32 f_normalGradeChance
+	{
+		get => _f_normalGradeChance[Index];
+		set => _f_normalGradeChance[Index] = value;
+	}
+	public System.Int32 f_rareGradeChance
+	{
+		get => _f_rareGradeChance[Index];
+		set => _f_rareGradeChance[Index] = value;
+	}
+	public System.Int32 f_epicGradeChance
+	{
+		get => _f_epicGradeChance[Index];
+		set => _f_epicGradeChance[Index] = value;
+	}
+	public System.Int32 f_legendaryGradeChance
+	{
+		get => _f_legendaryGradeChance[Index];
+		set => _f_legendaryGradeChance[Index] = value;
+	}
+	public System.Int32 f_mythicGradeChance
+	{
+		get => _f_mythicGradeChance[Index];
+		set => _f_mythicGradeChance[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5700037316086172204UL, 9428115730578618498UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_shopLevel;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_shopLevel => _ufle12jhs77_f_shopLevel ?? (_ufle12jhs77_f_shopLevel = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5209453747907503739UL, 16616529657275590799UL), () => _ufle12jhs77_f_shopLevel = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_upgradeCost;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_upgradeCost => _ufle12jhs77_f_upgradeCost ?? (_ufle12jhs77_f_upgradeCost = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5544517854502321174UL, 16527826181851315888UL), () => _ufle12jhs77_f_upgradeCost = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_normalGradeChance;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_normalGradeChance => _ufle12jhs77_f_normalGradeChance ?? (_ufle12jhs77_f_normalGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4747667146126538070UL, 10838641894382133891UL), () => _ufle12jhs77_f_normalGradeChance = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_rareGradeChance;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_rareGradeChance => _ufle12jhs77_f_rareGradeChance ?? (_ufle12jhs77_f_rareGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4800310075837301652UL, 15965513266530679210UL), () => _ufle12jhs77_f_rareGradeChance = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_epicGradeChance;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_epicGradeChance => _ufle12jhs77_f_epicGradeChance ?? (_ufle12jhs77_f_epicGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5751856468742030222UL, 11431852624877671084UL), () => _ufle12jhs77_f_epicGradeChance = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_legendaryGradeChance;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_legendaryGradeChance => _ufle12jhs77_f_legendaryGradeChance ?? (_ufle12jhs77_f_legendaryGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5357090667896251197UL, 8100459591133873333UL), () => _ufle12jhs77_f_legendaryGradeChance = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_mythicGradeChance;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_mythicGradeChance => _ufle12jhs77_f_mythicGradeChance ?? (_ufle12jhs77_f_mythicGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5683072619301050186UL, 1397330924013920176UL), () => _ufle12jhs77_f_mythicGradeChance = null));
+	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_NewKey;
+	public static BansheeGz.BGDatabase.BGKey _NewKey => _edeht3sdad33_NewKey ?? (_edeht3sdad33_NewKey = BGCodeGenUtils.GetKey(MetaDefault, new BGId(5047775113214466118UL, 10985792114965795003UL), () => _edeht3sdad33_NewKey = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_BoostDeck.Factory _factory2_PFS = new D_BoostDeck.Factory();
@@ -499,6 +558,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	public static D_UnitShopChanceData NewEntity() => (D_UnitShopChanceData) MetaDefault.NewEntity();
 	public static D_UnitShopChanceData NewEntity(BGId entityId) => (D_UnitShopChanceData) MetaDefault.NewEntity(entityId);
 	public static D_UnitShopChanceData NewEntity(Action<D_UnitShopChanceData> callback) => (D_UnitShopChanceData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_UnitShopChanceData)entity)));
+	public static D_UnitShopChanceData GetEntityByKeyNewKey(System.Int32 shopLevel) => (D_UnitShopChanceData) _NewKey.GetEntityByKey<System.Int32>(shopLevel);
 }
 
 public partial class D_ObjectPoolData : BGEntity
