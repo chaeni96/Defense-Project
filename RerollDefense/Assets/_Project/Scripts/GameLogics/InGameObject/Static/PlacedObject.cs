@@ -5,45 +5,30 @@ using UnityEngine;
 public class PlacedObject : StaticObject
 {
 
-    //배치완료된 오브젝트에 필요한것 타워, 유닛의 공통적인 속성
+    //배치된 오브젝트에서 필요한거 -> 클릭했을때 팝업창 나와야됨
 
-    //차지하는 칸 -> staticObject에 있음
-    //공격력, hp, 오브젝트 이름, 프리팹
+    //ex) 2x2의 유닛중 한 블록만 선택해도 클릭창이 나와야하고 삭제시 총 4개가 삭제되어야함
 
-    //제거 기능 필요
+    //필요한건 tileShpaeData인데 이름으로 판정하면 똑같은 블록이 다 사라지게됨
+    //선택한 블록이 들어있는 블록들만 제거해야됨
+    //데이터 받아올때 
+
+    public string tileUniqueID;
 
     public override void Initialize()
     {
         base.Initialize();
 
     }
-
-    //TODO : 메서드 이름 변경하기, 데이터로 받아오기
-    public void InitializeObj(Vector3Int baseTilePosition, List<Vector3Int> relativeTiles)
-    {
-        this.previousTilePosition = baseTilePosition;
-        this.relativeTiles = relativeTiles;
-
-        // 배치된 위치로 이동 (타일맵 중심 좌표 계산)
-        Vector3 placementCenter = CalculatePlacementCenter(baseTilePosition, relativeTiles);
-        transform.position = placementCenter;
-    }
-
     public override void Update()
     {
         base.Update();
     }
 
-    private Vector3 CalculatePlacementCenter(Vector3Int baseTilePosition, List<Vector3Int> relativeTiles)
+   
+    public void RegistereTileID(string uniqueID)
     {
-        Vector3 totalPosition = Vector3.zero;
+        tileUniqueID = uniqueID;
 
-        foreach (var relativeTile in relativeTiles)
-        {
-            Vector3Int tilePosition = baseTilePosition + relativeTile;
-            totalPosition += TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePosition);
-        }
-
-        return totalPosition / relativeTiles.Count; // 타일 중심 좌표 평균값 반환
     }
 }

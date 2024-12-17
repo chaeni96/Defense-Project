@@ -2,19 +2,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+using System;
 
 public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-
-    //test용 변수
-    public testGold test;
-
     private SpriteRenderer spriteRenderer;
     private Color originColor;
 
     private Vector3 originalPos;
 
+    //TODO : 테스트용, 오브젝트 데이터 사용해야됨
+    //드래그오브젝트에 설치해야할 키값이 필요함
+    public testGold test;
+    public string tileShapeName; //데이터베이스에서 불러올 이름
 
+    public string prefabKey;
 
     public override void Initialize()
     {
@@ -29,6 +31,38 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
     public override void Update()
     {
         base.Update();
+
+    }
+
+    private void InitializeTileShape()
+    {
+        // D_TileShpeData에서 tileShapeType에 해당하는 데이터를 가져옴
+        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
+
+        if (tileShapeData != null)
+        {
+            Debug.Log($"TileShapeData 발견: {tileShapeData.f_name}");
+
+            relativeTiles = new List<Vector3Int>();
+
+            // f_unitBuildData에 있는 위치 데이터를 반복해서 가져옴
+            foreach (var tile in tileShapeData.f_unitBuildData)
+            {
+                // Vector2 데이터를 Vector3Int로 변환
+                Vector3Int relativeTile = new Vector3Int(
+                    Mathf.RoundToInt(tile.f_position.x),
+                    Mathf.RoundToInt(tile.f_position.y),
+                    0 // z축은 항상 0으로 설정
+                );
+
+                relativeTiles.Add(relativeTile);
+                Debug.Log($"추가된 타일 좌표: {relativeTile}");
+            }
+        }
+        else
+        {
+            Debug.LogError($"TileShapeData를 찾을 수 없습니다. TileShapeType: {tileShapeName}");
+        }
 
     }
 
@@ -98,13 +132,15 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
         if (TileMapManager.Instance.AreTilesAvailable(previousTilePosition, relativeTiles))
         {
             // 배치 확정
-            TileMapManager.Instance.SetTilesUnavailable(previousTilePosition, relativeTiles);
+            string tileUniqueID = Guid.NewGuid().ToString();    
+
+            TileMapManager.Instance.SetTilesUnavailable(previousTilePosition, relativeTiles, tileUniqueID);
             transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previousTilePosition);
-            DecreaseGold(10);
-            test.UpdateGoldText();
 
             //타워 생성코드
-            CreatePlacedObject();
+            CreatePlacedObject(tileUniqueID);
+
+            //TODO : 골드 차감 코드
 
             Debug.Log("타워 배치 완료!");
         }
@@ -136,35 +172,27 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
     }
 
 
-    private void CreatePlacedObject()
+    private void CreatePlacedObject(string uniqueID)
     {
         // 타워의 상대적 위치 데이터를 기반으로 프리팹을 여러 개 생성
-        foreach (Vector3Int relativeTile in relativeTiles)
+        for (int i = 0; i < relativeTiles.Count; i++)
         {
+
+            Vector3Int relativeTile = relativeTiles[i];
             // 상대적 위치를 기준으로 절대 타일 좌표 계산
             Vector3Int tilePosition = previousTilePosition + relativeTile;
 
             // 프리팹 생성 및 위치 설정
             GameObject placedObjectInstance = ResourceManager.Instance.Instantiate(prefabKey);
-            if (placedObjectInstance == null)
-            {
-                Debug.LogError("프리팹 생성 실패");
-                continue;
-            }
 
             // PlacedObject 스크립트 가져오기
             PlacedObject placedObject = placedObjectInstance.GetComponent<PlacedObject>();
+
             if (placedObject != null)
             {
                 placedObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePosition);
-
-                // 상대적 위치를 개별 오브젝트에 저장 (디버깅 용도)
-                placedObject.previousTilePosition = tilePosition;
-                placedObject.relativeTiles = new List<Vector3Int>() { Vector3Int.zero }; // 자기 자신만 차지한다고 설정
-            }
-            else
-            {
-                Debug.LogError("PlacedObject 스크립트가 프리팹에 없습니다.");
+                placedObject.RegistereTileID(uniqueID);
+                placedObject.InitializeUnitStat(tileShapeName, i);
             }
 
             // 타일맵에 배치된 오브젝트 등록

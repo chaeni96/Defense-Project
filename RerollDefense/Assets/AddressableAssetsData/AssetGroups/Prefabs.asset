@@ -18,25 +18,16 @@ MonoBehaviour:
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
   - m_GUID: 3e62791ad18453d4fbcefad69b097cc7
-    m_Address: ArcherUnit1.prefab
+    m_Address: UnitBlock.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3ebf64b09f60c644fb2110edf6f20bdd
-    m_Address: WarriorUnit1.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cbda009ba5656094bab72347bac1dd67
-    m_Address: WizardUnit1.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8cbd52c8c6540948820bf3e259b5318
     m_Address: EnemyObject.prefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}

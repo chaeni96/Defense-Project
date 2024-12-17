@@ -97,7 +97,7 @@ public class TileMapManager : MonoBehaviour
     }
 
     // 다중 타일을 배치 불가능 상태로 설정
-    public void SetTilesUnavailable(Vector3Int basePosition, List<Vector3Int> relativeTiles)
+    public void SetTilesUnavailable(Vector3Int basePosition, List<Vector3Int> relativeTiles, string uniqueID)
     {
         foreach (var relativeTile in relativeTiles)
         {
@@ -106,6 +106,7 @@ public class TileMapManager : MonoBehaviour
             if (tileDataMap.ContainsKey(updatePosition))
             {
                 tileDataMap[updatePosition].isAvailable = false;
+                tileDataMap[updatePosition].tileUniqueID = uniqueID;
             }
         }
     }
@@ -158,8 +159,8 @@ public class TileMapManager : MonoBehaviour
 
             if (tileDataMap.ContainsKey(tilePosition))
             {
-                tileDataMap[tilePosition].IsOccupied = true;
-                tileDataMap[tilePosition].OccupyingObject = placedObject;
+                tileDataMap[tilePosition].isOccupied = true;
+                tileDataMap[tilePosition].occupyingObject = placedObject;
             }
         }
     }

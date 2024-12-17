@@ -12,49 +12,16 @@ public class StaticObject : BasicObject
     [HideInInspector]
     public List<Vector3Int> relativeTiles; // 타일 배치 크기
 
-
-    //TODO : 테스트용, 오브젝트 데이터 사용해야됨
-    //드래그오브젝트에 설치해야할 키값이 필요함
-    public string tileShapeName; //데이터베이스에서 불러올 이름
-
-    public string prefabKey;
-
+    //stat들 여기서 가져오기
+    public int attack;
+    public int attackSpeed;
+    public int attackRange;
+    public int unitCost;
+    public int unitBlockSize;
 
     public override void Initialize()
     {
         base.Initialize();
-    }
-
-    protected void InitializeTileShape()
-    {
-        // D_TileShpeData에서 tileShapeType에 해당하는 데이터를 가져옴
-        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
-
-        if (tileShapeData != null)
-        {
-            Debug.Log($"TileShapeData 발견: {tileShapeData.f_name}");
-
-            relativeTiles = new List<Vector3Int>();
-
-            // f_unitBuildData에 있는 위치 데이터를 반복해서 가져옴
-            foreach (var tile in tileShapeData.f_unitBuildData)
-            {
-                // Vector2 데이터를 Vector3Int로 변환
-                Vector3Int relativeTile = new Vector3Int(
-                    Mathf.RoundToInt(tile.f_position.x),
-                    Mathf.RoundToInt(tile.f_position.y),
-                    0 // z축은 항상 0으로 설정
-                );
-
-                relativeTiles.Add(relativeTile);
-                Debug.Log($"추가된 타일 좌표: {relativeTile}");
-            }
-        }
-        else
-        {
-            Debug.LogError($"TileShapeData를 찾을 수 없습니다. TileShapeType: {tileShapeName}");
-        }
-
     }
 
 
@@ -63,5 +30,56 @@ public class StaticObject : BasicObject
         base.Update();
 
     }
+
+    //tileShpaeName은 이제 상점 통해서 랜덤으로 가져오는것
+    public void InitializeUnitStat(string tileShapeName, int tileIndex)
+    {
+        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
+
+        if (tileShapeData != null)
+        {
+            // 상대 타일 인덱스에 맞는 f_unitBuildData 가져오기
+            if (tileIndex < tileShapeData.f_unitBuildData.Count)
+            {
+                var buildData = tileShapeData.f_unitBuildData[tileIndex];
+                var unitData = buildData.f_unitData;
+
+                if (unitData != null)
+                {
+                    // statDatas를 순회하면서 스탯 설정
+                    foreach (var statData in unitData.f_statDatas)
+                    {
+                        switch (statData.f_stat.f_name)
+                        {
+                            case "Attack":
+                                this.attack = statData.f_value;
+                                break;
+                            case "AttackSpeed":
+                                this.attackSpeed = statData.f_value;
+                                break;
+                            case "Range":
+                                this.attackRange = statData.f_value;
+                                break;
+                            case "Cost":
+                                this.unitCost = statData.f_value;
+                                break;
+                            case "UnitBlockSize":
+                                this.unitBlockSize = statData.f_value;
+                                break;
+                        }
+                    }
+
+                    Debug.Log($"스탯 초기화 완료: {unitData.f_name}, 공격력: {attack}, 공격 속도: {attackSpeed}, 블록 가격 : {unitCost} 블록사이즈: {unitBlockSize}");
+                }
+                else
+                {
+                    Debug.LogError("UnitData 없음");
+                }
+            }
+          
+        }
+       
+    }
+
 
 }
