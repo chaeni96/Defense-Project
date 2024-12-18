@@ -89,8 +89,7 @@ public class UnitAttackState : State
                 if (attackTimer >= attackCooldown)
                 {
                     //각자 해당하는 공격 실행
-                    //unit.AttackTarget(); 
-                    unit.targetObject.GetComponent<EnemyController>().onDamaged(unit, unit.attack);
+                    AttackSkillManager.Instance.ActiveSkill(unit, unit.targetObject);
                     attackTimer = 0.0f;
                     unit.ChangeState(new UnitIdleState()); // 공격 후 Idle 상태로 전환
                 }

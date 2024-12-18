@@ -19,4 +19,12 @@ namespace BGDatabaseEnum
         Legendary,
         Mythic,
     }
+
+    public enum SkillAttackType
+    {
+        None,
+        Projectile,
+        AOE,
+
+    }
 }

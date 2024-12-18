@@ -10,10 +10,10 @@ public class UnitController : PlacedObject
     public BasicObject targetObject;
 
     public bool isAttacking;
+
     public override void Initialize()
     {
         base.Initialize();
-
         isAttacking = false;
         ChangeState(new UnitIdleState());
     }

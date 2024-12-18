@@ -1,4 +1,5 @@
 using BansheeGz.BGDatabase;
+using BGDatabaseEnum;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class StaticObject : BasicObject
     public int attackRange;
     public int unitCost;
     public int unitBlockSize;
+
+    public SkillAttackType attackType;
 
     public override void Initialize()
     {
@@ -43,6 +46,7 @@ public class StaticObject : BasicObject
             {
                 var buildData = tileShapeData.f_unitBuildData[tileIndex];
                 var unitData = buildData.f_unitData;
+                attackType = unitData.f_SkillAttackType;
 
                 if (unitData != null)
                 {

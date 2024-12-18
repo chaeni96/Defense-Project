@@ -220,15 +220,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ebcf0f9b229a844b9508e7a59c3a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objName: 
-  objCost: 0
+  myBody: {fileID: 1082405304854079712}
   prefabPath: 
   hpText: {fileID: 6314056940839510184}
-  maxHP: 10
+  maxHP: 1000
   HP: 0
   hitCollider: {fileID: 0}
   moveSpeed: 0.5
-  myBody: {fileID: 1082405304854079712}
 --- !u!212 &8715255879832484708
 SpriteRenderer:
   m_ObjectHideFlags: 0
