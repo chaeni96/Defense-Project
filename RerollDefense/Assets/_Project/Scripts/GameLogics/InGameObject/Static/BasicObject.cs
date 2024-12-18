@@ -7,17 +7,10 @@ public class BasicObject : MonoBehaviour
 {
     //최상위 오브젝트
 
-    //FSM 사용할거라 ChangeState, update 필요
-
     public State currentState;
 
+    public Rigidbody2D myBody;
 
-    //모든 오브젝트에 들어갈만한 변수 name, position, ObjId
-    //Data로 받아와야함
-    [HideInInspector]
-    public string objName;
-    [HideInInspector]
-    public int objCost;
 
     //TODO : 어드레서블로 불러와야됨, 수정
     [HideInInspector]
@@ -33,6 +26,7 @@ public class BasicObject : MonoBehaviour
 
     public virtual void Initialize()
     {
+        myBody = GetComponent<Rigidbody2D>();
     }
 
     public virtual void Update()

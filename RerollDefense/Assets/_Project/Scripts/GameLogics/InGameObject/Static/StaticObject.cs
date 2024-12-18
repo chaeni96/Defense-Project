@@ -57,7 +57,7 @@ public class StaticObject : BasicObject
                             case "AttackSpeed":
                                 this.attackSpeed = statData.f_value;
                                 break;
-                            case "Range":
+                            case "AttackRange":
                                 this.attackRange = statData.f_value;
                                 break;
                             case "Cost":

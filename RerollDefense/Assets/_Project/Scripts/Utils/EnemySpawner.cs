@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public Vector3Int spawnTilePosition; // 타일맵 상의 스폰 위치
     public Vector3Int goalTilePosition; // 타일맵 상의 목표 위치
 
-    public float spawnInterval = 2.0f; // 적 생성 간격
+    public float spawnInterval = 100.0f; // 적 생성 간격
     private bool spawning = true;
 
     private void Start()
@@ -34,10 +34,13 @@ public class EnemySpawner : MonoBehaviour
         GameObject enemyInstance = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
         // Enemy 스크립트 초기화 (경로 탐색 시작점과 목표 전달)
-        EnemyObject enemy = enemyInstance.GetComponent<EnemyObject>();
+        EnemyController enemy = enemyInstance.GetComponent<EnemyController>();
+
+
         if (enemy != null)
         {
-            enemy.Initialize(spawnTilePosition, goalTilePosition);
+            enemy.Initialize();
+            enemy.SetEnemyPath(spawnTilePosition, goalTilePosition);
         }
         else
         {

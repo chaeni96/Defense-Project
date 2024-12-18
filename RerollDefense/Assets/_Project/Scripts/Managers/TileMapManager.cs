@@ -150,18 +150,9 @@ public class TileMapManager : MonoBehaviour
     }
 
 
-    // 타일에 배치된 오브젝트를 등록
-    public void RegisterObjectOnTiles(Vector3Int basePosition, List<Vector3Int> relativeTiles, PlacedObject placedObject)
+    public bool IsPathBlocked(Vector3Int position)
     {
-        foreach (var relativeTile in relativeTiles)
-        {
-            Vector3Int tilePosition = basePosition + relativeTile;
-
-            if (tileDataMap.ContainsKey(tilePosition))
-            {
-                tileDataMap[tilePosition].isOccupied = true;
-                tileDataMap[tilePosition].occupyingObject = placedObject;
-            }
-        }
+        TileData tileData = GetTileData(position);
+        return tileData == null || !tileData.isAvailable;
     }
 }
