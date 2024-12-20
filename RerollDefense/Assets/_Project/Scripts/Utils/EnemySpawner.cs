@@ -28,7 +28,11 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy()
     {
         // 타일맵 좌표를 월드 좌표로 변환하여 적의 스폰 위치 설정
+
+
         Vector3 spawnPosition = TileMapManager.Instance.tileMap.GetCellCenterWorld(spawnTilePosition);
+
+        
 
         // 적 프리팹 생성
         GameObject enemyInstance = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
