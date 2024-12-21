@@ -150,6 +150,8 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
             Debug.Log("배치 불가 지역!");
             transform.position = originalPos;
             spriteRenderer.color = originColor;
+
+            //원래 위치로 돌아갔을때 카드가 보여야됨
         }
     }
 
