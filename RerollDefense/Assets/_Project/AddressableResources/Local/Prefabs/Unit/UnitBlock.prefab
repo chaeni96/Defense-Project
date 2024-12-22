@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5757734168865193963}
   - component: {fileID: 3631279279435126715}
   - component: {fileID: 5757734168865193962}
-  - component: {fileID: 263748168852973187}
-  - component: {fileID: 5757734168865193973}
+  - component: {fileID: 6533918697068061961}
+  - component: {fileID: 4463978599955908756}
   m_Layer: 9
   m_Name: UnitBlock
   m_TagString: Untagged
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481cfc4e0ad18bb4db1103e1c43d1bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myBody: {fileID: 263748168852973187}
+  myBody: {fileID: 0}
   prefabPath: 
   previousTilePosition: {x: 0, y: 0, z: 0}
   relativeTiles: []
@@ -115,7 +115,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &263748168852973187
+--- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -135,8 +135,8 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 3
---- !u!61 &5757734168865193973
+  m_Constraints: 7
+--- !u!61 &4463978599955908756
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

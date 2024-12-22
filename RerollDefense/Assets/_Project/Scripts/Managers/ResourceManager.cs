@@ -84,7 +84,11 @@ public class ResourceManager : MonoBehaviour
         var asyncOperation = Addressables.LoadAssetAsync<T>(key);
         asyncOperation.Completed += (op) =>
         {
-            _resources.Add(key, op.Result);
+            // 중복 키 방지
+            if (!_resources.ContainsKey(key))
+            {
+                _resources.Add(key, op.Result);
+            }
             callback?.Invoke(op.Result);
         };
     }

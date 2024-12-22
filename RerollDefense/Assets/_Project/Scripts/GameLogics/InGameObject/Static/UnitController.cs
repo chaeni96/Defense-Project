@@ -26,7 +26,7 @@ public class UnitController : PlacedObject
     public void DetectEnemy()
     {
         //공격 사정거리 안에 있는 오브젝트 중 가장 가까운 오브젝트 공격
-        Collider2D[] targets = Physics2D.OverlapCircleAll(myBody.position, attackRange, targetLayer);
+        Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, attackRange, targetLayer);
         float nearestDist = Mathf.Infinity;
         DamageableObject nearestTarget = null;
 
@@ -39,7 +39,7 @@ public class UnitController : PlacedObject
                 Rigidbody2D targetRb = detectTarget.GetComponent<Rigidbody2D>();
                 if (targetRb == null) continue; // Rigidbody2D가 없는 경우 무시
 
-                float distance = Vector2.Distance(myBody.position, targetRb.position);
+                float distance = Vector2.Distance(transform.position, targetRb.position);
                 if (distance < nearestDist)
                 {
                     nearestDist = distance;

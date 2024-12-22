@@ -77,7 +77,7 @@ public class AttackSkillManager : MonoBehaviour
     {
         // 투사체 생성
         //초기화
-        GameObject projectile = Instantiate(projectilePrefab, unit.myBody.position, Quaternion.identity);
+        GameObject projectile = Instantiate(projectilePrefab, unit.transform.position, Quaternion.identity);
         projectile.GetComponent<TheProjectile>().Initialize(unit, target);
 
         Debug.Log($"Projectile attack executed by {unit.name} on {target.name}");
@@ -89,14 +89,14 @@ public class AttackSkillManager : MonoBehaviour
     private void AoeAttack(UnitController unit, BasicObject target)
     {
         // AOE 공격 범위 생성
-        GameObject aoeRange = Instantiate(aoePrefab, target.myBody.position, Quaternion.identity);
+        GameObject aoeRange = Instantiate(aoePrefab, target.transform.position, Quaternion.identity);
 
         // AOE 스킬 초기화
         TheAOE aoeSkill = aoeRange.GetComponent<TheAOE>();
 
         if (aoeSkill != null)
         {
-            aoeSkill.Initialize(unit.myBody.position, unit.attackRange, unit);
+            aoeSkill.Initialize(unit.transform.position, unit.attackRange, unit);
         }
 
     }

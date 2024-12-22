@@ -25,6 +25,7 @@ public class StaticObject : BasicObject
     public override void Initialize()
     {
         base.Initialize();
+
     }
 
 

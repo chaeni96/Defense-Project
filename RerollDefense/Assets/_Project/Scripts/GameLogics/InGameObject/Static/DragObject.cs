@@ -4,17 +4,21 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System;
 
-public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class DragObject : StaticObject
 {
+    public bool isPlaced { get; private set; } = false;
+
     private SpriteRenderer spriteRenderer;
     private Color originColor;
-
     private Vector3 originalPos;
+
+    private string tileShapeName; //데이터베이스에서 불러올 이름
+
 
     //TODO : 테스트용, 오브젝트 데이터 사용해야됨
     //드래그오브젝트에 설치해야할 키값이 필요함
     public testGold test;
-    public string tileShapeName; //데이터베이스에서 불러올 이름
+
 
     public string prefabKey;
 
@@ -25,6 +29,12 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
         previousTilePosition = new Vector3Int(-1, -1, -1); // 유효하지 않는 값으로 초기화
         originalPos = transform.position;
         originColor = spriteRenderer.color;
+        isPlaced = false;
+    }
+
+    public void SetUpUnitData(string tileDataKey)
+    {
+        tileShapeName = tileDataKey;
 
     }
 
@@ -66,18 +76,16 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
 
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void TESTOnPointerDown()
     {
         InitializeTileShape();
 
         TileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0.1f));
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public void OnPointerDrag(Vector3 pointerPosition)
     {
-        // 마우스 위치를 타일맵 셀 좌표로 변환
-        Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
-        pointerPosition.z = 0;
+       
 
         // 기준 타일(클릭한 위치)의 타일 좌표 계산
         Vector3Int baseTilePosition = TileMapManager.Instance.tileMap.WorldToCell(pointerPosition);
@@ -125,7 +133,7 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
     }
 
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void TESTOnPointerUp()
     {
         TileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0)); // 타일 색 초기화
 
@@ -141,7 +149,7 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
             CreatePlacedObject(tileUniqueID);
 
             //TODO : 골드 차감 코드
-
+            isPlaced = true;
             Debug.Log("타워 배치 완료!");
         }
         else
@@ -150,6 +158,7 @@ public class DragObject : StaticObject, IPointerDownHandler, IDragHandler, IPoin
             Debug.Log("배치 불가 지역!");
             transform.position = originalPos;
             spriteRenderer.color = originColor;
+            isPlaced = false;
 
             //원래 위치로 돌아갔을때 카드가 보여야됨
         }
