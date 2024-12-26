@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UIElements;
 
 public class DragObject : StaticObject
 {
@@ -14,7 +15,7 @@ public class DragObject : StaticObject
     private Vector3 originalPos;
     private Color originColor;
     private string tileShapeName;
-    public string prefabKey;
+
     private List<GameObject> previewInstances = new List<GameObject>();
 
     public override void Initialize()
@@ -34,38 +35,16 @@ public class DragObject : StaticObject
 
 
     //드래그 오브젝트 클릭했을시
-    public void OnClickObject(string tileDataKey)
+    public void OnClickObject(string tileDataKey, Vector3 pointerPosition)
     {
         InitializeTileShape(tileDataKey);
-        CreatePreviewInstances(transform.position);
+        CreatePreviewInstances(transform.position, pointerPosition);
 
-    }
-
-    private void CreatePreviewInstances(Vector3 baseWorldPosition)
-    {
-        Vector3Int basePosition = TileMapManager.Instance.tileMap.WorldToCell(baseWorldPosition);
-
-        // 각 상대 타일 위치에 프리뷰 인스턴스 생성
-        foreach (var relativeTile in relativeTiles)
+        if (spriteRenderer != null)
         {
-            Vector3Int previewPosition = basePosition + relativeTile;
-            GameObject previewInstance = ResourceManager.Instance.Instantiate("UnitInstanceBlock");
-
-            if (previewInstance != null)
-            {
-                // 프리뷰 위치 설정
-                previewInstance.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previewPosition);
-
-                // 프리뷰 스타일 설정 (반투명)
-                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
-                }
-
-                previewInstances.Add(previewInstance);
-            }
+            spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
         }
+
     }
 
     //선택한 카드 종류에 따른 타일 초기화
@@ -107,6 +86,34 @@ public class DragObject : StaticObject
             UpdateTileColors(baseTilePosition, canPlace);
 
             previousTilePosition = baseTilePosition;
+        }
+    }
+
+    //드래그할때도 설치할 오브젝트 프리뷰 보여주기
+    private void CreatePreviewInstances(Vector3 baseWorldPosition, Vector3 pointerPosition)
+    {
+        // 각 상대 타일 위치에 프리뷰 인스턴스 생성
+
+        foreach (var relativeTile in relativeTiles)
+        {
+            GameObject previewInstance = PoolingManager.Instance.GetObject("UnitInstanceBlock",pointerPosition);
+            PlacedObject placedObject = previewInstance.GetComponent<PlacedObject>();
+
+            if (previewInstance != null)
+            {
+                // InitializeUnitStat에 정확한 인덱스 전달
+                int unitIndex = relativeTiles.IndexOf(relativeTile);
+                placedObject.InitializeObject(tileShapeName, unitIndex);
+
+                // 프리뷰 스타일 설정 (반투명)
+                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+                }
+
+                previewInstances.Add(previewInstance);
+            }
         }
     }
 
@@ -173,7 +180,9 @@ public class DragObject : StaticObject
     {
         foreach (var position in GetTilePositions(previousTilePosition))
         {
-            GameObject placedObjectInstance = ResourceManager.Instance.Instantiate(prefabKey);
+            GameObject placedObjectInstance = PoolingManager.Instance.GetObject("UnitBlock", TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
+
+
             PlacedObject placedObject = placedObjectInstance.GetComponent<PlacedObject>();
 
             if (placedObject != null)

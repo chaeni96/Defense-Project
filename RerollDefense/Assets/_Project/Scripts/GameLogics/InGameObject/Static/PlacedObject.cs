@@ -13,6 +13,8 @@ public class PlacedObject : StaticObject
     //선택한 블록이 들어있는 블록들만 제거해야됨
     //데이터 받아올때 
 
+    public string unitName;
+
     public string tileUniqueID;
 
     public override void Initialize()
@@ -25,7 +27,23 @@ public class PlacedObject : StaticObject
         base.Update();
     }
 
-   
+    public void InitializeObject(string tileShapeName, int tileIndex)
+    {
+        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
+
+        if (tileIndex < tileShapeData.f_unitBuildData.Count)
+        {
+            var buildData = tileShapeData.f_unitBuildData[tileIndex];
+            var unitData = buildData.f_unitData;
+
+            unitName = buildData.f_name;    
+        }
+
+    }
+
+
+
+  
     public void RegistereTileID(string uniqueID)
     {
         tileUniqueID = uniqueID;

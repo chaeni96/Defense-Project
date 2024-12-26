@@ -37,14 +37,18 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
 
         // DragObject 생성
-        activeDragObject = ResourceManager.Instance.Instantiate("DragObject.prefab");
+
+        activeDragObject = PoolingManager.Instance.GetObject("DragObject");
 
         // DragObject 초기화
         DragObject dragObject = activeDragObject.GetComponent<DragObject>();
         if (dragObject != null)
         {
+            Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
+            pointerPosition.z = 0;
+
             dragObject.Initialize();
-            dragObject.OnClickObject(dragObjectAddress);
+            dragObject.OnClickObject(dragObjectAddress, pointerPosition);
         }
 
         // 카드 이미지를 숨김

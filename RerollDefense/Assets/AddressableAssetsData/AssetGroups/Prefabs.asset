@@ -18,13 +18,13 @@ MonoBehaviour:
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
   - m_GUID: 3e62791ad18453d4fbcefad69b097cc7
-    m_Address: UnitBlock.prefab
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/UnitBlock.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17931eab2a9646449fce38cec7fbca4
-    m_Address: DragObject.prefab
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/DragObject.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
@@ -36,7 +36,7 @@ MonoBehaviour:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a86359a347bb0a54495879ea486c79ab
-    m_Address: UnitInstanceBlock
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/UnitInstanceBlock.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

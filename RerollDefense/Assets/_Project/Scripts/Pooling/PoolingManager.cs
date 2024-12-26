@@ -73,7 +73,7 @@ public class PoolingManager : MonoBehaviour
         }
     }
 
-    public GameObject GetObject(string id, Vector3 position, int layer = 0)
+    public GameObject GetObject(string id, Vector3? position = null, int layer = 0)
     {
         if (!poolDictionary.ContainsKey(id))
         {
@@ -90,15 +90,37 @@ public class PoolingManager : MonoBehaviour
         }
 
         GameObject obj = poolDictionary[id].GetPooledObject();
-        if (obj != null)
+
+        if (obj == null)
         {
-            obj.transform.position = position;
-            obj.layer = layer;
-            obj.SetActive(true);
+            // 오브젝트 풀에서 사용 가능한 객체를 얻지 못한 경우
+            Debug.LogWarning($"Could not retrieve object from pool for ID: {id}");
+
+            // 대체 방안: 직접 인스턴스화
+            var poolData = D_ObjectPoolData.GetEntity(id);
+            if (poolData != null)
+            {
+                obj = ResourceManager.Instance.Instantiate(poolData.f_AdrressablePath);
+            }
+
+            if (obj == null)
+            {
+                Debug.LogError($"Failed to create object for ID: {id}");
+                return null;
+            }
         }
+
+        // position이 null이 아닌 경우에만 위치 설정
+        if (position.HasValue)
+        {
+            obj.transform.position = position.Value;
+        }
+
+        obj.layer = layer;
+        obj.SetActive(true);
+
         return obj;
     }
-
     public void ReturnObject(GameObject obj)
     {
         if (obj == null) return;
