@@ -1079,10 +1079,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6475a6c43d40204aa0178dda15e2cf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 8715255879832484706, guid: a8cbd52c8c6540948820bf3e259b5318, type: 3}
-  spawnTilePosition: {x: -1, y: 5, z: 0}
-  goalTilePosition: {x: -4, y: -9, z: 0}
-  spawnInterval: 15
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

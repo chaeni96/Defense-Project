@@ -15,6 +15,7 @@ public class DragObject : StaticObject
     private Color originColor;
     private string tileShapeName;
     public string prefabKey;
+    private List<GameObject> previewInstances = new List<GameObject>();
 
     public override void Initialize()
     {
@@ -36,6 +37,35 @@ public class DragObject : StaticObject
     public void OnClickObject(string tileDataKey)
     {
         InitializeTileShape(tileDataKey);
+        CreatePreviewInstances(transform.position);
+
+    }
+
+    private void CreatePreviewInstances(Vector3 baseWorldPosition)
+    {
+        Vector3Int basePosition = TileMapManager.Instance.tileMap.WorldToCell(baseWorldPosition);
+
+        // 각 상대 타일 위치에 프리뷰 인스턴스 생성
+        foreach (var relativeTile in relativeTiles)
+        {
+            Vector3Int previewPosition = basePosition + relativeTile;
+            GameObject previewInstance = ResourceManager.Instance.Instantiate("UnitInstanceBlock");
+
+            if (previewInstance != null)
+            {
+                // 프리뷰 위치 설정
+                previewInstance.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previewPosition);
+
+                // 프리뷰 스타일 설정 (반투명)
+                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+                }
+
+                previewInstances.Add(previewInstance);
+            }
+        }
     }
 
     //선택한 카드 종류에 따른 타일 초기화
@@ -72,37 +102,69 @@ public class DragObject : StaticObject
             //드래그 중에도 설치 가능한지 체크해야됨
             bool canPlace = CanPlaceAtPosition(baseTilePosition);
 
+            UpdatePreviewInstancesPosition(baseTilePosition, canPlace);
+
             UpdateTileColors(baseTilePosition, canPlace);
 
             previousTilePosition = baseTilePosition;
         }
     }
 
+    private void UpdatePreviewInstancesPosition(Vector3Int basePosition, bool canPlace)
+    {
+        // 각 상대 타일 위치에 프리뷰 인스턴스 이동
+        for (int i = 0; i < previewInstances.Count; i++)
+        {
+            Vector3Int previewPosition = basePosition + relativeTiles[i];
+            previewInstances[i].transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previewPosition);
+        }
+    }
+
+
     public void CheckPlacedObject()
     {
+        // 타일 색상 초기화
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
-        //배치 가능한지 확인
         if (CanPlaceAtPosition(previousTilePosition))
         {
+            // 프리뷰 인스턴스들을 불투명한 실제 오브젝트로 변환
+            foreach (var previewInstance in previewInstances)
+            {
+                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = Color.white;
+                }
+            }
+
+            // 기존 배치 로직 유지
             string tileUniqueID = Guid.NewGuid().ToString();
             TileMapManager.Instance.OccupyTile(previousTilePosition, relativeTiles, tileUniqueID);
-
-            //유닛오브젝트 설치
             CreatePlacedObject(tileUniqueID);
-
-            //enemy 경로 업데이트
             EnemyManager.Instance.UpdateEnemiesPath();
-
             isPlaced = true;
-            Debug.Log("유닛 배치 완료!");
+
+
+            // 프리뷰 인스턴스 리스트 초기화
+            foreach (var previewInstance in previewInstances)
+            {
+                Destroy(previewInstance);
+            }
+            previewInstances.Clear();
         }
         else
         {
+            // 배치 불가능한 경우 프리뷰 인스턴스들 제거
+            foreach (var previewInstance in previewInstances)
+            {
+                Destroy(previewInstance);
+            }
+            previewInstances.Clear();
+
             transform.position = originalPos;
             spriteRenderer.color = originColor;
             isPlaced = false;
-            Debug.Log("유닛 불가 지역!");
         }
     }
 
