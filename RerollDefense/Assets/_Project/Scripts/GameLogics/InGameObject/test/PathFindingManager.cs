@@ -96,14 +96,18 @@ public class PathFindingManager : MonoBehaviour
     }
 
 
-    public void UpdateCurrentPath()
+    public Vector3 GetStartPosition()
     {
-        currentPath = tempPath;
-
-        EnemyManager.Instance.UpdateEnemiesPath(currentPath);
-        Debug.Log($"{currentPath}");
+        return TileMapManager.Instance.tileMap.GetCellCenterWorld(startTilePosition);
     }
 
+
+    public List<Vector3> GetCurrentPath()
+    {
+        return currentPath;
+    }
+
+    //현재의 position에서 endTile까지 최단거리 구하기
     public List<Vector3> FindPathFromPosition(Vector3 worldPosition)
     {
         // 월드 좌표를 타일 좌표로 변환
@@ -111,10 +115,6 @@ public class PathFindingManager : MonoBehaviour
         return FindPath(startPos, endTilePosition);
     }
 
-    public List<Vector3> GetCurrentPath()
-    {
-        return currentPath;
-    }
 
     private List<Vector3> FindPath(Vector3Int start, Vector3Int goal)
     {

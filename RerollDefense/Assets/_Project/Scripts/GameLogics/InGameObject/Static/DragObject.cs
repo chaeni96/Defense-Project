@@ -93,7 +93,7 @@ public class DragObject : StaticObject
             CreatePlacedObject(tileUniqueID);
 
             //enemy 경로 업데이트
-            PathFindingManager.Instance.UpdateCurrentPath();
+            EnemyManager.Instance.UpdateEnemiesPath();
 
             isPlaced = true;
             Debug.Log("유닛 배치 완료!");
