@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DemoTileMapManager : MonoBehaviour
+public class TileMapManager : MonoBehaviour
 {
-    public static DemoTileMapManager _instance;
+    public static TileMapManager _instance;
 
     public Tilemap tileMap;
 
-    private Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
+    // 각 타일의 상태 정보를 저장하는 딕셔너리
+    private Dictionary<Vector3Int, TileData> tileMapDatas = new Dictionary<Vector3Int, TileData>();
 
-    public static DemoTileMapManager Instance
+    public static TileMapManager Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<DemoTileMapManager>();
+                _instance = FindObjectOfType<TileMapManager>();
 
                 if (_instance == null)
                 {
                     GameObject singleton = new GameObject("TileMapManager");
-                    _instance = singleton.AddComponent<DemoTileMapManager>();
+                    _instance = singleton.AddComponent<TileMapManager>();
                     DontDestroyOnLoad(singleton);
                 }
             }
@@ -42,33 +43,31 @@ public class DemoTileMapManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        setTileMap();
+        InitializeTileMap();
     }
 
-
-    // 타일맵 초기화
-    public void setTileMap()
+    //타일맵 초기화
+    private void InitializeTileMap()
     {
-        // 타일 데이터 초기화, 모든 타일 배치 가능 상태로 설정
+        tileMapDatas.Clear();
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {
             if (tileMap.HasTile(position))
             {
-                tileDataMap[position] = new TileData();
+                tileMapDatas[position] = new TileData();
             }
         }
-
-        ResetTileColors(new Color(1, 1, 1, 0));
+        SetAllTilesColor(new Color(1, 1, 1, 0));
     }
 
     // 특정 위치의 타일 데이터 가져오기
     public TileData GetTileData(Vector3Int position)
     {
-        return tileDataMap.ContainsKey(position) ? tileDataMap[position] : null;
+        return tileMapDatas.TryGetValue(position, out TileData data) ? data : null;
     }
 
-    // 다중 타일 배치 가능 여부 확인
-    public bool AreTilesAvailable(Vector3Int basePosition, List<Vector3Int> relativeTiles)
+    // 지정된 위치에 오브젝트 배치가능 여부
+    public bool CanPlaceObjectAt(Vector3Int basePosition, List<Vector3Int> relativeTiles)
     {
         foreach (var relativeTile in relativeTiles)
         {
@@ -83,39 +82,37 @@ public class DemoTileMapManager : MonoBehaviour
         return true; // 모두 가능하면 true
     }
 
-    // 다중 타일을 배치 불가능 상태로 설정
-    public void SetTilesUnavailable(Vector3Int basePosition, List<Vector3Int> relativeTiles, string uniqueID)
+    // 타일 점유상태로 변경
+    public void OccupyTile(Vector3Int basePosition, List<Vector3Int> relativeTiles, string uniqueID)
     {
         foreach (var relativeTile in relativeTiles)
         {
             Vector3Int updatePosition = basePosition + relativeTile;
 
-            if (tileDataMap.ContainsKey(updatePosition))
+            if (tileMapDatas.ContainsKey(updatePosition))
             {
-                tileDataMap[updatePosition].isAvailable = false;
-                tileDataMap[updatePosition].tileUniqueID = uniqueID;
+                tileMapDatas[updatePosition].isAvailable = false;
+                tileMapDatas[updatePosition].tileUniqueID = uniqueID;
             }
         }
     }
 
-    // 다중 타일 색상 설정 (예: 배치 가능/불가능 시각화)
+    // 특정 타일 색상 변경 
     public void SetTileColors(Vector3Int basePosition, List<Vector3Int> relativeTiles, Color color)
     {
         foreach (var relativeTile in relativeTiles)
         {
-            Vector3Int tilePosition = basePosition + relativeTile;
-
-            if (tileMap.HasTile(tilePosition))
+            Vector3Int position = basePosition + relativeTile;
+            if (tileMap.HasTile(position))
             {
-                tileMap.SetTileFlags(tilePosition, TileFlags.None);
-                tileMap.SetColor(tilePosition, color);
+                tileMap.SetTileFlags(position, TileFlags.None);
+                tileMap.SetColor(position, color);
             }
         }
     }
 
-
-    // 모든 타일 색상 초기화
-    public void ResetTileColors(Color color)
+    // 모든 타일 색상 변경
+    public void SetAllTilesColor(Color color)
     {
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {
@@ -127,19 +124,4 @@ public class DemoTileMapManager : MonoBehaviour
         }
     }
 
-    // 특정 타일 배치 불가능 상태로 설정 (단일 타일용)
-    public void SetTileUnavailable(Vector3Int position)
-    {
-        if (tileDataMap.ContainsKey(position))
-        {
-            tileDataMap[position].isAvailable = false;
-        }
-    }
-
-
-    public bool IsPathBlocked(Vector3Int position)
-    {
-        TileData tileData = GetTileData(position);
-        return tileData == null || !tileData.isAvailable;
-    }
 }

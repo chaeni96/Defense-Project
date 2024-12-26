@@ -40,13 +40,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         activeDragObject = ResourceManager.Instance.Instantiate("DragObject.prefab");
 
         // DragObject 초기화
-        DemoDragObject dragObject = activeDragObject.GetComponent<DemoDragObject>();
+        DragObject dragObject = activeDragObject.GetComponent<DragObject>();
         if (dragObject != null)
         {
             dragObject.Initialize();
-            dragObject.SetUpUnitData(dragObjectAddress);
-
-            dragObject.TESTOnPointerDown();
+            dragObject.OnClickObject(dragObjectAddress);
         }
 
         // 카드 이미지를 숨김
@@ -58,7 +56,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        DemoDragObject dragObject = activeDragObject.GetComponent<DemoDragObject>();
+        DragObject dragObject = activeDragObject.GetComponent<DragObject>();
         if (dragObject != null)
         {
             Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
@@ -73,9 +71,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         if (activeDragObject != null)
         {
-            DemoDragObject dragScript = activeDragObject.GetComponent<DemoDragObject>();
+            DragObject dragScript = activeDragObject.GetComponent<DragObject>();
 
-            dragScript.TESTOnPointerUp();
+            dragScript.CheckPlacedObject();
 
             if (dragScript != null && !dragScript.isPlaced)
             {

@@ -30,7 +30,7 @@ public class EnemySpawner : MonoBehaviour
         // 타일맵 좌표를 월드 좌표로 변환하여 적의 스폰 위치 설정
 
 
-        Vector3 spawnPosition = DemoTileMapManager.Instance.tileMap.GetCellCenterWorld(spawnTilePosition);
+        Vector3 spawnPosition = TileMapManager.Instance.tileMap.GetCellCenterWorld(spawnTilePosition);
 
         
 

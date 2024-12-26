@@ -49,13 +49,51 @@ public class PathFindingManager : MonoBehaviour
         currentPath = FindPath(startTilePosition, endTilePosition);
     }
 
-    public bool CanPlaceObstacle(Vector3Int obstaclePos)
+    public bool CanPlaceObstacle(List<Vector3Int> relativeTiles)
     {
-        TileMapManager.Instance.AddTempOccupied(obstaclePos);
+        // 시작, 끝 타일과 겹치는지 확인
+        foreach (var relativeTile in relativeTiles)
+        {
+            Vector3Int checkPos = relativeTile;
+            if (checkPos == startTilePosition || checkPos == endTilePosition)
+                return false;
+        }
+
+        // 임시로 타일들을 점유 상태로 설정
+        Dictionary<Vector3Int, TileData> originalTileData = new Dictionary<Vector3Int, TileData>();
+
+        foreach (var relativeTile in relativeTiles)
+        {
+            Vector3Int checkPos = relativeTile;
+            TileData tileData = TileMapManager.Instance.GetTileData(checkPos);
+            if (tileData != null)
+            {
+                originalTileData[checkPos] = new TileData
+                {
+                    isAvailable = tileData.isAvailable,
+                    tileUniqueID = tileData.tileUniqueID
+                };
+                tileData.isAvailable = false;
+            }
+        }
+
+        // 경로 찾기 시도
         tempPath = FindPath(startTilePosition, endTilePosition);
-        TileMapManager.Instance.RemoveTempOccupied(obstaclePos);
+
+        // 타일 상태 복원
+        foreach (var kvp in originalTileData)
+        {
+            TileData tileData = TileMapManager.Instance.GetTileData(kvp.Key);
+            if (tileData != null)
+            {
+                tileData.isAvailable = kvp.Value.isAvailable;
+                tileData.tileUniqueID = kvp.Value.tileUniqueID;
+            }
+        }
+
         return tempPath.Count > 0;
     }
+
 
     public void UpdateCurrentPath()
     {
@@ -91,8 +129,9 @@ public class PathFindingManager : MonoBehaviour
 
             foreach (Vector3Int neighborPosition in GetNeighbors(currentNode.Position))
             {
-                if (!TileMapManager.Instance.IsValidTile(neighborPosition) ||
-                    TileMapManager.Instance.IsTileOccupied(neighborPosition) ||
+                // 타일 유효성 검사
+                var tileData = TileMapManager.Instance.GetTileData(neighborPosition);
+                if (tileData == null || !tileData.isAvailable ||
                     closedList.Contains(new Node(neighborPosition)))
                 {
                     continue;
@@ -108,7 +147,7 @@ public class PathFindingManager : MonoBehaviour
 
                 Node neighborNode = new Node(neighborPosition);
                 float tentativeGCost = currentNode.GCost +
-                    (currentNode.Position.x != neighborPosition.x && currentNode.Position.y != neighborPosition.y ? 1.414f : 1.0f);
+                    (IsDiagonalMove(currentNode.Position, neighborPosition) ? 1.414f : 1.0f);
 
                 if (!openList.Contains(neighborNode) || tentativeGCost < neighborNode.GCost)
                 {
@@ -127,6 +166,7 @@ public class PathFindingManager : MonoBehaviour
         return new List<Vector3>();
     }
 
+
     private List<Vector3> RetracePath(Node startNode, Node endNode)
     {
         List<Vector3> path = new List<Vector3>();
@@ -134,10 +174,10 @@ public class PathFindingManager : MonoBehaviour
 
         while (currentNode != startNode)
         {
-            path.Add(TileMapManager.Instance.CellToWorld(currentNode.Position));
+            path.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(currentNode.Position));
             currentNode = currentNode.Parent;
         }
-        path.Add(TileMapManager.Instance.CellToWorld(startNode.Position));
+        path.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(startNode.Position));
         path.Reverse();
 
         return path;
@@ -170,14 +210,20 @@ public class PathFindingManager : MonoBehaviour
 
         if (allowDiagonal)
         {
-            neighbors.Add(position + new Vector3Int(1, 1, 0)); // ↘
-            neighbors.Add(position + new Vector3Int(-1, 1, 0)); // ↙
-            neighbors.Add(position + new Vector3Int(1, -1, 0)); // ↗
-            neighbors.Add(position + new Vector3Int(-1, -1, 0)); // ↖
+            neighbors.Add(position + new Vector3Int(1, 1, 0)); 
+            neighbors.Add(position + new Vector3Int(-1, 1, 0)); 
+            neighbors.Add(position + new Vector3Int(1, -1, 0)); 
+            neighbors.Add(position + new Vector3Int(-1, -1, 0)); 
         }
 
         return neighbors;
     }
+
+    private bool IsDiagonalMove(Vector3Int from, Vector3Int to)
+    {
+        return from.x != to.x && from.y != to.y;
+    }
+
 
     private bool IsDiagonalMoveBlocked(Vector3Int current, Vector3Int neighbor)
     {
@@ -188,10 +234,11 @@ public class PathFindingManager : MonoBehaviour
             Vector3Int side1 = new Vector3Int(current.x + delta.x, current.y, 0);
             Vector3Int side2 = new Vector3Int(current.x, current.y + delta.y, 0);
 
-            if (!TileMapManager.Instance.IsValidTile(side1) ||
-                !TileMapManager.Instance.IsValidTile(side2) ||
-                TileMapManager.Instance.IsTileOccupied(side1) ||
-                TileMapManager.Instance.IsTileOccupied(side2))
+            var tileData1 = TileMapManager.Instance.GetTileData(side1);
+            var tileData2 = TileMapManager.Instance.GetTileData(side2);
+
+            if (tileData1 == null || !tileData1.isAvailable ||
+                tileData2 == null || !tileData2.isAvailable)
             {
                 return true;
             }
@@ -199,6 +246,7 @@ public class PathFindingManager : MonoBehaviour
 
         return false;
     }
+
 
     private class Node
     {

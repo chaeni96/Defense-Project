@@ -96,7 +96,7 @@ public class DemoPathfindingManager : MonoBehaviour
             foreach (Vector3Int neighborPosition in GetNeighbors(currentNode.Position))
             {
                 // 이동 가능 여부 확인
-                if (!DemoTileMapManager.Instance.GetTileData(neighborPosition)?.isAvailable == true ||
+                if (!TileMapManager.Instance.GetTileData(neighborPosition)?.isAvailable == true ||
                     closedList.Contains(new Node(neighborPosition)))
                 {
                     continue;
@@ -144,8 +144,8 @@ public class DemoPathfindingManager : MonoBehaviour
             Vector3Int side1 = new Vector3Int(current.x + delta.x, current.y, 0);
             Vector3Int side2 = new Vector3Int(current.x, current.y + delta.y, 0);
 
-            if (!DemoTileMapManager.Instance.GetTileData(side1)?.isAvailable == true ||
-                !DemoTileMapManager.Instance.GetTileData(side2)?.isAvailable == true)
+            if (!TileMapManager.Instance.GetTileData(side1)?.isAvailable == true ||
+                !TileMapManager.Instance.GetTileData(side2)?.isAvailable == true)
             {
                 return true; // 대각선 이동 차단
             }
@@ -161,7 +161,7 @@ public class DemoPathfindingManager : MonoBehaviour
 
         while (currentNode != null)
         {
-            path.Add(DemoTileMapManager.Instance.tileMap.GetCellCenterWorld(currentNode.Position));
+            path.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(currentNode.Position));
             currentNode = currentNode.Parent;
         }
 
