@@ -1347,9 +1347,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b929f1dccc87fd47bc8edcbc729b3d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 5423760262259863768, guid: a34f01674b0d3194fb7b3a8b69edbbab, type: 3}
+  enemyPoolId: Enemy
   enemyCount: 5
-  moveSpeed: 1
+  moveSpeed: 7
   arrivalThreshold: 0.1
 --- !u!4 &662647809
 Transform:

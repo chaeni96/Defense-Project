@@ -586,9 +586,9 @@ public partial class D_ObjectPoolData : BGEntity
 	{
 		public const string Meta = "ObjectPoolData";
 		public const string name = "name";
-		public const string AddressablePrefabName = "AddressablePrefabName";
+		public const string AdrressablePath = "AdrressablePath";
 		public const string initialSize = "initialSize";
-		public const string sceneType = "sceneType";
+		public const string SceneType = "SceneType";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5551840002734483211UL,1845652086390232738UL), () => _metaDefault = null));
@@ -599,29 +599,29 @@ public partial class D_ObjectPoolData : BGEntity
 		get => _f_name[Index];
 		set => _f_name[Index] = value;
 	}
-	public System.String f_AddressablePrefabName
+	public System.String f_AdrressablePath
 	{
-		get => _f_AddressablePrefabName[Index];
-		set => _f_AddressablePrefabName[Index] = value;
+		get => _f_AdrressablePath[Index];
+		set => _f_AdrressablePath[Index] = value;
 	}
 	public System.Int32 f_initialSize
 	{
 		get => _f_initialSize[Index];
 		set => _f_initialSize[Index] = value;
 	}
-	public BGDatabaseEnum.SceneType f_sceneType
+	public BGDatabaseEnum.SceneType f_SceneType
 	{
-		get => (BGDatabaseEnum.SceneType) _f_sceneType.GetStoredValue(Index);
-		set => _f_sceneType.SetStoredValue(Index, (System.Int32) value);
+		get => (BGDatabaseEnum.SceneType) _f_SceneType.GetStoredValue(Index);
+		set => _f_SceneType.SetStoredValue(Index, (System.Int32) value);
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4726680117178046135UL, 7587749471834620314UL), () => _ufle12jhs77_f_name = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_AddressablePrefabName;
-	public static BansheeGz.BGDatabase.BGFieldString _f_AddressablePrefabName => _ufle12jhs77_f_AddressablePrefabName ?? (_ufle12jhs77_f_AddressablePrefabName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5076225291416012828UL, 5298287577855350441UL), () => _ufle12jhs77_f_AddressablePrefabName = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_AdrressablePath;
+	public static BansheeGz.BGDatabase.BGFieldString _f_AdrressablePath => _ufle12jhs77_f_AdrressablePath ?? (_ufle12jhs77_f_AdrressablePath = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5145773510652681096UL, 13372783320861883313UL), () => _ufle12jhs77_f_AdrressablePath = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_initialSize;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_initialSize => _ufle12jhs77_f_initialSize ?? (_ufle12jhs77_f_initialSize = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5659588470147564891UL, 585240456792688554UL), () => _ufle12jhs77_f_initialSize = null));
-	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_sceneType;
-	public static BansheeGz.BGDatabase.BGFieldEnum _f_sceneType => _ufle12jhs77_f_sceneType ?? (_ufle12jhs77_f_sceneType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5521369474461368301UL, 16056319602038950071UL), () => _ufle12jhs77_f_sceneType = null));
+	public static BansheeGz.BGDatabase.BGFieldInt _f_initialSize => _ufle12jhs77_f_initialSize ?? (_ufle12jhs77_f_initialSize = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5695250943508857660UL, 15712297599622700168UL), () => _ufle12jhs77_f_initialSize = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SceneType;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_SceneType => _ufle12jhs77_f_SceneType ?? (_ufle12jhs77_f_SceneType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5488174481991139823UL, 4171769970269031340UL), () => _ufle12jhs77_f_SceneType = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_BoostDeck.Factory _factory2_PFS = new D_BoostDeck.Factory();

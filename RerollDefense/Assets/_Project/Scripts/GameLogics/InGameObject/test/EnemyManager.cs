@@ -6,7 +6,10 @@ using System.Collections.Generic;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] private Enemy enemyPrefab;
+ 
+    public static EnemyManager _instance;
+
+    [SerializeField] private string enemyPoolId;  // D_ObjectPoolData의 name과 일치해야 함
     [SerializeField] private int enemyCount = 5;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float arrivalThreshold = 0.1f;
@@ -16,28 +19,62 @@ public class EnemyManager : MonoBehaviour
     private List<float3> endPositions = new List<float3>();
     private List<float3> currentPositions = new List<float3>();
 
-    private void Start()
+
+    // 싱글톤 패턴 구현
+    public static EnemyManager Instance
     {
-        SpawnInitialEnemies();
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<EnemyManager>();
+
+                // 인스턴스가 없으면 새로운 게임 오브젝트를 생성하여 PoolingManager 컴포넌트를 추가
+                if (_instance == null)
+                {
+                    GameObject singleton = new GameObject("EnemyManager");
+                    _instance = singleton.AddComponent<EnemyManager>();
+                    DontDestroyOnLoad(singleton); // 씬이 변경되어도 파괴되지 않도록 설정
+                }
+            }
+            return _instance;
+        }
     }
 
-    private void SpawnInitialEnemies()
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+
+    }
+
+    public void SpawnInitialEnemies()
     {
         for (int i = 0; i < enemyCount; i++)
         {
             float3 startPos = new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0);
             float3 endPos = new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0);
 
-            Enemy enemy = Instantiate(enemyPrefab);
-            enemy.StartPosition = startPos;
-            enemy.EndPosition = endPos;
-            enemy.Speed = moveSpeed;
-            enemy.transform.position = new Vector3(startPos.x, startPos.y, startPos.z);
+            GameObject enemyObj = PoolingManager.Instance.GetObject(enemyPoolId, new Vector3(startPos.x, startPos.y, startPos.z));
+            if (enemyObj != null)
+            {
+                Enemy enemy = enemyObj.GetComponent<Enemy>();
+                enemy.StartPosition = startPos;
+                enemy.EndPosition = endPos;
+                enemy.Speed = moveSpeed;
 
-            enemies.Add(enemy);
-            startPositions.Add(startPos);
-            endPositions.Add(endPos);
-            currentPositions.Add(startPos);
+                enemies.Add(enemy);
+                startPositions.Add(startPos);
+                endPositions.Add(endPos);
+                currentPositions.Add(startPos);
+            }
         }
     }
 
@@ -81,7 +118,8 @@ public class EnemyManager : MonoBehaviour
             if (math.distance(currentPos, targetPos) < arrivalThreshold)
             {
                 // Enemy 제거
-                Destroy(enemies[i].gameObject);
+                PoolingManager.Instance.ReturnObject(enemies[i].gameObject);
+
                 enemies.RemoveAt(i);
                 startPositions.RemoveAt(i);
                 endPositions.RemoveAt(i);
