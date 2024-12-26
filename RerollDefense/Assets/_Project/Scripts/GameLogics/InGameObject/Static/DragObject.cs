@@ -68,7 +68,6 @@ public class DragObject : StaticObject
         if (baseTilePosition != previousTilePosition)
         {
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
-            spriteRenderer.color = originColor;  // 드래그 중인 오브젝트의 원래 색상 유지
             
             //드래그 중에도 설치 가능한지 체크해야됨
             bool canPlace = CanPlaceAtPosition(baseTilePosition);

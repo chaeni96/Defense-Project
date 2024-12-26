@@ -1302,7 +1302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d556b8375ad71434a928cba5590ed32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnInterval: 100
 --- !u!1 &561525829
 GameObject:
   m_ObjectHideFlags: 0
@@ -1348,11 +1347,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b929f1dccc87fd47bc8edcbc729b3d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPoolId: Enemy
-  enemyCount: 1
+  enemyPoolName: Enemy
   moveSpeed: 0.2
-  arrivalThreshold: 0.1
+  arrivalDist: 0.1
   showDebugPath: 1
+  spawnInterval: 2
+  enemiesPerWave: 5
 --- !u!4 &662647809
 Transform:
   m_ObjectHideFlags: 0

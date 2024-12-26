@@ -1,22 +1,31 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Mathematics;
 
 public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager _instance;
 
-    [SerializeField] private string enemyPoolId;
+    //test용 변수
+    [SerializeField] private string enemyPoolName;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float arrivalThreshold = 0.1f;
+    [SerializeField] private float arrivalDist = 0.1f;
     [SerializeField] private bool showDebugPath = true;
 
+    //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
     private Dictionary<Enemy, List<Vector3>> enemyPaths; // 각 enemy의 개별 경로
     private Dictionary<Enemy, int> enemyPathIndex;     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
 
-    //enemy spawn
+    //job System 변수
+    private NativeArray<float3> currentPositions;
+    private NativeArray<float3> targetPositions;
+    private NativeArray<float3> newPositions;
 
+    //enemy spawn 관련 변수
     [SerializeField] private float spawnInterval = 2f;  // 적 생성 간격
     [SerializeField] private int enemiesPerWave = 5;   // 웨이브당 적 숫자
     private bool isSpawning = false;
@@ -88,7 +97,7 @@ public class EnemyManager : MonoBehaviour
     private void SpawnSingleEnemy()
     {
         Vector3 startPos = PathFindingManager.Instance.GetStartPosition();
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyPoolId, startPos);
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyPoolName, startPos);
 
         if (enemyObj != null)
         {
@@ -110,37 +119,81 @@ public class EnemyManager : MonoBehaviour
     {
         if (enemies.Count == 0) return;
 
-
         ShowDebug();
 
+        // NativeArray 초기화
+        if (currentPositions.IsCreated) currentPositions.Dispose();
+        if (targetPositions.IsCreated) targetPositions.Dispose();
+        if (newPositions.IsCreated) newPositions.Dispose();
+        currentPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
+        targetPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
+        newPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
+
+        // job 사용을 위한 데이터 설정
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Enemy enemy = enemies[i];
+            List<Vector3> path = enemyPaths[enemy];
+            int pathIndex = enemyPathIndex[enemy];
+
+            if (pathIndex < path.Count - 1)
+            {
+                Vector3 currentPos = enemy.transform.position;
+                Vector3 targetPos = path[pathIndex + 1];
+
+                currentPositions[i] = new float3(currentPos.x, currentPos.y, currentPos.z);
+                targetPositions[i] = new float3(targetPos.x, targetPos.y, targetPos.z);
+            }
+        }
+
+        // Job 실행
+        var moveJob = new MoveEnemiesJob
+        {
+            CurrentPositions = currentPositions,
+            TargetPositions = targetPositions,
+            NewPositions = newPositions,
+            DeltaTime = Time.deltaTime,
+            MoveSpeed = moveSpeed
+        };
+
+        JobHandle jobHandle = moveJob.Schedule(enemies.Count, 64);
+        jobHandle.Complete();
+
+        // enemy 이동 및 endtile 도착 체크
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             Enemy enemy = enemies[i];
-            List<Vector3> enemyPath = enemyPaths[enemy];
             int pathIndex = enemyPathIndex[enemy];
+            List<Vector3> path = enemyPaths[enemy];
 
-            if (pathIndex < enemyPath.Count - 1)
+            if (pathIndex < path.Count - 1)
             {
-                Vector3 targetPos = enemyPath[pathIndex + 1];
-                Vector3 currentPos = enemy.transform.position;
+                float3 newPos = newPositions[i];
 
-                Vector3 direction = (targetPos - currentPos).normalized;
-                enemy.transform.position += direction * moveSpeed * Time.deltaTime;
+                // enemy class에서 이동 메서드 호출
+                enemy.UpdatePosition(newPos);
 
-                if (Vector3.Distance(currentPos, targetPos) < arrivalThreshold)
+                // 도착 체크
+                Vector3 targetPos = path[pathIndex + 1];
+                if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
                 {
                     enemyPathIndex[enemy]++;
-                    Debug.Log($"Enemy reached waypoint {pathIndex + 1}");
                 }
             }
             else
             {
+                // 마지막 지점 도달
                 PoolingManager.Instance.ReturnObject(enemy.gameObject);
                 enemies.RemoveAt(i);
                 enemyPaths.Remove(enemy);
                 enemyPathIndex.Remove(enemy);
             }
         }
+
+        // Native 배열 정리
+        currentPositions.Dispose();
+        targetPositions.Dispose();
+        newPositions.Dispose();
     }
 
     public void UpdateEnemiesPath()
@@ -156,6 +209,10 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
+
+
+    #region 길찾기 Debug
+
 
     private void ShowDebug()
     {
@@ -175,34 +232,27 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-    //디버깅용 : Scene에서 노란색으로 이동경로 보여주기
-    private void OnGUI()
+    #endregion
+
+}
+
+
+public struct MoveEnemiesJob : IJobParallelFor
+{
+    [ReadOnly] public NativeArray<float3> CurrentPositions;
+    [ReadOnly] public NativeArray<float3> TargetPositions;
+    public NativeArray<float3> NewPositions;
+    public float DeltaTime;
+    public float MoveSpeed;
+
+    public void Execute(int index)
     {
-        if (!showDebugPath) return;
+        float3 currentPos = CurrentPositions[index];
+        float3 targetPos = TargetPositions[index];
 
-        GUILayout.BeginArea(new Rect(10, 10, 300, 500));
-        GUILayout.Label($"Active Enemies: {enemies.Count}");
+        float3 direction = math.normalize(targetPos - currentPos);
+        float3 newPosition = currentPos + direction * DeltaTime * MoveSpeed;
 
-        if (enemies.Count > 0)
-        {
-            foreach (var enemy in enemies)
-            {
-                GUILayout.Label($"Enemy Path Points: {enemyPaths[enemy].Count}");
-                GUILayout.Label($"Enemy at path index: {enemyPathIndex[enemy]}");
-
-                // 현재 위치와 목표 위치도 표시
-                if (enemyPathIndex[enemy] < enemyPaths[enemy].Count - 1)
-                {
-                    Vector3 currentPos = enemy.transform.position;
-                    Vector3 targetPos = enemyPaths[enemy][enemyPathIndex[enemy] + 1];
-                    GUILayout.Label($"Current Pos: {currentPos:F1}");
-                    GUILayout.Label($"Target Pos: {targetPos:F1}");
-                    GUILayout.Label($"Distance: {Vector3.Distance(currentPos, targetPos):F2}");
-                }
-                GUILayout.Space(10);  // 각 enemy 정보 사이에 간격 추가
-            }
-        }
-
-        GUILayout.EndArea();
+        NewPositions[index] = newPosition;
     }
 }
