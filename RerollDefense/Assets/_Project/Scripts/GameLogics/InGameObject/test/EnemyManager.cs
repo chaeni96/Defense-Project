@@ -13,8 +13,7 @@ public class EnemyManager : MonoBehaviour
 
     private List<Enemy> enemies = new List<Enemy>();
     private Dictionary<Enemy, List<Vector3>> enemyPaths; // 각 enemy의 개별 경로
-    private Dictionary<Enemy, int> enemyPathIndices;     // 각 enemy의 현재 경로 인덱스
-    private List<Vector3> currentPath;
+    private Dictionary<Enemy, int> enemyPathIndex;     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
 
     //enemy spawn
 
@@ -52,7 +51,7 @@ public class EnemyManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
-        enemyPathIndices = new Dictionary<Enemy, int>();
+        enemyPathIndex = new Dictionary<Enemy, int>();
 
 
     }
@@ -60,9 +59,6 @@ public class EnemyManager : MonoBehaviour
     {
         if (!isSpawning)
         {
-            currentPath = PathFindingManager.Instance.GetCurrentPath();
-            Debug.Log($"Starting enemy spawn with path count: {currentPath.Count}");
-
             isSpawning = true;
             spawnCoroutine = StartCoroutine(SpawnRoutine());
         }
@@ -103,7 +99,7 @@ public class EnemyManager : MonoBehaviour
             // 초기 경로 설정
             List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
             enemyPaths[enemy] = initialPath;
-            enemyPathIndices[enemy] = 0;
+            enemyPathIndex[enemy] = 0;
 
             Debug.Log($"Spawned enemy at position: {startPos}");
         }
@@ -115,6 +111,54 @@ public class EnemyManager : MonoBehaviour
         if (enemies.Count == 0) return;
 
 
+        ShowDebug();
+
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            Enemy enemy = enemies[i];
+            List<Vector3> enemyPath = enemyPaths[enemy];
+            int pathIndex = enemyPathIndex[enemy];
+
+            if (pathIndex < enemyPath.Count - 1)
+            {
+                Vector3 targetPos = enemyPath[pathIndex + 1];
+                Vector3 currentPos = enemy.transform.position;
+
+                Vector3 direction = (targetPos - currentPos).normalized;
+                enemy.transform.position += direction * moveSpeed * Time.deltaTime;
+
+                if (Vector3.Distance(currentPos, targetPos) < arrivalThreshold)
+                {
+                    enemyPathIndex[enemy]++;
+                    Debug.Log($"Enemy reached waypoint {pathIndex + 1}");
+                }
+            }
+            else
+            {
+                PoolingManager.Instance.ReturnObject(enemy.gameObject);
+                enemies.RemoveAt(i);
+                enemyPaths.Remove(enemy);
+                enemyPathIndex.Remove(enemy);
+            }
+        }
+    }
+
+    public void UpdateEnemiesPath()
+    {
+        // 각 enemy마다 현재 위치에서 새로운 경로 계산
+        foreach (var enemy in enemies)
+        {
+            List<Vector3> newPath = PathFindingManager.Instance.FindPathFromPosition(enemy.transform.position);
+            if (newPath.Count > 0)
+            {
+                enemyPaths[enemy] = newPath;
+                enemyPathIndex[enemy] = 0;
+            }
+        }
+    }
+
+    private void ShowDebug()
+    {
         // 디버그 경로 표시
         if (showDebugPath)
         {
@@ -130,51 +174,8 @@ public class EnemyManager : MonoBehaviour
                 }
             }
         }
-
-        for (int i = enemies.Count - 1; i >= 0; i--)
-        {
-            Enemy enemy = enemies[i];
-            List<Vector3> enemyPath = enemyPaths[enemy];
-            int pathIndex = enemyPathIndices[enemy];
-
-            if (pathIndex < enemyPath.Count - 1)
-            {
-                Vector3 targetPos = enemyPath[pathIndex + 1];
-                Vector3 currentPos = enemy.transform.position;
-
-                Vector3 direction = (targetPos - currentPos).normalized;
-                enemy.transform.position += direction * moveSpeed * Time.deltaTime;
-
-                if (Vector3.Distance(currentPos, targetPos) < arrivalThreshold)
-                {
-                    enemyPathIndices[enemy]++;
-                    Debug.Log($"Enemy reached waypoint {pathIndex + 1}");
-                }
-            }
-            else
-            {
-                PoolingManager.Instance.ReturnObject(enemy.gameObject);
-                enemies.RemoveAt(i);
-                enemyPaths.Remove(enemy);
-                enemyPathIndices.Remove(enemy);
-            }
-        }
     }
-
-    public void UpdateEnemiesPath()
-    {
-        // 각 enemy마다 현재 위치에서 새로운 경로 계산
-        foreach (var enemy in enemies)
-        {
-            List<Vector3> newPath = PathFindingManager.Instance.FindPathFromPosition(enemy.transform.position);
-            if (newPath.Count > 0)
-            {
-                enemyPaths[enemy] = newPath;
-                enemyPathIndices[enemy] = 0;
-            }
-        }
-    }
-
+    //디버깅용 : Scene에서 노란색으로 이동경로 보여주기
     private void OnGUI()
     {
         if (!showDebugPath) return;
@@ -187,13 +188,13 @@ public class EnemyManager : MonoBehaviour
             foreach (var enemy in enemies)
             {
                 GUILayout.Label($"Enemy Path Points: {enemyPaths[enemy].Count}");
-                GUILayout.Label($"Enemy at path index: {enemyPathIndices[enemy]}");
+                GUILayout.Label($"Enemy at path index: {enemyPathIndex[enemy]}");
 
                 // 현재 위치와 목표 위치도 표시
-                if (enemyPathIndices[enemy] < enemyPaths[enemy].Count - 1)
+                if (enemyPathIndex[enemy] < enemyPaths[enemy].Count - 1)
                 {
                     Vector3 currentPos = enemy.transform.position;
-                    Vector3 targetPos = enemyPaths[enemy][enemyPathIndices[enemy] + 1];
+                    Vector3 targetPos = enemyPaths[enemy][enemyPathIndex[enemy] + 1];
                     GUILayout.Label($"Current Pos: {currentPos:F1}");
                     GUILayout.Label($"Target Pos: {targetPos:F1}");
                     GUILayout.Label($"Distance: {Vector3.Distance(currentPos, targetPos):F2}");

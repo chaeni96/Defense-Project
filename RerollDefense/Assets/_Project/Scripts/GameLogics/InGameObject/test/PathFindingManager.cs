@@ -9,8 +9,7 @@ public class PathFindingManager : MonoBehaviour
     [SerializeField] private Vector3Int startTilePosition;
     [SerializeField] private Vector3Int endTilePosition;
 
-    private List<Vector3> currentPath = new List<Vector3>();
-    private List<Vector3> tempPath = new List<Vector3>();
+    private List<Vector3> tempPath = new List<Vector3>(); //장애물 배치 가능 여부를 체크할때 임시로 사용하는 경로
 
     public bool allowDiagonal = true; // 대각선 이동 허용 여부
     public bool dontCrossCorner = true; // 코너 통과 금지 여부
@@ -45,11 +44,11 @@ public class PathFindingManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-
-        currentPath = FindPath(startTilePosition, endTilePosition);
     }
 
-
+    //장애물 배치 여부 코드
+    //시작타일과 끝타일 겹치면안됨
+    //몬스터가 갈수있는 모든 길을 막으면 안됨
     public bool CanPlaceObstacle(List<Vector3Int> relativeTiles)
     {
         // 시작, 끝 타일과 겹치는지 확인
@@ -95,16 +94,10 @@ public class PathFindingManager : MonoBehaviour
         return tempPath.Count > 0;
     }
 
-
+    //시작 지점 가져오기
     public Vector3 GetStartPosition()
     {
         return TileMapManager.Instance.tileMap.GetCellCenterWorld(startTilePosition);
-    }
-
-
-    public List<Vector3> GetCurrentPath()
-    {
-        return currentPath;
     }
 
     //현재의 position에서 endTile까지 최단거리 구하기
