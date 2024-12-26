@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public Vector3Int spawnTilePosition; // 타일맵 상의 스폰 위치
     public Vector3Int goalTilePosition; // 타일맵 상의 목표 위치
 
-    public float spawnInterval = 100.0f; // 적 생성 간격
+    public float spawnInterval = 20.0f; // 적 생성 간격
     private bool spawning = true;
 
     private void Start()

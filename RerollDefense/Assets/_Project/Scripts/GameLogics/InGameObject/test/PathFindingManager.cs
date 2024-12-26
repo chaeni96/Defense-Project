@@ -49,6 +49,7 @@ public class PathFindingManager : MonoBehaviour
         currentPath = FindPath(startTilePosition, endTilePosition);
     }
 
+
     public bool CanPlaceObstacle(List<Vector3Int> relativeTiles)
     {
         // 시작, 끝 타일과 겹치는지 확인
@@ -98,7 +99,16 @@ public class PathFindingManager : MonoBehaviour
     public void UpdateCurrentPath()
     {
         currentPath = tempPath;
+
         EnemyManager.Instance.UpdateEnemiesPath(currentPath);
+        Debug.Log($"{currentPath}");
+    }
+
+    public List<Vector3> FindPathFromPosition(Vector3 worldPosition)
+    {
+        // 월드 좌표를 타일 좌표로 변환
+        Vector3Int startPos = TileMapManager.Instance.tileMap.WorldToCell(worldPosition);
+        return FindPath(startPos, endTilePosition);
     }
 
     public List<Vector3> GetCurrentPath()

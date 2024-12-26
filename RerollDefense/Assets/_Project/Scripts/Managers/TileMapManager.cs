@@ -60,6 +60,20 @@ public class TileMapManager : MonoBehaviour
         SetAllTilesColor(new Color(1, 1, 1, 0));
     }
 
+    public void SetTileData(Vector3Int position, bool isAvailable, string uniqueID = "")
+    {
+        if (tileMapDatas.TryGetValue(position, out TileData tileData))
+        {
+            tileData.isAvailable = isAvailable;
+            tileData.tileUniqueID = uniqueID;
+            Debug.Log($"Tile at {position} updated: isAvailable = {isAvailable}, uniqueID = {uniqueID}");
+        }
+        else
+        {
+            Debug.LogWarning($"Tile at {position} does not exist in TileMapManager.");
+        }
+    }
+
     // 특정 위치의 타일 데이터 가져오기
     public TileData GetTileData(Vector3Int position)
     {

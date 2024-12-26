@@ -20,11 +20,12 @@ public class SceneStarter : MonoBehaviour
             // 모든 리소스 로드가 완료되면
             if (currentCount == totalCount)
             {
-                Debug.Log("All resources loaded, initializing pools...");
                 PoolingManager.Instance.InitializeAllPools();
-                EnemyManager.Instance.SpawnInitialEnemies();
+                EnemyManager.Instance.StartSpawning();
+                
             }
         });
-    }
 
+        
+    }
 }
