@@ -45,19 +45,6 @@ public class DemoTileMapManager : MonoBehaviour
         setTileMap();
     }
 
-    //시작타일 끝타일 좌표값 알아내기위한 테스트용 업데이트
-    //void Update()
-    //{
-    //    // 마우스 클릭 시 타일맵 좌표 출력
-    //    if (Input.GetMouseButtonDown(0)) // 좌클릭
-    //    {
-    //        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //        Vector3Int tilePosition = tileMap.WorldToCell(mouseWorldPosition);
-
-    //        Debug.Log($"Tile Position: {tilePosition}");
-    //    }
-    //}
-
 
     // 타일맵 초기화
     public void setTileMap()

@@ -57,10 +57,12 @@ public class EnemyManager : MonoBehaviour
 
     public void SpawnInitialEnemies()
     {
+        List<Vector3> currentPath = PathFindingManager.Instance.GetCurrentPath();
+
         for (int i = 0; i < enemyCount; i++)
         {
-            float3 startPos = new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0);
-            float3 endPos = new float3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10f), 0);
+            float3 startPos = new float3(currentPath[0].x, currentPath[0].y, currentPath[0].z);
+            float3 endPos = new float3(currentPath[1].x, currentPath[1].y, currentPath[1].z);
 
             GameObject enemyObj = PoolingManager.Instance.GetObject(enemyPoolId, new Vector3(startPos.x, startPos.y, startPos.z));
             if (enemyObj != null)
@@ -87,7 +89,6 @@ public class EnemyManager : MonoBehaviour
         var tempStartPos = new NativeArray<float3>(currentCount, Allocator.TempJob);
         var tempEndPos = new NativeArray<float3>(currentCount, Allocator.TempJob);
 
-        // List 데이터를 NativeArray로 복사
         for (int i = 0; i < currentCount; i++)
         {
             tempCurrentPos[i] = currentPositions[i];
@@ -101,29 +102,40 @@ public class EnemyManager : MonoBehaviour
             EndPositions = tempEndPos,
             CurrentPositions = tempCurrentPos,
             DeltaTime = Time.deltaTime,
-            MoveSpeed = moveSpeed
+            MoveSpeed = 2f // 이동 속도 조절 가능
         };
 
-        // Job 실행
         JobHandle jobHandle = moveJob.Schedule(currentCount, 64);
         jobHandle.Complete();
 
-        // 결과를 리스트에 다시 복사하고 도착 검사
         for (int i = currentCount - 1; i >= 0; i--)
         {
             currentPositions[i] = tempCurrentPos[i];
             float3 currentPos = currentPositions[i];
             float3 targetPos = endPositions[i];
 
-            if (math.distance(currentPos, targetPos) < arrivalThreshold)
+            if (math.distance(currentPos, targetPos) < 0.1f)
             {
-                // Enemy 제거
-                PoolingManager.Instance.ReturnObject(enemies[i].gameObject);
+                List<Vector3> currentPath = PathFindingManager.Instance.GetCurrentPath();
+                int currentPathIndex = GetCurrentPathIndex(new Vector3(currentPos.x, currentPos.y, currentPos.z), currentPath);
 
-                enemies.RemoveAt(i);
-                startPositions.RemoveAt(i);
-                endPositions.RemoveAt(i);
-                currentPositions.RemoveAt(i);
+                if (currentPathIndex < currentPath.Count - 1)
+                {
+                    endPositions[i] = new float3(
+                        currentPath[currentPathIndex + 1].x,
+                        currentPath[currentPathIndex + 1].y,
+                        currentPath[currentPathIndex + 1].z
+                    );
+                }
+                else
+                {
+                    PoolingManager.Instance.ReturnObject(enemies[i].gameObject);
+
+                    enemies.RemoveAt(i);
+                    startPositions.RemoveAt(i);
+                    endPositions.RemoveAt(i);
+                    currentPositions.RemoveAt(i);
+                }
             }
             else
             {
@@ -131,12 +143,61 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        // 임시 NativeArray 해제
         tempCurrentPos.Dispose();
         tempStartPos.Dispose();
         tempEndPos.Dispose();
     }
+
+    // 현재 경로에서 가장 가까운 지점의 인덱스를 찾는 메서드 추가
+    private int GetCurrentPathIndex(Vector3 currentPos, List<Vector3> path)
+    {
+        float minDistance = float.MaxValue;
+        int closestIndex = 0;
+
+        for (int i = 0; i < path.Count; i++)
+        {
+            float distance = Vector3.Distance(currentPos, path[i]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    public void UpdateEnemiesPath(List<Vector3> newPath)
+    {
+        // 각 적의 현재 위치에서 가장 가까운 경로 지점 찾기
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            // 현재 위치에서 가장 가까운 경로 지점의 인덱스 찾기
+            int closestIndex = 0;
+            float minDistance = float.MaxValue;
+            for (int j = 0; j < newPath.Count; j++)
+            {
+                float distance = Vector3.Distance(enemies[i].transform.position, newPath[j]);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestIndex = j;
+                }
+            }
+
+            // 현재 위치 근처의 경로 지점부터 이동 시작
+            int nextIndex = Mathf.Min(closestIndex + 1, newPath.Count - 1);
+            endPositions[i] = new float3(
+                newPath[nextIndex].x,
+                newPath[nextIndex].y,
+                newPath[nextIndex].z
+            );
+        }
+    }
+
 }
+
+
 
 public struct MoveEnemiesJob : IJobParallelFor
 {
@@ -151,6 +212,7 @@ public struct MoveEnemiesJob : IJobParallelFor
         float3 currentPos = CurrentPositions[index];
         float3 targetPos = EndPositions[index];
 
+       // 직선 방향으로 고정된 속도로 이동
         float3 direction = math.normalize(targetPos - currentPos);
         float3 newPosition = currentPos + direction * DeltaTime * MoveSpeed;
 
