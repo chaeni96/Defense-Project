@@ -20,7 +20,7 @@ public class EnemyController : DamageableObject
     public void SetEnemyPath(Vector3Int startTilePosition, Vector3Int goalTilePosition)
     {
         // 경로 탐색 실행
-        path = PathfindingManager.Instance.FindPath(startTilePosition, goalTilePosition);
+        path = DemoPathfindingManager.Instance.FindPath(startTilePosition, goalTilePosition);
         HP = maxHP;
 
         if (path == null || path.Count == 0)
@@ -72,12 +72,12 @@ public class EnemyController : DamageableObject
         // 현재 경로가 막혔는지 확인
         if (currentPathIndex < path.Count)
         {
-            Vector3Int currentTile = TileMapManager.Instance.tileMap.WorldToCell(myBody.position);
-            Vector3Int nextTile = TileMapManager.Instance.tileMap.WorldToCell(path[currentPathIndex]);
+            Vector3Int currentTile = DemoTileMapManager.Instance.tileMap.WorldToCell(myBody.position);
+            Vector3Int nextTile = DemoTileMapManager.Instance.tileMap.WorldToCell(path[currentPathIndex]);
 
             // 현재 또는 다음 타일이 유효하지 않으면 경로 재탐색 필요
-            if (!(TileMapManager.Instance.GetTileData(currentTile)?.isAvailable ?? false) ||
-     !(TileMapManager.Instance.GetTileData(nextTile)?.isAvailable ?? false))
+            if (!(DemoTileMapManager.Instance.GetTileData(currentTile)?.isAvailable ?? false) ||
+     !(DemoTileMapManager.Instance.GetTileData(nextTile)?.isAvailable ?? false))
             {
                 return true;
             }
@@ -88,11 +88,11 @@ public class EnemyController : DamageableObject
 
     private void RecalculatePath()
     {
-        Vector3Int currentTile = TileMapManager.Instance.tileMap.WorldToCell(myBody.position);
-        Vector3Int goalTile = TileMapManager.Instance.tileMap.WorldToCell(path[path.Count - 1]);
+        Vector3Int currentTile = DemoTileMapManager.Instance.tileMap.WorldToCell(myBody.position);
+        Vector3Int goalTile = DemoTileMapManager.Instance.tileMap.WorldToCell(path[path.Count - 1]);
 
         // 새로운 경로 계산
-        List<Vector3> newPath = PathfindingManager.Instance.FindPath(currentTile, goalTile);
+        List<Vector3> newPath = DemoPathfindingManager.Instance.FindPath(currentTile, goalTile);
 
         if (newPath != null && newPath.Count > 0)
         {

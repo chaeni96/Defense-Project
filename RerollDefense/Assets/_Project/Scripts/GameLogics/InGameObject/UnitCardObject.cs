@@ -40,7 +40,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         activeDragObject = ResourceManager.Instance.Instantiate("DragObject.prefab");
 
         // DragObject √ ±‚»≠
-        DragObject dragObject = activeDragObject.GetComponent<DragObject>();
+        DemoDragObject dragObject = activeDragObject.GetComponent<DemoDragObject>();
         if (dragObject != null)
         {
             dragObject.Initialize();
@@ -58,7 +58,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        DragObject dragObject = activeDragObject.GetComponent<DragObject>();
+        DemoDragObject dragObject = activeDragObject.GetComponent<DemoDragObject>();
         if (dragObject != null)
         {
             Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
@@ -73,7 +73,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         if (activeDragObject != null)
         {
-            DragObject dragScript = activeDragObject.GetComponent<DragObject>();
+            DemoDragObject dragScript = activeDragObject.GetComponent<DemoDragObject>();
 
             dragScript.TESTOnPointerUp();
 

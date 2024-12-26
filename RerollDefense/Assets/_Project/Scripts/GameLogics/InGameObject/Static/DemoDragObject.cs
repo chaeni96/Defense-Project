@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System;
 
-public class DragObject : StaticObject
+public class DemoDragObject : StaticObject
 {
     public bool isPlaced { get; private set; } = false;
 
@@ -80,7 +80,7 @@ public class DragObject : StaticObject
     {
         InitializeTileShape();
 
-        TileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0.1f));
+        DemoTileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0.1f));
     }
 
     public void OnPointerDrag(Vector3 pointerPosition)
@@ -88,10 +88,10 @@ public class DragObject : StaticObject
        
 
         // 기준 타일(클릭한 위치)의 타일 좌표 계산
-        Vector3Int baseTilePosition = TileMapManager.Instance.tileMap.WorldToCell(pointerPosition);
+        Vector3Int baseTilePosition = DemoTileMapManager.Instance.tileMap.WorldToCell(pointerPosition);
 
         // 타일의 중심 기준으로 위치 조정
-        Vector3 centerPosition = TileMapManager.Instance.tileMap.GetCellCenterWorld(baseTilePosition);
+        Vector3 centerPosition = DemoTileMapManager.Instance.tileMap.GetCellCenterWorld(baseTilePosition);
         transform.position = centerPosition;
 
         // 드래그 중 투명도 조정
@@ -102,17 +102,17 @@ public class DragObject : StaticObject
         // 타일 색상 갱신
         if (baseTilePosition != previousTilePosition)
         {
-            TileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0.1f)); // 이전 타일 색상 초기화
+            DemoTileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0.1f)); // 이전 타일 색상 초기화
 
             // 각 타일별 배치 가능 여부에 따라 색상 설정
             foreach (var relativeTile in relativeTiles)
             {
                 Vector3Int checkPosition = baseTilePosition + relativeTile; // 상대 위치 계산
-                TileData tileData = TileMapManager.Instance.GetTileData(checkPosition);
+                TileData tileData = DemoTileMapManager.Instance.GetTileData(checkPosition);
 
                 if (tileData == null || !tileData.isAvailable) // 타일맵 외부이거나 배치 불가능
                 {
-                    TileMapManager.Instance.SetTileColors(
+                    DemoTileMapManager.Instance.SetTileColors(
                         checkPosition,
                         new List<Vector3Int> { Vector3Int.zero },
                         new Color(1, 0, 0, 0.5f) // 빨간색
@@ -120,7 +120,7 @@ public class DragObject : StaticObject
                 }
                 else // 타일 배치 가능
                 {
-                    TileMapManager.Instance.SetTileColors(
+                    DemoTileMapManager.Instance.SetTileColors(
                         checkPosition,
                         new List<Vector3Int> { Vector3Int.zero },
                         new Color(0, 1, 0, 0.5f) // 초록색
@@ -135,15 +135,15 @@ public class DragObject : StaticObject
 
     public void TESTOnPointerUp()
     {
-        TileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0)); // 타일 색 초기화
+        DemoTileMapManager.Instance.ResetTileColors(new Color(1, 1, 1, 0)); // 타일 색 초기화
 
-        if (TileMapManager.Instance.AreTilesAvailable(previousTilePosition, relativeTiles))
+        if (DemoTileMapManager.Instance.AreTilesAvailable(previousTilePosition, relativeTiles))
         {
             // 배치 확정
             string tileUniqueID = Guid.NewGuid().ToString();    
 
-            TileMapManager.Instance.SetTilesUnavailable(previousTilePosition, relativeTiles, tileUniqueID);
-            transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previousTilePosition);
+            DemoTileMapManager.Instance.SetTilesUnavailable(previousTilePosition, relativeTiles, tileUniqueID);
+            transform.position = DemoTileMapManager.Instance.tileMap.GetCellCenterWorld(previousTilePosition);
 
             //타워 생성코드
             CreatePlacedObject(tileUniqueID);
@@ -201,13 +201,13 @@ public class DragObject : StaticObject
 
             if (placedObject != null)
             {
-                placedObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePosition);
+                placedObject.transform.position = DemoTileMapManager.Instance.tileMap.GetCellCenterWorld(tilePosition);
                 placedObject.RegistereTileID(uniqueID);
                 placedObject.InitializeUnitStat(tileShapeName, i);
             }
 
             // 타일맵에 배치된 오브젝트 등록
-            TileMapManager.Instance.SetTileUnavailable(tilePosition);
+            DemoTileMapManager.Instance.SetTileUnavailable(tilePosition);
         }
 
         // 드래그 오브젝트 제거

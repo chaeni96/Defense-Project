@@ -23,12 +23,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a8cbd52c8c6540948820bf3e259b5318
-    m_Address: EnemyObject.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17931eab2a9646449fce38cec7fbca4
     m_Address: DragObject.prefab
     m_ReadOnly: 0

@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TileMapManager : MonoBehaviour
+public class DemoTileMapManager : MonoBehaviour
 {
-    public static TileMapManager _instance;
+    public static DemoTileMapManager _instance;
 
     public Tilemap tileMap;
 
     private Dictionary<Vector3Int, TileData> tileDataMap = new Dictionary<Vector3Int, TileData>();
 
-    public static TileMapManager Instance
+    public static DemoTileMapManager Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<TileMapManager>();
+                _instance = FindObjectOfType<DemoTileMapManager>();
 
                 if (_instance == null)
                 {
                     GameObject singleton = new GameObject("TileMapManager");
-                    _instance = singleton.AddComponent<TileMapManager>();
+                    _instance = singleton.AddComponent<DemoTileMapManager>();
                     DontDestroyOnLoad(singleton);
                 }
             }
