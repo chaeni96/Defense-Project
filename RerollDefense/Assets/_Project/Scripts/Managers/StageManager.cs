@@ -52,6 +52,9 @@ public class StageManager : MonoBehaviour
 
         currentStage = stageData;
         currentWaveIndex = 0;
+
+        //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
+        PathFindingManager.Instance.InitializePathTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
         StartNextWave();
     }
 

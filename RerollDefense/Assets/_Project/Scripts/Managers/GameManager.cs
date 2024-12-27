@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
 
     public Camera mainCamera;
 
+    public float PlayerHP { get; private set; } = 100f;
+    public float MaxHP { get; private set; } = 100f;
+
     public static GameManager Instance
     {
         get
@@ -65,6 +68,20 @@ public class GameManager : MonoBehaviour
     public void InitGameManager()
     {
         mainCamera = Camera.main; 
+    }
+
+    // HP 변경 이벤트
+    public event System.Action<float> OnHPChanged;
+
+    public void TakeDamage(float damage)
+    {
+        PlayerHP = Mathf.Max(0f, PlayerHP - damage);
+        OnHPChanged?.Invoke(PlayerHP);  // HP 변경시에만 이벤트 발생
+
+        if (PlayerHP <= 0)
+        {
+            // 게임오버 처리
+        }
     }
 
 }

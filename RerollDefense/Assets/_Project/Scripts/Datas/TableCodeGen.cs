@@ -757,6 +757,8 @@ public partial class D_StageData : BGEntity
 		public const string StageNumber = "StageNumber";
 		public const string WaveDelayTime = "WaveDelayTime";
 		public const string WaveData = "WaveData";
+		public const string StartTilePos = "StartTilePos";
+		public const string EndTilePos = "EndTilePos";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4767129084614671086UL,3391790421238320565UL), () => _metaDefault = null));
@@ -782,6 +784,16 @@ public partial class D_StageData : BGEntity
 		get => BGCodeGenUtils.MultipleRelationGet<D_WaveData>(_f_WaveData, Index);
 		set => BGCodeGenUtils.MultipleRelationSet<D_WaveData>(_f_WaveData, Index, value);
 	}
+	public UnityEngine.Vector2 f_StartTilePos
+	{
+		get => _f_StartTilePos[Index];
+		set => _f_StartTilePos[Index] = value;
+	}
+	public UnityEngine.Vector2 f_EndTilePos
+	{
+		get => _f_EndTilePos[Index];
+		set => _f_EndTilePos[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5107560990730887598UL, 14806839362490910632UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_StageNumber;
@@ -790,6 +802,10 @@ public partial class D_StageData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_WaveDelayTime => _ufle12jhs77_f_WaveDelayTime ?? (_ufle12jhs77_f_WaveDelayTime = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5383411614700704003UL, 1149947372817794453UL), () => _ufle12jhs77_f_WaveDelayTime = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationMultiple _ufle12jhs77_f_WaveData;
 	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_WaveData => _ufle12jhs77_f_WaveData ?? (_ufle12jhs77_f_WaveData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(5213647395619301713UL, 7900555549665711264UL), () => _ufle12jhs77_f_WaveData = null));
+	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_StartTilePos;
+	public static BansheeGz.BGDatabase.BGFieldVector2 _f_StartTilePos => _ufle12jhs77_f_StartTilePos ?? (_ufle12jhs77_f_StartTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5046214170933828315UL, 3336255239437776575UL), () => _ufle12jhs77_f_StartTilePos = null));
+	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_EndTilePos;
+	public static BansheeGz.BGDatabase.BGFieldVector2 _f_EndTilePos => _ufle12jhs77_f_EndTilePos ?? (_ufle12jhs77_f_EndTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(4852896796202598556UL, 14737165945497110928UL), () => _ufle12jhs77_f_EndTilePos = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_BoostDeck.Factory _factory2_PFS = new D_BoostDeck.Factory();

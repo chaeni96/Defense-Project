@@ -44,7 +44,21 @@ public class PathFindingManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+
     }
+
+    //endTile에 playerCamp 설치
+    public void InitializePathTiles(Vector2 startTile, Vector2 endTile)
+    {
+
+        startTilePosition = new Vector3Int(Mathf.FloorToInt(startTile.x), Mathf.FloorToInt(startTile.y), 0);
+        endTilePosition = new Vector3Int(Mathf.FloorToInt(endTile.x), Mathf.FloorToInt(endTile.y), 0);
+
+        GameObject playerCamp = ResourceManager.Instance.Instantiate("PlayerCamp");
+
+        playerCamp.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(endTilePosition);
+    }
+
 
     //장애물 배치 여부 코드
     //시작타일과 끝타일 겹치면안됨

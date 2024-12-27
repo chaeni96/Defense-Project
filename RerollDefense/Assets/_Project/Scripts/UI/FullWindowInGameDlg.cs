@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 
@@ -15,8 +16,13 @@ public class FullWindowInGameDlg : UIBase
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
     public GameObject fourthCardDeck;
-    
-    
+
+    [SerializeField] private Slider hpBar;
+    [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
+    private float targetHPRatio;
+    private Coroutine hpUpdateCoroutine;
+
+
     // UnitCardObject 프리팹
     public GameObject unitCardPrefab;
 
@@ -31,10 +37,27 @@ public class FullWindowInGameDlg : UIBase
     public override void InitializeUI()
     {
         base.InitializeUI();
+
+
     }
 
     void Start()
     {
+        //test용
+        initUI();
+    }
+
+    //TODO : UIManager 만들고 InitializeUI에 넣어야할 코드
+    public void initUI()
+    {
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnHPChanged += OnHPChanged;
+            hpBar.value = GameManager.Instance.PlayerHP / GameManager.Instance.MaxHP;
+            targetHPRatio = hpBar.value;
+        }
+
         cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, fourthCardDeck };
         StartCoroutine(CheckAndFillCardDecks());
     }
@@ -183,9 +206,39 @@ public class FullWindowInGameDlg : UIBase
         }
     }
 
+
+    private void OnHPChanged(float currentHp)
+    {
+        targetHPRatio = currentHp / GameManager.Instance.MaxHP;
+
+        if (hpUpdateCoroutine != null)
+        {
+            StopCoroutine(hpUpdateCoroutine);
+        }
+        hpUpdateCoroutine = StartCoroutine(UpdateHPBarSmoothly());
+    }
+
+    private IEnumerator UpdateHPBarSmoothly()
+    {
+        while (Mathf.Abs(hpBar.value - targetHPRatio) > 0.01f)
+        {
+            hpBar.value = Mathf.Lerp(hpBar.value, targetHPRatio, Time.deltaTime * hpUpdateSpeed);
+            yield return null;
+        }
+        hpBar.value = targetHPRatio;
+    }
+
+
+
     private void OnDestroy()
     {
         isChecking = false;
+
+        //구독해제
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnHPChanged -= OnHPChanged;
+        }
     }
 
 

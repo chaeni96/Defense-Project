@@ -13,7 +13,7 @@ public class DamageableObject : BasicObject
 
     public float maxHP = 10;
     public float HP;
-
+    public float attackPower;
 
 
     public override void Initialize()

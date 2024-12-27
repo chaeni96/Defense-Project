@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class Enemy : DamageableObject
 {
-    public float3 StartPosition { get; set; }
-    public float3 EndPosition { get; set; }
-    public float Speed { get; set; }
 
-    public string objectName;
+    public float moveSpeed;
 
     public override void Initialize()
     {
@@ -21,8 +18,11 @@ public class Enemy : DamageableObject
         base.Update();
     }
 
-    public void UpdatePosition(float3 newPosition)
+    public void OnReachEndTile()
     {
-        transform.position = new Vector3(newPosition.x, newPosition.y, newPosition.z);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.TakeDamage(attackPower);
+        }
     }
 }
