@@ -62,6 +62,7 @@ public class PathFindingManager : MonoBehaviour
         // 임시로 타일들을 점유 상태로 설정
         Dictionary<Vector3Int, TileData> originalTileData = new Dictionary<Vector3Int, TileData>();
 
+        //설치하려는 타일들의 현재 상태 저장해둬야하고 임시로 해당 타일들 점유됨 상태로 바꾸기
         foreach (var relativeTile in relativeTiles)
         {
             Vector3Int checkPos = relativeTile;
@@ -77,8 +78,34 @@ public class PathFindingManager : MonoBehaviour
             }
         }
 
-        // 경로 찾기 시도
+        bool canPlace = true;
+
+        // 시작 지점에서 끝 지점까지의 경로 체크
         tempPath = FindPath(startTilePosition, endTilePosition);
+       
+        if (tempPath.Count == 0)
+        {
+            canPlace = false;
+        }
+
+        // 현재 존재하는 모든 에너미들의 위치에서 끝 지점까지의 경로 체크
+        if (canPlace && EnemyManager.Instance != null)
+        {
+            var enemies = EnemyManager.Instance.GetEnemies();
+            foreach (var enemy in enemies)
+            {
+                if (enemy != null)
+                {
+                    Vector3Int enemyTilePos = TileMapManager.Instance.tileMap.WorldToCell(enemy.transform.position);
+                    tempPath = FindPath(enemyTilePos, endTilePosition);
+                    if (tempPath.Count == 0)
+                    {
+                        canPlace = false;
+                        break;
+                    }
+                }
+            }
+        }
 
         // 타일 상태 복원
         foreach (var kvp in originalTileData)
@@ -91,7 +118,7 @@ public class PathFindingManager : MonoBehaviour
             }
         }
 
-        return tempPath.Count > 0;
+        return canPlace;
     }
 
     //시작 지점 가져오기

@@ -14,13 +14,11 @@ public class DamageableObject : BasicObject
     public float maxHP = 10;
     public float HP;
 
-    public Collider2D hitCollider;
 
 
     public override void Initialize()
     {
         base.Initialize();
-        myBody.constraints = RigidbodyConstraints2D.FreezeRotation;
         HP = maxHP;
         UpdateHpText();
     }

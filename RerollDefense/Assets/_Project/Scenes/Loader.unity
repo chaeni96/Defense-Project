@@ -1303,8 +1303,6 @@ MonoBehaviour:
   moveSpeed: 0.2
   arrivalDist: 0.1
   showDebugPath: 1
-  spawnInterval: 2
-  enemiesPerWave: 5
 --- !u!4 &662647809
 Transform:
   m_ObjectHideFlags: 0

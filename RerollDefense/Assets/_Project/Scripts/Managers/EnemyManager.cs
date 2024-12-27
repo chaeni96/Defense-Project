@@ -11,14 +11,14 @@ public class EnemyManager : MonoBehaviour
 
     //test용 변수
     [SerializeField] private string enemyPoolName;
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float arrivalDist = 0.1f;
     [SerializeField] private bool showDebugPath = true;
 
     //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
-    private Dictionary<Enemy, List<Vector3>> enemyPaths; // 각 enemy의 개별 경로
-    private Dictionary<Enemy, int> enemyPathIndex;     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
+    private Dictionary<Enemy, List<Vector3>> enemyPaths = new Dictionary<Enemy, List<Vector3>>(); // 각 enemy의 개별 경로
+    private Dictionary<Enemy, int> enemyPathIndex = new Dictionary<Enemy, int>();     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
 
     //job System 변수
     private NativeArray<float3> currentPositions;
@@ -58,6 +58,10 @@ public class EnemyManager : MonoBehaviour
 
 
     }
+
+    //모든 enemy 가져오기
+    public List<Enemy> GetEnemies() => enemies;
+
 
     public void SpawnEnemy(string enemyName)
     {
@@ -173,6 +177,28 @@ public class EnemyManager : MonoBehaviour
                 enemyPathIndex[enemy] = 0;
             }
         }
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        CleanUp();
+    }
+
+    private void CleanUp()
+    {
+        if (currentPositions.IsCreated) currentPositions.Dispose();
+        if (targetPositions.IsCreated) targetPositions.Dispose();
+        if (newPositions.IsCreated) newPositions.Dispose();
+
+        enemyPaths.Clear();
+        enemyPathIndex.Clear();
+        enemies.Clear();
+    }
+
+    private void OnDisable()
+    {
+        CleanUp();
     }
 
 

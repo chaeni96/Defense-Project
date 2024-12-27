@@ -183,13 +183,14 @@ public class DragObject : StaticObject
             GameObject placedObjectInstance = PoolingManager.Instance.GetObject("UnitBlock", TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
 
 
-            PlacedObject placedObject = placedObjectInstance.GetComponent<PlacedObject>();
+            UnitController unitObject = placedObjectInstance.GetComponent<UnitController>();
 
-            if (placedObject != null)
+            if (unitObject != null)
             {
-                placedObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(position);
-                placedObject.RegistereTileID(uniqueID);
-                placedObject.InitializeUnitStat(tileShapeName, relativeTiles.IndexOf(position - previousTilePosition));
+                unitObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(position);
+                unitObject.RegistereTileID(uniqueID);
+                unitObject.InitializeUnitStat(tileShapeName, relativeTiles.IndexOf(position - previousTilePosition));
+                UnitManager.Instance.RegisterUnit(unitObject);
             }
         }
         Destroy(gameObject);

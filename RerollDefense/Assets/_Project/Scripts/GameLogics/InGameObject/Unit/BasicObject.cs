@@ -9,9 +9,6 @@ public class BasicObject : MonoBehaviour
 
     public State currentState;
 
-    public Rigidbody2D myBody;
-
-
     //TODO : 어드레서블로 불러와야됨, 수정
     [HideInInspector]
     public string prefabPath;
@@ -26,12 +23,10 @@ public class BasicObject : MonoBehaviour
 
     public virtual void Initialize()
     {
-        myBody = GetComponent<Rigidbody2D>();
     }
 
     public virtual void Update()
     {
-        currentState?.UpdateState(this);
     }
 
     public void ChangeState<T>(T state) where T : State

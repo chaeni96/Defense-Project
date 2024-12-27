@@ -25,7 +25,7 @@ public class TheProjectile : MonoBehaviour
         damage = unit.attack;
         targetLayer = unit.targetLayer;
 
-        direction = (target.myBody.position - unit.myBody.position).normalized;
+        direction = (target.transform.position - unit.transform.position).normalized;
         myBody = GetComponent<Rigidbody2D>();
         myBody.velocity = direction * unit.attackSpeed;
 

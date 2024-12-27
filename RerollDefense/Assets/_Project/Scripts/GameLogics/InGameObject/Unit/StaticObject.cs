@@ -13,6 +13,7 @@ public class StaticObject : BasicObject
     public int attackRange;
     public int unitCost;
     public int unitBlockSize;
+    public float attackCoolDown;
 
     public SkillAttackType attackType;
 
@@ -65,10 +66,11 @@ public class StaticObject : BasicObject
                             case "UnitBlockSize":
                                 this.unitBlockSize = statData.f_value;
                                 break;
+                            case "AttackCoolTime":
+                                this.attackCoolDown = statData.f_value;
+                                break;
                         }
                     }
-
-                    Debug.Log($"스탯 초기화 완료: {unitData.f_name}, 공격력: {attack}, 공격 속도: {attackSpeed}, 블록 가격 : {unitCost} 블록사이즈: {unitBlockSize}");
                 }
                 else
                 {
