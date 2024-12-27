@@ -25,12 +25,6 @@ public class EnemyManager : MonoBehaviour
     private NativeArray<float3> targetPositions;
     private NativeArray<float3> newPositions;
 
-    //enemy spawn 관련 변수
-    [SerializeField] private float spawnInterval = 2f;  // 적 생성 간격
-    [SerializeField] private int enemiesPerWave = 5;   // 웨이브당 적 숫자
-    private bool isSpawning = false;
-    private Coroutine spawnCoroutine;
-
     public static EnemyManager Instance
     {
         get
@@ -64,40 +58,11 @@ public class EnemyManager : MonoBehaviour
 
 
     }
-    public void StartSpawning()
-    {
-        if (!isSpawning)
-        {
-            isSpawning = true;
-            spawnCoroutine = StartCoroutine(SpawnRoutine());
-        }
-    }
 
-    private IEnumerator SpawnRoutine()
-    {
-        int enemiesSpawned = 0;
-
-        while (isSpawning)
-        {
-            if (enemiesSpawned < enemiesPerWave)
-            {
-                SpawnSingleEnemy();
-                enemiesSpawned++;
-                yield return new WaitForSeconds(spawnInterval);
-            }
-            else
-            {
-                // 모든 적이 생성되면 잠시 대기 후 다음 웨이브 시작
-                enemiesSpawned = 0;
-                yield return new WaitForSeconds(spawnInterval * 3); // 웨이브 간 간격
-            }
-        }
-    }
-
-    private void SpawnSingleEnemy()
+    public void SpawnEnemy(string enemyName)
     {
         Vector3 startPos = PathFindingManager.Instance.GetStartPosition();
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyPoolName, startPos);
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos);
 
         if (enemyObj != null)
         {
