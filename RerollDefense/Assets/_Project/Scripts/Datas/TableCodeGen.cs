@@ -26,6 +26,7 @@ public partial class D_TileShpeData : BGEntity
 		public const string name = "name";
 		public const string unitBuildData = "unitBuildData";
 		public const string grade = "grade";
+		public const string Cost = "Cost";
 		public const string TileShpae = "TileShpae";
 		public const string ShopGrade = "ShopGrade";
 	}
@@ -44,12 +45,19 @@ public partial class D_TileShpeData : BGEntity
 		get => (BGDatabaseEnum.UnitGrade) _f_grade.GetStoredValue(Index);
 		set => _f_grade.SetStoredValue(Index, (System.Int32) value);
 	}
+	public System.Int32 f_Cost
+	{
+		get => _f_Cost[Index];
+		set => _f_Cost[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4612699089538755472UL, 15389567449175696803UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_unitBuildData;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_unitBuildData => _ufle12jhs77_f_unitBuildData ?? (_ufle12jhs77_f_unitBuildData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5267104093635224925UL, 11893930471853365640UL), () => _ufle12jhs77_f_unitBuildData = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_grade;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_grade => _ufle12jhs77_f_grade ?? (_ufle12jhs77_f_grade = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5085254489454765700UL, 2735600988159512248UL), () => _ufle12jhs77_f_grade = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_Cost;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_Cost => _ufle12jhs77_f_Cost ?? (_ufle12jhs77_f_Cost = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5033112527408708228UL, 18365848753655382442UL), () => _ufle12jhs77_f_Cost = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_TileShpae;
 	public static BansheeGz.BGDatabase.BGKey _TileShpae => _edeht3sdad33_TileShpae ?? (_edeht3sdad33_TileShpae = BGCodeGenUtils.GetKey(MetaDefault, new BGId(4974985753661443278UL, 14549488637077833392UL), () => _edeht3sdad33_TileShpae = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_ShopGrade;

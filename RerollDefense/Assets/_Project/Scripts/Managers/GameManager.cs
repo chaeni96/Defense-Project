@@ -28,6 +28,13 @@ public class GameManager : MonoBehaviour
     public float PlayerHP { get; private set; } = 100f;
     public float MaxHP { get; private set; } = 100f;
 
+
+    public int CurrentCost { get; private set; }
+    public int MaxCost;
+    public int StoreLevel { get; private set; } = 0;
+
+    public event System.Action<int> OnCostUsed; // 코스트 사용 이벤트
+
     public static GameManager Instance
     {
         get
@@ -67,7 +74,10 @@ public class GameManager : MonoBehaviour
 
     public void InitGameManager()
     {
-        mainCamera = Camera.main; 
+        mainCamera = Camera.main;
+        CurrentCost = 0;
+        MaxCost = 10;
+        StoreLevel = 1;
     }
 
     // HP 변경 이벤트
@@ -82,6 +92,31 @@ public class GameManager : MonoBehaviour
         {
             // 게임오버 처리
         }
+    }
+
+    public void AddMana()
+    {
+        if (CurrentCost < MaxCost)
+        {
+            CurrentCost++;
+        }
+    }
+
+    public bool UseCost(int amount)
+    {
+        if (CurrentCost >= amount)
+        {
+            CurrentCost -= amount;
+            OnCostUsed?.Invoke(amount); // 이벤트 호출
+            return true;
+        }
+        return false;
+    }
+
+    public void SetStoreLevel(int level)
+    {
+        StoreLevel = level;
+        // 마나 시스템 UI 업데이트 필요
     }
 
 }

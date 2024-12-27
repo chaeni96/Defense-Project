@@ -117,22 +117,7 @@ public class UnitManager : MonoBehaviour
                 }
                 else if (unit.attackType == SkillAttackType.AOE)
                 {
-                    List<Enemy> enemiesInRange = new List<Enemy>();
-
-                    for (int j = 0; j < enemies.Count; j++)
-                    {
-                        float dist = Vector2.Distance(unit.transform.position, enemies[j].transform.position);
-
-                        if (dist <= attackRange)
-                        {
-                            enemiesInRange.Add(enemies[j]);
-                        }
-                    }
-
-                    if (enemiesInRange.Count > 0)
-                    {
-                        AttackSkillManager.Instance.ActiveSkill(unit, enemiesInRange);
-                    }
+                    AttackSkillManager.Instance.ActiveSkill(unit, enemies);
                 }
 
                 unit.attackTimer = 0f;

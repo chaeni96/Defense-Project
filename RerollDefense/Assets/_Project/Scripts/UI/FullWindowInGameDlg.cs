@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-
+using TMPro;
 
 public class FullWindowInGameDlg : UIBase
 {
@@ -19,12 +19,10 @@ public class FullWindowInGameDlg : UIBase
 
     [SerializeField] private Slider hpBar;
     [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
+    [SerializeField] private GameObject CostGauge;  // HP Bar 감소 속도
+    [SerializeField] private TMP_Text shopLevelText;  // HP Bar 감소 속도
     private float targetHPRatio;
     private Coroutine hpUpdateCoroutine;
-
-
-    // UnitCardObject 프리팹
-    public GameObject unitCardPrefab;
 
     private List<GameObject> cardDecks;
     private bool isChecking = false;
@@ -58,6 +56,13 @@ public class FullWindowInGameDlg : UIBase
             targetHPRatio = hpBar.value;
         }
 
+        CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
+
+        costUI.Initialize(GameManager.Instance.StoreLevel);
+
+        int shopLevel = GameManager.Instance.StoreLevel;
+        shopLevelText.text = $"Shop Level : {shopLevel}";
+
         cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, fourthCardDeck };
         StartCoroutine(CheckAndFillCardDecks());
     }
@@ -90,7 +95,7 @@ public class FullWindowInGameDlg : UIBase
     // UnitCardObject 생성 및 덱에 추가
     private void CreateUnitCard(GameObject cardDeck)
     {
-        ResourceManager.Instance.LoadAsync<GameObject>("UnitCardObject.prefab", (loadedPrefab) =>
+        ResourceManager.Instance.LoadAsync<GameObject>("UnitCardObject", (loadedPrefab) =>
         {
             if (loadedPrefab != null)
             {
@@ -98,13 +103,13 @@ public class FullWindowInGameDlg : UIBase
                 GameObject unitCard = Instantiate(loadedPrefab, cardDeck.transform);
                 unitCard.name = "UnitCardObject";
 
-                string cardKey = SetCardKeyBasedOnProbability();
+                var cardData = GetCardKeyBasedOnProbability();
 
                 // UnitCardObject 초기화
                 UnitCardObject cardObject = unitCard.GetComponent<UnitCardObject>();
                 if (cardObject != null)
                 {
-                    cardObject.InitializeCardInform(cardKey); // 기본 초기화 데이터
+                    cardObject.InitializeCardInform(cardData); // 기본 초기화 데이터
                 }
 
                 // UnitCard_Empty를 비활성화
@@ -121,7 +126,7 @@ public class FullWindowInGameDlg : UIBase
         });
     }
 
-    public string SetCardKeyBasedOnProbability()
+    public D_TileShpeData GetCardKeyBasedOnProbability()
     {
 
         //상점 레벨에 따른 확률 데이터 로드
@@ -166,7 +171,7 @@ public class FullWindowInGameDlg : UIBase
         var selectedUnit = possibleUnitList.OrderBy(_ => Guid.NewGuid()).First();
 
         
-        return selectedUnit.f_name; // 선택된 유닛의 이름 반환
+        return selectedUnit; // 선택된 유닛의 이름 반환
        
 
     }

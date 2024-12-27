@@ -14,27 +14,38 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     public Image cardImage;
 
     public TMP_Text unitDataText;
-    public TMP_Text cardLevel;
+    public TMP_Text cardCostText;
 
     private GameObject activeDragObject;
     private string dragObjectAddress; // Addressable 키 == tileShapeName
-    
 
-    public void InitializeCardInform(string unitData)
+    private int cardCost;
+    private bool canDrag;
+
+    public void InitializeCardInform(D_TileShpeData unitData)
     {
         //tileShpaeName을 통해 데이터 얻어오는데 여기에 유닛에 맞는 이미지 주소 넣어줘서 가져오기
 
-        dragObjectAddress= unitData;
-        unitDataText.text = unitData; 
+        dragObjectAddress= unitData.f_name;
+        unitDataText.text = unitData.f_name;
         //카드 정보, data 받아오기
-
-        //tileShapeName만 알면됨
-
+        cardCost = unitData.f_Cost;
+        cardCostText.text = cardCost.ToString();
+        canDrag = false;
     }
 
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if(GameManager.Instance.CurrentCost < cardCost)
+        {
+            canDrag = false;
+            return;
+        }
+        else
+        {
+            canDrag = true;
+        }
 
         // DragObject 생성
 
@@ -60,6 +71,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
+        if(!canDrag) { return; }
+
+
         DragObject dragObject = activeDragObject.GetComponent<DragObject>();
         if (dragObject != null)
         {
@@ -94,6 +108,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 if (dlg != null)
                 {
                     dlg.OnUnitCardDestroyed(cardDeck); // 덱 상태 업데이트
+                    GameManager.Instance.UseCost(cardCost);
                 }
 
                 Destroy(this.gameObject);

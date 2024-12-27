@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: f780d69711c212f498fac66dc19c73ad
   m_SerializeEntries:
   - m_GUID: 65454dc1d272ed248a09d8e5fb9962c0
-    m_Address: UnitCardObject.prefab
+    m_Address: UnitCardObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - UI
