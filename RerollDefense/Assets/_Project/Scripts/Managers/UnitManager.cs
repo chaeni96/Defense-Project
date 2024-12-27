@@ -1,20 +1,13 @@
-using System.Collections;
+using BGDatabaseEnum;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+
 public class UnitManager : MonoBehaviour
 {
-    //job System으로 생성된 유닛 모두 한번에 처리
-    public static UnitManager _instance;
-
-    private List<UnitController> units = new List<UnitController>();
-    private NativeArray<float3> unitPositions;
-    private NativeArray<float> attackRanges;
-    private NativeArray<int> targetIndices;
-    private NativeArray<float> attackTimers;
-
+    private static UnitManager _instance;
     public static UnitManager Instance
     {
         get
@@ -33,6 +26,15 @@ public class UnitManager : MonoBehaviour
         }
     }
 
+    private List<UnitController> units = new List<UnitController>();
+
+    //job System 변수
+    private NativeArray<float3> unitPositions;
+    private NativeArray<float3> enemyPositions;
+    private NativeArray<float> attackRanges;
+    private NativeArray<int> targetIndices;
+    private NativeArray<float> attackTimers;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -43,51 +45,51 @@ public class UnitManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        units = new List<UnitController>();
     }
 
     public void RegisterUnit(UnitController unit)
     {
-        units.Add(unit);
+        if (!units.Contains(unit))
+        {
+            units.Add(unit);
+        }
     }
 
     public void UnregisterUnit(UnitController unit)
     {
-        units.Remove(unit);
+        if (units.Contains(unit))
+        {
+            units.Remove(unit);
+        }
     }
 
     private void Update()
     {
         if (units.Count == 0) return;
 
-        // NativeArray 초기화
-        if (unitPositions.IsCreated) unitPositions.Dispose();
-        if (attackRanges.IsCreated) attackRanges.Dispose();
-        if (targetIndices.IsCreated) targetIndices.Dispose();
-        if (attackTimers.IsCreated) attackTimers.Dispose();
+        List<Enemy> enemies = EnemyManager.Instance.GetEnemies();
+        if (enemies.Count == 0) return;
 
-        unitPositions = new NativeArray<float3>(units.Count, Allocator.TempJob);
-        attackRanges = new NativeArray<float>(units.Count, Allocator.TempJob);
-        targetIndices = new NativeArray<int>(units.Count, Allocator.TempJob);
-        attackTimers = new NativeArray<float>(units.Count, Allocator.TempJob);
+        InitializeArrays(units.Count, enemies.Count);
 
-        // 데이터 설정
         for (int i = 0; i < units.Count; i++)
         {
             unitPositions[i] = units[i].transform.position;
             attackRanges[i] = units[i].attackRange;
-            // 현재 attackTimer 값을 가져와서 설정
-            attackTimers[i] = units[i].attackTimer;   // UnitController에 attackTimer 필드 추가 필요
+            attackTimers[i] = units[i].attackTimer;
         }
 
-        // Enemy 위치 데이터 가져오기
-        var enemies = EnemyManager.Instance.GetEnemies();
-        var enemyPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
         for (int i = 0; i < enemies.Count; i++)
         {
             enemyPositions[i] = enemies[i].transform.position;
         }
 
-        // Job 실행
         var attackJob = new UnitAttackJob
         {
             UnitPositions = unitPositions,
@@ -101,38 +103,94 @@ public class UnitManager : MonoBehaviour
         JobHandle jobHandle = attackJob.Schedule(units.Count, 64);
         jobHandle.Complete();
 
-        // 결과 처리
         for (int i = 0; i < units.Count; i++)
         {
             int targetIndex = targetIndices[i];
-            float currentTimer = attackTimers[i];
-
-            if (targetIndex != -1)
+            if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
             {
-                if (currentTimer >= units[i].attackCoolDown)
+                UnitController unit = units[i];
+                float attackRange = unit.attackRange;
+
+                if (unit.attackType == SkillAttackType.Projectile)
                 {
-                    //AttackSkillManager.Instance.ActiveSkill(units[i], enemies[targetIndex]);
-                    units[i].attackTimer = 0; // 타이머 리셋
+                    AttackSkillManager.Instance.ActiveSkill(unit, enemies[targetIndex]);
                 }
-                else
+                else if (unit.attackType == SkillAttackType.AOE)
                 {
-                    units[i].attackTimer += Time.deltaTime; // 타이머 증가
+                    List<Enemy> enemiesInRange = new List<Enemy>();
+
+                    for (int j = 0; j < enemies.Count; j++)
+                    {
+                        float dist = Vector2.Distance(unit.transform.position, enemies[j].transform.position);
+
+                        if (dist <= attackRange)
+                        {
+                            enemiesInRange.Add(enemies[j]);
+                        }
+                    }
+
+                    if (enemiesInRange.Count > 0)
+                    {
+                        AttackSkillManager.Instance.ActiveSkill(unit, enemiesInRange);
+                    }
                 }
+
+                unit.attackTimer = 0f;
+            }
+            else
+            {
+                units[i].attackTimer = attackTimers[i];
             }
         }
 
-        // 정리
-        unitPositions.Dispose();
-        enemyPositions.Dispose();
-        attackRanges.Dispose();
-        targetIndices.Dispose();
-        attackTimers.Dispose();
+        DisposeArrays();
     }
 
+    private void InitializeArrays(int unitCount, int enemyCount)
+    {
+        if (unitPositions.IsCreated) unitPositions.Dispose();
+        if (enemyPositions.IsCreated) enemyPositions.Dispose();
+        if (attackRanges.IsCreated) attackRanges.Dispose();
+        if (targetIndices.IsCreated) targetIndices.Dispose();
+        if (attackTimers.IsCreated) attackTimers.Dispose();
 
+        unitPositions = new NativeArray<float3>(unitCount, Allocator.TempJob);
+        enemyPositions = new NativeArray<float3>(enemyCount, Allocator.TempJob);
+        attackRanges = new NativeArray<float>(unitCount, Allocator.TempJob);
+        targetIndices = new NativeArray<int>(unitCount, Allocator.TempJob);
+        attackTimers = new NativeArray<float>(unitCount, Allocator.TempJob);
+    }
+
+    private void DisposeArrays()
+    {
+        if (unitPositions.IsCreated) unitPositions.Dispose();
+        if (enemyPositions.IsCreated) enemyPositions.Dispose();
+        if (attackRanges.IsCreated) attackRanges.Dispose();
+        if (targetIndices.IsCreated) targetIndices.Dispose();
+        if (attackTimers.IsCreated) attackTimers.Dispose();
+    }
+
+    private void OnDestroy()
+    {
+        CleanUp();
+    }
+
+    private void CleanUp()
+    {
+        DisposeArrays();
+        units.Clear();
+    }
+
+    private void OnApplicationQuit()
+    {
+        CleanUp();
+    }
+
+    private void OnDisable()
+    {
+        CleanUp();
+    }
 }
-
-
 
 public struct UnitAttackJob : IJobParallelFor
 {
@@ -141,8 +199,8 @@ public struct UnitAttackJob : IJobParallelFor
     [ReadOnly] public NativeArray<float> AttackRanges;
     [ReadOnly] public float DeltaTime;
 
-    public NativeArray<int> TargetIndices;        // 각 유닛의 타겟 인덱스
-    public NativeArray<float> AttackTimers;       // 각 유닛의 공격 타이머
+    public NativeArray<int> TargetIndices;
+    public NativeArray<float> AttackTimers;
 
     public void Execute(int index)
     {
@@ -151,7 +209,6 @@ public struct UnitAttackJob : IJobParallelFor
         float nearestDist = float.MaxValue;
         int nearestEnemyIndex = -1;
 
-        // 가장 가까운 적 찾기
         for (int i = 0; i < EnemyPositions.Length; i++)
         {
             float3 enemyPos = EnemyPositions[i];

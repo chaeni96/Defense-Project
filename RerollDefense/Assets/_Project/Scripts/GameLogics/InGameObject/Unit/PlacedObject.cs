@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class PlacedObject : StaticObject
+public class PlacedObject : BasicObject
 {
 
     //배치된 오브젝트에서 필요한거 -> 클릭했을때 팝업창 나와야됨
@@ -13,7 +14,7 @@ public class PlacedObject : StaticObject
     //선택한 블록이 들어있는 블록들만 제거해야됨
     //데이터 받아올때 
 
-    public string unitName;
+    public TMP_Text unitNameText;
 
     public string tileUniqueID;
 
@@ -22,11 +23,7 @@ public class PlacedObject : StaticObject
         base.Initialize();
 
     }
-    public override void Update()
-    {
-        base.Update();
-    }
-
+ 
     public void InitializeObject(string tileShapeName, int tileIndex)
     {
         var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
@@ -36,14 +33,13 @@ public class PlacedObject : StaticObject
             var buildData = tileShapeData.f_unitBuildData[tileIndex];
             var unitData = buildData.f_unitData;
 
-            unitName = buildData.f_name;    
+            unitNameText.text = unitData.f_name;
         }
 
     }
 
-
-
   
+    //같은 tileshpae을 가진 유닛이 여러개일수있으므로 생성시 고유 ID 부여
     public void RegistereTileID(string uniqueID)
     {
         tileUniqueID = uniqueID;

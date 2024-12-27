@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UIElements;
 
-public class DragObject : StaticObject
+public class DragObject : BasicObject
 {
     public bool isPlaced { get; private set; } = false;
 
@@ -27,12 +27,6 @@ public class DragObject : StaticObject
         originColor = spriteRenderer.color;
         isPlaced = false;
     }
-
-    public override void Update()
-    {
-        base.Update();
-    }
-
 
     //드래그 오브젝트 클릭했을시
     public void OnClickObject(string tileDataKey, Vector3 pointerPosition)

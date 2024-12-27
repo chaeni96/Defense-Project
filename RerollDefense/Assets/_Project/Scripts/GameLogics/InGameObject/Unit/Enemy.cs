@@ -1,32 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 
-public class DamageableObject : BasicObject
+public class Enemy : BasicObject
 {
 
-    //피해받을수있는 객체 -> hp 가진 객체, 플레이어 진영, 적 유닛
 
     public TMP_Text hpText;
 
-
-    public float maxHP = 10;
+    //enemy Stat -> 프리팹에 저장해두기
+    public float maxHP;
     public float HP;
     public float attackPower;
-
+    public float moveSpeed;
 
     public override void Initialize()
     {
         base.Initialize();
+
         HP = maxHP;
         UpdateHpText();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
     }
 
     public void UpdateHpText()
@@ -34,6 +29,15 @@ public class DamageableObject : BasicObject
         var hp = HP;
 
         hpText.text = hp.ToString();
+    }
+
+
+    public void OnReachEndTile()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.TakeDamage(attackPower);
+        }
     }
 
     public void onDamaged(BasicObject attacker, int damage = 0)
@@ -54,9 +58,6 @@ public class DamageableObject : BasicObject
 
     public void onDead(BasicObject controller)
     {
-
-        Destroy(controller.gameObject);
-        //TODO : 오브젝트 풀로 반환 해야됨
-        
+        PoolingManager.Instance.ReturnObject(controller.gameObject);
     }
 }

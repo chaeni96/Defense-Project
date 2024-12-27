@@ -69,6 +69,7 @@ public class EnemyManager : MonoBehaviour
         {
             Enemy enemy = enemyObj.GetComponent<Enemy>();
             enemy.transform.position = startPos;
+            enemy.Initialize();
             enemies.Add(enemy);
 
             // 초기 경로 설정
