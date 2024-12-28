@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -67,30 +69,37 @@ public class StageManager : MonoBehaviour
         }
 
         D_WaveData waveData = currentStage.f_WaveData[currentWaveIndex];
-        waveCoroutine = StartCoroutine(SpawnWaveRoutine(waveData));
+        waveCoroutine = StartCoroutine(CoProcessWave(waveData));
     }
-
-
-    private IEnumerator SpawnWaveRoutine(D_WaveData waveData)
+    private IEnumerator CoProcessWave(D_WaveData waveData)
     {
-        int spawnedCount = 0;
+        var spawnRoutines = new List<Coroutine>();
 
-        while (spawnedCount < waveData.f_Count)
+        foreach (D_enemyGroup groupData in waveData.f_enemyGroup)
         {
-            EnemyManager.Instance.SpawnEnemy(waveData.f_SpawnEnemyName);
-            spawnedCount++;
-
-            yield return new WaitForSeconds(waveData.f_SpawnDelay);
+            spawnRoutines.Add(StartCoroutine(CoSpawnEnemyGroup(groupData)));
         }
-
-        // 웨이브 완료 후 대기
-        yield return new WaitForSeconds(currentStage.f_WaveDelayTime);
+        foreach (var routine in spawnRoutines)
+        {
+            yield return routine;
+        }
 
         // 다음 웨이브 시작
         currentWaveIndex++;
         StartNextWave();
     }
 
+    private IEnumerator CoSpawnEnemyGroup(D_enemyGroup enemyGroupData)
+    {
+        // 스타트 딜레이 대기
+        yield return new WaitForSeconds(enemyGroupData.f_startDelay);
+
+        for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
+        {
+            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_AddressableKey);
+            yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
+        }
+    }
      public bool IsLastWave()
     {
         return currentWaveIndex >= currentStage.f_WaveData.Count;
