@@ -3006,6 +3006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d556b8375ad71434a928cba5590ed32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileMap: {fileID: 1420055970}
 --- !u!1 &561525829
 GameObject:
   m_ObjectHideFlags: 0
