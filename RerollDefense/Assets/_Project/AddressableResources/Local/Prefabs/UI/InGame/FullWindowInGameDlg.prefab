@@ -3306,7 +3306,6 @@ MonoBehaviour:
   CostGauge: {fileID: 6369192735448383950}
   shopLevelText: {fileID: 6369192734951906581}
   shopLevelUpCostText: {fileID: 8641429303291881094}
-  shopLevelUpBtn: {fileID: 954902799100092525}
   gameStateText: {fileID: 597427206197323099}
   checkCooldown: 1
 --- !u!1 &6369192736303877580
