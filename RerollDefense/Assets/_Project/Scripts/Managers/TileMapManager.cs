@@ -45,12 +45,12 @@ public class TileMapManager : MonoBehaviour
     }
 
     //타일맵 초기화
-    public void InitializeManager()
+    public void InitializeManager(Tilemap gaameTileMap)
     {
 
         if (tileMap == null)
         {
-            tileMap = FindObjectOfType<Tilemap>();
+            tileMap = gaameTileMap;
         }
 
         tileMapDatas.Clear();

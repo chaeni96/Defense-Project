@@ -44,13 +44,7 @@ public class FullWindowInGameDlg : FullWindowBase
         //이벤트 구독
         GameManager.Instance.OnHPChanged += OnHPChanged;
     }
-    //test용
-    private void Update()
-    {
-        gameStateText.text = GameManager.Instance.gaemState;
-    }
 
-    //TODO : UIManager 만들고 InitializeUI에 넣어야할 코드
     public void initUI()
     {
 
