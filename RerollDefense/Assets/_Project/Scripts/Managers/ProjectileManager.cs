@@ -20,7 +20,7 @@ public class ProjectileManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<ProjectileManager>();
                 if (_instance == null)
@@ -148,13 +148,7 @@ public class ProjectileManager : MonoBehaviour
         activeProjectiles.Clear();
     }
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
-
+   
 }
 
 public struct ProjectileMoveJob : IJobParallelForTransform

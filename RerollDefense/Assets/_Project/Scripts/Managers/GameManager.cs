@@ -33,7 +33,7 @@ public class GamePlayState : GameState
     public override void EnterState()
     {
         //매개변수로 현재 스테이지 던져야됨
-        StageManager.Instance.StartStage(1);
+       
         GameManager.Instance.gaemState = "Gema Play!";
        
     }
@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<GameManager>();
 
@@ -170,10 +170,6 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        SaveLoadManager.Instance.LoadData();
-
-        //TODO : 나중에 레디씬에 넣어주기
-        InitGameManager();
     }
 
     public void InitGameManager()
@@ -235,10 +231,13 @@ public class GameManager : MonoBehaviour
         // 마나 시스템 UI 업데이트 필요
     }
 
-    private static bool isQuitting = false;
 
-    private void OnApplicationQuit()
+    private void OnDestroy()
     {
-        isQuitting = true;
+        OnHPChanged = null;  // 이벤트 정리
+        OnCostUsed = null;
     }
+
+
+
 }

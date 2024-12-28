@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-using UnityEditor.U2D.Animation;
 
 public class PoolingManager : MonoBehaviour
 {
@@ -16,7 +15,7 @@ public class PoolingManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<PoolingManager>();
 
@@ -147,10 +146,5 @@ public class PoolingManager : MonoBehaviour
     }
 
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
+  
 }

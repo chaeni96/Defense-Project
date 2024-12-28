@@ -16,7 +16,7 @@ public class TileMapManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<TileMapManager>();
 
@@ -42,13 +42,17 @@ public class TileMapManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-
-        InitializeTileMap();
     }
 
     //타일맵 초기화
-    private void InitializeTileMap()
+    public void InitializeManager()
     {
+
+        if (tileMap == null)
+        {
+            tileMap = FindObjectOfType<Tilemap>();
+        }
+
         tileMapDatas.Clear();
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {
@@ -139,10 +143,5 @@ public class TileMapManager : MonoBehaviour
     }
 
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
+    
 }

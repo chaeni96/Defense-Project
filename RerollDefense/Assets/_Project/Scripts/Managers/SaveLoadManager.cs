@@ -17,7 +17,7 @@ public class SaveLoadManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<SaveLoadManager>();
 
@@ -77,11 +77,5 @@ public class SaveLoadManager : MonoBehaviour
     }
 
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
-
+  
 }

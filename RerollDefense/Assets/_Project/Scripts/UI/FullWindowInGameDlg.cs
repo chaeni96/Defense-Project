@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 
-public class FullWindowInGameDlg : UIBase
+public class FullWindowInGameDlg : FullWindowBase
 {
 
     //TODO : UIBase 상속받아야됨
@@ -39,17 +39,10 @@ public class FullWindowInGameDlg : UIBase
     {
         base.InitializeUI();
 
-
-    }
-
-    void Start()
-    {
-        //test용
         initUI();
 
         //이벤트 구독
         GameManager.Instance.OnHPChanged += OnHPChanged;
-
     }
     //test용
     private void Update()
@@ -251,13 +244,23 @@ public class FullWindowInGameDlg : UIBase
     }
 
 
+    public override void CloseUI()
+    {
+        if (GameManager._instance != null)
+        {
+            GameManager.Instance.OnHPChanged -= OnHPChanged;
+        }
+    }
+
+
+
 
     private void OnDestroy()
     {
         isChecking = false;
 
         //구독해제
-        if (GameManager.Instance != null)
+        if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
         }

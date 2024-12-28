@@ -54,8 +54,6 @@ public class EnemyManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
-
-        InitializeMnanager();
     }
 
     //초기화 작업 해주기 

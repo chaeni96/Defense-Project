@@ -91,6 +91,7 @@ MonoBehaviour:
     - default
     - Prefabs
     - UI
+    - GameSceneUI
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fbe280ad23558fe4eb1050ded730afbe, type: 2}
