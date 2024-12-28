@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class SceneStarter : MonoBehaviour
 {
+
+    [SerializeField]private Tilemap tileMap;
+
     void Start()
     {
         StartCoroutine(InitializeGame());
@@ -23,7 +27,7 @@ public class SceneStarter : MonoBehaviour
         // 기본 매니저 초기화
         PoolingManager.Instance.InitializeAllPools();
         SaveLoadManager.Instance.LoadData();
-        TileMapManager.Instance.InitializeManager();
+        TileMapManager.Instance.InitializeManager(tileMap);
         UnitManager.Instance.InitializeManager();
         EnemyManager.Instance.InitializeMnanager();
 

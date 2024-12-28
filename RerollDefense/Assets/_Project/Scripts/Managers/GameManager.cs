@@ -107,6 +107,9 @@ public class GameResultState : GameState
             GameManager.Instance.gaemState = "Player Lose";
             Debug.Log("플레이어 패배");
         }
+
+        UIManager.Instance.ShowUI<GameResultUI>("FieldGameResultPopup");
+
     }
 
     public override void ExitState()
