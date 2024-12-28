@@ -20,7 +20,8 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private Slider hpBar;
     [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
     [SerializeField] private GameObject CostGauge;  // HP Bar 감소 속도
-    [SerializeField] private TMP_Text shopLevelText;  // HP Bar 감소 속도
+    [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
+    [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
 
     public TMP_Text gameStateText;
 
@@ -32,7 +33,8 @@ public class FullWindowInGameDlg : FullWindowBase
 
     //test용 변수들
     public float checkCooldown = 3f;
-    private int shopLevel = 1;
+    private int shopLevel;
+    private int shopUpgradeCost;
 
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
@@ -40,9 +42,12 @@ public class FullWindowInGameDlg : FullWindowBase
         base.InitializeUI();
 
         initUI();
+        UpdateShopLevelUI();
 
         //이벤트 구독
         GameManager.Instance.OnHPChanged += OnHPChanged;
+        GameManager.Instance.OnCostUsed += OnCostUsed;  // 추가
+
     }
 
     public void initUI()
@@ -58,7 +63,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
         costUI.Initialize(GameManager.Instance.StoreLevel);
 
-        int shopLevel = GameManager.Instance.StoreLevel;
+        shopLevel = GameManager.Instance.StoreLevel;
         shopLevelText.text = $"Shop Level : {shopLevel}";
 
         cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, fourthCardDeck };
@@ -130,12 +135,13 @@ public class FullWindowInGameDlg : FullWindowBase
         //상점 레벨에 따른 확률 데이터 로드
         var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
 
-        //각 등급 확률
+        // 각 등급 확률 누적 계산
         var normalShopProbability = shopProbabilityData.f_normalGradeChance;
-        var rareShopProbability = shopProbabilityData.f_rareGradeChance;
-        var epicProbability = shopProbabilityData.f_epicGradeChance;
-        var legendaryShopProbability = shopProbabilityData.f_legendaryGradeChance;
-        var mythicShopProbability = shopProbabilityData.f_mythicGradeChance;
+        var rareShopProbability = normalShopProbability + shopProbabilityData.f_rareGradeChance;
+        var epicProbability = rareShopProbability + shopProbabilityData.f_epicGradeChance;
+        var legendaryShopProbability = epicProbability + shopProbabilityData.f_legendaryGradeChance;
+        var mythicShopProbability = legendaryShopProbability + shopProbabilityData.f_mythicGradeChance;
+
 
         //랜덤값 생성
         int rand = UnityEngine.Random.Range(0, 100);
@@ -177,27 +183,76 @@ public class FullWindowInGameDlg : FullWindowBase
     //TODO : 리롤 쿨타임, 클릭속도 제한 추가
     public void RerollCardDecks()
     {
-        // 기존 카드 제거
-        foreach (var cardDeck in cardDecks)
+        if(GameManager.Instance.CurrentCost >= 1)
         {
-            // UnitCardObject 삭제
-            var existingCard = cardDeck.GetComponentInChildren<UnitCardObject>();
-            if (existingCard != null)
+
+            GameManager.Instance.UseCost(1);
+            // 기존 카드 제거
+            foreach (var cardDeck in cardDecks)
             {
-                Destroy(existingCard.gameObject);
+                // UnitCardObject 삭제
+                var existingCard = cardDeck.GetComponentInChildren<UnitCardObject>();
+                if (existingCard != null)
+                {
+                    Destroy(existingCard.gameObject);
+                }
+
+                // UnitCard_Empty 활성화
+                var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
+                if (emptyPlaceholder != null)
+                {
+                    emptyPlaceholder.gameObject.SetActive(true);
+                }
             }
 
-            // UnitCard_Empty 활성화
-            var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
-            if (emptyPlaceholder != null)
+            // 새 카드 덱 생성
+            StartCoroutine(CheckAndFillCardDecks());
+        }
+       
+    }
+
+    private void UpdateShopLevelUI()
+    {
+        // 상점 레벨 텍스트 업데이트
+        shopLevel = GameManager.Instance.StoreLevel;
+        shopLevelText.text = $"Shop Level : {shopLevel}";
+
+        // 업그레이드 비용 계산 및 표시
+
+        var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
+
+        shopUpgradeCost = shopProbabilityData.f_upgradeCost;
+
+        shopLevelUpCostText.text = $"Shop Level : {shopUpgradeCost.ToString()}";
+
+    }
+
+    public void OnShopLevelUpgradeClick()
+    {
+        var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
+
+        shopUpgradeCost = shopProbabilityData.f_upgradeCost;
+
+        if (GameManager.Instance.CurrentCost >= shopUpgradeCost)
+        {
+            if (GameManager.Instance.UseCost(shopUpgradeCost))
             {
-                emptyPlaceholder.gameObject.SetActive(true);
+                shopLevel++;
+                GameManager.Instance.SetStoreLevel(shopLevel);
+
+                UpdateShopLevelUI();
+                // CostGauge UI 갱신
+                CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
+                costUI.Initialize(shopLevel);
             }
         }
-
-        // 새 카드 덱 생성
-        StartCoroutine(CheckAndFillCardDecks());
     }
+
+    private void OnCostUsed(int amount)
+    {
+        UpdateShopLevelUI();  // 코스트가 변경될 때마다 버튼 상태 업데이트
+    }
+
 
     // UnitCardObject 삭제 시 호출하여 UnitCard_Empty 활성화
     public void OnUnitCardDestroyed(GameObject cardDeck)
@@ -243,6 +298,8 @@ public class FullWindowInGameDlg : FullWindowBase
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
+            GameManager.Instance.OnCostUsed -= OnCostUsed;  // 추가
+
         }
     }
 
@@ -257,6 +314,7 @@ public class FullWindowInGameDlg : FullWindowBase
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
+            GameManager.Instance.OnCostUsed -= OnCostUsed;  // 추가
         }
     }
 

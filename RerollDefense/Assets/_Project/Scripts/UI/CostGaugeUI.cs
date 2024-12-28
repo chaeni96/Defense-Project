@@ -30,7 +30,17 @@ public class CostGaugeUI : MonoBehaviour
         UpdateText();
         ClearBarFills();
         CreateBarFills(storeLevel);
-        currentFilledIndex = 0;
+
+        // 초기 코스트만큼 바로 채우기
+        int initialCost = GameManager.Instance.CurrentCost;
+
+
+        currentFilledIndex = initialCost;
+
+        for (int i = 0; i < currentFilledIndex; i++)
+        {
+            barFills[i].fillAmount = 1f;
+        }
         circleProgress.fillAmount = 0;
     }
 
@@ -85,18 +95,24 @@ public class CostGaugeUI : MonoBehaviour
 
     private void Update()
     {
+        if (currentFilledIndex != GameManager.Instance.CurrentCost)
+        {
+            currentFilledIndex = GameManager.Instance.CurrentCost;
+            for (int i = 0; i < barFills.Count; i++)
+            {
+                barFills[i].fillAmount = i < currentFilledIndex ? 1f : 0f;
+            }
+        }
+
         if (currentFilledIndex < barFills.Count)
         {
             circleProgress.fillAmount += Time.deltaTime / manaGenerateTime;
-
             if (circleProgress.fillAmount >= 1f)
             {
                 circleProgress.fillAmount = 0;
-                barFills[currentFilledIndex].fillAmount = 1;
-                currentFilledIndex++;
-                GameManager.Instance.AddMana();
+                GameManager.Instance.AddCost();
                 UpdateText();
-            }        
+            }
         }
     }
 

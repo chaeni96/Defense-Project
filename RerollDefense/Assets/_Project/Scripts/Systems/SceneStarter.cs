@@ -40,10 +40,10 @@ public class SceneStarter : MonoBehaviour
         });
         yield return new WaitUntil(() => uiLoaded);
 
+        GameManager.Instance.InitGameManager();
         // UI 초기화
         UIManager.Instance.InitializeUIManager(BGDatabaseEnum.SceneType.Game);
 
-        GameManager.Instance.InitGameManager();
         // 게임 시작
         GameManager.Instance.ChangeState(new GamePlayState());
         StageManager.Instance.StartStage(1);

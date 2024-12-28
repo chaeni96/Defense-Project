@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour
     public float PlayerHP { get; private set; } = 100f;
     public float MaxHP { get; private set; } = 100f;
 
-    public int CurrentCost { get; private set; }
+    public int CurrentCost;
     public int MaxCost;
     public int StoreLevel { get; private set; } = 0;
 
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
     public void InitGameManager()
     {
         mainCamera = Camera.main;
-        CurrentCost = 0;
+        CurrentCost = 2;
         MaxCost = 10;
         StoreLevel = 1;
     }
@@ -207,7 +207,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddMana()
+    public void AddCost()
     {
         if (CurrentCost < MaxCost)
         {
@@ -231,7 +231,8 @@ public class GameManager : MonoBehaviour
     public void SetStoreLevel(int level)
     {
         StoreLevel = level;
-        // 마나 시스템 UI 업데이트 필요
+        MaxCost = Mathf.Clamp(9 + level, 10, 20);
+
     }
 
 
