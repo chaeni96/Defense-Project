@@ -17,8 +17,6 @@ public class UnitController : PlacedObject
     [HideInInspector]
     public int attackRange;
     [HideInInspector]
-    public int unitCost;
-    [HideInInspector]
     public int unitBlockSize;
     [HideInInspector]
     public float attackCoolDown;
@@ -67,9 +65,6 @@ public class UnitController : PlacedObject
                                 break;
                             case "AttackRange":
                                 this.attackRange = statData.f_value;
-                                break;
-                            case "Cost":
-                                this.unitCost = statData.f_value;
                                 break;
                             case "UnitBlockSize":
                                 this.unitBlockSize = statData.f_value;
