@@ -274,7 +274,7 @@ MonoBehaviour:
   hpText: {fileID: 6438724866160267216}
   maxHP: 10
   HP: 0
-  attackPower: 20
+  attackPower: 5
   moveSpeed: 0.3
 --- !u!70 &5198120247833722812
 CapsuleCollider2D:

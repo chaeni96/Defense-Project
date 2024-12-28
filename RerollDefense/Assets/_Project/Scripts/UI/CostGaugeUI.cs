@@ -8,7 +8,7 @@ public class CostGaugeUI : MonoBehaviour
 {
     [Header("Circle UI")]
     [SerializeField] private Image circleProgress;
-    [SerializeField] private float manaGenerateTime = 3f;
+    [SerializeField] private float manaGenerateTime = 1f;
 
     [Header("Bar UI")]
     [SerializeField] private RectTransform barContainer;
