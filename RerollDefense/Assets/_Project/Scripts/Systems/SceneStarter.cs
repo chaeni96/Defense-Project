@@ -20,12 +20,17 @@ public class SceneStarter : MonoBehaviour
             // 모든 리소스 로드가 완료되면
             if (currentCount == totalCount)
             {
+                //매니저들 초기화
                 PoolingManager.Instance.InitializeAllPools();
+                SaveLoadManager.Instance.LoadData();
+
+                TileMapManager.Instance.InitializeManager();
+                UnitManager.Instance.InitializeManager();   
+                EnemyManager.Instance.InitializeMnanager();
 
                 GameManager.Instance.InitGameManager();
-
                 GameManager.Instance.ChangeState(new GamePlayState());
-                
+                StageManager.Instance.StartStage(1);
             }
         });
 

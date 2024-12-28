@@ -47,11 +47,9 @@ public class UnitManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
-
-        InitializeManager();
     }
 
-    private void InitializeManager()
+    public void InitializeManager()
     {
         units = new List<UnitController>();
 

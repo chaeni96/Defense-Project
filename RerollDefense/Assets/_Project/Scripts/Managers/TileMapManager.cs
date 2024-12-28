@@ -42,13 +42,17 @@ public class TileMapManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-
-        InitializeTileMap();
     }
 
     //타일맵 초기화
-    private void InitializeTileMap()
+    public void InitializeManager()
     {
+
+        if (tileMap == null)
+        {
+            tileMap = FindObjectOfType<Tilemap>();
+        }
+
         tileMapDatas.Clear();
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {

@@ -33,7 +33,7 @@ public class GamePlayState : GameState
     public override void EnterState()
     {
         //매개변수로 현재 스테이지 던져야됨
-        StageManager.Instance.StartStage(1);
+       
         GameManager.Instance.gaemState = "Gema Play!";
        
     }
@@ -174,10 +174,6 @@ public class GameManager : MonoBehaviour
 
     public void InitGameManager()
     {
-
-        SaveLoadManager.Instance.LoadData();
-
-
         mainCamera = Camera.main;
         CurrentCost = 0;
         MaxCost = 10;

@@ -103,10 +103,14 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(!canDrag) { return; }
+        if (!canDrag || currentFillAmount < 1f || activeDragObject == null)
+        {
+            return;
+        }
 
 
         DragObject dragObject = activeDragObject.GetComponent<DragObject>();
+
         if (dragObject != null)
         {
             Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
