@@ -80,7 +80,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481cfc4e0ad18bb4db1103e1c43d1bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitNameText: {fileID: 0}
   tileUniqueID: 
   targetLayer:
     serializedVersion: 2
@@ -212,7 +211,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 105472838, guid: cfd129360e1e9964ca4e4a2465a2be87, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -296,7 +295,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: -8418716805763227894, guid: 12da9e779142a6e4fb12f8d6eaeac1b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
