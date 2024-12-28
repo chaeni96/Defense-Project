@@ -232,4 +232,12 @@ public class GameManager : MonoBehaviour
     }
 
 
+    private void OnDestroy()
+    {
+        OnHPChanged = null;  // 이벤트 정리
+        OnCostUsed = null;
+    }
+
+
+
 }
