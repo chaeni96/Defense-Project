@@ -108,7 +108,7 @@ public class GameResultState : GameState
             Debug.Log("플레이어 패배");
         }
 
-        UIManager.Instance.ShowUI<GameResultUI>("GameResultPopup");
+        UIManager.Instance.ShowUI<GameResultUI>("FieldGameResultPopup");
 
     }
 
