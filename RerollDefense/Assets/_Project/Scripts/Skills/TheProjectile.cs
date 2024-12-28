@@ -14,4 +14,11 @@ public class TheProjectile : MonoBehaviour
 
         ProjectileManager.Instance.RegisterProjectile(this);
     }
+
+    private void OnDisable()
+    {
+        // 오브젝트 풀로 돌아갈 때 cleanup
+        owner = null;
+        target = null;
+    }
 }

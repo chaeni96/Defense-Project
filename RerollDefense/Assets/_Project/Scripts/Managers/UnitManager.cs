@@ -1,5 +1,6 @@
 using BGDatabaseEnum;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -8,11 +9,22 @@ using UnityEngine;
 public class UnitManager : MonoBehaviour
 {
     private static UnitManager _instance;
+
+    private List<UnitController> units = new List<UnitController>();
+
+    //job System 변수
+    private NativeArray<float3> unitPositions;
+    private NativeArray<float3> enemyPositions;
+    private NativeArray<float> attackRanges;
+    private NativeArray<int> targetIndices;
+    private NativeArray<float> attackTimers;
+
+
     public static UnitManager Instance
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<UnitManager>();
                 if (_instance == null)
@@ -26,15 +38,6 @@ public class UnitManager : MonoBehaviour
         }
     }
 
-    private List<UnitController> units = new List<UnitController>();
-
-    //job System 변수
-    private NativeArray<float3> unitPositions;
-    private NativeArray<float3> enemyPositions;
-    private NativeArray<float> attackRanges;
-    private NativeArray<int> targetIndices;
-    private NativeArray<float> attackTimers;
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -45,35 +48,38 @@ public class UnitManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
-        Initialize();
+        InitializeManager();
     }
 
-    private void Initialize()
+    private void InitializeManager()
     {
         units = new List<UnitController>();
-    }
 
-    public void RegisterUnit(UnitController unit)
-    {
-        if (!units.Contains(unit))
-        {
-            units.Add(unit);
-        }
     }
+    public List<UnitController> GetUnits() => units;
 
-    public void UnregisterUnit(UnitController unit)
+    private void InitializeArrays(int unitCount, int enemyCount)
     {
-        if (units.Contains(unit))
-        {
-            units.Remove(unit);
-        }
+        if (unitPositions.IsCreated) unitPositions.Dispose();
+        if (enemyPositions.IsCreated) enemyPositions.Dispose();
+        if (attackRanges.IsCreated) attackRanges.Dispose();
+        if (targetIndices.IsCreated) targetIndices.Dispose();
+        if (attackTimers.IsCreated) attackTimers.Dispose();
+
+        unitPositions = new NativeArray<float3>(unitCount, Allocator.TempJob);
+        enemyPositions = new NativeArray<float3>(enemyCount, Allocator.TempJob);
+        attackRanges = new NativeArray<float>(unitCount, Allocator.TempJob);
+        targetIndices = new NativeArray<int>(unitCount, Allocator.TempJob);
+        attackTimers = new NativeArray<float>(unitCount, Allocator.TempJob);
     }
 
     private void Update()
     {
-        if (units.Count == 0) return;
+        // 활성화된 유닛들만
+        var activeUnits = units.Where(u => u.IsActive()).ToList();
+        if (activeUnits.Count == 0) return;
 
-        List<Enemy> enemies = EnemyManager.Instance.GetEnemies();
+        List<Enemy> enemies = EnemyManager.Instance.GetActiveEnemies();
         if (enemies.Count == 0) return;
 
         InitializeArrays(units.Count, enemies.Count);
@@ -131,20 +137,31 @@ public class UnitManager : MonoBehaviour
         DisposeArrays();
     }
 
-    private void InitializeArrays(int unitCount, int enemyCount)
+    public void RegisterUnit(UnitController unit)
     {
-        if (unitPositions.IsCreated) unitPositions.Dispose();
-        if (enemyPositions.IsCreated) enemyPositions.Dispose();
-        if (attackRanges.IsCreated) attackRanges.Dispose();
-        if (targetIndices.IsCreated) targetIndices.Dispose();
-        if (attackTimers.IsCreated) attackTimers.Dispose();
-
-        unitPositions = new NativeArray<float3>(unitCount, Allocator.TempJob);
-        enemyPositions = new NativeArray<float3>(enemyCount, Allocator.TempJob);
-        attackRanges = new NativeArray<float>(unitCount, Allocator.TempJob);
-        targetIndices = new NativeArray<int>(unitCount, Allocator.TempJob);
-        attackTimers = new NativeArray<float>(unitCount, Allocator.TempJob);
+        if (!units.Contains(unit))
+        {
+            units.Add(unit);
+        }
     }
+
+    public void UnregisterUnit(UnitController unit)
+    {
+        if (units.Contains(unit))
+        {
+            units.Remove(unit);
+        }
+    }
+
+    // 게임 상태 변경 시 호출할 메서드
+    public void SetUnitsActive(bool active)
+    {
+        foreach (var unit in units)
+        {
+            unit.SetActive(active);
+        }
+    }
+
 
     private void DisposeArrays()
     {
@@ -166,15 +183,13 @@ public class UnitManager : MonoBehaviour
         units.Clear();
     }
 
+    private static bool isQuitting = false;
+
     private void OnApplicationQuit()
     {
-        CleanUp();
+        isQuitting = true;
     }
 
-    private void OnDisable()
-    {
-        CleanUp();
-    }
 }
 
 public struct UnitAttackJob : IJobParallelFor

@@ -15,7 +15,7 @@ public class StageManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<StageManager>();
 
@@ -91,4 +91,15 @@ public class StageManager : MonoBehaviour
         StartNextWave();
     }
 
+     public bool IsLastWave()
+    {
+        return currentWaveIndex >= currentStage.f_WaveData.Count;
+    }
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
 }

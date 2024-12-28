@@ -8,7 +8,7 @@ public class AttackSkillManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<AttackSkillManager>();
                 if (_instance == null)
@@ -61,5 +61,12 @@ public class AttackSkillManager : MonoBehaviour
             TheAOE aoe = aoeObj.GetComponent<TheAOE>();
             aoe.Initialize(unit, targets);
         }
+    }
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 }

@@ -17,7 +17,7 @@ public class SaveLoadManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<SaveLoadManager>();
 
@@ -74,6 +74,14 @@ public class SaveLoadManager : MonoBehaviour
             Debug.Log("no save file found at " + SaveFilePath);
             SaveData();
         }
+    }
+
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 
 }

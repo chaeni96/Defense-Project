@@ -16,12 +16,25 @@ public class Enemy : BasicObject
     public float attackPower;
     public float moveSpeed;
 
+    private bool isActive = true;
+
+
     public override void Initialize()
     {
         base.Initialize();
 
         HP = maxHP;
         UpdateHpText();
+    }
+
+
+    // 활성화 상태 확인 메서드
+    public bool IsActive() => isActive;
+
+    // 상태 변경 메서드
+    public void SetActive(bool active)
+    {
+        isActive = active;
     }
 
     public void UpdateHpText()
@@ -37,6 +50,7 @@ public class Enemy : BasicObject
         if (GameManager.Instance != null)
         {
             GameManager.Instance.TakeDamage(attackPower);
+            isActive = false;
         }
     }
 
@@ -50,6 +64,9 @@ public class Enemy : BasicObject
         if (HP <= 0)
         {
             HP = 0;
+            // 죽기 전에 이 Enemy를 향해 날아오는 모든 Projectile 제거
+            var projectiles = ProjectileManager.Instance.GetProjectilesTargetingEnemy(this);
+
             onDead(this);
         }
 
@@ -58,6 +75,8 @@ public class Enemy : BasicObject
 
     public void onDead(BasicObject controller)
     {
+        isActive = false;
+        EnemyManager.Instance.RemoveEnemy(this);  // 추가
         PoolingManager.Instance.ReturnObject(controller.gameObject);
     }
 }

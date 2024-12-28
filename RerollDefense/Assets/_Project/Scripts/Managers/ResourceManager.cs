@@ -11,13 +11,13 @@ public class ResourceManager : MonoBehaviour
     public static ResourceManager _instance;
 
     //로드한 리소스
-    Dictionary<string, UnityEngine.Object> _resources = new Dictionary<string, UnityEngine.Object>();
+    Dictionary<string, UnityEngine.Object> resources = new Dictionary<string, UnityEngine.Object>();
 
     public static ResourceManager Instance
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<ResourceManager>();
 
@@ -48,7 +48,7 @@ public class ResourceManager : MonoBehaviour
 
     public T Load<T>(string key) where T : Object
     {
-        if (_resources.TryGetValue(key, out Object resource))
+        if (resources.TryGetValue(key, out Object resource))
             return resource as T;
 
         return null;
@@ -74,7 +74,7 @@ public class ResourceManager : MonoBehaviour
     public void LoadAsync<T>(string key, Action<T> callback = null) where T : UnityEngine.Object
     {
         // 캐시 확인
-        if (_resources.TryGetValue(key, out Object resource))
+        if (resources.TryGetValue(key, out Object resource))
         {
             callback?.Invoke(resource as T);
             return;
@@ -85,9 +85,9 @@ public class ResourceManager : MonoBehaviour
         asyncOperation.Completed += (op) =>
         {
             // 중복 키 방지
-            if (!_resources.ContainsKey(key))
+            if (!resources.ContainsKey(key))
             {
-                _resources.Add(key, op.Result);
+                resources.Add(key, op.Result);
             }
             callback?.Invoke(op.Result);
         };
@@ -118,10 +118,15 @@ public class ResourceManager : MonoBehaviour
 
     public void Destroy(GameObject go)
     {
-        if (go == null)
-            return;
+        resources.Clear();
+    }
 
-        Object.Destroy(go);
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 
 }

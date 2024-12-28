@@ -20,7 +20,7 @@ public class TheAOE : MonoBehaviour
             hasDealtDamage = true;
         }
 
-        StartCoroutine(DestroyAfterDuration(0.15f));
+        StartCoroutine(DestroyAfterDuration(0.1f));
     }
 
     private void ApplyDamageToEnemies(List<Enemy> targets)
@@ -41,13 +41,6 @@ public class TheAOE : MonoBehaviour
     private IEnumerator DestroyAfterDuration(float duration)
     {
         yield return new WaitForSeconds(duration);
-        Destroy(gameObject);
-    }
-
-    private void OnDrawGizmos()
-    {
-        // 씬 뷰에서 공격 범위를 시각화
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, owner.attackRange);
+        PoolingManager.Instance.ReturnObject(this.gameObject);
     }
 }

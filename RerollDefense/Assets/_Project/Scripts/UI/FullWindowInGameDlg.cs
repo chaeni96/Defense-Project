@@ -21,6 +21,9 @@ public class FullWindowInGameDlg : UIBase
     [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
     [SerializeField] private GameObject CostGauge;  // HP Bar 감소 속도
     [SerializeField] private TMP_Text shopLevelText;  // HP Bar 감소 속도
+
+    public TMP_Text gameStateText;
+
     private float targetHPRatio;
     private Coroutine hpUpdateCoroutine;
 
@@ -43,6 +46,15 @@ public class FullWindowInGameDlg : UIBase
     {
         //test용
         initUI();
+
+        //이벤트 구독
+        GameManager.Instance.OnHPChanged += OnHPChanged;
+
+    }
+    //test용
+    private void Update()
+    {
+        gameStateText.text = GameManager.Instance.gaemState;
     }
 
     //TODO : UIManager 만들고 InitializeUI에 넣어야할 코드
@@ -51,7 +63,6 @@ public class FullWindowInGameDlg : UIBase
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnHPChanged += OnHPChanged;
             hpBar.value = GameManager.Instance.PlayerHP / GameManager.Instance.MaxHP;
             targetHPRatio = hpBar.value;
         }
@@ -231,6 +242,12 @@ public class FullWindowInGameDlg : UIBase
             yield return null;
         }
         hpBar.value = targetHPRatio;
+
+        if(targetHPRatio <= 0)
+        {
+            GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
+
+        }
     }
 
 

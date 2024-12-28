@@ -21,7 +21,6 @@ public class CostGaugeUI : MonoBehaviour
 
     private void Start()
     {
-
         // 게임 매니저의 OnCostUsed 이벤트에 구독
         GameManager.Instance.OnCostUsed += UpdateBarFillsOnCostUsed;
     }

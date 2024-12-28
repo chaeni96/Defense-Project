@@ -30,6 +30,8 @@ public class UnitController : PlacedObject
 
     public SkillAttackType attackType;
 
+    private bool isActive = true;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -88,10 +90,24 @@ public class UnitController : PlacedObject
 
     }
 
-    //TODO : 비활성화 할때 호출해줘야됨
-    private void OnDestroy()
+    public bool IsActive() => isActive;
+
+    public void SetActive(bool active)
     {
-        UnitManager.Instance.UnregisterUnit(this);
+        isActive = active;
+        if (!active)
+        {
+            attackTimer = 0f;  // 타이머 리셋
+        }
     }
 
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        // 공격 범위 시각화
+        Gizmos.color = new Color(1, 0, 0, 0.2f);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+#endif
 }

@@ -21,9 +21,8 @@ public class SceneStarter : MonoBehaviour
             if (currentCount == totalCount)
             {
                 PoolingManager.Instance.InitializeAllPools();
-
-                //stage 1부터 -> 나중에 변수로 바꾸기
-                StageManager.Instance.StartStage(1);
+               
+                GameManager.Instance.ChangeState(new GamePlayState());
                 
             }
         });

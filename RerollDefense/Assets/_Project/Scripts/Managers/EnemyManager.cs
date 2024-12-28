@@ -21,9 +21,11 @@ public class EnemyManager : MonoBehaviour
     private Dictionary<Enemy, int> enemyPathIndex = new Dictionary<Enemy, int>();     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
 
     //job System 변수
-    private NativeArray<float3> targetPositions;
     private TransformAccessArray transformAccessArray;
+    private NativeArray<float3> targetPositions;
     private NativeArray<float> moveSpeeds;  // 추가
+
+    private bool isActive = true;
 
     public static EnemyManager Instance
     {
@@ -53,6 +55,13 @@ public class EnemyManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
+        InitializeMnanager();
+    }
+
+    //초기화 작업 해주기 
+
+    public void InitializeMnanager()
+    {
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
         enemyPathIndex = new Dictionary<Enemy, int>();
     }
@@ -79,9 +88,10 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
-        if (enemies.Count == 0) return;
+        if (enemies.Count == 0 || !isActive) return;
 
         ShowDebug();
 
@@ -157,6 +167,7 @@ public class EnemyManager : MonoBehaviour
         moveSpeeds.Dispose();
     }
 
+    public List<Enemy> GetActiveEnemies() => enemies.Where(e => e.gameObject.activeSelf).ToList();
     public void UpdateEnemiesPath()
     {
         // 각 enemy마다 현재 위치에서 새로운 경로 계산
@@ -171,30 +182,41 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    public void SetActive(bool active)
     {
-        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
-        CleanUp();
+        isActive = active;
+        if (!active)
+        {
+            // 모든 진행중인 행동 중지
+            StopAllCoroutines();
+        }
     }
 
-    private void OnApplicationQuit()
+    public void RemoveEnemy(Enemy enemy)
+    {
+        if (enemies.Contains(enemy))
+        {
+            
+            enemies.Remove(enemy);
+            enemyPaths.Remove(enemy);
+            enemyPathIndex.Remove(enemy);
+        }
+    }
+
+    private void OnDestroy()
     {
         CleanUp();
     }
 
     private void CleanUp()
     {
+        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
 
         enemyPaths.Clear();
         enemyPathIndex.Clear();
         enemies.Clear();
-    }
-
-    private void OnDisable()
-    {
-        CleanUp();
     }
 
     #region 길찾기 Debug

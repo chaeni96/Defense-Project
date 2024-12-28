@@ -18,7 +18,7 @@ public class PathFindingManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<PathFindingManager>();
 
@@ -291,7 +291,12 @@ public class PathFindingManager : MonoBehaviour
         return false;
     }
 
+    private static bool isQuitting = false;
 
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
     private class Node
     {
         public Vector3Int Position;

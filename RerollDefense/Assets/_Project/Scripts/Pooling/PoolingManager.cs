@@ -16,7 +16,7 @@ public class PoolingManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<PoolingManager>();
 
@@ -144,5 +144,13 @@ public class PoolingManager : MonoBehaviour
             poolDictionary.Clear();
         }
         _instance = null;
+    }
+
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 }

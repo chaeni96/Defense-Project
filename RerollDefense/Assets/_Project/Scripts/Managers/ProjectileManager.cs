@@ -20,7 +20,7 @@ public class ProjectileManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance == null && !isQuitting)
             {
                 _instance = FindObjectOfType<ProjectileManager>();
                 if (_instance == null)
@@ -49,12 +49,14 @@ public class ProjectileManager : MonoBehaviour
     {
         if (activeProjectiles.Count == 0) return;
 
-        // 죽은 타겟을 가진 투사체 제거
+        // 죽은 타겟을 가진 투사체 처리를 먼저
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
-            if (activeProjectiles[i].target == null)
+            TheProjectile projectile = activeProjectiles[i];
+            // 타겟이 없거나 비활성화된 경우
+            if (projectile.target == null || !projectile.target.gameObject.activeSelf)
             {
-                PoolingManager.Instance.ReturnObject(activeProjectiles[i].gameObject);
+                PoolingManager.Instance.ReturnObject(projectile.gameObject);
                 activeProjectiles.RemoveAt(i);
                 continue;
             }
@@ -106,10 +108,16 @@ public class ProjectileManager : MonoBehaviour
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
             TheProjectile projectile = activeProjectiles[i];
+            if (!projectile.gameObject.activeSelf) continue;
+
             float dist = Vector2.Distance(projectile.transform.position, projectile.target.transform.position);
             if (dist < 0.1f)
             {
-                projectile.target.onDamaged(projectile.owner, projectile.damage);
+                // 히트 처리 전에 타겟 유효성 한번 더 체크
+                if (projectile.target != null && projectile.target.gameObject.activeSelf)
+                {
+                    projectile.target.onDamaged(projectile.owner, projectile.damage);
+                }
 
                 PoolingManager.Instance.ReturnObject(projectile.gameObject);
                 activeProjectiles.RemoveAt(i);
@@ -125,12 +133,28 @@ public class ProjectileManager : MonoBehaviour
         }
     }
 
+    // 특정 enemy를 타겟으로 하는 모든 projectile 반환
+    public List<TheProjectile> GetProjectilesTargetingEnemy(Enemy enemy)
+    {
+        return activeProjectiles.Where(p => p != null && p.target == enemy).ToList();
+    }
+
     private void OnDestroy()
     {
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (speeds.IsCreated) speeds.Dispose();
+
+        activeProjectiles.Clear();
     }
+
+    private static bool isQuitting = false;
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
 }
 
 public struct ProjectileMoveJob : IJobParallelForTransform
@@ -144,9 +168,26 @@ public struct ProjectileMoveJob : IJobParallelForTransform
         float3 currentPos = transform.position;
         float3 targetPos = TargetPositions[index];
 
+        // 현재 위치에서 타겟까지의 방향
         float3 direction = math.normalize(targetPos - currentPos);
-        float3 newPosition = currentPos + direction * Speeds[index] * DeltaTime;
 
-        transform.position = newPosition;
+        // 이동할 거리 계산
+        float moveDistance = Speeds[index] * DeltaTime;
+        float distanceToTarget = math.distance(currentPos, targetPos);
+
+        // 타겟까지 거리가 이동 거리보다 작으면 바로 타겟 위치로
+        if (distanceToTarget <= moveDistance)
+        {
+            transform.position = targetPos;
+        }
+        else
+        {
+            // 정확한 방향으로 이동
+            float3 newPosition = currentPos + direction * moveDistance;
+            transform.position = newPosition;
+        }
     }
+
+
+
 }
