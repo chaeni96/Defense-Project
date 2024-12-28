@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpText: {fileID: 6438724866160267216}
-  maxHP: 1
+  maxHP: 10
   HP: 0
   attackPower: 20
   moveSpeed: 0.3
