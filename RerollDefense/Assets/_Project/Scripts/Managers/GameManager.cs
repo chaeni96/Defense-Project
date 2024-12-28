@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<GameManager>();
 
@@ -170,14 +170,14 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        SaveLoadManager.Instance.LoadData();
-
-        //TODO : 나중에 레디씬에 넣어주기
-        InitGameManager();
     }
 
     public void InitGameManager()
     {
+
+        SaveLoadManager.Instance.LoadData();
+
+
         mainCamera = Camera.main;
         CurrentCost = 0;
         MaxCost = 10;
@@ -235,10 +235,5 @@ public class GameManager : MonoBehaviour
         // 마나 시스템 UI 업데이트 필요
     }
 
-    private static bool isQuitting = false;
 
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
 }

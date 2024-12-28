@@ -16,7 +16,7 @@ public class TileMapManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<TileMapManager>();
 
@@ -139,10 +139,5 @@ public class TileMapManager : MonoBehaviour
     }
 
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
+    
 }

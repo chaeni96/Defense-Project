@@ -24,7 +24,7 @@ public class UnitManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null && !isQuitting)
+            if (_instance == null)
             {
                 _instance = FindObjectOfType<UnitManager>();
                 if (_instance == null)
@@ -183,12 +183,7 @@ public class UnitManager : MonoBehaviour
         units.Clear();
     }
 
-    private static bool isQuitting = false;
-
-    private void OnApplicationQuit()
-    {
-        isQuitting = true;
-    }
+    
 
 }
 
