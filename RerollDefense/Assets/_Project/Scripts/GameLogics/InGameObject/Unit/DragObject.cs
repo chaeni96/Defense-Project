@@ -9,7 +9,7 @@ public class DragObject : BasicObject
 {
     public bool isPlaced { get; private set; } = false;
 
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     private List<Vector3Int> relativeTiles;
     private Vector3Int previousTilePosition;
     private Vector3 originalPos;
@@ -21,7 +21,7 @@ public class DragObject : BasicObject
     public override void Initialize()
     {
         base.Initialize();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        //spriteRenderer = GetComponent<SpriteRenderer>();
         previousTilePosition = new Vector3Int(-1, -1, -1);
         originalPos = transform.position;
         originColor = spriteRenderer.color;
