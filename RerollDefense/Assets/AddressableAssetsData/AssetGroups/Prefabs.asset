@@ -59,6 +59,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10e08e1a11a488a46af717e9c082812a
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Archor.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf44b4a3b220b1b42a8ce9ff93bc8e1d
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Mage.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4733bd7e0ecda334c8e1b0da4ab0660c
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Base.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:

@@ -20,7 +20,7 @@ public class TheAOE : MonoBehaviour
             hasDealtDamage = true;
         }
 
-        StartCoroutine(DestroyAfterDuration(0.1f));
+        StartCoroutine(DestroyAfterDuration(0.7f));
     }
 
     private void ApplyDamageToEnemies(List<Enemy> targets)

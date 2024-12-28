@@ -174,8 +174,11 @@ public class DragObject : BasicObject
     {
         foreach (var position in GetTilePositions(previousTilePosition))
         {
-            GameObject placedObjectInstance = PoolingManager.Instance.GetObject("UnitBlock", TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
 
+            var currentUnitIndex = relativeTiles.IndexOf(position - previousTilePosition);
+            var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
+            var unitBuildData = tileShapeData.f_unitBuildData[currentUnitIndex];
+            GameObject placedObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
 
             UnitController unitObject = placedObjectInstance.GetComponent<UnitController>();
 
@@ -183,7 +186,7 @@ public class DragObject : BasicObject
             {
                 unitObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(position);
                 unitObject.RegistereTileID(uniqueID);
-                unitObject.InitializeUnitStat(tileShapeName, relativeTiles.IndexOf(position - previousTilePosition));
+                unitObject.InitializeUnitStat(unitBuildData);
                 UnitManager.Instance.RegisterUnit(unitObject);
             }
         }

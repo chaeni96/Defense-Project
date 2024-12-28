@@ -14,7 +14,7 @@ public class PlacedObject : BasicObject
     //선택한 블록이 들어있는 블록들만 제거해야됨
     //데이터 받아올때 
 
-    public TMP_Text unitNameText;
+    //public TMP_Text unitNameText;
 
     public string tileUniqueID;
 
@@ -33,7 +33,7 @@ public class PlacedObject : BasicObject
             var buildData = tileShapeData.f_unitBuildData[tileIndex];
             var unitData = buildData.f_unitData;
 
-            unitNameText.text = unitData.f_name;
+            //unitNameText.text = unitData.f_name;
         }
 
     }

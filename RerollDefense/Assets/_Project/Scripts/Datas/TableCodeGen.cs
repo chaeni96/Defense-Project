@@ -240,6 +240,7 @@ public partial class D_UnitData : BGEntity
 		public const string name = "name";
 		public const string statDatas = "statDatas";
 		public const string SkillAttackType = "SkillAttackType";
+		public const string unitPrefabKey = "unitPrefabKey";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5098187849243670608UL,7590059858118427043UL), () => _metaDefault = null));
@@ -256,12 +257,19 @@ public partial class D_UnitData : BGEntity
 		get => (BGDatabaseEnum.SkillAttackType) _f_SkillAttackType.GetStoredValue(Index);
 		set => _f_SkillAttackType.SetStoredValue(Index, (System.Int32) value);
 	}
+	public System.String f_unitPrefabKey
+	{
+		get => _f_unitPrefabKey[Index];
+		set => _f_unitPrefabKey[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4978381386621882592UL, 9377071611302703509UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_statDatas;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_statDatas => _ufle12jhs77_f_statDatas ?? (_ufle12jhs77_f_statDatas = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5475734705730849580UL, 3233909037450398366UL), () => _ufle12jhs77_f_statDatas = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SkillAttackType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SkillAttackType => _ufle12jhs77_f_SkillAttackType ?? (_ufle12jhs77_f_SkillAttackType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5274816935596477599UL, 15588288739445877685UL), () => _ufle12jhs77_f_SkillAttackType = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_unitPrefabKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_unitPrefabKey => _ufle12jhs77_f_unitPrefabKey ?? (_ufle12jhs77_f_unitPrefabKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5157731961179646324UL, 3616371428011271552UL), () => _ufle12jhs77_f_unitPrefabKey = null));
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
