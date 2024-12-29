@@ -87,7 +87,7 @@ MonoBehaviour:
   attackTimer: 0
   tileUniqueID: 
   attackType: 0
-  unitSprite: {fileID: 0}
+  unitSprite: {fileID: 8548240474736407140}
   unitBaseSprite: {fileID: 8548240474736407140}
 --- !u!50 &6533918697068061961
 Rigidbody2D:

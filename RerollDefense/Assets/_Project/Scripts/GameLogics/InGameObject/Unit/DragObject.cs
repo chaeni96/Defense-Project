@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UIElements;
 using System.Xml;
+using UnityEngine.Rendering.Universal;
 
 public class DragObject : BasicObject
 {
@@ -48,14 +49,20 @@ public class DragObject : BasicObject
         tileShapeName = tileDataKey;
 
         var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
+
+
         if (tileShapeData != null)
         {
             relativeTiles = new List<Vector3Int>();
             foreach (var tile in tileShapeData.f_unitBuildData)
             {
+                D_TilePosData position = tile.f_TilePos;
+                Vector2 tilePos = position.f_TilePos;
+
+
                 Vector3Int relativeTile = new Vector3Int(
-                    Mathf.RoundToInt(tile.f_position.x),
-                    Mathf.RoundToInt(tile.f_position.y),
+                    Mathf.RoundToInt(tilePos.x),
+                    Mathf.RoundToInt(tilePos.y),
                     0
                 );
                 relativeTiles.Add(relativeTile);
