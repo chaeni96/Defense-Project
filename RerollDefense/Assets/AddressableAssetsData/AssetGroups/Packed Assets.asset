@@ -17,20 +17,14 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f780d69711c212f498fac66dc19c73ad
   m_SerializeEntries:
-  - m_GUID: 65454dc1d272ed248a09d8e5fb9962c0
-    m_Address: UnitCardObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UI
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3172785f15c6344418c5322b05b43c37
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/UI/InGame/FullWindowInGameDlg.prefab
+    m_Address: FullWindowInGameDlg
     m_ReadOnly: 0
     m_SerializedLabels:
     - GameSceneUI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1a1754cc3344d646865efe55aa9e565
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/UI/InGame/FieldGameResultPopup.prefab
+    m_Address: FieldGameResultPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - GameSceneUI

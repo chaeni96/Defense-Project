@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class UnitController : PlacedObject
 {
-    public LayerMask targetLayer; // 타겟으로 할 Layer
-
-
     //BgDatabase에서 읽어오기
     [HideInInspector]
     public int attack;

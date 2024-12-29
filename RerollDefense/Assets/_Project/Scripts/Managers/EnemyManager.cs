@@ -67,9 +67,10 @@ public class EnemyManager : MonoBehaviour
     //모든 enemy 가져오기
     public List<Enemy> GetEnemies() => enemies;
 
-    public void SpawnEnemy(string enemyName)
+    public void SpawnEnemy(string enemyName, Vector3? initPos = null)
     {
-        Vector3 startPos = PathFindingManager.Instance.GetStartPosition();
+
+        Vector3 startPos = initPos ?? PathFindingManager.Instance.GetStartPosition();
         GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos);
 
         if (enemyObj != null)

@@ -1,3 +1,4 @@
+using BGDatabaseEnum;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,24 +10,25 @@ public class Enemy : BasicObject
 
 
     public TMP_Text hpText;
-
+    public SpriteRenderer spriteRenderer;
     //enemy Stat -> 프리팹에 저장해두기
     public float maxHP;
     public float HP;
     public float attackPower;
     public float moveSpeed;
-
     private bool isActive = true;
+    
+    [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
 
 
     public override void Initialize()
     {
         base.Initialize();
-
         HP = maxHP;
         UpdateHpText();
     }
 
+ 
 
     // 활성화 상태 확인 메서드
     public bool IsActive() => isActive;
@@ -64,9 +66,9 @@ public class Enemy : BasicObject
         if (HP <= 0)
         {
             HP = 0;
+
             // 죽기 전에 이 Enemy를 향해 날아오는 모든 Projectile 제거
             var projectiles = ProjectileManager.Instance.GetProjectilesTargetingEnemy(this);
-
             onDead(this);
         }
 
@@ -75,8 +77,18 @@ public class Enemy : BasicObject
 
     public void onDead(BasicObject controller)
     {
+        if(enemyType == EnemyType.Boss)
+        {
+
+            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffect", this.transform.position);
+
+            explosion.GetComponent<EffectExplosion>().InitializeEffect(this, 10);
+        }
+
         isActive = false;
         EnemyManager.Instance.RemoveEnemy(this);  // 추가
         PoolingManager.Instance.ReturnObject(controller.gameObject);
     }
+
+
 }

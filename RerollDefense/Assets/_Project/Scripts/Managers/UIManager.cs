@@ -101,11 +101,12 @@ public class UIManager : MonoBehaviour
             prefabName = typeof(T).Name;
         }
 
-        var prefabData = D_UIPrefabData.FindEntity(data => data.f_name == prefabName);
+        //TODO : FindEntity말고 다른걸로
+        var prefabData = D_UIPrefabData.FindEntity(data => data.f_PrefabKey == prefabName);
         if (prefabData != null)
         {
             Transform parent = GetCanvasTransform(typeof(T));
-            GameObject uiObject = ResourceManager.Instance.Instantiate(prefabData.f_PrefabPath, parent);
+            GameObject uiObject = ResourceManager.Instance.Instantiate(prefabData.f_PrefabKey, parent);
             if (uiObject != null)
             {
                 T ui = uiObject.GetComponent<T>();

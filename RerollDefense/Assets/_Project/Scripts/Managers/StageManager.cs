@@ -64,7 +64,7 @@ public class StageManager : MonoBehaviour
     {
         if (currentWaveIndex >= currentStage.f_WaveData.Count)
         {
-            Debug.Log("모든 웨이브 클리어!");
+            Debug.Log("마지막 웨이브!");
             return;
         }
 
@@ -96,7 +96,7 @@ public class StageManager : MonoBehaviour
 
         for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
         {
-            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_AddressableKey);
+            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_name);
             yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
         }
     }

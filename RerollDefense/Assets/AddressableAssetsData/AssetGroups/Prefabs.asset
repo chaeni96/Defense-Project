@@ -18,25 +18,25 @@ MonoBehaviour:
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
   - m_GUID: 3e62791ad18453d4fbcefad69b097cc7
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/UnitBlock.prefab
+    m_Address: UnitBlock
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17931eab2a9646449fce38cec7fbca4
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/DragObject.prefab
+    m_Address: DragObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a34f01674b0d3194fb7b3a8b69edbbab
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Enemy.prefab
+    m_Address: Enemy_Normal
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a86359a347bb0a54495879ea486c79ab
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/UnitInstanceBlock.prefab
+    m_Address: UnitInstanceBlock
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
@@ -48,37 +48,55 @@ MonoBehaviour:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8bdd5da0c075197458199b6ed365378e
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/AttackSkill/AoeRange.prefab
+    m_Address: AoeRange
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a68d83ddc5345554d8cdcb3af8487797
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/AttackSkill/Projectile.prefab
+    m_Address: Projectile
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10e08e1a11a488a46af717e9c082812a
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Archor.prefab
+    m_Address: Unit_Archor
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf44b4a3b220b1b42a8ce9ff93bc8e1d
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Mage.prefab
+    m_Address: Unit_Mage
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4733bd7e0ecda334c8e1b0da4ab0660c
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Base.prefab
+    m_Address: Unit_Base
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 82b35e6bf7964a5418a0de0cb5f50c15
-    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/Unit/Unit_Archor2.prefab
+    m_Address: Unit_Archor2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c023f9d1f357a8d4e920fa0603358a5c
+    m_Address: Enemy_Boss
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65454dc1d272ed248a09d8e5fb9962c0
+    m_Address: UnitCardObject
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5a041ec2a45cdb44b9ebddbdac20f59
+    m_Address: ExplosionEffectObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

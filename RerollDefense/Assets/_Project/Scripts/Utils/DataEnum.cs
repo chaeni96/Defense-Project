@@ -25,6 +25,14 @@ namespace BGDatabaseEnum
         None,
         Projectile,
         AOE,
-
     }
+
+    public enum EnemyType
+    {
+        Normal,
+        Boss,
+        
+    }
+
+
 }

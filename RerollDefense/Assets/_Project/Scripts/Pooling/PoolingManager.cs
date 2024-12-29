@@ -52,9 +52,9 @@ public class PoolingManager : MonoBehaviour
 
         foreach (var poolData in poolDataList)
         {
-            if (!string.IsNullOrEmpty(poolData.f_AdrressablePath))
+            if (!string.IsNullOrEmpty(poolData.f_PoolObjectAddressableKey))
             {
-                CreatePool(poolData.f_name, poolData.f_AdrressablePath, poolData.f_initialSize);
+                CreatePool(poolData.f_name, poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
             }
         }
     }
@@ -79,7 +79,7 @@ public class PoolingManager : MonoBehaviour
             var poolData = D_ObjectPoolData.GetEntity(id);
             if (poolData != null)
             {
-                CreatePool(poolData.f_name, poolData.f_AdrressablePath, poolData.f_initialSize);
+                CreatePool(poolData.f_name, poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
             }
             else
             {
@@ -99,7 +99,7 @@ public class PoolingManager : MonoBehaviour
             var poolData = D_ObjectPoolData.GetEntity(id);
             if (poolData != null)
             {
-                obj = ResourceManager.Instance.Instantiate(poolData.f_AdrressablePath);
+                obj = ResourceManager.Instance.Instantiate(poolData.f_PoolObjectAddressableKey);
             }
 
             if (obj == null)
