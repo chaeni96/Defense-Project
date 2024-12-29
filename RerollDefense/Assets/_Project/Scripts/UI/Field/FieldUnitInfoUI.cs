@@ -14,7 +14,7 @@ public class FieldUnitInfoUI : PopupBase
     [SerializeField] private RectTransform imgRect;
 
     [SerializeField] private UnitInfoComponent infoObject;
-    [SerializeField] private Transform infoLayout; 
+    [SerializeField] private RectTransform infoLayout; 
 
     private UnitController unitObject;
     private Camera uiCamera;
@@ -44,6 +44,7 @@ public class FieldUnitInfoUI : PopupBase
 
         // 스탯 개수만큼 infoObject 생성
         var stats = unitObject.GetStats(); // UnitController에서 스탯 정보를 가져옴
+
         foreach (var stat in stats)
         {
             CreateInfoObject(stat.Key, stat.Value);
