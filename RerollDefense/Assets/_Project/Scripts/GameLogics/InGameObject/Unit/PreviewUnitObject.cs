@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlacedObject : BasicObject
+public class PreviewUnitObject : BasicObject
 {
 
     //배치된 오브젝트에서 필요한거 -> 클릭했을때 팝업창 나와야됨
@@ -16,7 +16,7 @@ public class PlacedObject : BasicObject
 
     //public TMP_Text unitNameText;
 
-    public string tileUniqueID;
+    private SpriteRenderer sprite;
 
     public override void Initialize()
     {
@@ -34,15 +34,11 @@ public class PlacedObject : BasicObject
             var unitData = buildData.f_unitData;
 
             //unitNameText.text = unitData.f_name;
+
+            //유닛 컨트롤러에 있는 스프라이트 가져와야됨
+            //sprite
         }
 
     }
 
-  
-    //같은 tileshpae을 가진 유닛이 여러개일수있으므로 생성시 고유 ID 부여
-    public void RegistereTileID(string uniqueID)
-    {
-        tileUniqueID = uniqueID;
-
-    }
 }

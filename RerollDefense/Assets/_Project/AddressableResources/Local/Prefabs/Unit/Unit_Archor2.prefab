@@ -80,17 +80,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481cfc4e0ad18bb4db1103e1c43d1bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUniqueID: 
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 1024
   attack: 0
   attackSpeed: 0
   attackRange: 0
   unitBlockSize: 0
   attackCoolDown: 0
   attackTimer: 0
+  unitSprite: {fileID: 6610365595354033619}
+  unitBaseSprite: {fileID: 8548240474736407140}
   targetObject: {fileID: 0}
+  tileUniqueID: 
   attackType: 0
 --- !u!50 &6533918697068061961
 Rigidbody2D:

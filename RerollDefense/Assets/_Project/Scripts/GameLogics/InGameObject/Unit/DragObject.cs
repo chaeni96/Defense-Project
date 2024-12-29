@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UIElements;
+using System.Xml;
 
 public class DragObject : BasicObject
 {
@@ -88,25 +89,25 @@ public class DragObject : BasicObject
     {
         // 각 상대 타일 위치에 프리뷰 인스턴스 생성
 
-        foreach (var relativeTile in relativeTiles)
+        foreach (var position in GetTilePositions(previousTilePosition))
         {
-            GameObject previewInstance = PoolingManager.Instance.GetObject("UnitInstanceBlock",pointerPosition);
-            PlacedObject placedObject = previewInstance.GetComponent<PlacedObject>();
 
-            if (previewInstance != null)
+            var currentUnitIndex = relativeTiles.IndexOf(position - previousTilePosition);
+            var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
+            var unitBuildData = tileShapeData.f_unitBuildData[currentUnitIndex];
+
+            GameObject previewObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
+
+            UnitController previewObject = previewObjectInstance.GetComponent<UnitController>();
+
+            if (previewObject != null)
             {
-                // InitializeUnitStat에 정확한 인덱스 전달
-                int unitIndex = relativeTiles.IndexOf(relativeTile);
-                placedObject.InitializeObject(tileShapeName, unitIndex);
+                previewObject.InitializeUnitStat(unitBuildData);
 
-                // 프리뷰 스타일 설정 (반투명)
-                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
-                }
+                previewObject.ShowPreviewUnit();
 
-                previewInstances.Add(previewInstance);
+                previewInstances.Add(previewObjectInstance);
+
             }
         }
     }
@@ -185,7 +186,7 @@ public class DragObject : BasicObject
             if (unitObject != null)
             {
                 unitObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(position);
-                unitObject.RegistereTileID(uniqueID);
+                unitObject.RegistereTileID(uniqueID, tileShapeData);
                 unitObject.InitializeUnitStat(unitBuildData);
                 UnitManager.Instance.RegisterUnit(unitObject);
             }

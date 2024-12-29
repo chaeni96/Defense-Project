@@ -1670,7 +1670,7 @@ GameObject:
   - component: {fileID: 4119536239252950573}
   - component: {fileID: 2664757941848358482}
   m_Layer: 5
-  m_Name: FieldUnitInfoPopup
+  m_Name: TestUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -17,12 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
-  - m_GUID: 3e62791ad18453d4fbcefad69b097cc7
-    m_Address: UnitBlock
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a17931eab2a9646449fce38cec7fbca4
     m_Address: DragObject
     m_ReadOnly: 0
@@ -31,12 +25,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a34f01674b0d3194fb7b3a8b69edbbab
     m_Address: Enemy_Normal
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a86359a347bb0a54495879ea486c79ab
-    m_Address: UnitInstanceBlock
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

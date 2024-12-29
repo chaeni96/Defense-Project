@@ -151,6 +151,27 @@ public class UnitManager : MonoBehaviour
         }
     }
 
+    //같은 tileUniqueID 가진 유닛 찾기
+    public List<UnitController> GetUnitsByTileID(string tileID)
+    {
+        return units.Where(unit => unit.tileUniqueID == tileID).ToList();
+    }
+
+    //유닛 삭제 메서드
+    public void RemoveUnitsByTileID(UnitController unit)
+    {
+
+        if(unit != null)
+        {
+
+            UnregisterUnit(unit); // UnitManager 리스트에서 제거
+            PoolingManager.Instance.ReturnObject(unit.gameObject);
+
+
+        }
+    }
+
+
     // 게임 상태 변경 시 호출할 메서드
     public void SetUnitsActive(bool active)
     {

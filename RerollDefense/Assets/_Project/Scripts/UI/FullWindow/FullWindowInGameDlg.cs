@@ -137,10 +137,10 @@ public class FullWindowInGameDlg : FullWindowBase
 
         // 각 등급 확률 누적 계산
         var normalShopProbability = shopProbabilityData.f_normalGradeChance;
-        var rareShopProbability = normalShopProbability + shopProbabilityData.f_rareGradeChance;
-        var epicProbability = rareShopProbability + shopProbabilityData.f_epicGradeChance;
-        var legendaryShopProbability = epicProbability + shopProbabilityData.f_legendaryGradeChance;
-        var mythicShopProbability = legendaryShopProbability + shopProbabilityData.f_mythicGradeChance;
+        var rareShopProbability =+ shopProbabilityData.f_rareGradeChance;
+        var epicProbability =  shopProbabilityData.f_epicGradeChance;
+        var legendaryShopProbability =  shopProbabilityData.f_legendaryGradeChance;
+        var mythicShopProbability = shopProbabilityData.f_mythicGradeChance;
 
 
         //랜덤값 생성
