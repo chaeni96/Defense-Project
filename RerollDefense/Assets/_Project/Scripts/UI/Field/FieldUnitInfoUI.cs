@@ -68,7 +68,6 @@ public class FieldUnitInfoUI : PopupBase
     {
         // infoObject 복제
         UnitInfoComponent newInfoObject = Instantiate(infoObject, infoLayout);
-        newInfoObject.gameObject.SetActive(true);
 
         // 스탯 이름과 값 설정
         newInfoObject.SetStatInfo(statName, statValue);

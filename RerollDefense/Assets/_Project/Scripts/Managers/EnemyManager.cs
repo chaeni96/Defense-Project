@@ -90,22 +90,22 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
-        if (enemies.Count == 0 || !isActive) return;
+        if (enemies.Count == 0 || !isActive) return; //enemy 없거나 비활성화면 리턴해야됨
 
-        ShowDebug();
+        ShowDebug(); //디버깅용, scene에서 길 보여줌
 
-        // TransformAccessArray 초기화
+        // TransformAccessArray, NativaArray 생성하고 이전것들은 Dispose해줘야됨
+        // Enemy가 중간에 죽거나 새로 생성되는등 동적으로 관리해야되기때문에 크기 고정하면안됨
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         Transform[] transforms = enemies.Select(e => e.transform).ToArray();
         transformAccessArray = new TransformAccessArray(transforms);
 
-        // 타겟 포지션, enemy speed 설정
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
-
         targetPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
         moveSpeeds = new NativeArray<float>(enemies.Count, Allocator.TempJob);
 
+        //jobSystem에 필요한 데이터 설정
         for (int i = 0; i < enemies.Count; i++)
         {
             Enemy enemy = enemies[i];
@@ -114,17 +114,27 @@ public class EnemyManager : MonoBehaviour
 
             moveSpeeds[i] = enemy.moveSpeed;
 
-            if (pathIndex < path.Count - 1)
+            if (pathIndex < path.Count - 1) // 다음 경로 포인트 있을 경우
             {
-                targetPositions[i] = path[pathIndex + 1];
+                // 다음 목표 지점으로 이동 시작할 때 방향 체크
+                Vector3 currentPos = path[pathIndex];
+                Vector3 nextPos = path[pathIndex + 1];
+                float directionX = nextPos.x - currentPos.x;
+
+                if (Mathf.Abs(directionX) > 0.01f)
+                {
+                    enemy.spriteRenderer.flipX = directionX < 0;
+                }
+
+                targetPositions[i] = path[pathIndex + 1]; // 다음 목표 위치 설정
             }
             else
             {
-                targetPositions[i] = enemy.transform.position;
+                targetPositions[i] = enemy.transform.position; //마지막 위치면 현재 위치 유지
             }
         }
 
-        // Job 실행
+        // Job 실행, 매 프레임마다 job 실행
         var moveJob = new MoveEnemiesJob
         {
             TargetPositions = targetPositions,
@@ -136,7 +146,7 @@ public class EnemyManager : MonoBehaviour
         JobHandle jobHandle = moveJob.Schedule(transformAccessArray);
         jobHandle.Complete();
 
-        // 도착 체크 및 enemy 관리
+        // 이동 후 처리 (도착 체크 및 enemy 관리)
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             Enemy enemy = enemies[i];

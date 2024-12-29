@@ -85,11 +85,10 @@ MonoBehaviour:
   unitBlockSize: 0
   attackCoolDown: 0
   attackTimer: 0
-  unitSprite: {fileID: 0}
-  unitBaseSprite: {fileID: 8548240474736407140}
-  targetObject: {fileID: 0}
   tileUniqueID: 
   attackType: 0
+  unitSprite: {fileID: 0}
+  unitBaseSprite: {fileID: 8548240474736407140}
 --- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4
@@ -209,7 +208,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 105472838, guid: cfd129360e1e9964ca4e4a2465a2be87, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

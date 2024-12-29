@@ -76,7 +76,7 @@ public class UnitController : BasicObject, IPointerClickHandler
 
         var unitData = buildData.f_unitData;
         attackType = unitData.f_SkillAttackType;
-        if (unitData != null)
+        if (unitData != null || attackType != SkillAttackType.None)
         {
             // statDatas를 순회하면서 스탯 설정
             foreach (var statData in unitData.f_statDatas)
@@ -133,12 +133,17 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //유닛 클릭했을때 팝업창 띄우기
-         FieldUnitInfoUI unitInfo = UIManager.Instance.ShowUI<FieldUnitInfoUI>("FieldUnitInfoUI");
 
-        //팝업창에 타일 정보 넘겨주기
+        if(isActive)
+        {
+            //유닛 클릭했을때 팝업창 띄우기
+            FieldUnitInfoUI unitInfo = UIManager.Instance.ShowUI<FieldUnitInfoUI>("FieldUnitInfoUI");
 
-        unitInfo.InitUnitInfo(this);
+            //팝업창에 타일 정보 넘겨주기
+
+            unitInfo.InitUnitInfo(this);
+        }
+     
 
 
     }
