@@ -36,3 +36,19 @@ namespace BGDatabaseEnum
 
 
 }
+
+
+//database에서 사용안하는 enum
+public class Define
+{
+ 
+    public enum Sound
+    {
+        Bgm,
+        Effect,
+        MaxCount,
+    }
+
+
+
+}
