@@ -16,7 +16,32 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: de89a5a99ca85f34a9f4949f5ca13040
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: eccfff0d1f1a1114caf608af44072049
+    m_Address: Sounds/skill_005
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 736aaff4a50f57546aa08eff7645823c
+    m_Address: Sounds/skill_006
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7872704b18837ee48a1b968c7265b162
+    m_Address: Sounds/skill_001
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5983b9e11b7f0f34686211797e017c3b
+    m_Address: Sounds/btn_00
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ff9b8aa5ac0aed4fb2c38575c183602
+    m_Address: Sounds/die_04
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:

@@ -76,13 +76,10 @@ public class Enemy : BasicObject
             // 데미지를 입으면 빨간색으로 깜빡임
             if (spriteRenderer != null)
             {
-                // 현재 색상 저장
-                Color originalColor = spriteRenderer.color;
-
                 // 색상 변경 시퀀스
                 DOTween.Sequence()
                     .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                    .Append(spriteRenderer.DOColor(originalColor, 0.1f));  // 0.1초 동안 원래 색으로
+                    .Append(spriteRenderer.DOColor(Color.white, 0.1f));  // 0.1초 동안 원래 색으로
             }
         }
 

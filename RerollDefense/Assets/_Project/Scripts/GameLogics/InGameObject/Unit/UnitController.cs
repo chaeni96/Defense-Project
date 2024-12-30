@@ -117,7 +117,7 @@ public class UnitController : BasicObject, IPointerClickHandler
         // vibrato: Áøµ¿ È½¼ö
         // elasticity: Åº¼º (0~1)
 
-        unitSprite.transform.DOPunchScale(punch: new Vector3(0.6f, 0.6f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
+        unitSprite.transform.DOPunchScale(punch: new Vector3(0.4f, 0.4f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
 
 
        

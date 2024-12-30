@@ -45,6 +45,8 @@ public class FullWindowInGameDlg : FullWindowBase
         GameManager.Instance.OnHPChanged += OnHPChanged;
         GameManager.Instance.OnCostUsed += OnCostUsed;  // 추가
 
+
+
     }
 
     public void initUI()
@@ -132,12 +134,13 @@ public class FullWindowInGameDlg : FullWindowBase
         //상점 레벨에 따른 확률 데이터 로드
         var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
 
-        // 각 등급 확률 누적 계산
-        var normalShopProbability = shopProbabilityData.f_normalGradeChance;
-        var rareShopProbability =+ shopProbabilityData.f_rareGradeChance;
-        var epicProbability =  shopProbabilityData.f_epicGradeChance;
-        var legendaryShopProbability =  shopProbabilityData.f_legendaryGradeChance;
-        var mythicShopProbability = shopProbabilityData.f_mythicGradeChance;
+        // 각 등급 확률 계산
+        var normalProb = shopProbabilityData.f_normalGradeChance;  // 100 or 70
+        var rareProb = normalProb + shopProbabilityData.f_rareGradeChance;  // 100 or 85
+        var epicProb = rareProb + shopProbabilityData.f_epicGradeChance;    // 100 or 90
+        var legendaryProb = epicProb + shopProbabilityData.f_legendaryGradeChance; // 100 or 95
+        var mythicProb = legendaryProb + shopProbabilityData.f_mythicGradeChance;  // 100 or 100
+
 
 
         //랜덤값 생성
@@ -146,19 +149,19 @@ public class FullWindowInGameDlg : FullWindowBase
         UnitGrade slotGrade;
 
         //TODO :  확률에 따라 등급 선택
-        if (rand <= normalShopProbability)
+        if (rand <= normalProb)
         {
             slotGrade = UnitGrade.Normal;
         }
-        else if (rand <= rareShopProbability)
+        else if (rand <= rareProb)
         {
             slotGrade = UnitGrade.Rare;
         }
-        else if (rand <= epicProbability)
+        else if (rand <= epicProb)
         {
             slotGrade = UnitGrade.Epic;
         }
-        else if (rand <= legendaryShopProbability)
+        else if (rand <= legendaryProb)
         {
             slotGrade = UnitGrade.Legendary;
         }
@@ -220,7 +223,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
         shopUpgradeCost = shopProbabilityData.f_upgradeCost;
 
-        shopLevelUpCostText.text = $"Shop Level : {shopUpgradeCost.ToString()}";
+        shopLevelUpCostText.text = $"Upgrade {shopUpgradeCost.ToString()} Cost";
 
     }
 
@@ -241,6 +244,8 @@ public class FullWindowInGameDlg : FullWindowBase
                 // CostGauge UI 갱신
                 CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
                 costUI.Initialize(shopLevel);
+
+
             }
         }
     }

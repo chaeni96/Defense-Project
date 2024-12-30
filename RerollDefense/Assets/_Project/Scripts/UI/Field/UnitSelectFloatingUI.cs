@@ -69,6 +69,7 @@ public class UnitSelectFloatingUI : PopupBase
         UnitManager.Instance.RemoveUnitsByTileID(unitObject);
         UIManager.Instance.CloseUI<UnitSelectFloatingUI>();
 
+
     }
 
     public override void CloseUI()
