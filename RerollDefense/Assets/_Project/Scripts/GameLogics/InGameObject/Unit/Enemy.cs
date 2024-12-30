@@ -1,4 +1,5 @@
 using BGDatabaseEnum;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -67,9 +68,25 @@ public class Enemy : BasicObject
     public void onDamaged(BasicObject attacker, int damage = 0)
     {
         if (attacker != null)
+        {
 
             //attacker의 공격력 
             HP -= damage;
+
+            // 데미지를 입으면 빨간색으로 깜빡임
+            if (spriteRenderer != null)
+            {
+                // 현재 색상 저장
+                Color originalColor = spriteRenderer.color;
+
+                // 색상 변경 시퀀스
+                DOTween.Sequence()
+                    .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+                    .Append(spriteRenderer.DOColor(originalColor, 0.1f));  // 0.1초 동안 원래 색으로
+            }
+        }
+
+          
 
         if (HP <= 0)
         {
