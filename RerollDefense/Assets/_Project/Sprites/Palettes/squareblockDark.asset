@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: squareblockDark
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 2026f751dc84ec745a81e85f698420b2, type: 3}
-  m_Color: {r: 0.6949537, g: 0.7653987, b: 0.9150943, a: 1}
+  m_Color: {r: 0.78764683, g: 0.8377092, b: 0.9433962, a: 1}
   m_Transform:
     e00: 1
     e01: 0
