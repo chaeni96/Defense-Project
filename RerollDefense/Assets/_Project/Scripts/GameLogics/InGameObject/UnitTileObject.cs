@@ -9,12 +9,25 @@ using BGDatabaseEnum;
 public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [SerializeField] private List<Image> tileImages = new List<Image>();
+    [SerializeField] private Image backgroundImage; // 전체 영역을 덮는 이미지
 
     public TMP_Text cardCostText;
 
     private GameObject activeDragObject;
     private string dragObjectAddress;
     private int cardCost;
+
+    private void Awake()
+    {
+        // 배경 이미지가 레이캐스트를 받을 수 있도록 설정
+        backgroundImage.raycastTarget = true;
+
+        // 타일 이미지들은 레이캐스트 무시
+        foreach (var tileImage in tileImages)
+        {
+            tileImage.raycastTarget = false;
+        }
+    }
 
     public void InitializeCardInform(D_TileShpeData unitData)
     {
@@ -52,6 +65,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
 
         activeDragObject = PoolingManager.Instance.GetObject("DragObject");
+
+        activeDragObject.transform.position = eventData.position;
+
         DragObject dragObject = activeDragObject.GetComponent<DragObject>();
         if (dragObject != null)
         {
@@ -72,6 +88,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
 
         DragObject dragObject = activeDragObject.GetComponent<DragObject>();
+
         if (dragObject != null)
         {
             Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);

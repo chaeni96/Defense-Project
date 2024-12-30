@@ -743,7 +743,6 @@ public partial class D_WaveData : BGEntity
 		public const string Meta = "WaveData";
 		public const string name = "name";
 		public const string SpawnEnemyName = "SpawnEnemyName";
-		public const string Count = "Count";
 		public const string SpawnDelay = "SpawnDelay";
 		public const string enemyGroup = "enemyGroup";
 	}
@@ -761,11 +760,6 @@ public partial class D_WaveData : BGEntity
 		get => _f_SpawnEnemyName[Index];
 		set => _f_SpawnEnemyName[Index] = value;
 	}
-	public System.Int32 f_Count
-	{
-		get => _f_Count[Index];
-		set => _f_Count[Index] = value;
-	}
 	public System.Int32 f_SpawnDelay
 	{
 		get => _f_SpawnDelay[Index];
@@ -776,8 +770,6 @@ public partial class D_WaveData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4703004299164658167UL, 14816338927607609278UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SpawnEnemyName;
 	public static BansheeGz.BGDatabase.BGFieldString _f_SpawnEnemyName => _ufle12jhs77_f_SpawnEnemyName ?? (_ufle12jhs77_f_SpawnEnemyName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5304298841188339061UL, 3832707851484607413UL), () => _ufle12jhs77_f_SpawnEnemyName = null));
-	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_Count;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_Count => _ufle12jhs77_f_Count ?? (_ufle12jhs77_f_Count = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5092892181665427764UL, 4682587192534409914UL), () => _ufle12jhs77_f_Count = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_SpawnDelay;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_SpawnDelay => _ufle12jhs77_f_SpawnDelay ?? (_ufle12jhs77_f_SpawnDelay = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5605747136360802954UL, 5875118332717163455UL), () => _ufle12jhs77_f_SpawnDelay = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_enemyGroup;

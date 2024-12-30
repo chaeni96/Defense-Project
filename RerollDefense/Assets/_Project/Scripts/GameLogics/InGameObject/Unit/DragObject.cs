@@ -29,12 +29,12 @@ public class DragObject : BasicObject
         originColor = spriteRenderer.color;
         isPlaced = false;
     }
-
+    
     //드래그 오브젝트 클릭했을시
     public void OnClickObject(string tileDataKey, Vector3 pointerPosition)
     {
         InitializeTileShape(tileDataKey);
-        CreatePreviewInstances(transform.position, pointerPosition);
+        CreatePreviewInstances(pointerPosition);
 
         if (spriteRenderer != null)
         {
@@ -92,7 +92,7 @@ public class DragObject : BasicObject
     }
 
     //드래그할때도 설치할 오브젝트 프리뷰 보여주기
-    private void CreatePreviewInstances(Vector3 baseWorldPosition, Vector3 pointerPosition)
+    private void CreatePreviewInstances(Vector3 pointerPosition)
     {
         // 각 상대 타일 위치에 프리뷰 인스턴스 생성
 
@@ -103,7 +103,7 @@ public class DragObject : BasicObject
             var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
             var unitBuildData = tileShapeData.f_unitBuildData[currentUnitIndex];
 
-            GameObject previewObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
+            GameObject previewObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, pointerPosition);
 
             UnitController previewObject = previewObjectInstance.GetComponent<UnitController>();
 
@@ -116,6 +116,7 @@ public class DragObject : BasicObject
                 previewInstances.Add(previewObjectInstance);
 
             }
+
         }
     }
 
