@@ -111,17 +111,17 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     public void MoveScale()
     {
-        Vector3 originScale = transform.localScale;
+        // DOPunchScale 상세 파라미터
+        // punch:크기 변화
+        // duration: 전체 재생 시간
+        // vibrato: 진동 횟수
+        // elasticity: 탄성 (0~1)
+
+        unitSprite.transform.DOPunchScale(punch: new Vector3(0.6f, 0.6f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
 
 
-        Sequence scaleSequence = DOTween.Sequence();
+       
 
-        // 1.2배로 커졌다가 다시 원래 크기로
-        scaleSequence.Append(transform.DOScale(originScale * 1.6f, 0.05f))  // 0.1초동안 1.2배로
-                     .Append(transform.DOScale(originScale, 0.05f));         // 0.1초동안 원래크기로
-
-        // 시퀀스 실행
-        scaleSequence.Play();
     }
 
     //스탯 가져오기
