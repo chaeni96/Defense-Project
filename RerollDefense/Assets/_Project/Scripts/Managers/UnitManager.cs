@@ -117,6 +117,9 @@ public class UnitManager : MonoBehaviour
 
                 if (unit.attackType == SkillAttackType.Projectile)
                 {
+
+                    unit.MoveScale();
+                    //현재 유닛 scale 변경해주기
                     AttackSkillManager.Instance.ActiveSkill(unit, enemies[targetIndex]);
                 }
                 else if (unit.attackType == SkillAttackType.AOE)
