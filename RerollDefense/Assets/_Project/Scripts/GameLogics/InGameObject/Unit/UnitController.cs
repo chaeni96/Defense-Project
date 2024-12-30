@@ -137,7 +137,7 @@ public class UnitController : BasicObject, IPointerClickHandler
         if(isActive)
         {
             //유닛 클릭했을때 팝업창 띄우기
-            FieldUnitInfoUI unitInfo = UIManager.Instance.ShowUI<FieldUnitInfoUI>("FieldUnitInfoUI");
+            UnitSelectFloatingUI unitInfo = UIManager.Instance.ShowUI<UnitSelectFloatingUI>("UnitSelectFloatingUI");
 
             //팝업창에 타일 정보 넘겨주기
 

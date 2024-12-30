@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : BasicObject
 {
 
 
-    public TMP_Text hpText;
     public SpriteRenderer spriteRenderer;
     //enemy Stat -> 프리팹에 저장해두기
     public float maxHP;
@@ -19,12 +19,15 @@ public class Enemy : BasicObject
     private bool isActive = true;
     
     [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
+    [SerializeField] private Slider hpBar;  // Inspector에서 할당
 
+    [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
     public override void Initialize()
     {
         base.Initialize();
         HP = maxHP;
+        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
         UpdateHpText();
     }
 
@@ -43,7 +46,12 @@ public class Enemy : BasicObject
     {
         var hp = HP;
 
-        hpText.text = hp.ToString();
+
+        if (hpBar != null)
+        {
+            hpBar.value = hp / maxHP;
+
+        }
     }
 
 

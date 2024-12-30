@@ -15,15 +15,12 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject firstCardDeck;
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
-    public GameObject fourthCardDeck;
 
     [SerializeField] private Slider hpBar;
     [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
     [SerializeField] private GameObject CostGauge;  // HP Bar 감소 속도
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
-
-    public TMP_Text gameStateText;
 
     private float targetHPRatio;
     private Coroutine hpUpdateCoroutine;
@@ -66,7 +63,7 @@ public class FullWindowInGameDlg : FullWindowBase
         shopLevel = GameManager.Instance.StoreLevel;
         shopLevelText.text = $"Shop Level : {shopLevel}";
 
-        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, fourthCardDeck };
+        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck };
         StartCoroutine(CheckAndFillCardDecks());
     }
 
@@ -84,7 +81,7 @@ public class FullWindowInGameDlg : FullWindowBase
                 if (emptyPlaceholder != null && emptyPlaceholder.gameObject.activeSelf)
                 {
                     // 덱에 UnitCardObject가 비어 있으면 생성
-                    if (cardDeck.GetComponentInChildren<UnitCardObject>() == null)
+                    if (cardDeck.GetComponentInChildren<UnitTileObject>() == null)
                     {
                         CreateUnitCard(cardDeck);
                     }
@@ -98,18 +95,18 @@ public class FullWindowInGameDlg : FullWindowBase
     // UnitCardObject 생성 및 덱에 추가
     private void CreateUnitCard(GameObject cardDeck)
     {
-        ResourceManager.Instance.LoadAsync<GameObject>("UnitCardObject", (loadedPrefab) =>
+        ResourceManager.Instance.LoadAsync<GameObject>("UnitTileObject", (loadedPrefab) =>
         {
             if (loadedPrefab != null)
             {
                 // 프리팹 로드 성공 시 인스턴스 생성
                 GameObject unitCard = Instantiate(loadedPrefab, cardDeck.transform);
-                unitCard.name = "UnitCardObject";
+                unitCard.name = "UnitTileObject";
 
                 var cardData = GetCardKeyBasedOnProbability();
 
                 // UnitCardObject 초기화
-                UnitCardObject cardObject = unitCard.GetComponent<UnitCardObject>();
+                UnitTileObject cardObject = unitCard.GetComponent<UnitTileObject>();
                 if (cardObject != null)
                 {
                     cardObject.InitializeCardInform(cardData); // 기본 초기화 데이터
@@ -191,7 +188,7 @@ public class FullWindowInGameDlg : FullWindowBase
             foreach (var cardDeck in cardDecks)
             {
                 // UnitCardObject 삭제
-                var existingCard = cardDeck.GetComponentInChildren<UnitCardObject>();
+                var existingCard = cardDeck.GetComponentInChildren<UnitTileObject>();
                 if (existingCard != null)
                 {
                     Destroy(existingCard.gameObject);

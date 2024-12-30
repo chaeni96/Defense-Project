@@ -4,17 +4,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FieldUnitInfoUI : PopupBase
+public class UnitSelectFloatingUI : PopupBase
 {
 
 
     //클릭했을때 해당 tileShape가지고 정보 넣어줘야됨, tileUniqueID있음
     [SerializeField] private TMP_Text unitNameText;
-    [SerializeField] private Image unitImage;
     [SerializeField] private RectTransform imgRect;
-
-    [SerializeField] private UnitInfoComponent infoObject;
-    [SerializeField] private RectTransform infoLayout; 
 
     private UnitController unitObject;
     private Camera uiCamera;
@@ -34,21 +30,15 @@ public class FieldUnitInfoUI : PopupBase
         unitObject = unit;
 
         unitNameText.text = unit.name;
+        
+        //월드 좌표를 스크린 좌표로 전환 
+        Vector2 screenPos = GameManager.Instance.mainCamera.WorldToScreenPoint(unit.transform.position);
 
-        unitImage.sprite = unit.unitSprite.sprite;
-
-        //unitStat만큼 스탯생성해서 넣어주기
-
-        // 기존에 생성된 infoObject 정리
-        ClearInfoObjects();
-
-        // 스탯 개수만큼 infoObject 생성
-        var stats = unitObject.GetStats(); // UnitController에서 스탯 정보를 가져옴
-
-        foreach (var stat in stats)
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle( (RectTransform)transform.parent, screenPos, uiCamera,out Vector2 localPoint))
         {
-            CreateInfoObject(stat.Key, stat.Value);
+            ((RectTransform)transform).anchoredPosition = localPoint;
         }
+
 
     }
 
@@ -59,28 +49,11 @@ public class FieldUnitInfoUI : PopupBase
             // 터치 또는 클릭 위치가 이미지 외부인지 확인
             if (!IsPointerInsidePopup())
             {
-                UIManager.Instance.CloseUI<FieldUnitInfoUI>();
+                UIManager.Instance.CloseUI<UnitSelectFloatingUI>();
             }
         }
     }
 
-    private void CreateInfoObject(string statName, int statValue)
-    {
-        // infoObject 복제
-        UnitInfoComponent newInfoObject = Instantiate(infoObject, infoLayout);
-
-        // 스탯 이름과 값 설정
-        newInfoObject.SetStatInfo(statName, statValue);
-    }
-
-    private void ClearInfoObjects()
-    {
-        // infoContainer의 모든 자식 오브젝트 제거
-        foreach (Transform child in infoLayout)
-        {
-            Destroy(child.gameObject);
-        }
-    }
 
     private bool IsPointerInsidePopup()
     {
@@ -94,7 +67,7 @@ public class FieldUnitInfoUI : PopupBase
     public void OnClickDeleteTile()
     {
         UnitManager.Instance.RemoveUnitsByTileID(unitObject);
-        UIManager.Instance.CloseUI<FieldUnitInfoUI>();
+        UIManager.Instance.CloseUI<UnitSelectFloatingUI>();
 
     }
 

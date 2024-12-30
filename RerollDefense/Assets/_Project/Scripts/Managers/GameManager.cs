@@ -34,7 +34,7 @@ public class GamePlayState : GameState
     {
         //매개변수로 현재 스테이지 던져야됨
        
-        GameManager.Instance.gaemState = "Gema Play!";
+        GameManager.Instance.gameState = "Gema Play!";
        
     }
 
@@ -98,13 +98,13 @@ public class GameResultState : GameState
         if (resultType == GameStateType.Victory)
         {
             // 승리 UI 표시
-            GameManager.Instance.gaemState = "Player Win";
+            GameManager.Instance.gameState = "Player Win";
             Debug.Log("플레이어 승리");
         }
         else
         {
             // 패배 UI 표시
-            GameManager.Instance.gaemState = "Player Lose";
+            GameManager.Instance.gameState = "Player Lose";
             Debug.Log("플레이어 패배");
         }
 
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
 
     //test용
 
-    public string gaemState;
+    public string gameState;
     public static GameManager Instance
     {
         get

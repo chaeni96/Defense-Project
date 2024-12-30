@@ -12,7 +12,7 @@ public class GameResultUI : PopupBase
     {
         base.InitializeUI();
 
-        gameStateText.text = GameManager.Instance.gaemState;
+        gameStateText.text = GameManager.Instance.gameState;
     }
 
 
