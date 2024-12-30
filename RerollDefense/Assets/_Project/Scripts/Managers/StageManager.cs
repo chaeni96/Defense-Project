@@ -84,6 +84,9 @@ public class StageManager : MonoBehaviour
             yield return routine;
         }
 
+        // 웨이브 완료 후 대기
+        yield return new WaitForSeconds(currentStage.f_WaveDelayTime);
+
         // 다음 웨이브 시작
         currentWaveIndex++;
         StartNextWave();
