@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera;
 
     public float PlayerHP { get; private set; } = 100f;
-    public float MaxHP { get; private set; } = 100f;
+    public float MaxHP { get; private set; } = 1500f;
 
     public int CurrentCost;
     public int MaxCost;
