@@ -105,7 +105,7 @@ public class PathFindingManager : MonoBehaviour
         // 현재 존재하는 모든 에너미들의 위치에서 끝 지점까지의 경로 체크
         if (canPlace && EnemyManager.Instance != null)
         {
-            var enemies = EnemyManager.Instance.GetEnemies();
+            var enemies = EnemyManager.Instance.GetActiveEnemies();
             foreach (var enemy in enemies)
             {
                 if (enemy != null)

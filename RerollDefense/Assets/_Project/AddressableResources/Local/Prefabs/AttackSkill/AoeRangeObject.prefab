@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1183667827297006579}
   - component: {fileID: -8371793040103205213}
   - component: {fileID: 5268007554410033449}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: AoeRangeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05109556150fe05428252d1ba217a5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  damageDelay: 0
+  totalFXDelay: 0.7
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  myCollider: {fileID: 5268007554410033449}
 --- !u!58 &5268007554410033449
 CircleCollider2D:
   m_ObjectHideFlags: 0

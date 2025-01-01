@@ -12,6 +12,8 @@ public class Enemy : BasicObject
 
 
     public SpriteRenderer spriteRenderer;
+    public Collider2D enemyCollider;
+    
     //enemy Stat -> 프리팹에 저장해두기
     public float maxHP;
     public float HP;
@@ -28,6 +30,8 @@ public class Enemy : BasicObject
     {
         base.Initialize();
         HP = maxHP;
+        EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
+
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
         UpdateHpText();
     }
@@ -83,8 +87,6 @@ public class Enemy : BasicObject
             }
         }
 
-          
-
         if (HP <= 0)
         {
             HP = 0;
@@ -99,18 +101,19 @@ public class Enemy : BasicObject
 
     public void onDead(BasicObject controller)
     {
-        if(enemyType == EnemyType.Boss)
+        if (enemyType == EnemyType.Boss)
         {
-
-            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffect", this.transform.position);
-
+            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffect", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this, 10);
         }
 
-        isActive = false;
-        EnemyManager.Instance.RemoveEnemy(this);  // 추가
-        PoolingManager.Instance.ReturnObject(controller.gameObject);
+        PoolingManager.Instance.ReturnObject(gameObject);
     }
 
+    private void OnDisable()
+    {
+        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
+        isActive = false;
+    }
 
 }

@@ -1,23 +1,27 @@
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
-public class TheProjectile : MonoBehaviour
+public class TheProjectile : SkillBase
 {
-    public UnitController owner { get; private set; }
     public Enemy target { get; private set; }
-    public int damage { get; private set; }
 
-    public void Initialize(UnitController unit, Enemy targetEnemy)
+    public override void Initialize(UnitController unit)
     {
-        owner = unit;
-        target = targetEnemy;
-        damage = unit.attack;
-
+        base.Initialize(unit);
         ProjectileManager.Instance.RegisterProjectile(this);
+    }
+
+    public override void Fire(Vector3 targetPosition)
+    {
+        // 타겟이 Enemy 컴포넌트를 가지고 있는지 체크
+        target = Physics2D.OverlapPoint(targetPosition)?.GetComponent<Enemy>();
+        if (target == null) return;
+
+        transform.position = owner.transform.position;
     }
 
     private void OnDisable()
     {
-        // 오브젝트 풀로 돌아갈 때 cleanup
         owner = null;
         target = null;
     }

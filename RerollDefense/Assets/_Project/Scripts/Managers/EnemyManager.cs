@@ -63,10 +63,11 @@ public class EnemyManager : MonoBehaviour
     {
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
         enemyPathIndex = new Dictionary<Enemy, int>();
+        activeEnemies = new Dictionary<Collider2D, Enemy>();
     }
 
     //모든 enemy 가져오기
-    public List<Enemy> GetEnemies() => enemies;
+    public List<Enemy> GetActiveEnemies() => enemies.Where(e => e.gameObject.activeSelf).ToList();
 
     public void SpawnEnemy(string enemyName, Vector3? initPos = null)
     {
@@ -79,7 +80,6 @@ public class EnemyManager : MonoBehaviour
             Enemy enemy = enemyObj.GetComponent<Enemy>();
             enemy.transform.position = startPos;
             enemy.Initialize();
-            enemies.Add(enemy);
 
             // 초기 경로 설정
             List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
@@ -88,12 +88,37 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    public Enemy GetActiveEnemy(Collider2D collider)
+    // activeEnemies 딕셔너리에서 Enemy 컴포넌트 찾기
+    public Enemy GetEnemyCollider(Collider2D collider)
     {
         Enemy enemy = null;
         activeEnemies.TryGetValue(collider, out enemy);
         return enemy;
     }
+
+    // Collider2D를 키로 사용하여 Enemy 등록
+    public void RegisterEnemy(Enemy enemy, Collider2D collider)
+    {
+        if (!activeEnemies.ContainsKey(collider))
+        {
+            activeEnemies.Add(collider, enemy);
+            enemies.Add(enemy);
+        }
+    }
+
+    // Enemy 해제
+    public void UnregisterEnemy(Collider2D collider)
+    {
+        if (activeEnemies.ContainsKey(collider))
+        {
+            Enemy enemy = activeEnemies[collider];
+            activeEnemies.Remove(collider);
+            enemies.Remove(enemy);
+            enemyPaths.Remove(enemy);
+            enemyPathIndex.Remove(enemy);
+        }
+    }
+
     private void Update()
     {
         if (enemies.Count == 0 || !isActive) return; //enemy 없거나 비활성화면 리턴해야됨
@@ -181,8 +206,6 @@ public class EnemyManager : MonoBehaviour
         targetPositions.Dispose();
         moveSpeeds.Dispose();
     }
-
-    public List<Enemy> GetActiveEnemies() => enemies.Where(e => e.gameObject.activeSelf).ToList();
     public void UpdateEnemiesPath()
     {
         // 각 enemy마다 현재 위치에서 새로운 경로 계산
@@ -194,27 +217,6 @@ public class EnemyManager : MonoBehaviour
                 enemyPaths[enemy] = newPath;
                 enemyPathIndex[enemy] = 0;
             }
-        }
-    }
-
-    public void SetActive(bool active)
-    {
-        isActive = active;
-        if (!active)
-        {
-            // 모든 진행중인 행동 중지
-            StopAllCoroutines();
-        }
-    }
-
-    public void RemoveEnemy(Enemy enemy)
-    {
-        if (enemies.Contains(enemy))
-        {
-            
-            enemies.Remove(enemy);
-            enemyPaths.Remove(enemy);
-            enemyPathIndex.Remove(enemy);
         }
     }
 

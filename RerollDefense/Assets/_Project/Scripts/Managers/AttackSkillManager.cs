@@ -33,35 +33,20 @@ public class AttackSkillManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void ActiveSkill(UnitController unit, Enemy target)
+    //스킬 ID, 스킬 발동한 주체, 타겟 필요
+    public void ActiveSkill(string skillID, UnitController unit, Vector3 targetPos)
     {
-        SpawnProjectile(unit, target);
-    }
+        GameObject skillObj = PoolingManager.Instance.GetObject(skillID, unit.transform.position);
 
-    public void ActiveSkill(UnitController unit, List<Enemy> targets)
-    {
-        SpawnAOE(unit, targets);
-    }
-
-    private void SpawnProjectile(UnitController unit, Enemy target)
-    {
-        GameObject projectileObj = PoolingManager.Instance.GetObject("ProjectileObject", unit.transform.position);
-        if (projectileObj != null)
+        if (skillObj != null)
         {
-            TheProjectile projectile = projectileObj.GetComponent<TheProjectile>();
-            projectile.Initialize(unit, target);
+            var skill = skillObj.GetComponent<SkillBase>();
+            skill.Initialize(unit);
+            skill.Fire(targetPos);
         }
+
+
     }
 
-    private void SpawnAOE(UnitController unit, List<Enemy> targets)
-    {
-        GameObject aoeObj = PoolingManager.Instance.GetObject("AoeRangeObject", unit.transform.position);
-        if (aoeObj != null)
-        {
-            TheAOE aoe = aoeObj.GetComponent<TheAOE>();
-            aoe.Initialize(unit, targets);
-        }
-    }
 
-  
 }

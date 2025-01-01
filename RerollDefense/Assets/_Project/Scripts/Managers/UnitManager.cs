@@ -113,20 +113,16 @@ public class UnitManager : MonoBehaviour
             if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
             {
                 UnitController unit = units[i];
-                float attackRange = unit.attackRange;
+                string skillId = unit.attackType == SkillAttackType.Projectile ? "ProjectileObject" : "AoeRangeObject";
+                Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
+                    enemies[targetIndex].transform.position : unit.transform.position;
 
                 if (unit.attackType == SkillAttackType.Projectile)
                 {
-
                     unit.MoveScale();
-                    //현재 유닛 scale 변경해주기
-                    AttackSkillManager.Instance.ActiveSkill(unit, enemies[targetIndex]);
-                }
-                else if (unit.attackType == SkillAttackType.AOE)
-                {
-                    AttackSkillManager.Instance.ActiveSkill(unit, enemies);
                 }
 
+                AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
                 unit.attackTimer = 0f;
             }
             else
@@ -134,7 +130,6 @@ public class UnitManager : MonoBehaviour
                 units[i].attackTimer = attackTimers[i];
             }
         }
-
         DisposeArrays();
     }
 
@@ -152,12 +147,6 @@ public class UnitManager : MonoBehaviour
         {
             units.Remove(unit);
         }
-    }
-
-    //같은 tileUniqueID 가진 유닛 찾기
-    public List<UnitController> GetUnitsByTileID(string tileID)
-    {
-        return units.Where(unit => unit.tileUniqueID == tileID).ToList();
     }
 
     //유닛 삭제 메서드
