@@ -73,7 +73,7 @@ public class EnemyManager : MonoBehaviour
     {
 
         Vector3 startPos = initPos ?? PathFindingManager.Instance.GetStartPosition();
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos);
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos, 10);
 
         if (enemyObj != null)
         {
