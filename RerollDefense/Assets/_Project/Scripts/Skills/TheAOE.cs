@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class TheAOE : MonoBehaviour
+public class TheAOE : SkillBase
 {
     private UnitController owner;
     private bool hasDealtDamage = false;
+    [SerializeField] float damageDelay = 0f;
+    [SerializeField] float totalFXDelay = 0.7f;
+    [SerializeField] Collider2D collider;
+    [SerializeField] LayerMask enemyMask;
+
+    private List<Collider2D> enemys = new List<Collider2D>();
+
 
     public void Initialize(UnitController unit, List<Enemy> enemies)
     {
         owner = unit;
+        enemys.Clear();
         float radius = unit.attackRange * 2;
         transform.localScale = new Vector3(radius, radius, radius);
 
@@ -20,7 +28,30 @@ public class TheAOE : MonoBehaviour
             hasDealtDamage = true;
         }
 
-        StartCoroutine(DestroyAfterDuration(0.7f));
+        StartCoroutine(DestroyAfterDuration(totalFXDelay));
+    }
+    public override void Fire(Vector3 targetPosition)
+    {
+        return;
+    }
+
+    public void CheckEnemyInCollider()
+    {
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useLayerMask = true;
+        filter.layerMask = enemyMask;
+
+        int enemyCount = collider.OverlapCollider(filter, enemys);
+
+        for(int i = 0; i < enemyCount; i++)
+        {
+            var enemy = EnemyManager.Instance.GetActiveEnemy(enemys[i]);
+            if (enemy != null)
+            {
+                // 데미지 적용
+                enemy.onDamaged(owner, owner.attack);
+            }
+        }
     }
 
     private void ApplyDamageToEnemies(List<Enemy> targets)

@@ -17,6 +17,7 @@ public class EnemyManager : MonoBehaviour
 
     //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
+    private Dictionary<Collider2D, Enemy> activeEnemies = new Dictionary<Collider2D, Enemy>();
     private Dictionary<Enemy, List<Vector3>> enemyPaths = new Dictionary<Enemy, List<Vector3>>(); // 각 enemy의 개별 경로
     private Dictionary<Enemy, int> enemyPathIndex = new Dictionary<Enemy, int>();     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
 
@@ -87,7 +88,12 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-
+    public Enemy GetActiveEnemy(Collider2D collider)
+    {
+        Enemy enemy = null;
+        activeEnemies.TryGetValue(collider, out enemy);
+        return enemy;
+    }
     private void Update()
     {
         if (enemies.Count == 0 || !isActive) return; //enemy 없거나 비활성화면 리턴해야됨
