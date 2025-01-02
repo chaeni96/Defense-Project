@@ -26,8 +26,6 @@ public class EnemyManager : MonoBehaviour
     private NativeArray<float3> targetPositions;
     private NativeArray<float> moveSpeeds;  // 추가
 
-    private bool isActive = true;
-
     public static EnemyManager Instance
     {
         get
@@ -136,7 +134,7 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
-        if (enemies.Count == 0 || !isActive) return; //enemy 없거나 비활성화면 리턴해야됨
+        if (enemies.Count == 0 || Time.timeScale == 0) return; //enemy 없거나 비활성화면 리턴해야됨
 
         ShowDebug(); //디버깅용, scene에서 길 보여줌
 
@@ -195,7 +193,11 @@ public class EnemyManager : MonoBehaviour
         // 이동 후 처리 (도착 체크 및 enemy 관리)
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
+            if (i >= enemies.Count) continue;
+
             Enemy enemy = enemies[i];
+            if (enemy == null) continue; // null 체크
+
             int pathIndex = enemyPathIndex[enemy];
             List<Vector3> path = enemyPaths[enemy];
 
@@ -211,6 +213,7 @@ public class EnemyManager : MonoBehaviour
             {
                 // 마지막 지점 도달
                 enemy.OnReachEndTile();
+                UnregisterEnemy(enemy.enemyCollider);  // Dictionary에서도 제거
                 PoolingManager.Instance.ReturnObject(enemy.gameObject);
                 enemies.RemoveAt(i);
                 enemyPaths.Remove(enemy);

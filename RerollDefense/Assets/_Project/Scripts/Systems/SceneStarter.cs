@@ -5,8 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class SceneStarter : MonoBehaviour
 {
-
-    [SerializeField]private Tilemap tileMap;
+    [SerializeField]private Tilemap placedTileMap;
+    [SerializeField] private Transform tileMapGrid;  // Inspector에서 할당
 
     void Start()
     {
@@ -27,7 +27,6 @@ public class SceneStarter : MonoBehaviour
         // 기본 매니저 초기화
         PoolingManager.Instance.InitializeAllPools();
         SaveLoadManager.Instance.LoadData();
-        TileMapManager.Instance.InitializeManager(tileMap);
         UnitManager.Instance.InitializeManager();
         EnemyManager.Instance.InitializeMnanager();
 
@@ -46,6 +45,7 @@ public class SceneStarter : MonoBehaviour
 
         // 게임 시작
         GameManager.Instance.ChangeState(new GamePlayState());
+        StageManager.Instance.Initialize(placedTileMap, tileMapGrid);
         StageManager.Instance.StartStage(1);
     }
 

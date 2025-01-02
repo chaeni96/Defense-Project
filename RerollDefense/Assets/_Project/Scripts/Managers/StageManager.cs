@@ -3,11 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using static BansheeGz.BGDatabase.BGSyncNameMapConfig;
 
 public class StageManager : MonoBehaviour
 {
 
     public static StageManager _instance;
+
+
+    private Tilemap placedMap;
+    private Transform tileMapGrid;
+
 
     private D_StageData currentStage;
     private int currentWaveIndex = 0;
@@ -46,6 +53,12 @@ public class StageManager : MonoBehaviour
 
     }
 
+    public void Initialize(Tilemap map, Transform grid)
+    {
+        placedMap = map;
+        tileMapGrid = grid;
+    }
+
 
     public void StartStage(int stageNumber)
     {
@@ -55,9 +68,32 @@ public class StageManager : MonoBehaviour
         currentStage = stageData;
         currentWaveIndex = 0;
 
-        //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
-        PathFindingManager.Instance.InitializePathTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
-        StartNextWave();
+
+        //TileMapData에서 해당 스테이지의 장애물 맵 프리팹 키 가져오기
+
+        D_TileMapData tileMapData = D_TileMapData.GetEntityByKeyStageID(stageNumber);
+
+        if (tileMapData != null)
+        {
+
+            // 어드레서블에서 장애물 맵 프리팹 로드
+            GameObject obstacleMapPrefab = ResourceManager.Instance.Instantiate(tileMapData.f_ObstacleAddressableKey, tileMapGrid);
+
+            if (obstacleMapPrefab != null)
+            {
+                // 프리팹에서 Tilemap 컴포넌트 가져오기
+                Tilemap obstacleMap = obstacleMapPrefab.GetComponent<Tilemap>();
+
+                // 타일맵 매니저 초기화하면서 장애물 정보 전달
+                TileMapManager.Instance.InitializeManager(placedMap, obstacleMap);
+            }
+
+
+            //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
+            PathFindingManager.Instance.InitializePathTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
+
+            StartNextWave();
+        }
     }
 
     private void StartNextWave()

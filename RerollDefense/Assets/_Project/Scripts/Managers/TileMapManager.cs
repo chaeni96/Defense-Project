@@ -45,22 +45,23 @@ public class TileMapManager : MonoBehaviour
     }
 
     //타일맵 초기화
-    public void InitializeManager(Tilemap gaameTileMap)
+    public void InitializeManager(Tilemap gameMap, Tilemap obstacleMap)
     {
+        tileMap = gameMap;
 
-        if (tileMap == null)
-        {
-            tileMap = gaameTileMap;
-        }
-
+        // 기본 타일맵 초기화
         tileMapDatas.Clear();
+
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
         {
             if (tileMap.HasTile(position))
             {
-                tileMapDatas[position] = new TileData();
+                // 장애물 맵에 타일이 있으면 배치 불가 타일로 설정
+                bool isAvailable = !obstacleMap.HasTile(position);
+                tileMapDatas[position] = new TileData { isAvailable = isAvailable };
             }
         }
+
         SetAllTilesColor(new Color(1, 1, 1, 0));
     }
 
