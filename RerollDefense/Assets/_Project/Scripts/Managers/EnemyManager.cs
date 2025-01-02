@@ -87,7 +87,21 @@ public class EnemyManager : MonoBehaviour
 
     // 모든 enemy List 가지고 오기
     public List<Enemy> GetAllEnemys() => enemies;
+    public int GetEnemyCount() => enemies.Count;
 
+
+    public void GetEnemyPositions(NativeArray<float3> positions)
+    {
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            positions[i] = enemies[i].transform.position;
+        }
+    }
+
+    public Enemy GetEnemyAtIndex(int index)
+    {
+        return (index >= 0 && index < enemies.Count) ? enemies[index] : null;
+    }
 
     //특정 조건의 enemy 반환
     public Enemy GetActiveEnemys(Collider2D collider)

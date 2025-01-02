@@ -74,10 +74,11 @@ public class UnitManager : MonoBehaviour
     private void Update()
     {
 
-        List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();
-        if (enemies.Count == 0) return;
+        //enemy가 한마리도 없으면 return
+        if (EnemyManager.Instance.GetEnemyCount() == 0) return;
 
-        InitializeArrays(units.Count, enemies.Count);
+        int enemyCount = EnemyManager.Instance.GetEnemyCount();
+        InitializeArrays(units.Count, enemyCount);
 
         for (int i = 0; i < units.Count; i++)
         {
@@ -86,10 +87,10 @@ public class UnitManager : MonoBehaviour
             attackTimers[i] = units[i].attackTimer;
         }
 
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            enemyPositions[i] = enemies[i].transform.position;
-        }
+        //enemy 트랜스폼 enemyPositions에 담아오기 
+        //NativeArray는 참조타입이므로 EnemyManager에서 값 변경되면 똑같이 적용됨
+        EnemyManager.Instance.GetEnemyPositions(enemyPositions);
+
 
         var attackJob = new UnitAttackJob
         {
@@ -103,32 +104,36 @@ public class UnitManager : MonoBehaviour
 
         JobHandle jobHandle = attackJob.Schedule(units.Count, 64);
         jobHandle.Complete();
-
+        // 공격 처리
         for (int i = 0; i < units.Count; i++)
         {
             int targetIndex = targetIndices[i];
             if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
             {
                 UnitController unit = units[i];
-                string skillId = unit.attackType == SkillAttackType.Projectile ? "ProjectileObject" : "AoeRangeObject";
-                Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
-                    enemies[targetIndex].transform.position : unit.transform.position;
-
-                if (unit.attackType == SkillAttackType.Projectile)
+                Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
+                if (targetEnemy != null)
                 {
-                    unit.MoveScale();
-                }
+                    string skillId = unit.attackType == SkillAttackType.Projectile ? "ProjectileObject" : "AoeRangeObject";
+                    Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
+                        targetEnemy.transform.position : unit.transform.position;
 
-                AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
-                unit.attackTimer = 0f;
+                    if (unit.attackType == SkillAttackType.Projectile)
+                    {
+                        unit.MoveScale();
+                    }
+
+                    AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
+                    unit.attackTimer = 0f;
+                }
             }
             else
             {
                 units[i].attackTimer = attackTimers[i];
             }
         }
-        DisposeArrays();
     }
+
 
     public void RegisterUnit(UnitController unit)
     {
