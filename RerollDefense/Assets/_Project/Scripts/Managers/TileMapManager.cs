@@ -129,23 +129,23 @@ public class TileMapManager : MonoBehaviour
         }
     }
 
-    //private void Update()
-    //{
-    //    if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
-    //    {
-    //        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //        Vector3Int tilePosition = tileMap.WorldToCell(worldPosition);
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
+        {
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int tilePosition = tileMap.WorldToCell(worldPosition);
 
-    //        if (tileMap.HasTile(tilePosition))
-    //        {
-    //            Debug.Log($"Clicked Tile Position: {tilePosition}");
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("No tile found at clicked position.");
-    //        }
-    //    }
-    //}
+            if (tileMap.HasTile(tilePosition))
+            {
+                Debug.Log($"Clicked Tile Position: {tilePosition}");
+            }
+            else
+            {
+                Debug.Log("No tile found at clicked position.");
+            }
+        }
+    }
     // 모든 타일 색상 변경
     public void SetAllTilesColor(Color color)
     {

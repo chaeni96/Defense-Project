@@ -66,7 +66,7 @@ public class UnitSelectFloatingUI : PopupBase
 
     public void OnClickDeleteTile()
     {
-        UnitManager.Instance.RemoveUnitsByTileID(unitObject);
+        UnitManager.Instance.UnregisterUnit(unitObject);
         UIManager.Instance.CloseUI<UnitSelectFloatingUI>();
 
 

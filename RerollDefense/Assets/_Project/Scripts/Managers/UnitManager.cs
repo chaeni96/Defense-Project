@@ -73,11 +73,8 @@ public class UnitManager : MonoBehaviour
 
     private void Update()
     {
-        // 활성화된 유닛들만
-        var activeUnits = units.Where(u => u.IsActive()).ToList();
-        if (activeUnits.Count == 0) return;
 
-        List<Enemy> enemies = EnemyManager.Instance.GetActiveEnemies();
+        List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();
         if (enemies.Count == 0) return;
 
         InitializeArrays(units.Count, enemies.Count);
@@ -146,19 +143,8 @@ public class UnitManager : MonoBehaviour
         if (units.Contains(unit))
         {
             units.Remove(unit);
-        }
-    }
 
-    //유닛 삭제 메서드
-    public void RemoveUnitsByTileID(UnitController unit)
-    {
-
-        if(unit != null)
-        {
-
-            UnregisterUnit(unit); // UnitManager 리스트에서 제거
             PoolingManager.Instance.ReturnObject(unit.gameObject);
-
 
         }
     }

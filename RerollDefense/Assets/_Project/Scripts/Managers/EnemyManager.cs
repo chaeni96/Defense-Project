@@ -66,9 +66,6 @@ public class EnemyManager : MonoBehaviour
         activeEnemies = new Dictionary<Collider2D, Enemy>();
     }
 
-    //모든 enemy 가져오기
-    public List<Enemy> GetActiveEnemies() => enemies.Where(e => e.gameObject.activeSelf).ToList();
-
     public void SpawnEnemy(string enemyName, Vector3? initPos = null)
     {
 
@@ -88,8 +85,12 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    // activeEnemies 딕셔너리에서 Enemy 컴포넌트 찾기
-    public Enemy GetEnemyCollider(Collider2D collider)
+    // 모든 enemy List 가지고 오기
+    public List<Enemy> GetAllEnemys() => enemies;
+
+
+    //특정 조건의 enemy 반환
+    public Enemy GetActiveEnemys(Collider2D collider)
     {
         Enemy enemy = null;
         activeEnemies.TryGetValue(collider, out enemy);

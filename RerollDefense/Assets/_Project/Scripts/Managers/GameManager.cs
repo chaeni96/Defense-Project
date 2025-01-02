@@ -40,7 +40,7 @@ public class GamePlayState : GameState
 
     public override void UpdateState()
     {
-        if (EnemyManager.Instance.GetActiveEnemies().Count == 0 && StageManager.Instance.IsLastWave())
+        if (EnemyManager.Instance.GetAllEnemys().Count == 0 && StageManager.Instance.IsLastWave())
         {
             GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
         }
@@ -74,7 +74,7 @@ public class GameResultState : GameState
             unit.SetActive(false);
         }
 
-        var enemies = EnemyManager.Instance.GetActiveEnemies();
+        var enemies = EnemyManager.Instance.GetAllEnemys();
         foreach (var enemy in enemies)
         {
             enemy.SetActive(false);

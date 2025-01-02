@@ -45,7 +45,7 @@ public class TheAOE : SkillBase
 
         for(int i = 0; i < enemyCount; i++)
         {
-            var enemy = EnemyManager.Instance.GetEnemyCollider(enemys[i]);
+            var enemy = EnemyManager.Instance.GetActiveEnemys(enemys[i]);
             if (enemy != null)
             {
                 enemy.onDamaged(owner, owner.attack);
