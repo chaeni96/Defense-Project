@@ -103,12 +103,76 @@ public class Enemy : BasicObject
     {
         if (enemyType == EnemyType.Boss)
         {
+            //effect 발생, enemy spawn
+            SpawnMinions(10);
+
             GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffect", transform.position);
-            explosion.GetComponent<EffectExplosion>().InitializeEffect(this, 10);
+            explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
 
         PoolingManager.Instance.ReturnObject(gameObject);
     }
+
+
+
+    private void SpawnMinions(int spawnEnemyCount)
+    {
+
+        //enemy 스폰할때 유효한 타일위에 스폰해야됨, boss타일과 상하좌우 유효한 타일에 스폰
+
+        //죽은 boss 타일
+        Vector3Int centerTile = TileMapManager.Instance.tileMap.WorldToCell(transform.position);
+
+        List<Vector3Int> directions = new List<Vector3Int> //체크할 위치
+           {
+               Vector3Int.zero,  // 보스 현재 위치
+               Vector3Int.up,
+               Vector3Int.right,
+               Vector3Int.down,
+               Vector3Int.left
+           };
+
+        // 유효한 타일 위치 저장할 리스트
+        List<Vector3> validPositions = new List<Vector3>();
+
+        //리스트의 각 방향에 대해 반복해서 체크해야됨
+        foreach (var dir in directions)
+        {
+            Vector3Int checkPos = centerTile + dir;
+
+            //해당위치 타일 데이터 가져오기
+            TileData tileData = TileMapManager.Instance.GetTileData(checkPos);
+
+            //타일이 있고, 배치 가능하면 배치가능 포지션에 넣기
+            if (tileData != null && tileData.isAvailable)
+            {
+                validPositions.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(checkPos));
+            }
+        }
+
+        if (validPositions.Count > 0)
+        {
+            // 각 방향에 균등하게 분배
+            int enemiesPerPosition = spawnEnemyCount / validPositions.Count;
+            int remainingEnemies = spawnEnemyCount % validPositions.Count;
+
+            for (int i = 0; i < validPositions.Count; i++)
+            {
+                int spawnCount = enemiesPerPosition;
+                if (remainingEnemies > 0)
+                {
+                    spawnCount++;
+                    remainingEnemies--;
+                }
+
+                for (int j = 0; j < spawnCount; j++)
+                {
+                    EnemyManager.Instance.SpawnEnemy("EnemyNormal", validPositions[i]);
+                }
+            }
+        }
+    }
+
 
     private void OnDisable()
     {

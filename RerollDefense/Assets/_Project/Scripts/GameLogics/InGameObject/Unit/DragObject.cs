@@ -7,8 +7,15 @@ using UnityEngine.UIElements;
 using System.Xml;
 using UnityEngine.Rendering.Universal;
 
+
+//드래그 및 배치 로직 담당
+//프리뷰 인스턴스 생성 및 관리
+//타일 배치 가능 여부 체크
+//오브젝트 배치
+
 public class DragObject : BasicObject
 {
+
     public bool isPlaced { get; private set; } = false;
 
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -30,18 +37,6 @@ public class DragObject : BasicObject
         isPlaced = false;
     }
     
-    //드래그 오브젝트 클릭했을시
-    public void OnClickObject(string tileDataKey, Vector3 pointerPosition)
-    {
-        InitializeTileShape(tileDataKey);
-        CreatePreviewInstances(pointerPosition);
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
-        }
-
-    }
 
     //선택한 카드 종류에 따른 타일 초기화
     private void InitializeTileShape(string tileDataKey)
@@ -70,6 +65,22 @@ public class DragObject : BasicObject
         }
     }
 
+    //드래그 오브젝트 클릭했을시
+    public void OnClickObject(string tileDataKey, Vector3 pointerPosition)
+    {
+        //tile정보 초기화
+        InitializeTileShape(tileDataKey);
+
+        //프리뷰 타일
+        CreatePreviewInstances(pointerPosition);
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
+        }
+
+    }
+
     //드래그중
     public void OnPointerDrag(Vector3 pointerPosition)
     {
@@ -79,12 +90,11 @@ public class DragObject : BasicObject
         if (baseTilePosition != previousTilePosition)
         {
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
-            
+
             //드래그 중에도 설치 가능한지 체크해야됨
-            bool canPlace = CanPlaceAtPosition(baseTilePosition);
+            bool canPlace = TileMapManager.Instance.CanPlaceObject(baseTilePosition, relativeTiles);
 
             UpdatePreviewInstancesPosition(baseTilePosition, canPlace);
-
             UpdateTileColors(baseTilePosition, canPlace);
 
             previousTilePosition = baseTilePosition;
@@ -96,27 +106,26 @@ public class DragObject : BasicObject
     {
         // 각 상대 타일 위치에 프리뷰 인스턴스 생성
 
-        foreach (var position in GetTilePositions(previousTilePosition))
+        List<Vector3Int> tilePositions = GetTilePositions(previousTilePosition);
+
+        for (int i = 0; i < tilePositions.Count; i++)
         {
-
-            var currentUnitIndex = relativeTiles.IndexOf(position - previousTilePosition);
             var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
-            var unitBuildData = tileShapeData.f_unitBuildData[currentUnitIndex];
+            var unitBuildData = tileShapeData.f_unitBuildData[i];
 
-            GameObject previewObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, pointerPosition);
+            GameObject previewObjectInstance = PoolingManager.Instance.GetObject(
+                unitBuildData.f_unitData.f_unitPrefabKey,
+                pointerPosition
+            );
 
             UnitController previewObject = previewObjectInstance.GetComponent<UnitController>();
 
             if (previewObject != null)
             {
                 previewObject.InitializeUnitStat(unitBuildData);
-
                 previewObject.ShowPreviewUnit();
-
                 previewInstances.Add(previewObjectInstance);
-
             }
-
         }
     }
 
@@ -133,105 +142,99 @@ public class DragObject : BasicObject
 
     public void CheckPlacedObject()
     {
-        // 타일 색상 초기화
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
-        if (CanPlaceAtPosition(previousTilePosition))
+        bool canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, relativeTiles);
+
+        if (canPlace)
         {
-            // 프리뷰 인스턴스들을 불투명한 실제 오브젝트로 변환
-            foreach (var previewInstance in previewInstances)
-            {
-                SpriteRenderer spriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
-                if (spriteRenderer != null)
-                {
-                    spriteRenderer.color = Color.white;
-                }
-            }
-
-            // 기존 배치 로직 유지
-            string tileUniqueID = Guid.NewGuid().ToString();
-            TileMapManager.Instance.OccupyTile(previousTilePosition, relativeTiles, tileUniqueID);
-            CreatePlacedObject(tileUniqueID);
-            EnemyManager.Instance.UpdateEnemiesPath();
-            isPlaced = true;
-
-
-            // 프리뷰 인스턴스 리스트 초기화
-            foreach (var previewInstance in previewInstances)
-            {
-                Destroy(previewInstance);
-            }
-            previewInstances.Clear();
+            PlaceObject();
         }
         else
         {
-            // 배치 불가능한 경우 프리뷰 인스턴스들 제거
-            foreach (var previewInstance in previewInstances)
-            {
-                Destroy(previewInstance);
-            }
-            previewInstances.Clear();
-
-            transform.position = originalPos;
-            spriteRenderer.color = originColor;
-            isPlaced = false;
+            CancelPlacement();
         }
     }
 
-    //유닛오브젝트 생성
-    private void CreatePlacedObject(string uniqueID)
+    private void PlaceObject()
     {
-        foreach (var position in GetTilePositions(previousTilePosition))
+        // 프리뷰 인스턴스들을 불투명한 실제 오브젝트로 변환
+        foreach (var previewInstance in previewInstances)
         {
+            SpriteRenderer instanceSpriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
+            if (instanceSpriteRenderer != null)
+            {
+                instanceSpriteRenderer.color = Color.white;
+            }
+        }
 
-            var currentUnitIndex = relativeTiles.IndexOf(position - previousTilePosition);
-            var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
-            var unitBuildData = tileShapeData.f_unitBuildData[currentUnitIndex];
-            GameObject placedObjectInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey, TileMapManager.Instance.tileMap.GetCellCenterWorld(position));
+        TileMapManager.Instance.OccupyTile(previousTilePosition, relativeTiles);
+        CreatePlacedUnits();
+
+        EnemyManager.Instance.UpdateEnemiesPath();
+        isPlaced = true;
+
+        ClearPreviewInstances();
+    }
+
+    private void CancelPlacement()
+    {
+        ClearPreviewInstances();
+
+        transform.position = originalPos;
+        spriteRenderer.color = originColor;
+        isPlaced = false;
+    }
+
+    private void ClearPreviewInstances()
+    {
+        foreach (var previewInstance in previewInstances)
+        {
+            Destroy(previewInstance);
+        }
+        previewInstances.Clear();
+    }
+
+    private void CreatePlacedUnits()
+    {
+        List<Vector3Int> tilePositions = GetTilePositions(previousTilePosition);
+        var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
+
+        for (int i = 0; i < tilePositions.Count; i++)
+        {
+            var unitBuildData = tileShapeData.f_unitBuildData[i];
+            GameObject placedObjectInstance = PoolingManager.Instance.GetObject(
+                unitBuildData.f_unitData.f_unitPrefabKey,
+                TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePositions[i])
+            );
 
             UnitController unitObject = placedObjectInstance.GetComponent<UnitController>();
 
             if (unitObject != null)
             {
-                unitObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(position);
-                unitObject.RegistereTileID(uniqueID, tileShapeData);
+                unitObject.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePositions[i]);
                 unitObject.InitializeUnitStat(unitBuildData);
                 UnitManager.Instance.RegisterUnit(unitObject);
             }
         }
+
         Destroy(gameObject);
     }
 
-    //기준타일 + 상대타일 좌표 가져와야됨 = 다중타일 체크
     private List<Vector3Int> GetTilePositions(Vector3Int basePosition)
     {
-        List<Vector3Int> positions = new List<Vector3Int>();
-        foreach (var relativeTile in relativeTiles)
-        {
-            positions.Add(basePosition + relativeTile);
-        }
-        return positions;
-    }
-
-    private bool CanPlaceAtPosition(Vector3Int basePosition)
-    {
-        if (!TileMapManager.Instance.CanPlaceObjectAt(basePosition, relativeTiles))
-            return false;
-
-        List<Vector3Int> positions = GetTilePositions(basePosition);
-        return PathFindingManager.Instance.CanPlaceObstacle(positions);
+        return relativeTiles.ConvertAll(relativeTile => basePosition + relativeTile);
     }
 
     private void UpdateTileColors(Vector3Int basePosition, bool canPlace)
     {
-        //가능 : 초록색, 불가능 : 빨간색
         Color tileColor = canPlace ? new Color(0, 1, 0, 0.5f) : new Color(1, 0, 0, 0.5f);
+
         foreach (var position in GetTilePositions(basePosition))
         {
-            TileMapManager.Instance.SetTileColors(position, new List<Vector3Int> { Vector3Int.zero },tileColor);
+            TileMapManager.Instance.SetTileColors(position, new List<Vector3Int> { Vector3Int.zero }, tileColor);
         }
     }
 
-  
 
 }

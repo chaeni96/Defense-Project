@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 using BGDatabaseEnum;
 
+//ui인터페이스와 관련된 로직, 카드 UI 상호작용, 카드 삭제 및 상태관리 등등
+
 public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
+
     [SerializeField] private List<Image> tileImages = new List<Image>();
     [SerializeField] private Image backgroundImage; // 전체 영역을 덮는 이미지
 
@@ -102,6 +105,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         if (activeDragObject != null)
         {
             DragObject dragScript = activeDragObject.GetComponent<DragObject>();
+
             dragScript.CheckPlacedObject();
 
             if (dragScript != null && !dragScript.isPlaced)

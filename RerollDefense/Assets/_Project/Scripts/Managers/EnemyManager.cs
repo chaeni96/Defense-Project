@@ -18,8 +18,13 @@ public class EnemyManager : MonoBehaviour
     //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
     private Dictionary<Collider2D, Enemy> activeEnemies = new Dictionary<Collider2D, Enemy>();
-    private Dictionary<Enemy, List<Vector3>> enemyPaths = new Dictionary<Enemy, List<Vector3>>(); // 각 enemy의 개별 경로
-    private Dictionary<Enemy, int> enemyPathIndex = new Dictionary<Enemy, int>();     // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지
+
+    // 각 enemy의 개별 경로, 각 enemy의 전체 이동 경로를 저장하는 딕셔너리
+    private Dictionary<Enemy, List<Vector3>> enemyPaths = new Dictionary<Enemy, List<Vector3>>();
+
+
+    // 각 enemy의 현재 경로 인덱스 -> 현재 몇번째 경로 포인트로 가고있는지, 몇번째 지점인지
+    private Dictionary<Enemy, int> enemyPathIndex = new Dictionary<Enemy, int>();     
 
     //job System 변수
     private TransformAccessArray transformAccessArray;
@@ -67,7 +72,7 @@ public class EnemyManager : MonoBehaviour
     public void SpawnEnemy(string enemyName, Vector3? initPos = null)
     {
 
-        Vector3 startPos = initPos ?? PathFindingManager.Instance.GetStartPosition();
+        Vector3 startPos = initPos ?? TileMapManager.Instance.tileMap.GetCellCenterWorld(TileMapManager.Instance.GetStartTilePosition());;
         GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos, 10);
 
         if (enemyObj != null)
@@ -141,7 +146,11 @@ public class EnemyManager : MonoBehaviour
         // TransformAccessArray, NativaArray 생성하고 이전것들은 Dispose해줘야됨
         // Enemy가 중간에 죽거나 새로 생성되는등 동적으로 관리해야되기때문에 크기 고정하면안됨
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
-        Transform[] transforms = enemies.Select(e => e.transform).ToArray();
+        Transform[] transforms = new Transform[enemies.Count];
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            transforms[i] = enemies[i].transform;
+        }
         transformAccessArray = new TransformAccessArray(transforms);
 
         if (targetPositions.IsCreated) targetPositions.Dispose();
@@ -153,16 +162,16 @@ public class EnemyManager : MonoBehaviour
         for (int i = 0; i < enemies.Count; i++)
         {
             Enemy enemy = enemies[i];
-            List<Vector3> path = enemyPaths[enemy];
+            List<Vector3> enemyPath = enemyPaths[enemy];
             int pathIndex = enemyPathIndex[enemy];
 
             moveSpeeds[i] = enemy.moveSpeed;
 
-            if (pathIndex < path.Count - 1) // 다음 경로 포인트 있을 경우
+            if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
             {
                 // 다음 목표 지점으로 이동 시작할 때 방향 체크
-                Vector3 currentPos = path[pathIndex];
-                Vector3 nextPos = path[pathIndex + 1];
+                Vector3 currentPos = enemyPath[pathIndex];
+                Vector3 nextPos = enemyPath[pathIndex + 1];
                 float directionX = nextPos.x - currentPos.x;
 
                 if (Mathf.Abs(directionX) > 0.01f)
@@ -170,7 +179,7 @@ public class EnemyManager : MonoBehaviour
                     enemy.spriteRenderer.flipX = directionX < 0;
                 }
 
-                targetPositions[i] = path[pathIndex + 1]; // 다음 목표 위치 설정
+                targetPositions[i] = enemyPath[pathIndex + 1]; // 다음 목표 위치 설정
             }
             else
             {
@@ -196,7 +205,10 @@ public class EnemyManager : MonoBehaviour
             if (i >= enemies.Count) continue;
 
             Enemy enemy = enemies[i];
+
             if (enemy == null) continue; // null 체크
+
+            if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;  // Dictionary 체크 추가
 
             int pathIndex = enemyPathIndex[enemy];
             List<Vector3> path = enemyPaths[enemy];
@@ -213,16 +225,20 @@ public class EnemyManager : MonoBehaviour
             {
                 // 마지막 지점 도달
                 enemy.OnReachEndTile();
-                UnregisterEnemy(enemy.enemyCollider);  // Dictionary에서도 제거
+
+                if (enemy.enemyCollider != null)  // 콜라이더 체크 추가
+                {
+                    UnregisterEnemy(enemy.enemyCollider);
+                }
+
                 PoolingManager.Instance.ReturnObject(enemy.gameObject);
-                enemies.RemoveAt(i);
-                enemyPaths.Remove(enemy);
-                enemyPathIndex.Remove(enemy);
             }
         }
 
         targetPositions.Dispose();
         moveSpeeds.Dispose();
+        transformAccessArray.Dispose();
+
     }
     public void UpdateEnemiesPath()
     {

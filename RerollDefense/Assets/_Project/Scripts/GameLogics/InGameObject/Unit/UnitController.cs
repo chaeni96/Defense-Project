@@ -24,8 +24,6 @@ public class UnitController : BasicObject, IPointerClickHandler
     [HideInInspector]
     public float attackTimer = 0f;  // 타이머 추가
 
-    [HideInInspector]
-    public string tileUniqueID;
 
     public SkillAttackType attackType;
     public SpriteRenderer unitSprite;
@@ -34,19 +32,11 @@ public class UnitController : BasicObject, IPointerClickHandler
 
    
     private bool isActive = true;
-    private D_TileShpeData tileData;
 
     public override void Initialize()
     {
         base.Initialize();
 
-    }
-
-    //같은 tileshpae을 가진 유닛이 여러개일수있으므로 생성시 고유 ID 부여
-    public void RegistereTileID(string uniqueID, D_TileShpeData tile)
-    {
-        tileUniqueID = uniqueID;
-        tileData = tile;
     }
 
     public void ShowPreviewUnit()

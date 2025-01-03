@@ -32,11 +32,6 @@ public class TheAOE : SkillBase
 
     public void CheckEnemyInCollider()
     {
-
-        Debug.Log($"LayerMask: {enemyMask.value}");
-        Debug.Log($"Enemy Layer: {LayerMask.NameToLayer("Enemy")}");
-
-
         ContactFilter2D filter = new ContactFilter2D();
         filter.useLayerMask = true;
         filter.layerMask = enemyMask;

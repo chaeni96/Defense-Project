@@ -66,34 +66,20 @@ public class StageManager : MonoBehaviour
         D_StageData stageData = D_StageData.FindEntity(data => data.f_StageNumber == stageNumber);
 
         currentStage = stageData;
+
         currentWaveIndex = 0;
 
-
         //TileMapData에서 해당 스테이지의 장애물 맵 프리팹 키 가져오기
+        D_ObstacleTileMapData obstacleMapData = D_ObstacleTileMapData.GetEntityByKeyStageID(stageNumber);
 
-        D_TileMapData tileMapData = D_TileMapData.GetEntityByKeyStageID(stageNumber);
+        //타일맵 매니저 초기화, 타일맵 data 전달
+        TileMapManager.Instance.InitializeManager(placedMap, obstacleMapData, tileMapGrid);
 
-        if (tileMapData != null)
-        {
+        //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
+        TileMapManager.Instance.InitializeTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
 
-            // 어드레서블에서 장애물 맵 프리팹 로드
-            GameObject obstacleMapPrefab = ResourceManager.Instance.Instantiate(tileMapData.f_ObstacleAddressableKey, tileMapGrid);
+        StartNextWave();
 
-            if (obstacleMapPrefab != null)
-            {
-                // 프리팹에서 Tilemap 컴포넌트 가져오기
-                Tilemap obstacleMap = obstacleMapPrefab.GetComponent<Tilemap>();
-
-                // 타일맵 매니저 초기화하면서 장애물 정보 전달
-                TileMapManager.Instance.InitializeManager(placedMap, obstacleMap);
-            }
-
-
-            //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
-            PathFindingManager.Instance.InitializePathTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
-
-            StartNextWave();
-        }
     }
 
     private void StartNextWave()

@@ -34,6 +34,25 @@ namespace BGDatabaseEnum
         
     }
 
+    public enum ObjstacleTileType
+    {
+        Basic, // 배치 불가, 삭제 불가, 몬스터 이동 불가 
+        Rock,
+        Swamp,
+        Lava,
+
+    }
+
+
+    public enum ObstacleTileType
+    {
+        Basic, // 배치 불가, 삭제 불가, 몬스터 이동 불가 
+        Rock,
+        Swamp,
+        Lava,
+
+    }
+
 
 }
 
