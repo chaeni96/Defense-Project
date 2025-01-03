@@ -86,10 +86,11 @@ MonoBehaviour:
   unitBlockSize: 0
   attackCoolDown: 0
   attackTimer: 0
-  tileUniqueID: 
   attackType: 0
   unitSprite: {fileID: 4166387686762327151}
   unitBaseSprite: {fileID: 8548240474736407140}
+  enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
+  disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
 --- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4

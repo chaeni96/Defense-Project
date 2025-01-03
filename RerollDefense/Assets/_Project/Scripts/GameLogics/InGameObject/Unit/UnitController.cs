@@ -26,38 +26,31 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
     public SkillAttackType attackType;
-    public SpriteRenderer unitSprite;
 
+
+    public SpriteRenderer unitSprite;
     [SerializeField] private SpriteRenderer unitBaseSprite;
 
-   
+    private Material originalUnitMaterial;
+    private Material originalBaseMaterial;
+
+    //inspector에 할당
+    [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
+    [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
+    
+
+
     private bool isActive = true;
 
     public override void Initialize()
     {
         base.Initialize();
 
-    }
+        originalUnitMaterial = unitSprite.material;
 
-    public void ShowPreviewUnit()
-    {
-        UnityEngine.Color color;
+        originalBaseMaterial = unitBaseSprite.material;
 
-        if (unitSprite != null)
-        {
-            color = unitSprite.color;
-            color.a = 0.5f; // 50% 투명
-            unitSprite.color = color;
-        }
-        
-        if(unitBaseSprite != null)
-        {
-            color = unitBaseSprite.color;
-            color.a = 0.5f;
-            unitBaseSprite.color = color;
 
-        }
-        
     }
 
     //tileShpaeName은 이제 상점 통해서 랜덤으로 가져오는것
@@ -154,6 +147,30 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     }
 
+    public void SetPreviewMaterial(bool canPlace)
+    {
+        // 배치 가능할 때와 불가능할 때의 머테리얼 설정
+        Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
+
+        if (unitSprite != null)
+        {
+            unitSprite.material = targetMaterial;
+            unitBaseSprite.material = targetMaterial;
+        }
+    }
+
+
+    // 프리뷰 종료 시 원본 머테리얼로 복원
+    public void HidePreviewUnit()
+    {
+
+
+        unitSprite.material = originalUnitMaterial;
+
+        unitBaseSprite.material = originalBaseMaterial;
+
+
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

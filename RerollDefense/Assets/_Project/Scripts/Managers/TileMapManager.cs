@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class TileMapManager : MonoBehaviour
 {
-    //타일 배치 관련 모든 검증을 담당
+    //타일 배치 관련 메서드만
 
     public static TileMapManager _instance;
 
@@ -68,7 +68,6 @@ public class TileMapManager : MonoBehaviour
     //endTile에 playerCamp 설치
     public void InitializeTiles(Vector2 startTile, Vector2 endTile)
     {
-
         //startTile, endTile 지정
         startTilePosition = new Vector3Int(Mathf.FloorToInt(startTile.x), Mathf.FloorToInt(startTile.y), 0);
         endTilePosition = new Vector3Int(Mathf.FloorToInt(endTile.x), Mathf.FloorToInt(endTile.y), 0);
@@ -82,13 +81,6 @@ public class TileMapManager : MonoBehaviour
 
         SetAllTilesColor(new Color(1, 1, 1, 0));
     }
-
-
-    //시작 타일 가져오기
-    public Vector3Int GetStartTilePosition() => startTilePosition;
-
-    //끝 타일 가져오기
-    public Vector3Int GetEndTilePosition() => endTilePosition;
 
     public void InstallTileMap(D_ObstacleTileMapData obstacleMap)
     {
@@ -123,6 +115,10 @@ public class TileMapManager : MonoBehaviour
             }
         }
     }
+
+    public Vector3Int GetStartTilePosition() => startTilePosition; //시작 타일 가져오기
+    public Vector3Int GetEndTilePosition() => endTilePosition; //끝 타일 가져오기
+
 
     //타일 데이터 넣어주기
     public void SetTileData(Vector3Int position, bool isAvailable)

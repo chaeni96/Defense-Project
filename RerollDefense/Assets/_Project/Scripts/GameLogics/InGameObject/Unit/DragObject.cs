@@ -94,8 +94,7 @@ public class DragObject : BasicObject
             //드래그 중에도 설치 가능한지 체크해야됨
             bool canPlace = TileMapManager.Instance.CanPlaceObject(baseTilePosition, relativeTiles);
 
-            UpdatePreviewInstancesPosition(baseTilePosition, canPlace);
-            UpdateTileColors(baseTilePosition, canPlace);
+            UpdatePreviewInstancesPosition(baseTilePosition);
 
             previousTilePosition = baseTilePosition;
         }
@@ -123,22 +122,27 @@ public class DragObject : BasicObject
             if (previewObject != null)
             {
                 previewObject.InitializeUnitStat(unitBuildData);
-                previewObject.ShowPreviewUnit();
                 previewInstances.Add(previewObjectInstance);
             }
         }
     }
 
-    private void UpdatePreviewInstancesPosition(Vector3Int basePosition, bool canPlace)
+    private void UpdatePreviewInstancesPosition(Vector3Int basePosition)
     {
-        // 각 상대 타일 위치에 프리뷰 인스턴스 이동
         for (int i = 0; i < previewInstances.Count; i++)
         {
             Vector3Int previewPosition = basePosition + relativeTiles[i];
             previewInstances[i].transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previewPosition);
+
+            // 배치 가능 여부에 따라 머테리얼 변경
+            UnitController previewUnit = previewInstances[i].GetComponent<UnitController>();
+            if (previewUnit != null)
+            {
+                bool canPlace = TileMapManager.Instance.CanPlaceObject(basePosition, relativeTiles);
+                previewUnit.SetPreviewMaterial(canPlace);
+            }
         }
     }
-
 
     public void CheckPlacedObject()
     {
@@ -161,10 +165,12 @@ public class DragObject : BasicObject
         // 프리뷰 인스턴스들을 불투명한 실제 오브젝트로 변환
         foreach (var previewInstance in previewInstances)
         {
-            SpriteRenderer instanceSpriteRenderer = previewInstance.GetComponent<SpriteRenderer>();
-            if (instanceSpriteRenderer != null)
+            UnitController previewUnit = previewInstance.GetComponent<UnitController>();
+            if (previewUnit != null)
             {
-                instanceSpriteRenderer.color = Color.white;
+                // 원본 머테리얼로 복원
+                previewUnit.HidePreviewUnit();
+
             }
         }
 
@@ -226,15 +232,6 @@ public class DragObject : BasicObject
         return relativeTiles.ConvertAll(relativeTile => basePosition + relativeTile);
     }
 
-    private void UpdateTileColors(Vector3Int basePosition, bool canPlace)
-    {
-        Color tileColor = canPlace ? new Color(0, 1, 0, 0.5f) : new Color(1, 0, 0, 0.5f);
-
-        foreach (var position in GetTilePositions(basePosition))
-        {
-            TileMapManager.Instance.SetTileColors(position, new List<Vector3Int> { Vector3Int.zero }, tileColor);
-        }
-    }
 
 
 }

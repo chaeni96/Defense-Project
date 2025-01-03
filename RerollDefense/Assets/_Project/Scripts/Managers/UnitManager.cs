@@ -147,10 +147,12 @@ public class UnitManager : MonoBehaviour
     {
         if (units.Contains(unit))
         {
+            // 타일 위치를 배치 가능한 상태로 변경
+            Vector3Int basePosition = TileMapManager.Instance.tileMap.WorldToCell(unit.transform.position);
+            TileMapManager.Instance.SetTileData(basePosition, true);
+
             units.Remove(unit);
-
             PoolingManager.Instance.ReturnObject(unit.gameObject);
-
         }
     }
 
