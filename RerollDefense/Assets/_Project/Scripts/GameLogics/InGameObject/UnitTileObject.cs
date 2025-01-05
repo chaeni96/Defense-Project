@@ -179,7 +179,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             if (previewUnit != null)
             {
                 previewUnit.Initialize();
-                previewUnit.InitializeUnitStat(unitBuildData);
+                previewUnit.InitializeUnitData(unitBuildData.f_unitData);
                 previewInstances.Add(previewUnit);
             }
         }

@@ -50,13 +50,10 @@ public class UnitController : BasicObject, IPointerClickHandler
         unitSortingOrder = unitSprite.sortingOrder;
         baseSortingOrder = unitBaseSprite.sortingOrder;
     }
-
-    //tileShpaeName은 이제 상점 통해서 랜덤으로 가져오는것
-    public void InitializeUnitStat(D_unitBuildData buildData)
+    public void InitializeUnitData(D_UnitData unitData)
     {
-        if (buildData == null) return;
 
-        var unitData = buildData.f_unitData;
+        if (unitData == null) return;
         attackType = unitData.f_SkillAttackType;
         if (unitData != null || attackType != SkillAttackType.None)
         {

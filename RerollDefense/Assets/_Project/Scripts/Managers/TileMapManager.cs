@@ -139,8 +139,9 @@ public class TileMapManager : MonoBehaviour
             //타일 데이터 가져와서 장애물 설치
             var newObjectCellPos = new Vector3Int(tileData.f_cellXPos, tileData.f_cellYPos, 0);
             var newObjectPos = tileMap.GetCellCenterWorld(newObjectCellPos);
-            var newSpecialObject = PoolingManager.Instance.GetObject(tileData.f_specialObject.f_name, newObjectPos);
+            var newSpecialObject = PoolingManager.Instance.GetObject(tileData.f_specialObject.f_unitPrefabKey, newObjectPos);
             var objectController = newSpecialObject.GetComponent<UnitController>();
+            objectController.InitializeUnitData(tileData.f_specialObject);
             UnitManager.Instance.RegisterUnit(objectController);
             SetTileData(newObjectCellPos, false);
         }
