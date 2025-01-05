@@ -54,6 +54,11 @@ public class PathFindingManager : MonoBehaviour
     }
 
 
+    public bool HasValidPath(Vector3Int start, Vector3Int end)
+    {
+        var path = FindPath(start, end);
+        return path.Count > 0;
+    }
 
     //경로찾기 메서드
     public List<Vector3> FindPath(Vector3Int start, Vector3Int goal)

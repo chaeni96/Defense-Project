@@ -31,26 +31,24 @@ public class UnitController : BasicObject, IPointerClickHandler
     public SpriteRenderer unitSprite;
     [SerializeField] private SpriteRenderer unitBaseSprite;
 
-    private Material originalUnitMaterial;
-    private Material originalBaseMaterial;
+    
 
     //inspector에 할당
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
     
+    [SerializeField] private Material originalMaterial;
 
-
+    private int unitSortingOrder;
+    private int baseSortingOrder;
     private bool isActive = true;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        originalUnitMaterial = unitSprite.material;
-
-        originalBaseMaterial = unitBaseSprite.material;
-
-
+        unitSortingOrder = unitSprite.sortingOrder;
+        baseSortingOrder = unitBaseSprite.sortingOrder;
     }
 
     //tileShpaeName은 이제 상점 통해서 랜덤으로 가져오는것
@@ -156,18 +154,24 @@ public class UnitController : BasicObject, IPointerClickHandler
         {
             unitSprite.material = targetMaterial;
             unitBaseSprite.material = targetMaterial;
+
+            // 프리뷰일 때는 Sorting Order를 높게 설정
+            unitSprite.sortingOrder = 100;
+            unitBaseSprite.sortingOrder = 99;  // base는 한단계 아래로
         }
     }
 
 
     // 프리뷰 종료 시 원본 머테리얼로 복원
-    public void HidePreviewUnit()
+    public void DestroyPreviewUnit()
     {
 
+        // 실제 유닛으로 전환 시 원래 sorting order로 복구
+        unitSprite.sortingOrder = unitSortingOrder;
+        unitBaseSprite.sortingOrder = baseSortingOrder;
 
-        unitSprite.material = originalUnitMaterial;
-
-        unitBaseSprite.material = originalBaseMaterial;
+        unitSprite.material = originalMaterial;
+        unitBaseSprite.material = originalMaterial;
 
 
     }

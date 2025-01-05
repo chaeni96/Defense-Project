@@ -9,9 +9,6 @@ using TMPro;
 
 public class FullWindowInGameDlg : FullWindowBase
 {
-
-    //TODO : UIBase 상속받아야됨
-
     public GameObject firstCardDeck;
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
@@ -25,11 +22,15 @@ public class FullWindowInGameDlg : FullWindowBase
     private float targetHPRatio;
     private Coroutine hpUpdateCoroutine;
 
+    //카드덱
     private List<GameObject> cardDecks;
+    private List<GameObject> emptyCardObjects;
+    private List<UnitTileObject> currentCards;
+
     private bool isChecking = false;
 
     //test용 변수들
-    public float checkCooldown = 3f;
+    public float checkCooldown = 1f;
     private int shopLevel;
     private int shopUpgradeCost;
 
@@ -38,36 +39,58 @@ public class FullWindowInGameDlg : FullWindowBase
     {
         base.InitializeUI();
 
-        initUI();
+        
+        InitializeAssociateUI();
+
+        InitializeCardDecks();
         UpdateShopLevelUI();
 
         //이벤트 구독
         GameManager.Instance.OnHPChanged += OnHPChanged;
-        GameManager.Instance.OnCostUsed += OnCostUsed;  // 추가
-
+        GameManager.Instance.OnCostUsed += OnCostUsed;  
+        UnitTileObject.OnCardUsed += OnUnitCardDestroyed; 
 
 
     }
 
-    public void initUI()
+    //관련 유아이 초기화
+    private void InitializeAssociateUI()
     {
-
+        //hp 초기화
         if (GameManager.Instance != null)
         {
             hpBar.value = GameManager.Instance.PlayerHP / GameManager.Instance.MaxHP;
             targetHPRatio = hpBar.value;
         }
 
+        //cost 초기화
         CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-
         costUI.Initialize(GameManager.Instance.StoreLevel);
 
+        //shopLevel 초기화
         shopLevel = GameManager.Instance.StoreLevel;
         shopLevelText.text = $"Shop Level : {shopLevel}";
+    }
 
+
+    private void InitializeCardDecks()
+    {
         cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck };
+
+        // Empty 오브젝트와 현재 카드 배열 초기화
+        emptyCardObjects = new List<GameObject>();
+        currentCards = new List<UnitTileObject>();
+
+        foreach (var deck in cardDecks)
+        {
+            emptyCardObjects.Add(deck.transform.GetChild(1).gameObject);
+            currentCards.Add(null);
+        }
+
         StartCoroutine(CheckAndFillCardDecks());
     }
+
+
 
     // 덱 상태를 주기적으로 체크하고 비어 있으면 UnitCardObject 생성
     private IEnumerator CheckAndFillCardDecks()
@@ -79,53 +102,42 @@ public class FullWindowInGameDlg : FullWindowBase
             foreach (var cardDeck in cardDecks)
             {
                 // UnitCard_Empty가 활성화된 경우 처리
-                var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
-                if (emptyPlaceholder != null && emptyPlaceholder.gameObject.activeSelf)
+                for (int i = 0; i < cardDecks.Count; i++)
                 {
-                    // 덱에 UnitCardObject가 비어 있으면 생성
-                    if (cardDeck.GetComponentInChildren<UnitTileObject>() == null)
+                    if (emptyCardObjects[i].activeSelf && currentCards[i] == null)
                     {
-                        CreateUnitCard(cardDeck);
+                        // 덱에 UnitCardObject가 비어 있으면 생성
+
+                        CreateUnitCard(cardDecks[i], i);
                     }
                 }
+                yield return new WaitForSeconds(checkCooldown);
             }
-
-            yield return new WaitForSeconds(checkCooldown);
         }
     }
 
     // UnitCardObject 생성 및 덱에 추가
-    private void CreateUnitCard(GameObject cardDeck)
+    private void CreateUnitCard(GameObject cardDeck, int deckIndex)
     {
-        ResourceManager.Instance.LoadAsync<GameObject>("UnitTileObject", (loadedPrefab) =>
+
+        GameObject unitCard = PoolingManager.Instance.GetObject("UnitTileObject");
+
+        if(unitCard != null)
         {
-            if (loadedPrefab != null)
+            //cardDeck 부모 설정 및 로컬 포지션 초기화
+            unitCard.transform.SetParent(cardDeck.transform);
+            unitCard.transform.localPosition = Vector3.zero;
+
+            // UnitCardObject 초기화
+            UnitTileObject cardObject = unitCard.GetComponent<UnitTileObject>();
+            if (cardObject != null)
             {
-                // 프리팹 로드 성공 시 인스턴스 생성
-                GameObject unitCard = Instantiate(loadedPrefab, cardDeck.transform);
-                unitCard.name = "UnitTileObject";
-
-                var cardData = GetCardKeyBasedOnProbability();
-
-                // UnitCardObject 초기화
-                UnitTileObject cardObject = unitCard.GetComponent<UnitTileObject>();
-                if (cardObject != null)
-                {
-                    cardObject.InitializeCardInform(cardData); // 기본 초기화 데이터
-                }
-
+                cardObject.InitializeCardInform(GetCardKeyBasedOnProbability());
+                currentCards[deckIndex] = cardObject;
                 // UnitCard_Empty를 비활성화
-                var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
-                if (emptyPlaceholder != null)
-                {
-                    emptyPlaceholder.gameObject.SetActive(false);
-                }
+                emptyCardObjects[deckIndex].SetActive(false);
             }
-            else
-            {
-                Debug.LogError("Failed to load UnitCardObject.prefab!");
-            }
-        });
+        }
     }
 
     public D_TileShpeData GetCardKeyBasedOnProbability()
@@ -183,33 +195,27 @@ public class FullWindowInGameDlg : FullWindowBase
     //TODO : 리롤 쿨타임, 클릭속도 제한 추가
     public void RerollCardDecks()
     {
-        if(GameManager.Instance.CurrentCost >= 1)
-        {
 
-            GameManager.Instance.UseCost(1);
-            // 기존 카드 제거
-            foreach (var cardDeck in cardDecks)
+        //코스트 1보다 낮으면 불가
+        if (!GameManager.Instance.UseCost(1)) return;
+
+        // 기존 카드 제거
+        for (int i = 0; i < cardDecks.Count; i++)
+        {
+            if (currentCards[i] != null)
             {
                 // UnitCardObject 삭제
-                var existingCard = cardDeck.GetComponentInChildren<UnitTileObject>();
-                if (existingCard != null)
-                {
-                    Destroy(existingCard.gameObject);
-                }
-
-                // UnitCard_Empty 활성화
-                var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
-                if (emptyPlaceholder != null)
-                {
-                    emptyPlaceholder.gameObject.SetActive(true);
-                }
+                Destroy(currentCards[i].gameObject);
+                currentCards[i] = null;
             }
 
+            // UnitCard_Empty 활성화
+            emptyCardObjects[i].SetActive(true);
+        }
             // 새 카드 덱 생성
             StartCoroutine(CheckAndFillCardDecks());
-        }
-       
     }
+       
 
     private void UpdateShopLevelUI()
     {
@@ -259,10 +265,11 @@ public class FullWindowInGameDlg : FullWindowBase
     // UnitCardObject 삭제 시 호출하여 UnitCard_Empty 활성화
     public void OnUnitCardDestroyed(GameObject cardDeck)
     {
-        var emptyPlaceholder = cardDeck.transform.Find("UnitCard_Empty");
-        if (emptyPlaceholder != null)
+        int deckIndex = cardDecks.IndexOf(cardDeck);
+        if (deckIndex != -1)
         {
-            emptyPlaceholder.gameObject.SetActive(true);
+            currentCards[deckIndex] = null;
+            emptyCardObjects[deckIndex].SetActive(true);
         }
     }
 
@@ -300,7 +307,8 @@ public class FullWindowInGameDlg : FullWindowBase
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
-            GameManager.Instance.OnCostUsed -= OnCostUsed;  // 추가
+            GameManager.Instance.OnCostUsed -= OnCostUsed;
+            UnitTileObject.OnCardUsed -= OnUnitCardDestroyed; 
 
         }
     }
@@ -316,7 +324,8 @@ public class FullWindowInGameDlg : FullWindowBase
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
-            GameManager.Instance.OnCostUsed -= OnCostUsed;  // 추가
+            GameManager.Instance.OnCostUsed -= OnCostUsed;
+            UnitTileObject.OnCardUsed -= OnUnitCardDestroyed;
         }
     }
 

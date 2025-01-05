@@ -17,12 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
-  - m_GUID: a17931eab2a9646449fce38cec7fbca4
-    m_Address: DragObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a34f01674b0d3194fb7b3a8b69edbbab
     m_Address: Enemy_Normal
     m_ReadOnly: 0
@@ -77,12 +71,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 65454dc1d272ed248a09d8e5fb9962c0
-    m_Address: UnitCardObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c5a041ec2a45cdb44b9ebddbdac20f59
     m_Address: ExplosionEffectObject
     m_ReadOnly: 0
@@ -101,14 +89,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 02d54ab159c04ac4496226e90af8807a
-    m_Address: UnitTileObject
+  - m_GUID: dc741db8e1ed72a43a9e8f24eaceca11
+    m_Address: ObstacleTilemap1
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dc741db8e1ed72a43a9e8f24eaceca11
-    m_Address: ObstacleTilemap1
+  - m_GUID: 02d54ab159c04ac4496226e90af8807a
+    m_Address: UnitTileObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

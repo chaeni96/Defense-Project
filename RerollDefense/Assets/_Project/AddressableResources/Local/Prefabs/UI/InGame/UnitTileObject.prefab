@@ -917,7 +917,6 @@ MonoBehaviour:
   - {fileID: 8394234921745440545}
   - {fileID: 8394234921652615225}
   - {fileID: 8394234921113343843}
-  backgroundImage: {fileID: 8499651101832375062}
   cardCostText: {fileID: 5523638024274111723}
 --- !u!1 &8847598494388977246
 GameObject:

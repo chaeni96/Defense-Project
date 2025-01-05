@@ -133,10 +133,12 @@ public class GameManager : MonoBehaviour
 
     public int CurrentCost;
     public int MaxCost;
-    public int StoreLevel { get; private set; } = 0;
+    public int StoreLevel { get; private set; } = 1;
 
 
     public event System.Action<float> OnHPChanged;    // HP 변경 이벤트
+
+    public event System.Action OnCostAdd; // 코스트 추가 이벤트
     public event System.Action<int> OnCostUsed; // 코스트 사용 이벤트
 
     //test용
@@ -180,7 +182,6 @@ public class GameManager : MonoBehaviour
         mainCamera = Camera.main;
         CurrentCost = 2;
         MaxCost = 10;
-        StoreLevel = 1;
     }
     private void Update()
     {
@@ -212,6 +213,8 @@ public class GameManager : MonoBehaviour
         if (CurrentCost < MaxCost)
         {
             CurrentCost++;
+            OnCostAdd?.Invoke(); // 이벤트 호출
+
         }
     }
 
