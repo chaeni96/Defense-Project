@@ -13,6 +13,7 @@ public class TileMapManager : MonoBehaviour
     public Tilemap tileMap;
 
     private D_ObstacleTileMapData obstacleData;
+    private D_MapData mapData;
     private Transform tileMapGrid;
 
     [SerializeField] private Vector3Int startTilePosition;
@@ -63,7 +64,14 @@ public class TileMapManager : MonoBehaviour
         tileMapDatas.Clear();
 
     }
+    public void InitializeManager(Tilemap gameMap, D_MapData mapData, Transform grid)
+    {
+        tileMap = gameMap;
+        this.mapData = mapData;
+        tileMapGrid = grid;
+        tileMapDatas.Clear();
 
+    }
 
     //endTile에 playerCamp 설치
     public void InitializeTiles(Vector2 startTile, Vector2 endTile)
@@ -77,7 +85,8 @@ public class TileMapManager : MonoBehaviour
         playerCamp.transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(endTilePosition);
 
         //tileMap 설치
-        InstallTileMap(obstacleData);
+        //InstallTileMap(obstacleData);
+        InstallTileMap(mapData);
 
         SetAllTilesColor(new Color(1, 1, 1, 0));
     }
@@ -115,7 +124,28 @@ public class TileMapManager : MonoBehaviour
             }
         }
     }
-
+    public void InstallTileMap(D_MapData mapData)
+    {
+        // 기본적으로 모든 타일을 먼저 사용 가능한 상태로 초기화
+        foreach (var position in tileMap.cellBounds.allPositionsWithin)
+        {
+            if (tileMap.HasTile(position))
+            {
+                tileMapDatas[position] = new TileData { isAvailable = true };
+            }
+        }
+        foreach(var tileData in mapData.f_specialTiles)
+        {
+            //타일 데이터 가져와서 장애물 설치
+            var newObjectCellPos = new Vector3Int(tileData.f_cellXPos, tileData.f_cellYPos, 0);
+            var newObjectPos = tileMap.GetCellCenterWorld(newObjectCellPos);
+            var newSpecialObject = PoolingManager.Instance.GetObject(tileData.f_specialObject.f_unitPrefabKey, newObjectPos);
+            var objectController = newSpecialObject.GetComponent<UnitController>();
+            objectController.InitializeUnitData(tileData.f_specialObject);
+            UnitManager.Instance.RegisterUnit(objectController);
+            SetTileData(newObjectCellPos, false);
+        }
+    }
     public Vector3Int GetStartTilePosition() => startTilePosition; //시작 타일 가져오기
     public Vector3Int GetEndTilePosition() => endTilePosition; //끝 타일 가져오기
 
