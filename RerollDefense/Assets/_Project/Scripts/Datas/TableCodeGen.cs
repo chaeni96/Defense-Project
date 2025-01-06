@@ -257,6 +257,7 @@ public partial class D_UnitData : BGEntity
 		public const string SkillAttackType = "SkillAttackType";
 		public const string UnitPoolingKey = "UnitPoolingKey";
 		public const string UpgradeUnitType = "UpgradeUnitType";
+		public const string UpgradePoolingKey = "UpgradePoolingKey";
 		public const string UpgradeUnitKey = "UpgradeUnitKey";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
@@ -284,6 +285,11 @@ public partial class D_UnitData : BGEntity
 		get => (BGDatabaseEnum.UpgradeUnitType) _f_UpgradeUnitType.GetStoredValue(Index);
 		set => _f_UpgradeUnitType.SetStoredValue(Index, (System.Int32) value);
 	}
+	public D_ObjectPoolData f_UpgradePoolingKey
+	{
+		get => (D_ObjectPoolData) _f_UpgradePoolingKey[Index];
+		set => _f_UpgradePoolingKey[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4978381386621882592UL, 9377071611302703509UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_statDatas;
@@ -294,6 +300,8 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitPoolingKey => _ufle12jhs77_f_UnitPoolingKey ?? (_ufle12jhs77_f_UnitPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4766850798404632622UL, 6480570574369079984UL), () => _ufle12jhs77_f_UnitPoolingKey = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_UpgradeUnitType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_UpgradeUnitType => _ufle12jhs77_f_UpgradeUnitType ?? (_ufle12jhs77_f_UpgradeUnitType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5281333430108508800UL, 5633612340734873506UL), () => _ufle12jhs77_f_UpgradeUnitType = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_UpgradePoolingKey;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UpgradePoolingKey => _ufle12jhs77_f_UpgradePoolingKey ?? (_ufle12jhs77_f_UpgradePoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5485729712815794462UL, 1618634392794203038UL), () => _ufle12jhs77_f_UpgradePoolingKey = null));
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	public List<Alias_rifegrt_SpecialTile> RelatedSpecialTileListUsingspecialObjectRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpecialTile>(Alias_rifegrt_SpecialTile._f_specialObject, Id);
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_UpgradeUnitKey;
@@ -730,6 +738,7 @@ public partial class D_ObjectPoolData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SceneType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SceneType => _ufle12jhs77_f_SceneType ?? (_ufle12jhs77_f_SceneType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5559553276269621835UL, 2058884527795876747UL), () => _ufle12jhs77_f_SceneType = null));
 	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingUnitPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_UnitPoolingKey, Id);
+	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingUpgradePoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_UpgradePoolingKey, Id);
 	public List<Alias_rifegrt_EnemyData> RelatedEnemyDataListUsingObjectPoolKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EnemyData>(Alias_rifegrt_EnemyData._f_ObjectPoolKey, Id);
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();

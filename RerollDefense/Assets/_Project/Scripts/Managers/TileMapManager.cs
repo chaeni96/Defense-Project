@@ -101,7 +101,6 @@ public class TileMapManager : MonoBehaviour
         foreach(var specialTile in mapData.f_specialTiles)
         {
             //타일 데이터 가져와서 장애물 설치
-
       
             Vector2 position = specialTile.f_cellPosition;
 
@@ -150,25 +149,6 @@ public class TileMapManager : MonoBehaviour
         return tileMapDatas.TryGetValue((position.x, position.y), out var data) ? data : null;
     }
 
-    // 타일 점유상태로 변경
-    // 오브젝트를 실제 배치할때 사용
-    // 상대적인 타일 위치들을 기준위치에 더해서 처리
-    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, UnitController unit)
-    {
-        foreach (var offset in tileOffsets)
-        {
-            Vector2 position = basePosition + offset;
-            var tileData = new TileData(position)
-            {
-                isAvailable = false,
-                placedUnit = unit
-            };
-            SetTileData(tileData);
-        }
-    }
-
-
-
     //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드
     public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, List<UnitController> previewUnits)
     {
@@ -185,6 +165,13 @@ public class TileMapManager : MonoBehaviour
                 return false;
             }
 
+            //타일 데이터 없는경우
+            if (tileData == null || !tileMap.HasTile(new Vector3Int((int)checkPosition.x, (int)checkPosition.y, 0)))
+            {
+                return false;
+            }
+
+
             // 배치된 유닛이 있는 경우 타입 비교
             if (tileData?.placedUnit != null)
             {
@@ -192,7 +179,7 @@ public class TileMapManager : MonoBehaviour
                 var previewUnit = previewUnits[i]; // 프리뷰 유닛 가져오기
 
                 // 업그레이드 타입이 다르면 배치 불가
-                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType)
+                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType || previewUnit.upgradeUnitType == UpgradeUnitType.None)
                 {
                     return false;
                 }
