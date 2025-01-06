@@ -197,6 +197,14 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         {
             if (currentPreviews[i] != originalPreviews[i])
             {
+                // 해당 위치의 기존 배치된 유닛의 별 다시 활성화
+                Vector2 position = previousTilePosition + tileOffsets[i];
+                var tileData = TileMapManager.Instance.GetTileData(position);
+                if (tileData?.placedUnit != null)
+                {
+                    tileData.placedUnit.unitStarObject.SetActive(true);
+                }
+
                 PoolingManager.Instance.ReturnObject(currentPreviews[i].gameObject);
                 currentPreviews[i] = originalPreviews[i];
                 currentPreviews[i].gameObject.SetActive(true);
@@ -212,26 +220,28 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             var currentPreview = currentPreviews[i];
 
-            // 타일에 유닛이 있고 합성이 가능한 경우
+            // 타일에 유닛이 있고 합성이 가능한 경우(유닛타입이 똑같고 다음 업그레이드할 유닛이 있는경우)
             if (tileData?.placedUnit != null &&
                 currentPreview.upgradeUnitType == tileData.placedUnit.upgradeUnitType &&
-                currentPreview.upgradeUnitType != UpgradeUnitType.None)
+                tileData.placedUnit.unitData.f_NextLevelUnit != null)
             {
-                var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(currentPreview.upgradeUnitType);
-                var poolingKey = unitData.f_UpgradePoolingKey.f_PoolObjectAddressableKey;
+                //기존 배치된 유닛 별 비활성화
+                tileData.placedUnit.unitStarObject.SetActive(false);
+
+                var nextLevelUnitData = tileData.placedUnit.unitData.f_NextLevelUnit;
+                var poolingKey = nextLevelUnitData.f_UnitPoolingKey.f_PoolObjectAddressableKey;
 
                 Vector3 mergedPosition = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
 
                 // 기존 프리뷰 비활성화
                 currentPreview.gameObject.SetActive(false);
-                currentPreview.transform.position = new Vector3(-1000, -1000, -1000);
 
                 // 새로운 합성 유닛 생성 및 설정
                 GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
                 var mergedUnit = mergedPreview.GetComponent<UnitController>();
                 mergedUnit.Initialize();
                 mergedUnit.InitializeTilePos(mergedPosition);
-                mergedUnit.InitializeUnitData(unitData);
+                mergedUnit.InitializeUnitData(nextLevelUnitData);
                 mergedUnit.SetPreviewMaterial(canPlace);
 
                 // 현재 프리뷰를 합성된 것으로 교체
@@ -240,7 +250,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
             else
             {
-                // 합성이 아닌 경우 원래 위치로
+           
+
+
                 currentPreview.gameObject.SetActive(true);
                 currentPreview.transform.position = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
                 currentPreview.SetPreviewMaterial(canPlace);
@@ -277,26 +289,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         {
             var unitInstance = pair.Value;
 
-
-            // 만약 이 유닛이 원본 프리뷰와 다르다면 (즉, 합성된 유닛이라면)
-            if (unitInstance != originalPreviews[pair.Key])
-            {
-                var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(unitInstance.upgradeUnitType);
-                var poolingKey = unitData.f_UpgradePoolingKey;
-
-                var newUnitData = D_UnitData.FindEntity(data => data.f_name == poolingKey.f_name);
-
-                unitInstance.InitializeUnitData(newUnitData);
-            }
-
-
             unitInstance.DestroyPreviewUnit();
             Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
             unitInstance.InitializeTilePos(new Vector2(pos.x, pos.y));
-
-            // 업그레이드된 유닛 데이터 찾기
-
-      
 
             UnitManager.Instance.RegisterUnit(unitInstance);
         }

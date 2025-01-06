@@ -78,7 +78,7 @@ public class UnitController : BasicObject, IPointerClickHandler
         unitData = unit;
 
         attackType = unitData.f_SkillAttackType;
-        upgradeUnitType = unitData.f_UpgradeUnitType;
+        upgradeUnitType = unitData.f_UnitUpgradeType;
 
         if (unitData != null || attackType != SkillAttackType.None)
         {
