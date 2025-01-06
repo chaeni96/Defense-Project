@@ -149,8 +149,29 @@ public class TileMapManager : MonoBehaviour
         return tileMapDatas.TryGetValue((position.x, position.y), out var data) ? data : null;
     }
 
+    // 타일 점유상태로 변경
+    // 오브젝트를 실제 배치할때 사용
+    // 상대적인 타일 위치들을 기준위치에 더해서 처리
+    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> units)
+    {
+        for (int i = 0; i < tileOffsets.Count; i++)
+        {
+            Vector2 position = basePosition + tileOffsets[i];
+
+            // 각 프리뷰 유닛에 맞는 타일 데이터 설정
+            var tileData = new TileData(position)
+            {
+                isAvailable = false,
+                placedUnit = units[i]
+            };
+
+            SetTileData(tileData);
+        }
+    }
+
+
     //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드
-    public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, List<UnitController> previewUnits)
+    public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> previewUnits)
     {
 
         // 기본 검사 : 시작/끝타일과 겹치는지, tileMap안에 있는지 체크
@@ -165,26 +186,26 @@ public class TileMapManager : MonoBehaviour
                 return false;
             }
 
-            //타일 데이터 없는경우
             if (tileData == null || !tileMap.HasTile(new Vector3Int((int)checkPosition.x, (int)checkPosition.y, 0)))
             {
                 return false;
             }
 
-
             // 배치된 유닛이 있는 경우 타입 비교
             if (tileData?.placedUnit != null)
             {
                 var placedUnit = tileData.placedUnit;
-                var previewUnit = previewUnits[i]; // 프리뷰 유닛 가져오기
+                var previewUnit = previewUnits[i];
 
                 // 업그레이드 타입이 다르면 배치 불가
-                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType || previewUnit.upgradeUnitType == UpgradeUnitType.None)
+                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType ||
+                    previewUnit.upgradeUnitType == UpgradeUnitType.None)
                 {
                     return false;
                 }
             }
         }
+
 
 
         // 유닛 배치하기 전에 그 위치에 임시 배치했을때, 모든 enemy들이 목적지까지 도달할수있는지 체크

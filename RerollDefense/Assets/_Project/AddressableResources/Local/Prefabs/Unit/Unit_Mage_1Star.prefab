@@ -206,6 +206,7 @@ MonoBehaviour:
   tilePosition: {x: 0, y: 0}
   attackType: 0
   upgradeUnitType: 0
+  unitStarObject: {fileID: 1731229992491302398}
   unitSprite: {fileID: 4166387686762327151}
   unitBaseSprite: {fileID: 8548240474736407140}
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}

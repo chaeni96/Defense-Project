@@ -34,6 +34,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     [HideInInspector]
     public UpgradeUnitType upgradeUnitType;
 
+    public GameObject unitStarObject;
 
     public SpriteRenderer unitSprite;
 

@@ -16,7 +16,10 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     [SerializeField] private TMP_Text cardCostText;
 
     // 드래그 중에 보여질 프리뷰 유닛들을 관리
-    private List<UnitController> previewInstances = new List<UnitController>();
+   // private List<UnitController> previewInstances = new List<UnitController>();
+
+    private Dictionary<int, UnitController> previewInstances = new Dictionary<int, UnitController>();
+
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
     private List<Vector2> tileOffsets;
@@ -43,10 +46,10 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         InitializeTileShape();
         CreateTilePreview(unitData);
+        UpdateCostTextColor();
         //cost 사용 이벤트 구독 -> cost 추가될때 tile Cost Text 업데이트
         GameManager.Instance.OnCostAdd += OnCostChanged;
 
-        UpdateCostTextColor();
     }
 
     // 타일 모양 데이터를 기반으로 오프셋 위치 초기화
@@ -174,7 +177,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             {
                 previewUnit.Initialize();
                 previewUnit.InitializeUnitData(unitBuildData.f_unitData);
-                previewInstances.Add(previewUnit);
+                previewInstances[i] = previewUnit;
             }
         }
     }
@@ -183,60 +186,50 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
     private UnitController temporaryMergedUnit; // 임시 합성 유닛을 저장하는 변수
-
     private void UpdatePreviewInstancesPosition(Vector2 basePosition)
     {
-        // 기존 합성 유닛 반환
+        // 이전 합성 유닛 정리
         if (temporaryMergedUnit != null)
         {
             PoolingManager.Instance.ReturnObject(temporaryMergedUnit.gameObject);
             temporaryMergedUnit = null;
         }
 
-        for (int i = 0; i < previewInstances.Count; i++)
+        for (int i = 0; i < tileOffsets.Count; i++)
         {
             Vector2 previewPosition = basePosition + tileOffsets[i];
             var tileData = TileMapManager.Instance.GetTileData(previewPosition);
-            var previewUnit = previewInstances[i];
+            var currentPreview = previewInstances[i];
 
-            // 합성 가능한 경우 처리
-            if (tileData?.placedUnit != null)
+            // 타일에 유닛이 있고 합성이 가능한 경우
+            if (tileData?.placedUnit != null &&
+                currentPreview.upgradeUnitType == tileData.placedUnit.upgradeUnitType &&
+                currentPreview.upgradeUnitType != UpgradeUnitType.None)
             {
-                var placedUnit = tileData.placedUnit;
+                var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(currentPreview.upgradeUnitType);
+                var poolingKey = unitData.f_UpgradePoolingKey.f_PoolObjectAddressableKey;
+                Vector3 mergedPosition = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
 
-                if (previewUnit.upgradeUnitType == placedUnit.upgradeUnitType &&
-                    previewUnit.upgradeUnitType != UpgradeUnitType.None)
-                {
-                    var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(previewUnit.upgradeUnitType);
-                    var poolingKey = unitData.f_UpgradePoolingKey;
-                    var objectPool = poolingKey.f_PoolObjectAddressableKey;
+                GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
+                temporaryMergedUnit = mergedPreview.GetComponent<UnitController>();
+                temporaryMergedUnit.Initialize();
+                temporaryMergedUnit.InitializeTilePos(mergedPosition);
+                temporaryMergedUnit.InitializeUnitData(unitData);
+                temporaryMergedUnit.SetPreviewMaterial(canPlace);
 
-                    // 정확한 타일 위치로 이동
-                    Vector3 mergedUnitPosition = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
+                // 원래 프리뷰는 잠시 숨기기
 
-                    GameObject newPreview = PoolingManager.Instance.GetObject(objectPool, mergedUnitPosition);
-                    temporaryMergedUnit = newPreview.GetComponent<UnitController>();
-
-                    if (temporaryMergedUnit != null)
-                    {
-                        temporaryMergedUnit.Initialize();
-                        temporaryMergedUnit.InitializeUnitData(unitData);
-                        temporaryMergedUnit.SetPreviewMaterial(canPlace);
-
-                    }
-
-                    // 기존 프리뷰 유닛 숨김
-                    previewUnit.gameObject.SetActive(false);
-                    continue;
-                }
+                // 원래 프리뷰는 비활성화
+                currentPreview.gameObject.SetActive(false);
+                currentPreview.transform.position = new Vector3(-1000, -1000, -1000);
             }
-
-            // 기본 프리뷰 유닛 업데이트
-            previewUnit.transform.position = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
-            previewUnit.SetPreviewMaterial(canPlace);
-            previewUnit.gameObject.SetActive(true); // 숨겨졌던 유닛 다시 활성화
-
-
+            else
+            {
+                // 합성이 아닌 경우 원래 위치로
+                currentPreview.gameObject.SetActive(true);
+                currentPreview.transform.position = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
+                currentPreview.SetPreviewMaterial(canPlace);
+            }
         }
     }
 
@@ -244,77 +237,35 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
-        // 합성된 유닛이 있는 경우
-        if (temporaryMergedUnit != null)
+        foreach (var unitInstance in previewInstances.Values)
         {
-            Vector3Int tilePosition = TileMapManager.Instance.tileMap.WorldToCell(temporaryMergedUnit.transform.position);
-            Vector2 unitTilePos = new Vector2(tilePosition.x, tilePosition.y);
+            unitInstance.DestroyPreviewUnit();
 
-            // 기존 배치된 유닛 제거 (합성 대상)
-            var tileData = TileMapManager.Instance.GetTileData(unitTilePos);
-            if (tileData?.placedUnit != null)
-            {
-                var placedUnit = tileData.placedUnit;
-                UnitManager.Instance.UnregisterUnit(placedUnit);
-                PoolingManager.Instance.ReturnObject(placedUnit.gameObject);
-            }
+            Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
+            unitInstance.InitializeTilePos(new Vector2(pos.x, pos.y));
 
-            // 합성된 유닛 등록
-            temporaryMergedUnit.DestroyPreviewUnit(); // 머티리얼 복원
-            temporaryMergedUnit.InitializeTilePos(unitTilePos);
-            UnitManager.Instance.RegisterUnit(temporaryMergedUnit);
-
-            // 타일 데이터 업데이트
-            TileMapManager.Instance.SetTileData(new TileData(unitTilePos)
-            {
-                isAvailable = false,
-                placedUnit = temporaryMergedUnit
-            });
-
-            temporaryMergedUnit = null; // 참조 초기화
+            UnitManager.Instance.RegisterUnit(unitInstance);
+           
         }
 
-        // 나머지 기본 유닛 배치 처리
-        foreach (var previewUnit in previewInstances)
-        {
-            Vector3Int cellPosition = TileMapManager.Instance.tileMap.WorldToCell(previewUnit.transform.position);
-            Vector2 tilePosition = new Vector2(cellPosition.x, cellPosition.y);
+        //타일 배치 불가상태로 변경, 코스트 사용
+        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, previewInstances);
 
-            // 타일 데이터 가져오기
-            var tileData = TileMapManager.Instance.GetTileData(tilePosition);
-
-            // 해당 타일에 다른 유닛이 있으면 스킵 (이미 처리된 합성된 유닛)
-            if (tileData?.placedUnit != null) continue;
-
-            // 기본 유닛 등록
-            previewUnit.DestroyPreviewUnit(); // 머티리얼 복원
-            previewUnit.InitializeTilePos(tilePosition);
-            UnitManager.Instance.RegisterUnit(previewUnit);
-
-            // 타일 데이터 업데이트
-            TileMapManager.Instance.SetTileData(new TileData(tilePosition)
-            {
-                isAvailable = false,
-                placedUnit = previewUnit
-            });
-        }
-
-        // 코스트 소모 처리 및 UI 제거
         GameManager.Instance.UseCost(cardCost);
+        //enemy path 업데이트
         EnemyManager.Instance.UpdateEnemiesPath();
 
-        // 이벤트를 통해 카드 사용 알림
+        // 사용된 카드 제거 -> 이벤트 통해서
         OnCardUsed?.Invoke(transform.parent.gameObject);
 
         previewInstances.Clear();
         Destroy(gameObject);
     }
 
-
     // 배치 취소: 프리뷰 인스턴스 정리
     private void CancelPlacement()
     {
-        foreach (var instance in previewInstances)
+        foreach (var instance in previewInstances.Values)
         {
             PoolingManager.Instance.ReturnObject(instance.gameObject);
         }
