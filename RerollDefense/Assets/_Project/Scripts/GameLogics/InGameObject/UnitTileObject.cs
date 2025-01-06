@@ -18,7 +18,8 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 드래그 중에 보여질 프리뷰 유닛들을 관리
    // private List<UnitController> previewInstances = new List<UnitController>();
 
-    private Dictionary<int, UnitController> previewInstances = new Dictionary<int, UnitController>();
+    private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>();
+    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>();
 
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
@@ -128,7 +129,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
 
             //canPlace에 따라 배치 가능불가능 판정
-            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, previewInstances);
+            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, currentPreviews);
             UpdatePreviewInstancesPosition(tilePos);
             previousTilePosition = tilePos;
         }
@@ -144,7 +145,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
         //배치 가능한지 체크
-        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, previewInstances);
+        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, currentPreviews);
 
         if (hasDragged && canPlace)
         {
@@ -177,7 +178,8 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             {
                 previewUnit.Initialize();
                 previewUnit.InitializeUnitData(unitBuildData.f_unitData);
-                previewInstances[i] = previewUnit;
+                originalPreviews[i] = previewUnit;
+                currentPreviews[i] = previewUnit;
             }
         }
     }
@@ -185,21 +187,30 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
-    private UnitController temporaryMergedUnit; // 임시 합성 유닛을 저장하는 변수
     private void UpdatePreviewInstancesPosition(Vector2 basePosition)
     {
-        // 이전 합성 유닛 정리
-        if (temporaryMergedUnit != null)
+
+        //드래그 도중 합성된 유닛이 있다면 원래 상태로 변경해야됨
+
+        // 합성된 유닛이 있다면 원래 상태로 복원
+        for (int i = 0; i < tileOffsets.Count; i++)
         {
-            PoolingManager.Instance.ReturnObject(temporaryMergedUnit.gameObject);
-            temporaryMergedUnit = null;
+            if (currentPreviews[i] != originalPreviews[i])
+            {
+                PoolingManager.Instance.ReturnObject(currentPreviews[i].gameObject);
+                currentPreviews[i] = originalPreviews[i];
+                currentPreviews[i].gameObject.SetActive(true);
+            }
         }
 
+        //차례대로 타일 읽어오기
         for (int i = 0; i < tileOffsets.Count; i++)
         {
             Vector2 previewPosition = basePosition + tileOffsets[i];
+
             var tileData = TileMapManager.Instance.GetTileData(previewPosition);
-            var currentPreview = previewInstances[i];
+
+            var currentPreview = currentPreviews[i];
 
             // 타일에 유닛이 있고 합성이 가능한 경우
             if (tileData?.placedUnit != null &&
@@ -208,20 +219,24 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             {
                 var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(currentPreview.upgradeUnitType);
                 var poolingKey = unitData.f_UpgradePoolingKey.f_PoolObjectAddressableKey;
+
                 Vector3 mergedPosition = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
 
-                GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
-                temporaryMergedUnit = mergedPreview.GetComponent<UnitController>();
-                temporaryMergedUnit.Initialize();
-                temporaryMergedUnit.InitializeTilePos(mergedPosition);
-                temporaryMergedUnit.InitializeUnitData(unitData);
-                temporaryMergedUnit.SetPreviewMaterial(canPlace);
-
-                // 원래 프리뷰는 잠시 숨기기
-
-                // 원래 프리뷰는 비활성화
+                // 기존 프리뷰 비활성화
                 currentPreview.gameObject.SetActive(false);
                 currentPreview.transform.position = new Vector3(-1000, -1000, -1000);
+
+                // 새로운 합성 유닛 생성 및 설정
+                GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
+                var mergedUnit = mergedPreview.GetComponent<UnitController>();
+                mergedUnit.Initialize();
+                mergedUnit.InitializeTilePos(mergedPosition);
+                mergedUnit.InitializeUnitData(unitData);
+                mergedUnit.SetPreviewMaterial(canPlace);
+
+                // 현재 프리뷰를 합성된 것으로 교체
+                currentPreviews[i] = mergedUnit;
+
             }
             else
             {
@@ -237,19 +252,57 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
-        foreach (var unitInstance in previewInstances.Values)
+        // 먼저 합성이 일어날 위치의 기존 유닛들만 제거
+        for (int i = 0; i < tileOffsets.Count; i++)
         {
-            unitInstance.DestroyPreviewUnit();
+            // 현재 프리뷰가 원본과 다르다면 합성이 일어난 위치
+            if (currentPreviews[i] != originalPreviews[i])
+            {
+                Vector2 position = previousTilePosition + tileOffsets[i];
+                var tileData = TileMapManager.Instance.GetTileData(position);
 
+                if (tileData?.placedUnit != null)
+                {
+                    UnitManager.Instance.UnregisterUnit(tileData.placedUnit);
+                    PoolingManager.Instance.ReturnObject(tileData.placedUnit.gameObject);
+                    var newTileData = new TileData(position);
+                    TileMapManager.Instance.SetTileData(newTileData);
+                }
+            }
+        }
+
+
+        // 그 다음 현재 프리뷰들을 배치
+        foreach (var pair in currentPreviews)
+        {
+            var unitInstance = pair.Value;
+
+
+            // 만약 이 유닛이 원본 프리뷰와 다르다면 (즉, 합성된 유닛이라면)
+            if (unitInstance != originalPreviews[pair.Key])
+            {
+                var unitData = D_UnitData.GetEntityByKeyUpgradeUnitKey(unitInstance.upgradeUnitType);
+                var poolingKey = unitData.f_UpgradePoolingKey;
+
+                var newUnitData = D_UnitData.FindEntity(data => data.f_name == poolingKey.f_name);
+
+                unitInstance.InitializeUnitData(newUnitData);
+            }
+
+
+            unitInstance.DestroyPreviewUnit();
             Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
             unitInstance.InitializeTilePos(new Vector2(pos.x, pos.y));
 
+            // 업그레이드된 유닛 데이터 찾기
+
+      
+
             UnitManager.Instance.RegisterUnit(unitInstance);
-           
         }
 
         //타일 배치 불가상태로 변경, 코스트 사용
-        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, previewInstances);
+        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
 
         GameManager.Instance.UseCost(cardCost);
         //enemy path 업데이트
@@ -258,18 +311,19 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 사용된 카드 제거 -> 이벤트 통해서
         OnCardUsed?.Invoke(transform.parent.gameObject);
 
-        previewInstances.Clear();
+        originalPreviews.Clear();
+        currentPreviews.Clear();
         Destroy(gameObject);
     }
 
     // 배치 취소: 프리뷰 인스턴스 정리
     private void CancelPlacement()
     {
-        foreach (var instance in previewInstances.Values)
+        foreach (var instance in currentPreviews.Values)
         {
             PoolingManager.Instance.ReturnObject(instance.gameObject);
         }
-        previewInstances.Clear();
+        originalPreviews.Clear();
     }
 
     // 카드 UI에 타일 프리뷰 생성

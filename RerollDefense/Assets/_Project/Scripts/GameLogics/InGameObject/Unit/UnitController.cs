@@ -31,7 +31,6 @@ public class UnitController : BasicObject, IPointerClickHandler
     public SkillAttackType attackType;
 
 
-    [HideInInspector]
     public UpgradeUnitType upgradeUnitType;
 
     public GameObject unitStarObject;
