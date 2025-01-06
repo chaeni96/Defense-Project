@@ -42,13 +42,13 @@ MonoBehaviour:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 10e08e1a11a488a46af717e9c082812a
-    m_Address: Unit_Archor
+    m_Address: Unit_Archer_1Star
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf44b4a3b220b1b42a8ce9ff93bc8e1d
-    m_Address: Unit_Mage
+    m_Address: Unit_Mage_1Star
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
@@ -60,7 +60,7 @@ MonoBehaviour:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 82b35e6bf7964a5418a0de0cb5f50c15
-    m_Address: Unit_Archor2
+    m_Address: Unit_Archor2_1Star
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs
@@ -97,6 +97,18 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 02d54ab159c04ac4496226e90af8807a
     m_Address: UnitTileObject
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2535a8c937e8f6f4caf931f16bd6c14d
+    m_Address: Unit_Archer_2Star
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d344e6f460ac0594bb35ec29718a9e93
+    m_Address: Unit_Archer_3Star
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

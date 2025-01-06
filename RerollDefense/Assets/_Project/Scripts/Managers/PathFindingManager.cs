@@ -48,26 +48,27 @@ public class PathFindingManager : MonoBehaviour
     //enemy 현재의 position에서 endTile까지 최단거리 구하기
     public List<Vector3> FindPathFromPosition(Vector3 worldPosition)
     {
-        // 월드 좌표를 타일 좌표로 변환
-        Vector3Int startPos = TileMapManager.Instance.tileMap.WorldToCell(worldPosition);
-        return FindPath(startPos, TileMapManager.Instance.GetEndTilePosition());
+        Vector2 startPos = TileMapManager.Instance.GetWorldToTilePosition(worldPosition);
+
+        return FindPath(startPos, TileMapManager.Instance.GetEndPosition());
     }
 
 
-    public bool HasValidPath(Vector3Int start, Vector3Int end)
+    public bool HasValidPath(Vector2 start, Vector2 end)
     {
         var path = FindPath(start, end);
         return path.Count > 0;
     }
 
+
     //경로찾기 메서드
-    public List<Vector3> FindPath(Vector3Int start, Vector3Int goal)
+    public List<Vector3> FindPath(Vector2 start, Vector2 end)
     {
         List<Node> openList = new List<Node>();
         HashSet<Node> closedList = new HashSet<Node>();
 
         Node startNode = new Node(start);
-        Node goalNode = new Node(goal);
+        Node goalNode = new Node(end);
         openList.Add(startNode);
 
         while (openList.Count > 0)
@@ -82,9 +83,8 @@ public class PathFindingManager : MonoBehaviour
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (Vector3Int neighborPosition in GetNeighbors(currentNode.Position))
+            foreach (Vector2 neighborPosition in GetNeighbors(currentNode.Position))
             {
-                // 타일 유효성 검사
                 var tileData = TileMapManager.Instance.GetTileData(neighborPosition);
                 if (tileData == null || !tileData.isAvailable ||
                     closedList.Contains(new Node(neighborPosition)))
@@ -107,7 +107,7 @@ public class PathFindingManager : MonoBehaviour
                 if (!openList.Contains(neighborNode) || tentativeGCost < neighborNode.GCost)
                 {
                     neighborNode.GCost = tentativeGCost;
-                    neighborNode.HCost = Vector3Int.Distance(neighborPosition, goal);
+                    neighborNode.HCost = Vector2.Distance(neighborPosition, end);
                     neighborNode.Parent = currentNode;
 
                     if (!openList.Contains(neighborNode))
@@ -121,7 +121,6 @@ public class PathFindingManager : MonoBehaviour
         return new List<Vector3>();
     }
 
-
     private List<Vector3> RetracePath(Node startNode, Node endNode)
     {
         List<Vector3> path = new List<Vector3>();
@@ -129,15 +128,14 @@ public class PathFindingManager : MonoBehaviour
 
         while (currentNode != startNode)
         {
-            path.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(currentNode.Position));
+            path.Add(TileMapManager.Instance.GetTileToWorldPosition(currentNode.Position));
             currentNode = currentNode.Parent;
         }
-        path.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(startNode.Position));
+        path.Add(TileMapManager.Instance.GetTileToWorldPosition(startNode.Position));
         path.Reverse();
 
         return path;
     }
-
     private Node GetLowestFCostNode(List<Node> nodes)
     {
         Node lowestFCostNode = nodes[0];
@@ -153,41 +151,39 @@ public class PathFindingManager : MonoBehaviour
         return lowestFCostNode;
     }
 
-    private List<Vector3Int> GetNeighbors(Vector3Int position)
+    private List<Vector2> GetNeighbors(Vector2 position)
     {
-        List<Vector3Int> neighbors = new List<Vector3Int>
+        List<Vector2> neighbors = new List<Vector2>
         {
-            position + Vector3Int.up,
-            position + Vector3Int.down,
-            position + Vector3Int.left,
-            position + Vector3Int.right
+            position + Vector2.up,
+            position + Vector2.down,
+            position + Vector2.left,
+            position + Vector2.right
         };
 
         if (allowDiagonal)
         {
-            neighbors.Add(position + new Vector3Int(1, 1, 0)); 
-            neighbors.Add(position + new Vector3Int(-1, 1, 0)); 
-            neighbors.Add(position + new Vector3Int(1, -1, 0)); 
-            neighbors.Add(position + new Vector3Int(-1, -1, 0)); 
+            neighbors.Add(position + new Vector2(1, 1));
+            neighbors.Add(position + new Vector2(-1, 1));
+            neighbors.Add(position + new Vector2(1, -1));
+            neighbors.Add(position + new Vector2(-1, -1));
         }
 
         return neighbors;
     }
-
-    private bool IsDiagonalMove(Vector3Int from, Vector3Int to)
+    private bool IsDiagonalMove(Vector2 from, Vector2 to)
     {
         return from.x != to.x && from.y != to.y;
     }
 
-
-    private bool IsDiagonalMoveBlocked(Vector3Int current, Vector3Int neighbor)
+    private bool IsDiagonalMoveBlocked(Vector2 current, Vector2 neighbor)
     {
-        Vector3Int delta = neighbor - current;
+        Vector2 delta = neighbor - current;
 
         if (Mathf.Abs(delta.x) == 1 && Mathf.Abs(delta.y) == 1)
         {
-            Vector3Int side1 = new Vector3Int(current.x + delta.x, current.y, 0);
-            Vector3Int side2 = new Vector3Int(current.x, current.y + delta.y, 0);
+            Vector2 side1 = current + new Vector2(delta.x, 0);
+            Vector2 side2 = current + new Vector2(0, delta.y);
 
             var tileData1 = TileMapManager.Instance.GetTileData(side1);
             var tileData2 = TileMapManager.Instance.GetTileData(side2);
@@ -198,20 +194,18 @@ public class PathFindingManager : MonoBehaviour
                 return true;
             }
         }
-
         return false;
     }
 
- 
     private class Node
     {
-        public Vector3Int Position;
+        public Vector2 Position;
         public Node Parent;
         public float GCost;
         public float HCost;
         public float FCost => GCost + HCost;
 
-        public Node(Vector3Int position)
+        public Node(Vector2 position)
         {
             Position = position;
         }

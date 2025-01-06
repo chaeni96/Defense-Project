@@ -54,6 +54,8 @@ public class UnitManager : MonoBehaviour
         units = new List<UnitController>();
 
     }
+
+
     public List<UnitController> GetUnits() => units;
 
     private void InitializeArrays(int unitCount, int enemyCount)
@@ -114,7 +116,7 @@ public class UnitManager : MonoBehaviour
                 Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
                 if (targetEnemy != null)
                 {
-                    string skillId = unit.attackType == SkillAttackType.Projectile ? "ProjectileObject" : "AoeRangeObject";
+                    string skillId = unit.attackType == SkillAttackType.Projectile ? "Projectile" : "AoeRange";
                     Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
                         targetEnemy.transform.position : unit.transform.position;
 
@@ -147,9 +149,12 @@ public class UnitManager : MonoBehaviour
     {
         if (units.Contains(unit))
         {
-            // 타일 위치를 배치 가능한 상태로 변경
-            Vector3Int basePosition = TileMapManager.Instance.tileMap.WorldToCell(unit.transform.position);
-            TileMapManager.Instance.SetTileData(basePosition, true);
+            // 타일 위치를 배치 가능한 상태로 변경            
+            var tileData = new TileData(unit.tilePosition)
+            { 
+                isAvailable = true 
+            };
+            TileMapManager.Instance.SetTileData(tileData);
 
             units.Remove(unit);
             PoolingManager.Instance.ReturnObject(unit.gameObject);

@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6533918697068061961}
   - component: {fileID: 4463978599955908756}
   m_Layer: 9
-  m_Name: Unit_Archor2
+  m_Name: Unit_Archor2_1Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,12 +170,14 @@ MonoBehaviour:
   unitBlockSize: 0
   attackCoolDown: 0
   attackTimer: 0
+  tilePosition: {x: 0, y: 0}
   attackType: 0
   unitSprite: {fileID: 6610365595354033619}
   unitBaseSprite: {fileID: 8494380669334004852}
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  unitStarCanvas: {fileID: 0}
 --- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4

@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 
 // 유닛 타일 UI 요소를 관리하고 드래그 앤 드롭으로 맵에 유닛을 배치하는 클래스
 public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -19,8 +20,8 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     private List<UnitController> previewInstances = new List<UnitController>();
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
-    private List<Vector3Int> tileOffsets;
-    private Vector3Int previousTilePosition;
+    private List<Vector2> tileOffsets;
+    private Vector2 previousTilePosition;
     private string tileShapeName;
     private int cardCost;
     private bool isDragging = false;
@@ -42,11 +43,11 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         cardCostText.text = cardCost.ToString();
 
         InitializeTileShape();
-        UpdateCostTextColor();
         CreateTilePreview(unitData);
-
         //cost 사용 이벤트 구독 -> cost 추가될때 tile Cost Text 업데이트
         GameManager.Instance.OnCostAdd += OnCostChanged;
+
+        UpdateCostTextColor();
     }
 
     // 타일 모양 데이터를 기반으로 오프셋 위치 초기화
@@ -56,16 +57,10 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         if (tileShapeData != null)
         {
-            tileOffsets = new List<Vector3Int>();
+            tileOffsets = new List<Vector2>();
             foreach (var tile in tileShapeData.f_unitBuildData)
             {
-                Vector2 tilePos = tile.f_TilePos.f_TilePos;
-                Vector3Int tileOffset = new Vector3Int(
-                    Mathf.RoundToInt(tilePos.x),
-                    Mathf.RoundToInt(tilePos.y),
-                    0
-                );
-                tileOffsets.Add(tileOffset);
+                tileOffsets.Add(tile.f_TilePos.f_TilePos);
             }
         }
     }
@@ -103,18 +98,14 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         SetUIVisibility(false);  // UI 숨기기
 
         // 마우스 커서의 월드 좌표 계산
-        Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
-        pointerPosition.z = 0;
 
+        Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
+        worldPos.z = 0;
 
-
-        // 타일 위치 계산
-        Vector3Int tilePosition = TileMapManager.Instance.tileMap.WorldToCell(pointerPosition);
-
-        Vector3 centerPosition = TileMapManager.Instance.tileMap.GetCellCenterWorld(tilePosition);
-
-        CreatePreviewInstances(centerPosition);
-        UpdatePreviewInstancesPosition(tilePosition);  // 프리뷰 위치 즉시 업데이트
+        Vector2 tilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
+        Vector3 centerPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+        CreatePreviewInstances(centerPos);
+        UpdatePreviewInstancesPosition(tilePos);
     }
 
     // 드래그 중: 프리뷰 위치 업데이트 및 배치 가능 여부 표시
@@ -125,19 +116,21 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         hasDragged = true;  // 드래그가 발생했음을 표시
 
-        Vector3 pointerPosition = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
-        pointerPosition.z = 0;
-        Vector3Int baseTilePosition = TileMapManager.Instance.tileMap.WorldToCell(pointerPosition);
+        Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
+        worldPos.z = 0;
 
-        if (baseTilePosition != previousTilePosition)
+        Vector2 tilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
+
+        if (tilePos != previousTilePosition)
         {
-            //TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
-            canPlace = TileMapManager.Instance.CanPlaceObject(baseTilePosition, tileOffsets);
+            TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
 
             //canPlace에 따라 배치 가능불가능 판정
-            UpdatePreviewInstancesPosition(baseTilePosition);
-            previousTilePosition = baseTilePosition;
+            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets);
+            UpdatePreviewInstancesPosition(tilePos);
+            previousTilePosition = tilePos;
         }
+        
     }
 
     // 드래그 종료: 배치 가능 여부 확인 후 유닛 배치 또는 취소
@@ -146,7 +139,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         if (!isDragging) return;
 
         //배치 타일 투명화
-        //TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
+        TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
         //배치 가능한지 체크
         canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets);
@@ -172,7 +165,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         for (int i = 0; i < tileOffsets.Count; i++)
         {
             var unitBuildData = tileShapeData.f_unitBuildData[i];
-            GameObject previewInstance = PoolingManager.Instance.GetObject(unitBuildData.f_unitData.f_unitPrefabKey,pointerPosition);
+            var unitPoolinKey = unitBuildData.f_unitData.f_UnitPoolingKey;
+            
+            GameObject previewInstance = PoolingManager.Instance.GetObject(unitPoolinKey.f_PoolObjectAddressableKey, pointerPosition);
 
             UnitController previewUnit = previewInstance.GetComponent<UnitController>();
 
@@ -186,30 +181,44 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
-    private void UpdatePreviewInstancesPosition(Vector3Int basePosition)
+    private void UpdatePreviewInstancesPosition(Vector2 basePosition)
     {
         for (int i = 0; i < previewInstances.Count; i++)
         {
-            Vector3Int previewPosition = basePosition + tileOffsets[i];
-            previewInstances[i].transform.position = TileMapManager.Instance.tileMap.GetCellCenterWorld(previewPosition);
+            Vector2 previewPosition = basePosition + tileOffsets[i];
+            previewInstances[i].transform.position = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
             previewInstances[i].SetPreviewMaterial(canPlace);
-            
         }
     }
+
 
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
+
+        foreach (var offset in tileOffsets)
+        {
+            Vector2 position = previousTilePosition + offset;
+            var tileData = TileMapManager.Instance.GetTileData(position);
+
+            if (tileData?.placedUnit != null)
+            {
+                // 합성 로직 처리
+                UnitManager.Instance.UnregisterUnit(tileData.placedUnit);
+            }
+        }
+
+        // 새 유닛 배치
         foreach (var unitInstance in previewInstances)
         {
             unitInstance.DestroyPreviewUnit();
-
+            Vector2 gridPos = TileMapManager.Instance.GetWorldToTilePosition(unitInstance.transform.position);
+            unitInstance.InitializeTilePos(new Vector2(gridPos.x, gridPos.y));
             UnitManager.Instance.RegisterUnit(unitInstance);
-           
         }
 
-        //타일 배치 불가상태로 변경, 코스트 사용
-        TileMapManager.Instance.OccupyTile(previousTilePosition, tileOffsets);
+        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, previewInstances[0]);
+
         GameManager.Instance.UseCost(cardCost);
         //enemy path 업데이트
         EnemyManager.Instance.UpdateEnemiesPath();
@@ -253,7 +262,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             if (index >= 0 && index < tileImages.Count)
             {
-                GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_unitPrefabKey);
+                GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
 
                 UnitController unitController = tempUnit.GetComponent<UnitController>();
 
@@ -264,8 +273,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     if (buildData.f_unitData.f_SkillAttackType != SkillAttackType.None)
                     {
                         tileImages[index].sprite = unitController.unitSprite.sprite;
-                        activeImageIndices.Add(index);  // 활성화된 인덱스 저장
                     }
+                    
+                    activeImageIndices.Add(index);  // 활성화된 인덱스 저장
                 }
 
                 PoolingManager.Instance.ReturnObject(tempUnit);

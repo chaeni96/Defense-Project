@@ -24,24 +24,34 @@ public class UnitController : BasicObject, IPointerClickHandler
     [HideInInspector]
     public float attackTimer = 0f;  // 타이머 추가
 
+    [HideInInspector]
+    public Vector2 tilePosition;
 
+    [HideInInspector]
     public SkillAttackType attackType;
 
 
-    public SpriteRenderer unitSprite;
-    [SerializeField] private SpriteRenderer unitBaseSprite;
+    [HideInInspector]
+    public UnitType unitType;
 
+
+    public SpriteRenderer unitSprite;
+
+
+    [SerializeField] private SpriteRenderer unitBaseSprite;
     
 
     //inspector에 할당
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
-    
-    [SerializeField] private Material originalMaterial;
+    [SerializeField] private Material originalMaterial; //기본 머테리얼
 
     private int unitSortingOrder;
     private int baseSortingOrder;
     private bool isActive = true;
+
+
+    public D_UnitData unitData;
 
     public override void Initialize()
     {
@@ -49,12 +59,28 @@ public class UnitController : BasicObject, IPointerClickHandler
 
         unitSortingOrder = unitSprite.sortingOrder;
         baseSortingOrder = unitBaseSprite.sortingOrder;
+
     }
-    public void InitializeUnitData(D_UnitData unitData)
+
+    public void InitializeTilePos(Vector2 tilePos)
+    {
+        tilePosition = new Vector2(tilePos.x, tilePos.y);
+    }
+
+    public Vector2 GetTilePosition()
+    {
+        return tilePosition;
+    }
+    public void InitializeUnitData(D_UnitData unit)
     {
 
         if (unitData == null) return;
+
+        unitData = unit;
+
         attackType = unitData.f_SkillAttackType;
+        unitType = unitData.f_UnitType;
+
         if (unitData != null || attackType != SkillAttackType.None)
         {
             // statDatas를 순회하면서 스탯 설정
@@ -112,6 +138,40 @@ public class UnitController : BasicObject, IPointerClickHandler
         { "AttackRange", attackRange },
         { "UnitBlockSize", unitBlockSize }
     };
+    }
+
+    public void UnitMerge(UnitController otherUnit)
+    {
+        // 같은 타입의 유닛만 합성 가능
+        if (this.unitType != otherUnit.unitType)
+        {
+            Debug.LogWarning("Different unit types cannot be merged.");
+            return;
+        }
+
+        // 스탯 합성 로직
+        // 예를 들어, 같은 타입의 유닛들의 스탯을 평균내거나 누적할 수 있음
+        foreach (var statData in otherUnit.unitData.f_statDatas)
+        {
+            var currentStat = this.unitData.f_statDatas.Find(s => s.f_stat.f_name == statData.f_stat.f_name);
+
+            if (currentStat != null)
+            {
+                // 예시: 스탯을 누적
+                currentStat.f_value += statData.f_value;
+            }
+            else
+            {
+                // 새로운 스탯 추가
+                this.unitData.f_statDatas.Add(statData);
+            }
+        }
+
+        // 유닛 다시 초기화
+        InitializeUnitData(this.unitData);
+
+        // 시각적 효과 (예: 펀치 스케일)
+        MoveScale();
     }
 
     public bool IsActive() => isActive;
@@ -172,6 +232,8 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
     }
+
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

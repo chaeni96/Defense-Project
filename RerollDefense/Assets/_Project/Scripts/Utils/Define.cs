@@ -27,13 +27,6 @@ namespace BGDatabaseEnum
         AOE,
     }
 
-    public enum EnemyType
-    {
-        Normal,
-        Boss,
-        
-    }
-
     public enum ObjstacleTileType
     {
         Basic, // 배치 불가, 삭제 불가, 몬스터 이동 불가 
@@ -54,20 +47,39 @@ namespace BGDatabaseEnum
     }
 
 
+    public enum UnitType
+    {
+        Base,
+        Archer1Star,
+        Archer2Star,
+        Archer3Star,
+        Mage1Star,
+        Archer2_1Star,
+
+
+
+    }
+
+
+    public enum EnemyType
+    {
+        Normal,
+        Boss,
+
+    }
+
 }
 
 
 //database에서 사용안하는 enum
 public class Define
 {
- 
+
     public enum Sound
     {
         Bgm,
         Effect,
         MaxCount,
     }
-
-
 
 }

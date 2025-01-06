@@ -5,16 +5,16 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     public string objName { get; private set; }
-    private string addressablePath; //프리팹 어드레서블 주소
+    private string addressableKey; //프리팹 어드레서블키
     public int initialPoolSize = 10; // 초기 풀 크기, 오브젝트 풀 데이터에서 변경 가능
     private Queue<PooledObject> availableObjects; // 사용 가능한 오브젝트 큐
 
     // 오브젝트 풀 초기화
-    public void InitializePool(string objectName, string prefabPath, int initialPoolSize)
+    public void InitializePool(string prefabKey, int initialPoolSize)
     {
         availableObjects = new Queue<PooledObject>();
-        objName = objectName;
-        addressablePath = prefabPath;
+        objName = prefabKey;
+        addressableKey = prefabKey;
         this.initialPoolSize = initialPoolSize;
         gameObject.name = $"{objName}_Pool"; // 풀 이름 설정
 
@@ -43,7 +43,7 @@ public class ObjectPool : MonoBehaviour
     // 새 오브젝트 생성, 해당 프리팹 인스턴스화하여 생성한 뒤 오브젝트 비활성 상태로 반환
     public PooledObject CreateObject()
     {
-        GameObject obj = ResourceManager.Instance.Instantiate(addressablePath, transform);
+        GameObject obj = ResourceManager.Instance.Instantiate(addressableKey, transform);
 
         var pooledObj = obj.AddComponent<PooledObject>();
         pooledObj.objectName = objName;

@@ -69,11 +69,7 @@ public class StageManager : MonoBehaviour
 
         currentWaveIndex = 0;
 
-        //TileMapData에서 해당 스테이지의 장애물 맵 프리팹 키 가져오기
-        D_ObstacleTileMapData obstacleMapData = D_ObstacleTileMapData.GetEntityByKeyStageID(stageNumber);
-
         //타일맵 매니저 초기화, 타일맵 data 전달
-        //TileMapManager.Instance.InitializeManager(placedMap, obstacleMapData, tileMapGrid);
         TileMapManager.Instance.InitializeManager(placedMap, stageData.f_mapData, tileMapGrid);
 
         //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
@@ -122,7 +118,7 @@ public class StageManager : MonoBehaviour
 
         for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
         {
-            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_name);
+            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
             yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
         }
     }

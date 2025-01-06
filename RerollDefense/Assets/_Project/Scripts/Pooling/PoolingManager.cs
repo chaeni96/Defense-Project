@@ -54,21 +54,21 @@ public class PoolingManager : MonoBehaviour
         {
             if (!string.IsNullOrEmpty(poolData.f_PoolObjectAddressableKey))
             {
-                CreatePool(poolData.f_name, poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
+                CreatePool(poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
             }
         }
     }
 
-    private void CreatePool(string name, string addressablePath, int initialSize)
+    private void CreatePool(string addressableKey, int initialSize)
     {
-        if (!poolDictionary.ContainsKey(name))
+        if (!poolDictionary.ContainsKey(addressableKey))
         {
-            GameObject poolGO = new GameObject($"{name}_Pool");
+            GameObject poolGO = new GameObject($"{addressableKey}_Pool");
             poolGO.transform.SetParent(transform);
 
             ObjectPool pool = poolGO.AddComponent<ObjectPool>();
-            pool.InitializePool(name, addressablePath, initialSize);
-            poolDictionary.Add(name, pool);
+            pool.InitializePool(addressableKey, initialSize);
+            poolDictionary.Add(addressableKey, pool);
         }
     }
 
@@ -79,7 +79,7 @@ public class PoolingManager : MonoBehaviour
             var poolData = D_ObjectPoolData.GetEntity(id);
             if (poolData != null)
             {
-                CreatePool(poolData.f_name, poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
+                CreatePool(poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
             }
             else
             {

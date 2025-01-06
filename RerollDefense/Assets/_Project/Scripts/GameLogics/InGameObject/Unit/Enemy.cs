@@ -26,12 +26,12 @@ public class Enemy : BasicObject
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
+
     public override void Initialize()
     {
         base.Initialize();
         HP = maxHP;
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
-
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
         UpdateHpText();
     }
@@ -106,7 +106,7 @@ public class Enemy : BasicObject
             //effect 발생, enemy spawn
             SpawnMinions(10);
 
-            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffect", transform.position);
+            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
 
@@ -117,42 +117,32 @@ public class Enemy : BasicObject
 
     private void SpawnMinions(int spawnEnemyCount)
     {
+        Vector2 centerPos = TileMapManager.Instance.GetWorldToTilePosition(transform.position);
 
-        //enemy 스폰할때 유효한 타일위에 스폰해야됨, boss타일과 상하좌우 유효한 타일에 스폰
+        List<Vector2> directions = new List<Vector2>
+        {
+            Vector2.zero,  // 보스 현재 위치
+            Vector2.up,
+            Vector2.right,
+            Vector2.down,
+            Vector2.left
+        };
 
-        //죽은 boss 타일
-        Vector3Int centerTile = TileMapManager.Instance.tileMap.WorldToCell(transform.position);
-
-        List<Vector3Int> directions = new List<Vector3Int> //체크할 위치
-           {
-               Vector3Int.zero,  // 보스 현재 위치
-               Vector3Int.up,
-               Vector3Int.right,
-               Vector3Int.down,
-               Vector3Int.left
-           };
-
-        // 유효한 타일 위치 저장할 리스트
         List<Vector3> validPositions = new List<Vector3>();
 
-        //리스트의 각 방향에 대해 반복해서 체크해야됨
         foreach (var dir in directions)
         {
-            Vector3Int checkPos = centerTile + dir;
-
-            //해당위치 타일 데이터 가져오기
+            Vector2 checkPos = centerPos + dir;
             TileData tileData = TileMapManager.Instance.GetTileData(checkPos);
 
-            //타일이 있고, 배치 가능하면 배치가능 포지션에 넣기
             if (tileData != null && tileData.isAvailable)
             {
-                validPositions.Add(TileMapManager.Instance.tileMap.GetCellCenterWorld(checkPos));
+                validPositions.Add(TileMapManager.Instance.GetTileToWorldPosition(checkPos));
             }
         }
 
         if (validPositions.Count > 0)
         {
-            // 각 방향에 균등하게 분배
             int enemiesPerPosition = spawnEnemyCount / validPositions.Count;
             int remainingEnemies = spawnEnemyCount % validPositions.Count;
 
@@ -167,7 +157,7 @@ public class Enemy : BasicObject
 
                 for (int j = 0; j < spawnCount; j++)
                 {
-                    EnemyManager.Instance.SpawnEnemy("EnemyNormal", validPositions[i]);
+                    EnemyManager.Instance.SpawnEnemy("Enemy_Normal", validPositions[i]);
                 }
             }
         }

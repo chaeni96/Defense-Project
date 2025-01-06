@@ -72,7 +72,9 @@ public class EnemyManager : MonoBehaviour
     public void SpawnEnemy(string enemyName, Vector3? initPos = null)
     {
 
-        Vector3 startPos = initPos ?? TileMapManager.Instance.tileMap.GetCellCenterWorld(TileMapManager.Instance.GetStartTilePosition());;
+        var startTilePos = TileMapManager.Instance.GetStartPosition();
+        Vector3 startPos = initPos ?? TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
+
         GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos, 10);
 
         if (enemyObj != null)
