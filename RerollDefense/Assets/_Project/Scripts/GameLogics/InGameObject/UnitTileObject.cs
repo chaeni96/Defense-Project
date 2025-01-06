@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
 
 // 유닛 타일 UI 요소를 관리하고 드래그 앤 드롭으로 맵에 유닛을 배치하는 클래스
 public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -126,7 +125,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
 
             //canPlace에 따라 배치 가능불가능 판정
-            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets);
+            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, previewInstances);
             UpdatePreviewInstancesPosition(tilePos);
             previousTilePosition = tilePos;
         }
@@ -142,7 +141,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
         //배치 가능한지 체크
-        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets);
+        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, previewInstances);
 
         if (hasDragged && canPlace)
         {
@@ -191,32 +190,31 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
     }
 
+    private string GetNextLevelPoolingKey(string currentType)
+    {
+   
+        // unitType에 따른 다음 레벨의 poolingKey 반환
+        // 예: "UnitArcher1Star" -> "UnitArcher2Star"
+        if (currentType.EndsWith("1Star")) return currentType.Replace("1Star", "2Star");
+        if (currentType.EndsWith("2Star")) return currentType.Replace("2Star", "3Star");
+        return currentType;
+    }
 
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
-
-        foreach (var offset in tileOffsets)
-        {
-            Vector2 position = previousTilePosition + offset;
-            var tileData = TileMapManager.Instance.GetTileData(position);
-
-            if (tileData?.placedUnit != null)
-            {
-                // 합성 로직 처리
-                UnitManager.Instance.UnregisterUnit(tileData.placedUnit);
-            }
-        }
-
-        // 새 유닛 배치
         foreach (var unitInstance in previewInstances)
         {
             unitInstance.DestroyPreviewUnit();
-            Vector2 gridPos = TileMapManager.Instance.GetWorldToTilePosition(unitInstance.transform.position);
-            unitInstance.InitializeTilePos(new Vector2(gridPos.x, gridPos.y));
+
+            Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
+            unitInstance.InitializeTilePos(new Vector2(pos.x, pos.y));
+
             UnitManager.Instance.RegisterUnit(unitInstance);
+           
         }
 
+        //타일 배치 불가상태로 변경, 코스트 사용
         TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, previewInstances[0]);
 
         GameManager.Instance.UseCost(cardCost);

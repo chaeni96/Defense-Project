@@ -47,15 +47,15 @@ namespace BGDatabaseEnum
     }
 
 
-    public enum UnitType
+    public enum UpgradeUnitType
     {
-        Base,
-        Archer1Star,
+        None,
         Archer2Star,
         Archer3Star,
-        Mage1Star,
-        Archer2_1Star,
-
+        Mage2Star,
+        Mage3Star,
+        Archer2_2Star,
+        Archer2_3Star,
 
 
     }

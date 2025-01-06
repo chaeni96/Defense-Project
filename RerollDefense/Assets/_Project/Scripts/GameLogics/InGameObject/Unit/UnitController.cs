@@ -32,7 +32,7 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
     [HideInInspector]
-    public UnitType unitType;
+    public UpgradeUnitType upgradeUnitType;
 
 
     public SpriteRenderer unitSprite;
@@ -73,13 +73,12 @@ public class UnitController : BasicObject, IPointerClickHandler
     }
     public void InitializeUnitData(D_UnitData unit)
     {
-
-        if (unitData == null) return;
+        if (unit == null) return;
 
         unitData = unit;
 
         attackType = unitData.f_SkillAttackType;
-        unitType = unitData.f_UnitType;
+        upgradeUnitType = unitData.f_UpgradeUnitType;
 
         if (unitData != null || attackType != SkillAttackType.None)
         {
@@ -143,7 +142,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     public void UnitMerge(UnitController otherUnit)
     {
         // 같은 타입의 유닛만 합성 가능
-        if (this.unitType != otherUnit.unitType)
+        if (this.upgradeUnitType != otherUnit.upgradeUnitType)
         {
             Debug.LogWarning("Different unit types cannot be merged.");
             return;

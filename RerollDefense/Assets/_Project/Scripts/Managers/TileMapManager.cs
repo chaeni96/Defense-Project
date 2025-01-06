@@ -170,16 +170,32 @@ public class TileMapManager : MonoBehaviour
 
 
     //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드
-    public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets)
+    public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, List<UnitController> previewUnits)
     {
 
         // 기본 검사 : 시작/끝타일과 겹치는지, tileMap안에 있는지 체크
-        foreach (var offset in tileOffsets)
+        for (int i = 0; i < tileOffsets.Count; i++)
         {
-            Vector2 checkPosition = basePosition + offset;
-            if (checkPosition == startTilePos || checkPosition == endTilePos || !IsTileAvailable(checkPosition))
+            Vector2 checkPosition = basePosition + tileOffsets[i];
+            var tileData = GetTileData(checkPosition);
+
+            // 시작/끝 타일 체크
+            if (checkPosition == startTilePos || checkPosition == endTilePos)
             {
                 return false;
+            }
+
+            // 배치된 유닛이 있는 경우 타입 비교
+            if (tileData?.placedUnit != null)
+            {
+                var placedUnit = tileData.placedUnit;
+                var previewUnit = previewUnits[i]; // 프리뷰 유닛 가져오기
+
+                // 업그레이드 타입이 다르면 배치 불가
+                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType)
+                {
+                    return false;
+                }
             }
         }
 
@@ -250,14 +266,6 @@ public class TileMapManager : MonoBehaviour
         }
             
         return canPlace;
-    }
-
-
-    // 타일 사용 가능 여부 확인 메서드
-    private bool IsTileAvailable(Vector2 position)
-    {
-        var tileData = GetTileData(position);
-        return tileData != null && tileData.isAvailable;
     }
 
 
