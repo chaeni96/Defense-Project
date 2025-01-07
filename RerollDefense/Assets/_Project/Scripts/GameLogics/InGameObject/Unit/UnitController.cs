@@ -62,20 +62,14 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     }
 
-    public void InitializeTilePos(Vector2 tilePos)
-    {
-        tilePosition = new Vector2(tilePos.x, tilePos.y);
-    }
-
-    public Vector2 GetTilePosition()
-    {
-        return tilePosition;
-    }
-    public void InitializeUnitData(D_UnitData unit)
+    //유닛 정보 초기화
+    public void InitializeUnitInfo(D_UnitData unit, Vector2 tilePos)
     {
         if (unit == null) return;
 
         unitData = unit;
+
+        tilePosition = new Vector2(tilePos.x, tilePos.y);
 
         attackType = unitData.f_SkillAttackType;
         upgradeUnitType = unitData.f_UnitUpgradeType;
@@ -138,42 +132,6 @@ public class UnitController : BasicObject, IPointerClickHandler
         { "UnitBlockSize", unitBlockSize }
     };
     }
-
-    public void UnitMerge(UnitController otherUnit)
-    {
-        // 같은 타입의 유닛만 합성 가능
-        if (this.upgradeUnitType != otherUnit.upgradeUnitType)
-        {
-            Debug.LogWarning("Different unit types cannot be merged.");
-            return;
-        }
-
-        // 스탯 합성 로직
-        // 예를 들어, 같은 타입의 유닛들의 스탯을 평균내거나 누적할 수 있음
-        foreach (var statData in otherUnit.unitData.f_statDatas)
-        {
-            var currentStat = this.unitData.f_statDatas.Find(s => s.f_stat.f_name == statData.f_stat.f_name);
-
-            if (currentStat != null)
-            {
-                // 예시: 스탯을 누적
-                currentStat.f_value += statData.f_value;
-            }
-            else
-            {
-                // 새로운 스탯 추가
-                this.unitData.f_statDatas.Add(statData);
-            }
-        }
-
-        // 유닛 다시 초기화
-        InitializeUnitData(this.unitData);
-
-        // 시각적 효과 (예: 펀치 스케일)
-        MoveScale();
-    }
-
-    public bool IsActive() => isActive;
 
     public void SetActive(bool active)
     {

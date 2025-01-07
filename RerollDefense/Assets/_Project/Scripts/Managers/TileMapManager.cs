@@ -22,7 +22,7 @@ public class TileMapManager : MonoBehaviour
 
 
     // 각 타일의 상태 정보를 저장하는 딕셔너리, 좌표를 키값으로
-    private Dictionary<(float x, float y), TileData> tileMapDatas;
+    private Dictionary<Vector2, TileData> tileMapDatas;
 
     public static TileMapManager Instance
     {
@@ -60,7 +60,7 @@ public class TileMapManager : MonoBehaviour
  
     public void InitializeManager(Tilemap gameMap, D_MapData mapData, Transform grid)
     {
-        tileMapDatas = new Dictionary<(float x, float y), TileData>();
+        tileMapDatas = new Dictionary<Vector2, TileData>();
 
         tileMap = gameMap;
         this.mapData = mapData;
@@ -109,7 +109,7 @@ public class TileMapManager : MonoBehaviour
             var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos);
 
             var objectController = newSpecialObject.GetComponent<UnitController>();
-            objectController.InitializeUnitData(specialTile.f_specialObject);
+            objectController.InitializeUnitInfo(specialTile.f_specialObject, position);
             UnitManager.Instance.RegisterUnit(objectController);
 
 
@@ -140,13 +140,13 @@ public class TileMapManager : MonoBehaviour
     //타일 데이터 넣어주기
     public void SetTileData(TileData tileData)
     {
-        tileMapDatas[(tileData.tilePosX, tileData.tilePosY)] = tileData;
+        tileMapDatas[new Vector2(tileData.tilePosX, tileData.tilePosY)] = tileData;
     }
 
     // 특정 위치의 타일 데이터 가져오기, 좌표값으로 얻어오기
     public TileData GetTileData(Vector2 position)
     {
-        return tileMapDatas.TryGetValue((position.x, position.y), out var data) ? data : null;
+        return tileMapDatas.TryGetValue((position), out var data) ? data : null;
     }
 
     // 타일 점유상태로 변경
@@ -205,11 +205,9 @@ public class TileMapManager : MonoBehaviour
             }
         }
 
-
-
         // 유닛 배치하기 전에 그 위치에 임시 배치했을때, 모든 enemy들이 목적지까지 도달할수있는지 체크
 
-        Dictionary<(float x, float y), bool> originalStates = new Dictionary<(float x, float y), bool>();
+        Dictionary<Vector2, bool> originalStates = new Dictionary<Vector2, bool>();
 
         // 새로 배치할 타일들을 임시로 점유
         foreach (var offset in tileOffsets)
@@ -218,7 +216,7 @@ public class TileMapManager : MonoBehaviour
             var tileData = GetTileData(checkPos);
             if (tileData != null)
             {
-                originalStates[(checkPos.x, checkPos.y)] = tileData.isAvailable;
+                originalStates[checkPos] = tileData.isAvailable;
                 tileData.isAvailable = false;
                 SetTileData(tileData);
             }

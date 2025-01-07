@@ -85,7 +85,10 @@ MonoBehaviour:
   unitBlockSize: 0
   attackCoolDown: 0
   attackTimer: 0
+  tilePosition: {x: 0, y: 0}
   attackType: 0
+  upgradeUnitType: 0
+  unitStarObject: {fileID: 0}
   unitSprite: {fileID: 4231129650014913199}
   unitBaseSprite: {fileID: 4231129650014913199}
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}

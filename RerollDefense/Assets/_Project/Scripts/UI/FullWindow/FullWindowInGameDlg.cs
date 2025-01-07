@@ -25,7 +25,7 @@ public class FullWindowInGameDlg : FullWindowBase
     //카드덱
     private List<GameObject> cardDecks;
     private List<GameObject> emptyCardObjects;
-    private List<UnitTileObject> currentCards;
+    private List<UnitCardObject> currentCards;
 
     private bool isChecking = false;
 
@@ -48,7 +48,7 @@ public class FullWindowInGameDlg : FullWindowBase
         //이벤트 구독
         GameManager.Instance.OnHPChanged += OnHPChanged;
         GameManager.Instance.OnCostUsed += OnCostUsed;  
-        UnitTileObject.OnCardUsed += OnUnitCardDestroyed; 
+        UnitCardObject.OnCardUsed += OnUnitCardDestroyed; 
 
 
     }
@@ -79,7 +79,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
         // Empty 오브젝트와 현재 카드 배열 초기화
         emptyCardObjects = new List<GameObject>();
-        currentCards = new List<UnitTileObject>();
+        currentCards = new List<UnitCardObject>();
 
         foreach (var deck in cardDecks)
         {
@@ -120,7 +120,7 @@ public class FullWindowInGameDlg : FullWindowBase
     private void CreateUnitCard(GameObject cardDeck, int deckIndex)
     {
 
-        GameObject unitCard = PoolingManager.Instance.GetObject("UnitTileObject");
+        GameObject unitCard = PoolingManager.Instance.GetObject("UnitCardObject");
 
         if(unitCard != null)
         {
@@ -129,7 +129,7 @@ public class FullWindowInGameDlg : FullWindowBase
             unitCard.transform.localPosition = Vector3.zero;
 
             // UnitCardObject 초기화
-            UnitTileObject cardObject = unitCard.GetComponent<UnitTileObject>();
+            UnitCardObject cardObject = unitCard.GetComponent<UnitCardObject>();
             if (cardObject != null)
             {
                 cardObject.InitializeCardInform(GetCardKeyBasedOnProbability());
@@ -308,7 +308,7 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
             GameManager.Instance.OnCostUsed -= OnCostUsed;
-            UnitTileObject.OnCardUsed -= OnUnitCardDestroyed; 
+            UnitCardObject.OnCardUsed -= OnUnitCardDestroyed; 
 
         }
     }
@@ -325,7 +325,7 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;
             GameManager.Instance.OnCostUsed -= OnCostUsed;
-            UnitTileObject.OnCardUsed -= OnUnitCardDestroyed;
+            UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
         }
     }
 

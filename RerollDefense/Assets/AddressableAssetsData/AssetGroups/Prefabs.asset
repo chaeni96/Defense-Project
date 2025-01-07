@@ -95,8 +95,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 02d54ab159c04ac4496226e90af8807a
-    m_Address: UnitTileObject
+  - m_GUID: 1200cef424b48614082284978dd27bc1
+    m_Address: UnitCardObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefabs

@@ -1,4 +1,5 @@
 using BGDatabaseEnum;
+using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,21 +7,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 // 유닛 타일 UI 요소를 관리하고 드래그 앤 드롭으로 맵에 유닛을 배치하는 클래스
-public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
-{
-
-
+public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+{ 
     //UI요소중 9개의 타일 이미지 저장하는 리스트
     [SerializeField] private List<Image> tileImages = new List<Image>();
-
     [SerializeField] private TMP_Text cardCostText;
 
-    // 드래그 중에 보여질 프리뷰 유닛들을 관리
-   // private List<UnitController> previewInstances = new List<UnitController>();
-
-    private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>();
-    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>();
-
+    //프리뷰 유닛들을 관리, 합성 여부 판단, 드래그 도중 상태 복원 및 업데이트
+    private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>(); //TileData의 프리뷰 유닛
+    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>(); //현재 화면에 보여지는 프리뷰 유닛, 합성 여부에 따라 기존 프리뷰 교체, 위치 변경, 머터리얼 업데이트
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
     private List<Vector2> tileOffsets;
@@ -106,8 +101,7 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         worldPos.z = 0;
 
         Vector2 tilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
-        Vector3 centerPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
-        CreatePreviewInstances(centerPos);
+        CreatePreviewInstances(tilePos);
         UpdatePreviewInstancesPosition(tilePos);
     }
 
@@ -161,8 +155,12 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
-    private void CreatePreviewInstances(Vector3 pointerPosition)
+    private void CreatePreviewInstances(Vector3 tilePos)
     {
+        
+        //유닛의 worldPos
+        Vector3 worldPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+
         var tileShapeData = D_TileShpeData.GetEntity(tileShapeName);
 
         for (int i = 0; i < tileOffsets.Count; i++)
@@ -170,14 +168,14 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             var unitBuildData = tileShapeData.f_unitBuildData[i];
             var unitPoolinKey = unitBuildData.f_unitData.f_UnitPoolingKey;
             
-            GameObject previewInstance = PoolingManager.Instance.GetObject(unitPoolinKey.f_PoolObjectAddressableKey, pointerPosition);
+            GameObject previewInstance = PoolingManager.Instance.GetObject(unitPoolinKey.f_PoolObjectAddressableKey, worldPos);
 
             UnitController previewUnit = previewInstance.GetComponent<UnitController>();
 
             if (previewUnit != null)
             {
                 previewUnit.Initialize();
-                previewUnit.InitializeUnitData(unitBuildData.f_unitData);
+                previewUnit.InitializeUnitInfo(unitBuildData.f_unitData, tilePos);
                 originalPreviews[i] = previewUnit;
                 currentPreviews[i] = previewUnit;
             }
@@ -240,10 +238,9 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
                 var mergedUnit = mergedPreview.GetComponent<UnitController>();
                 mergedUnit.Initialize();
-                mergedUnit.InitializeTilePos(mergedPosition);
-                mergedUnit.InitializeUnitData(nextLevelUnitData);
+                mergedUnit.InitializeUnitInfo(nextLevelUnitData, previewPosition);
                 mergedUnit.SetPreviewMaterial(canPlace);
-
+                mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
                 // 현재 프리뷰를 합성된 것으로 교체
                 currentPreviews[i] = mergedUnit;
 
@@ -291,8 +288,6 @@ public class UnitTileObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             unitInstance.DestroyPreviewUnit();
             Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
-            unitInstance.InitializeTilePos(new Vector2(pos.x, pos.y));
-
             UnitManager.Instance.RegisterUnit(unitInstance);
         }
 
