@@ -1165,7 +1165,7 @@ GameObject:
   - component: {fileID: 6945076182407890448}
   - component: {fileID: 3740587666089878348}
   m_Layer: 5
-  m_Name: FullWindowInGameDlg
+  m_Name: FullWindowLobbyDlg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

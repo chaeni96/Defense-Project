@@ -142,13 +142,13 @@ public class UnitController : BasicObject, IPointerClickHandler
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public async void OnPointerClick(PointerEventData eventData)
     {
 
         if(isActive)
         {
             //유닛 클릭했을때 팝업창 띄우기
-            UnitSelectFloatingUI unitInfo = UIManager.Instance.ShowUI<UnitSelectFloatingUI>("UnitSelectFloatingUI");
+            var unitInfo = await UIManager.Instance.ShowUI<UnitSelectFloatingUI>();
 
             //팝업창에 타일 정보 넘겨주기
 

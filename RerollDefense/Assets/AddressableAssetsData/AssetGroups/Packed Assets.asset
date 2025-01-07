@@ -21,25 +21,25 @@ MonoBehaviour:
     m_Address: FullWindowInGameDlg
     m_ReadOnly: 0
     m_SerializedLabels:
-    - GameSceneUI
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1a1754cc3344d646865efe55aa9e565
     m_Address: FieldGameResultPopup
     m_ReadOnly: 0
     m_SerializedLabels:
-    - GameSceneUI
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9ae3299cf7ddb624fa7286567e0b0ea4
     m_Address: FieldUnitInfoUI
     m_ReadOnly: 0
     m_SerializedLabels:
-    - GameSceneUI
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cdb2fab196a13bc4d95b218550f0e4d7
     m_Address: UnitSelectFloatingUI
     m_ReadOnly: 0
     m_SerializedLabels:
-    - GameSceneUI
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}

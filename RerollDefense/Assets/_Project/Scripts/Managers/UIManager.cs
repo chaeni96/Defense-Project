@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class UIManager : MonoBehaviour
     public Canvas mainCanvas;    // 전체화면 UI용
     public Canvas fieldUICanvas;   // 팝업 UI용
 
+    // UI 캐시를 위한 딕셔너리. Type을 키로 사용하여 UI 인스턴스를 저장
     private Dictionary<Type, UIBase> uiCache = new Dictionary<Type, UIBase>();
     private bool isUIOperationInProgress = false;
 
@@ -45,15 +48,19 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void InitializeUIManager(SceneType scene)
+    /// <summary>
+    /// UI 매니저 초기화. 각 씬에 따라 UI를 초기화하고 필요한 캔버스를 설정.
+    /// </summary>
+    public async void InitializeUIManager(SceneType scene)
     {
         uiCache = new Dictionary<Type, UIBase>();
-        //ui데이터 읽어와야함
         AssignCanvases();
-        InitUIForScene(scene);
+        await InitUIForScene(scene);
     }
 
-    //캔버스 할당
+    /// <summary>
+    /// 캔버스 할당. 필요한 캔버스를 찾거나 설정.
+    /// </summary>
     private void AssignCanvases()
     {
         if (mainCanvas == null)
@@ -62,7 +69,9 @@ public class UIManager : MonoBehaviour
             fieldUICanvas = GameObject.Find("FieldCanvas")?.GetComponent<Canvas>();
     }
 
-    //캔버스 트랜스폼 가져와야됨
+    /// <summary>
+    /// UI 유형에 따라 올바른 캔버스 트랜스폼을 반환.
+    /// </summary>
     private Transform GetCanvasTransform(Type uiType)
     {
         if (typeof(FullWindowBase).IsAssignableFrom(uiType))
@@ -72,8 +81,10 @@ public class UIManager : MonoBehaviour
         return null;
     }
 
-    //다른 ui작업중이면 방해하면 안됨
-    public T ShowUI<T>(string prefabName = null) where T : UIBase
+    /// <summary>
+    /// 특정 UI를 표시. 캐시된 UI가 있으면 활성화, 없으면 새로 생성
+    /// </summary>
+    public async Task<T> ShowUI<T>() where T : UIBase
     {
         if (isUIOperationInProgress)
         {
@@ -82,58 +93,80 @@ public class UIManager : MonoBehaviour
         }
 
         isUIOperationInProgress = true;
-        T ui = OpenUI<T>(prefabName);
+        T ui = await OpenUI<T>();
         isUIOperationInProgress = false;
 
         return ui;
     }
-    private T OpenUI<T>(string prefabName) where T : UIBase
+
+    private async Task<T> OpenUI<T>() where T : UIBase
     {
-        if (uiCache.TryGetValue(typeof(T), out UIBase cachedUI))
+        Type uiType = typeof(T);
+
+        // 캐시된 UI가 있는 경우
+        if (uiCache.TryGetValue(uiType, out UIBase cachedUI))
         {
-            T ui = (T)cachedUI;
-            ui.gameObject.SetActive(true);
-            return ui;
+            T uiInstance = (T)cachedUI;
+            uiInstance.gameObject.SetActive(true);
+            return uiInstance;
         }
 
-        if (string.IsNullOrEmpty(prefabName))
+        // UIInfoAttribute에서 AddressableKey 가져오기
+        var uiInfoAttribute = (UIInfoAttribute)Attribute.GetCustomAttribute(uiType, typeof(UIInfoAttribute));
+        if (uiInfoAttribute == null)
         {
-            prefabName = typeof(T).Name;
+            Debug.LogError($"{uiType.Name} 클래스에 UIInfoAttribute가 없습니다.");
+            return null;
         }
 
-        //TODO : FindEntity말고 다른걸로
-        var prefabData = D_UIPrefabData.FindEntity(data => data.f_PrefabKey == prefabName);
-        if (prefabData != null)
+        // Addressables를 사용하여 프리팹 비동기 로드
+        var handle = Addressables.LoadAssetAsync<GameObject>(uiInfoAttribute.AddressableKey);
+        await handle.Task;
+
+        if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            Transform parent = GetCanvasTransform(typeof(T));
-            GameObject uiObject = ResourceManager.Instance.Instantiate(prefabData.f_PrefabKey, parent);
-            if (uiObject != null)
+            Transform parent = GetCanvasTransform(uiType);
+            GameObject uiObject = Instantiate(handle.Result, parent);
+            uiObject.name = uiInfoAttribute.ObjectName;
+
+            T ui = uiObject.GetComponent<T>();
+            if (ui != null)
             {
-                T ui = uiObject.GetComponent<T>();
-                if (ui != null)
-                {
-                    ui.InitializeUI();
-                    uiCache[typeof(T)] = ui;
-                    return ui;
-                }
+                ui.InitializeUI();
+                uiCache[uiType] = ui;
+                return ui;
+            }
+            else
+            {
+                Debug.LogError($"프리팹에 {uiType.Name} 컴포넌트가 없습니다.");
+                Addressables.Release(handle);
+                return null;
             }
         }
-
-        Debug.LogError($"UI Prefab not found: {prefabName}");
-        return null;
+        else
+        {
+            Debug.LogError($"Addressables 로드 실패: {uiInfoAttribute.AddressableKey}");
+            return null;
+        }
     }
 
 
     public void CloseUI<T>() where T : UIBase
     {
-        if (uiCache.TryGetValue(typeof(T), out UIBase ui))
+        Type uiType = typeof(T);
+
+        if (uiCache.TryGetValue(uiType, out UIBase ui))
         {
-            ui.CloseUI();
-            ui.gameObject.SetActive(false);
-            uiCache.Remove(typeof(T));
-            Destroy(ui.gameObject);
+            ui.HideUI();
+
+            if (ui.DestroyOnHide)
+            {
+                uiCache.Remove(uiType);
+                Destroy(ui.gameObject);
+            }
         }
     }
+
 
     public void CloseAllUI()
     {
@@ -141,16 +174,15 @@ public class UIManager : MonoBehaviour
         {
             if (ui != null)
             {
-                ui.CloseUI();
+                ui.HideUI();
                 Destroy(ui.gameObject);
             }
         }
         uiCache.Clear();
     }
 
-    public void InitUIForScene(SceneType nextSceneKind)
+    public async Task InitUIForScene(SceneType nextSceneKind)
     {
-
 
         // 기존 UI들을 모두 닫고 비활성화
         CloseAllUI();
@@ -161,7 +193,7 @@ public class UIManager : MonoBehaviour
             case SceneType.Lobby:
                 break;
             case SceneType.Game:
-                ShowUI<FullWindowInGameDlg>("FullWindowInGameDlg");
+                await ShowUI<FullWindowInGameDlg>();
                 break;
         }
     }

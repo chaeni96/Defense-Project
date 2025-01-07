@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GameResultUI : PopupBase
+
+[UIInfo("FieldGameResultPopup", "FieldGameResultPopup", false)]
+public class FieldGameResultPopup : PopupBase
 {
 
     public TMP_Text gameStateText;
@@ -16,9 +18,9 @@ public class GameResultUI : PopupBase
     }
 
 
-    public override void CloseUI()
+    public override void HideUI()
     {
-        base.CloseUI();
+        base.HideUI();
     }
 
     public void OnResultButton()

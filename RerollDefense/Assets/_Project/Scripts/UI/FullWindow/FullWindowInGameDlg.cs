@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 
+
+[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", false)]
 public class FullWindowInGameDlg : FullWindowBase
 {
     public GameObject firstCardDeck;
@@ -302,8 +304,12 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
-    public override void CloseUI()
+    public override void HideUI()
     {
+
+        //TODO: hide애니메이션 추가했을때 주석 해제
+        //base.HideUI();
+
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;

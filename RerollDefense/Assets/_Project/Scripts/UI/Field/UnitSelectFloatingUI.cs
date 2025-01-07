@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+[UIInfo("UnitSelectFloatingUI", "UnitSelectFloatingUI", false)]
 public class UnitSelectFloatingUI : PopupBase
 {
 
@@ -72,9 +74,9 @@ public class UnitSelectFloatingUI : PopupBase
 
     }
 
-    public override void CloseUI()
+    public override void HideUI()
     {
-        base.CloseUI();
+        base.HideUI();
     }
 
 

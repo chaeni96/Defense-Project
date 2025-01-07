@@ -24,15 +24,6 @@ public class SceneStarter : MonoBehaviour
         });
         yield return new WaitUntil(() => prefabsLoaded);
 
-        // UI 리소스 로드 완료 대기
-        bool uiLoaded = false;
-
-        ResourceManager.Instance.LoadAllAsync<GameObject>("GameSceneUI", (key, count, total) =>
-        {
-            if (count == total)
-                uiLoaded = true;
-        });
-        yield return new WaitUntil(() => uiLoaded);
 
         // 기본 매니저 초기화
         PoolingManager.Instance.InitializeAllPools();

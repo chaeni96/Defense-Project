@@ -62,7 +62,7 @@ public class GameResultState : GameState
         resultType = type;
     }
 
-    public override void EnterState()
+    public async  override void EnterState()
     {
         // 모든 진행중인 게임플레이 중지
         Time.timeScale = 0;  // 게임 일시정지
@@ -108,7 +108,7 @@ public class GameResultState : GameState
             Debug.Log("플레이어 패배");
         }
 
-        UIManager.Instance.ShowUI<GameResultUI>("FieldGameResultPopup");
+         await UIManager.Instance.ShowUI<FieldGameResultPopup>();
 
     }
 

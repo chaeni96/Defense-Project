@@ -6,8 +6,6 @@ using UnityEngine;
 public class PopupBase : UIBase
 {
  
-
-
     public override void InitializeUI()
     {
         base.InitializeUI();
