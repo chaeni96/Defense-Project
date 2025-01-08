@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 
 [UIInfo("UnitSelectFloatingUI", "UnitSelectFloatingUI", false)]
-public class UnitSelectFloatingUI : PopupBase
+public class UnitSelectFloatingUI : FloatingPopupBase
 {
 
 

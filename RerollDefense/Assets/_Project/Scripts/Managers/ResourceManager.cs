@@ -46,6 +46,11 @@ public class ResourceManager : MonoBehaviour
 
     }
 
+    public void InitializeManager()
+    {
+        resources.Clear();
+    }
+
     public T Load<T>(string key) where T : Object
     {
         if (resources.TryGetValue(key, out Object resource))

@@ -45,6 +45,12 @@ public class PoolingManager : MonoBehaviour
 
     }
 
+    public void InitializeManager()
+    {
+        CleanUP();
+
+        InitializeAllPools();
+    }
 
     public void InitializeAllPools()
     {
@@ -131,7 +137,7 @@ public class PoolingManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    public void CleanUP()
     {
         if (poolDictionary != null)
         {

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: de89a5a99ca85f34a9f4949f5ca13040
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 3405aa064897d8efee6e05b587a9ebd7
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -91,6 +91,7 @@ MonoBehaviour:
     - default
     - Prefabs
     - UI
+    - InGameScenePrefabs
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fbe280ad23558fe4eb1050ded730afbe, type: 2}

@@ -29,12 +29,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9ae3299cf7ddb624fa7286567e0b0ea4
-    m_Address: FieldUnitInfoUI
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - UI
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cdb2fab196a13bc4d95b218550f0e4d7
     m_Address: UnitSelectFloatingUI
     m_ReadOnly: 0

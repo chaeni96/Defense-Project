@@ -6,6 +6,7 @@ public class FullWindowLobbyDlg : MonoBehaviour
 {
     public void OnClickGamePlayBtn()
     {
+        GameSceneManager.Instance.LoadScene(SceneKind.InGame);
 
     }
 }

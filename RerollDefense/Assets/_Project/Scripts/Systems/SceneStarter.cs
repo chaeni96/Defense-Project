@@ -5,19 +5,52 @@ using UnityEngine.Tilemaps;
 
 public class SceneStarter : MonoBehaviour
 {
+
+    //씬별로 바인딩
+    public Canvas fullWindowCanvas;
+    public Canvas filedCanvas;
+
+    public SceneKind scenekind;
+
+    //GameScene에서만 바인딩
     [SerializeField]private Tilemap placedTileMap;
     [SerializeField] private Transform tileMapGrid;  // Inspector에서 할당
 
+
+
     void Start()
     {
-        StartCoroutine(InitializeGame());
+
+        UIManager.Instance.fullWindowCanvas = fullWindowCanvas;
+        UIManager.Instance.fieldUICanvas = filedCanvas;
+
+        //data 로드
+        SaveLoadManager.Instance.LoadData();
+        ResourceManager.Instance.InitializeManager();
+        GameManager.Instance.InitializeManager();
+        // UI 초기화
+        UIManager.Instance.InitializeManager(scenekind);
+
+
+        if (scenekind == SceneKind.Lobby)
+        {
+
+        }
+
+        if(scenekind == SceneKind.InGame)
+        {
+            StartCoroutine(InitializeGameScene());
+        }
+
+
     }
 
-    private IEnumerator InitializeGame()
+    private IEnumerator InitializeGameScene()
     {
-        // 첫 번째 리소스 로드 완료 대기
+        // 게임씬에 사용할 리소스 로드
         bool prefabsLoaded = false;
-        ResourceManager.Instance.LoadAllAsync<GameObject>("Prefabs", (key, count, total) =>
+
+        ResourceManager.Instance.LoadAllAsync<GameObject>("InGameScenePrefabs", (key, count, total) =>
         {
             if (count == total)
                 prefabsLoaded = true;
@@ -26,19 +59,20 @@ public class SceneStarter : MonoBehaviour
 
 
         // 기본 매니저 초기화
-        PoolingManager.Instance.InitializeAllPools();
-        SaveLoadManager.Instance.LoadData();
+        PoolingManager.Instance.InitializeManager();
         UnitManager.Instance.InitializeManager();
         EnemyManager.Instance.InitializeMnanager();
+        ProjectileManager.Instance.InitializeManager();
 
-        GameManager.Instance.InitGameManager();
-        // UI 초기화
-        UIManager.Instance.InitializeUIManager(BGDatabaseEnum.SceneType.Game);
+
+        StageManager.Instance.InitializeManager(placedTileMap, tileMapGrid);
+        //TODO : 로비에서 선택한 스테이지를 인자값으로 넘겨줘야됨
+
+        StageManager.Instance.StartStage(1);
 
         // 게임 시작
         GameManager.Instance.ChangeState(new GamePlayState());
-        StageManager.Instance.Initialize(placedTileMap, tileMapGrid);
-        StageManager.Instance.StartStage(1);
+
     }
 
 }

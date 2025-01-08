@@ -2,80 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BGDatabaseEnum
+//database에서 사용안하는 enum
+public enum SceneKind
 {
-    public enum SceneType
-    {
-        Lobby,
-        Game,
-    }
-
-
-    public enum UnitGrade
-    {
-        Normal,
-        Rare,
-        Epic,
-        Legendary,
-        Mythic,
-    }
-
-    public enum SkillAttackType
-    {
-        None,
-        Projectile,
-        AOE,
-    }
-
-    public enum ObjstacleTileType
-    {
-        Basic, // 배치 불가, 삭제 불가, 몬스터 이동 불가 
-        Rock,
-        Swamp,
-        Lava,
-
-    }
-
-
-    public enum ObstacleTileType
-    {
-        Basic, // 배치 불가, 삭제 불가, 몬스터 이동 불가 
-        Rock,
-        Swamp,
-        Lava,
-
-    }
-
-
-    public enum UpgradeUnitType
-    {
-        None,
-        Archer,
-        Archer2,
-        Mage,
-        Base,
-    }
-
-
-    public enum EnemyType
-    {
-        Normal,
-        Boss,
-
-    }
-
+    Lobby,
+    InGame,
 }
 
-
-//database에서 사용안하는 enum
-public class Define
+public enum Sound
 {
-
-    public enum Sound
-    {
-        Bgm,
-        Effect,
-        MaxCount,
-    }
-
+    Bgm,
+    Effect,
+    MaxCount,
 }

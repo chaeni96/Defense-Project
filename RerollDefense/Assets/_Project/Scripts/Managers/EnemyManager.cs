@@ -64,9 +64,29 @@ public class EnemyManager : MonoBehaviour
 
     public void InitializeMnanager()
     {
+        //기존 데이터가 있다면 먼저 정리
+        CleanUp();
+
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
         enemyPathIndex = new Dictionary<Enemy, int>();
         activeEnemies = new Dictionary<Collider2D, Enemy>();
+    }
+
+    private void InitializeArrays(int enemyCount)
+    {
+        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
+        if (targetPositions.IsCreated) targetPositions.Dispose();
+        if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
+
+        Transform[] transforms = new Transform[enemyCount];
+        for (int i = 0; i < enemyCount; i++)
+        {
+            transforms[i] = enemies[i].transform;
+        }
+        transformAccessArray = new TransformAccessArray(transforms);
+
+        targetPositions = new NativeArray<float3>(enemyCount, Allocator.TempJob);
+        moveSpeeds = new NativeArray<float>(enemyCount, Allocator.TempJob);
     }
 
     public void SpawnEnemy(string enemyName, Vector3? initPos = null)
@@ -145,102 +165,95 @@ public class EnemyManager : MonoBehaviour
 
         ShowDebug(); //디버깅용, scene에서 길 보여줌
 
-        // TransformAccessArray, NativaArray 생성하고 이전것들은 Dispose해줘야됨
-        // Enemy가 중간에 죽거나 새로 생성되는등 동적으로 관리해야되기때문에 크기 고정하면안됨
-        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
-        Transform[] transforms = new Transform[enemies.Count];
-        for (int i = 0; i < enemies.Count; i++)
+        try
         {
-            transforms[i] = enemies[i].transform;
-        }
-        transformAccessArray = new TransformAccessArray(transforms);
+            // TransformAccessArray, NativeArray 초기화
+            InitializeArrays(enemies.Count);
 
-        if (targetPositions.IsCreated) targetPositions.Dispose();
-        if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
-        targetPositions = new NativeArray<float3>(enemies.Count, Allocator.TempJob);
-        moveSpeeds = new NativeArray<float>(enemies.Count, Allocator.TempJob);
-
-        //jobSystem에 필요한 데이터 설정
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            Enemy enemy = enemies[i];
-            List<Vector3> enemyPath = enemyPaths[enemy];
-            int pathIndex = enemyPathIndex[enemy];
-
-            moveSpeeds[i] = enemy.moveSpeed;
-
-            if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
+            //jobSystem에 필요한 데이터 설정
+            for (int i = 0; i < enemies.Count; i++)
             {
-                // 다음 목표 지점으로 이동 시작할 때 방향 체크
-                Vector3 currentPos = enemyPath[pathIndex];
-                Vector3 nextPos = enemyPath[pathIndex + 1];
-                float directionX = nextPos.x - currentPos.x;
+                Enemy enemy = enemies[i];
+                List<Vector3> enemyPath = enemyPaths[enemy];
+                int pathIndex = enemyPathIndex[enemy];
 
-                if (Mathf.Abs(directionX) > 0.01f)
+                moveSpeeds[i] = enemy.moveSpeed;
+
+                if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
                 {
-                    enemy.spriteRenderer.flipX = directionX < 0;
+                    // 다음 목표 지점으로 이동 시작할 때 방향 체크
+                    Vector3 currentPos = enemyPath[pathIndex];
+                    Vector3 nextPos = enemyPath[pathIndex + 1];
+                    float directionX = nextPos.x - currentPos.x;
+
+                    if (Mathf.Abs(directionX) > 0.01f)
+                    {
+                        enemy.spriteRenderer.flipX = directionX < 0;
+                    }
+
+                    targetPositions[i] = enemyPath[pathIndex + 1]; // 다음 목표 위치 설정
                 }
-
-                targetPositions[i] = enemyPath[pathIndex + 1]; // 다음 목표 위치 설정
-            }
-            else
-            {
-                targetPositions[i] = enemy.transform.position; //마지막 위치면 현재 위치 유지
-            }
-        }
-
-        // Job 실행, 매 프레임마다 job 실행
-        var moveJob = new MoveEnemiesJob
-        {
-            TargetPositions = targetPositions,
-            DeltaTime = Time.deltaTime,
-            MoveSpeeds = moveSpeeds,
-            ArrivalDist = arrivalDist
-        };
-
-        JobHandle jobHandle = moveJob.Schedule(transformAccessArray);
-        jobHandle.Complete();
-
-        // 이동 후 처리 (도착 체크 및 enemy 관리)
-        for (int i = enemies.Count - 1; i >= 0; i--)
-        {
-            if (i >= enemies.Count) continue;
-
-            Enemy enemy = enemies[i];
-
-            if (enemy == null) continue; // null 체크
-
-            if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;  // Dictionary 체크 추가
-
-            int pathIndex = enemyPathIndex[enemy];
-            List<Vector3> path = enemyPaths[enemy];
-
-            if (pathIndex < path.Count - 1)
-            {
-                Vector3 targetPos = path[pathIndex + 1];
-                if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
+                else
                 {
-                    enemyPathIndex[enemy]++;
+                    targetPositions[i] = enemy.transform.position; //마지막 위치면 현재 위치 유지
                 }
             }
-            else
+
+            // Job 실행
+            var moveJob = new MoveEnemiesJob
             {
-                // 마지막 지점 도달
-                enemy.OnReachEndTile();
+                TargetPositions = targetPositions,
+                DeltaTime = Time.deltaTime,
+                MoveSpeeds = moveSpeeds,
+                ArrivalDist = arrivalDist
+            };
 
-                if (enemy.enemyCollider != null)  // 콜라이더 체크 추가
+            JobHandle jobHandle = moveJob.Schedule(transformAccessArray);
+            jobHandle.Complete();
+
+            // 이동 후 처리 (도착 체크 및 enemy 관리)
+            for (int i = enemies.Count - 1; i >= 0; i--)
+            {
+                if (i >= enemies.Count) continue;
+
+                Enemy enemy = enemies[i];
+
+                if (enemy == null) continue;
+
+                if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;
+
+                int pathIndex = enemyPathIndex[enemy];
+                List<Vector3> path = enemyPaths[enemy];
+
+                if (pathIndex < path.Count - 1)
                 {
-                    UnregisterEnemy(enemy.enemyCollider);
+                    Vector3 targetPos = path[pathIndex + 1];
+                    if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
+                    {
+                        enemyPathIndex[enemy]++;
+                    }
                 }
+                else
+                {
+                    // 마지막 지점 도달
+                    enemy.OnReachEndTile();
 
-                PoolingManager.Instance.ReturnObject(enemy.gameObject);
+                    if (enemy.enemyCollider != null)
+                    {
+                        UnregisterEnemy(enemy.enemyCollider);
+                    }
+
+                    PoolingManager.Instance.ReturnObject(enemy.gameObject);
+                }
             }
         }
-
-        targetPositions.Dispose();
-        moveSpeeds.Dispose();
-        transformAccessArray.Dispose();
-
+        finally
+        {
+            // 항상 NativeArray들 정리
+            if (transformAccessArray.isCreated) transformAccessArray.Dispose();
+            if (targetPositions.IsCreated) targetPositions.Dispose();
+            if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
+        }
     }
     public void UpdateEnemiesPath()
     {
@@ -256,20 +269,27 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        CleanUp();
-    }
-
-    private void CleanUp()
+    public void CleanUp()
     {
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
-        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
+        if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
+
+        // 모든 활성화된 enemy를 풀로 반환
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            var enemy = enemies[i];
+
+            if (enemy != null)
+            {
+                PoolingManager.Instance.ReturnObject(enemy.gameObject);
+            }
+        }
 
         enemyPaths.Clear();
         enemyPathIndex.Clear();
         enemies.Clear();
+        activeEnemies.Clear();
     }
 
     #region 길찾기 Debug

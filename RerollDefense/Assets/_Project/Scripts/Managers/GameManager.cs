@@ -33,7 +33,6 @@ public class GamePlayState : GameState
     public override void EnterState()
     {
         //매개변수로 현재 스테이지 던져야됨
-       
         GameManager.Instance.gameState = "Gema Play!";
        
     }
@@ -87,7 +86,7 @@ public class GameResultState : GameState
             PoolingManager.Instance.ReturnObject(projectile.gameObject);
         }
 
-        // 진행 중인 모든 AOE 이펙트 제거 -> 나중에 변경
+        // TODO : 진행 중인 모든 AOE 이펙트 제거 -> 나중에 변경 list로 모아서 관리
         var aoes = Object.FindObjectsOfType<TheAOE>();
         foreach (var aoe in aoes)
         {
@@ -108,7 +107,11 @@ public class GameResultState : GameState
             Debug.Log("플레이어 패배");
         }
 
-         await UIManager.Instance.ShowUI<FieldGameResultPopup>();
+        UnitManager.Instance.CleanUp();
+        EnemyManager.Instance.CleanUp();
+
+
+        await UIManager.Instance.ShowUI<FieldGameResultPopup>();
 
     }
 
@@ -128,11 +131,12 @@ public class GameManager : MonoBehaviour
 
     public Camera mainCamera;
 
-    public float PlayerHP { get; private set; } = 100f;
+    public float PlayerHP { get; private set; } = 10f;
     public float MaxHP { get; private set; } = 1500f;
 
-    public int CurrentCost;
-    public int MaxCost;
+    //나중에 게임씬이니셜라이즈할때 사용하기
+    public int CurrentCost = 2;
+    public int MaxCost = 10;
     public int StoreLevel { get; private set; } = 1;
 
 
@@ -177,11 +181,14 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void InitGameManager()
+    public void InitializeManager()
     {
+
+        OnHPChanged = null;  // 이벤트 정리
+        OnCostUsed = null;
+
         mainCamera = Camera.main;
-        CurrentCost = 2;
-        MaxCost = 10;
+   
     }
     private void Update()
     {
@@ -238,12 +245,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-
-    private void OnDestroy()
-    {
-        OnHPChanged = null;  // 이벤트 정리
-        OnCostUsed = null;
-    }
 
 
 

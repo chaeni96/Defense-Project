@@ -12,6 +12,13 @@ public class TheAOE : SkillBase
 
     private readonly List<Collider2D> enemys = new List<Collider2D>();
 
+    public override void Initialize(UnitController unit)
+    {
+        base.Initialize(unit);
+
+        // 리스트 초기화
+        enemys.Clear();
+    }
 
     public override void Fire(Vector3 targetPosition)
     {
@@ -53,4 +60,18 @@ public class TheAOE : SkillBase
         yield return new WaitForSeconds(duration);
         PoolingManager.Instance.ReturnObject(this.gameObject);
     }
+
+    private void OnDisable()
+    {
+        // 코루틴 정리
+        StopAllCoroutines();
+
+        // 리스트 정리
+        enemys.Clear();
+
+        // 참조 정리
+        owner = null;
+    }
+
+
 }

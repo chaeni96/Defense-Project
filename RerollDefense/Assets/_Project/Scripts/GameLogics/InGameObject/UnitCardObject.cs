@@ -14,8 +14,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     [SerializeField] private TMP_Text cardCostText;
 
     //프리뷰 유닛들을 관리, 합성 여부 판단, 드래그 도중 상태 복원 및 업데이트
-    private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>(); //TileData의 프리뷰 유닛
-    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>(); //현재 화면에 보여지는 프리뷰 유닛, 합성 여부에 따라 기존 프리뷰 교체, 위치 변경, 머터리얼 업데이트
+
+    //TileData의 프리뷰 유닛
+    private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>();
+
+    //현재 화면에 보여지는 프리뷰 유닛, 합성 여부에 따라 기존 프리뷰 교체, 위치 변경, 머터리얼 업데이트
+    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>(); 
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
     private List<Vector2> tileOffsets;
@@ -36,6 +40,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 카드 초기화: 타일 정보, 코스트, 프리뷰 설정
     public void InitializeCardInform(D_TileShpeData unitData)
     {
+        CleanUp();
+
         tileShapeName = unitData.f_name;
         cardCost = unitData.f_Cost;
         cardCostText.text = cardCost.ToString();
@@ -43,6 +49,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         InitializeTileShape();
         CreateTilePreview(unitData);
         UpdateCostTextColor();
+
         //cost 사용 이벤트 구독 -> cost 추가될때 tile Cost Text 업데이트
         GameManager.Instance.OnCostAdd += OnCostChanged;
 
@@ -306,7 +313,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         Destroy(gameObject);
     }
 
-    // 배치 취소: 프리뷰 인스턴스 정리
+    // 배치 취소시 호출 메서드: 프리뷰 인스턴스 정리
     private void CancelPlacement()
     {
         foreach (var instance in currentPreviews.Values)
@@ -314,6 +321,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             PoolingManager.Instance.ReturnObject(instance.gameObject);
         }
         originalPreviews.Clear();
+        currentPreviews.Clear();
+
+        GameManager.Instance.OnCostAdd -= OnCostChanged;
     }
 
     // 카드 UI에 타일 프리뷰 생성
@@ -359,16 +369,16 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
     }
 
-    // 리소스 정리
-    private void OnDestroy()
+
+    private void CleanUp()
     {
-        if (isDragging)
-        {
-            CancelPlacement();
-        }
+        originalPreviews.Clear();
+        currentPreviews.Clear();
+        activeImageIndices.Clear();
 
+        // 이벤트 구독 해제
         GameManager.Instance.OnCostAdd -= OnCostChanged;
-
     }
+
 
 }

@@ -12,8 +12,8 @@ public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
 
-    public Canvas mainCanvas;    // 전체화면 UI용
-    public Canvas fieldUICanvas;   // 팝업 UI용
+    public Canvas fullWindowCanvas;    // 전체화면 UI용
+    public Canvas fieldUICanvas;   // 필드 UI용, 팝업, 플로팅
 
     // UI 캐시를 위한 딕셔너리. Type을 키로 사용하여 UI 인스턴스를 저장
     private Dictionary<Type, UIBase> uiCache = new Dictionary<Type, UIBase>();
@@ -51,23 +51,15 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// UI 매니저 초기화. 각 씬에 따라 UI를 초기화하고 필요한 캔버스를 설정.
     /// </summary>
-    public async void InitializeUIManager(SceneType scene)
+    public void InitializeManager(SceneKind scene)
     {
+        CleanUp();
+
         uiCache = new Dictionary<Type, UIBase>();
-        AssignCanvases();
-        await InitUIForScene(scene);
+        InitUIForScene(scene);
     }
 
-    /// <summary>
-    /// 캔버스 할당. 필요한 캔버스를 찾거나 설정.
-    /// </summary>
-    private void AssignCanvases()
-    {
-        if (mainCanvas == null)
-            mainCanvas = GameObject.Find("FullWindowCanvas")?.GetComponent<Canvas>();
-        if (fieldUICanvas == null)
-            fieldUICanvas = GameObject.Find("FieldCanvas")?.GetComponent<Canvas>();
-    }
+
 
     /// <summary>
     /// UI 유형에 따라 올바른 캔버스 트랜스폼을 반환.
@@ -75,8 +67,8 @@ public class UIManager : MonoBehaviour
     private Transform GetCanvasTransform(Type uiType)
     {
         if (typeof(FullWindowBase).IsAssignableFrom(uiType))
-            return mainCanvas.transform;
-        else if (typeof(PopupBase).IsAssignableFrom(uiType))
+            return fullWindowCanvas.transform;
+        else if (typeof(PopupBase).IsAssignableFrom(uiType) || typeof(FloatingPopupBase).IsAssignableFrom(uiType))
             return fieldUICanvas.transform;
         return null;
     }
@@ -181,7 +173,7 @@ public class UIManager : MonoBehaviour
         uiCache.Clear();
     }
 
-    public async Task InitUIForScene(SceneType nextSceneKind)
+    public async void InitUIForScene(SceneKind nextSceneKind)
     {
 
         // 기존 UI들을 모두 닫고 비활성화
@@ -190,12 +182,30 @@ public class UIManager : MonoBehaviour
         // 각 씬별, 조건별 UI 띄우기
         switch (nextSceneKind)
         {
-            case SceneType.Lobby:
+            case SceneKind.Lobby:
                 break;
-            case SceneType.Game:
+            case SceneKind.InGame:
                 await ShowUI<FullWindowInGameDlg>();
                 break;
         }
     }
+
+    private void CleanUp()
+    {
+        // 캐시된 UI들 정리
+        foreach (var ui in uiCache.Values)
+        {
+            if (ui != null)
+            {
+                ui.HideUI();
+                Destroy(ui.gameObject);
+            }
+        }
+        uiCache.Clear();
+
+        // 진행 중인 작업 플래그 초기화
+        isUIOperationInProgress = false;
+    }
+
 
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using TMPro;
 
 
-[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", false)]
+[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
 public class FullWindowInGameDlg : FullWindowBase
 {
     public GameObject firstCardDeck;
@@ -39,6 +39,8 @@ public class FullWindowInGameDlg : FullWindowBase
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
     {
+        CleanUp();
+
         base.InitializeUI();
 
         
@@ -310,23 +312,38 @@ public class FullWindowInGameDlg : FullWindowBase
         //TODO: hide애니메이션 추가했을때 주석 해제
         //base.HideUI();
 
-        if (GameManager._instance != null)
-        {
-            GameManager.Instance.OnHPChanged -= OnHPChanged;
-            GameManager.Instance.OnCostUsed -= OnCostUsed;
-            UnitCardObject.OnCardUsed -= OnUnitCardDestroyed; 
+        CleanUp();
 
-        }
     }
 
 
 
 
-    private void OnDestroy()
+    private void CleanUp()
     {
-        isChecking = false;
+        // 코루틴 정리
+        if (hpUpdateCoroutine != null)
+        {
+            StopCoroutine(hpUpdateCoroutine);
+            hpUpdateCoroutine = null;
+        }
 
-        //구독해제
+        // 카드 관련 정리
+        isChecking = false;
+        if (currentCards != null)
+        {
+            foreach (var card in currentCards.Where(c => c != null))
+            {
+                Destroy(card.gameObject);
+            }
+            currentCards.Clear();
+        }
+
+        // 리스트 정리
+        cardDecks?.Clear();
+        emptyCardObjects?.Clear();
+
+        // 이벤트 구독 해제
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnHPChanged -= OnHPChanged;

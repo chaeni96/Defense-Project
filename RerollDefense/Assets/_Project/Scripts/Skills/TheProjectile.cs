@@ -8,6 +8,7 @@ public class TheProjectile : SkillBase
     public override void Initialize(UnitController unit)
     {
         base.Initialize(unit);
+
         ProjectileManager.Instance.RegisterProjectile(this);
     }
 
@@ -20,9 +21,10 @@ public class TheProjectile : SkillBase
         transform.position = owner.transform.position;
     }
 
-    private void OnDisable()
+    public void CleanUp()
     {
         owner = null;
         target = null;
     }
+
 }

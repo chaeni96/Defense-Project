@@ -44,6 +44,7 @@ public class StageManager : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
+            return;
         }
         else
         {
@@ -53,8 +54,11 @@ public class StageManager : MonoBehaviour
 
     }
 
-    public void Initialize(Tilemap map, Transform grid)
+    public void InitializeManager(Tilemap map, Transform grid)
     {
+
+        CleanUp();
+
         placedMap = map;
         tileMapGrid = grid;
     }
@@ -62,6 +66,7 @@ public class StageManager : MonoBehaviour
 
     public void StartStage(int stageNumber)
     {
+
 
         D_StageData stageData = D_StageData.FindEntity(data => data.f_StageNumber == stageNumber);
 
@@ -113,12 +118,28 @@ public class StageManager : MonoBehaviour
 
     private IEnumerator CoSpawnEnemyGroup(D_enemyGroup enemyGroupData)
     {
+        // null 및 유효성 체크 추가
+        if (enemyGroupData == null || enemyGroupData.f_enemy == null)
+        {
+            Debug.LogError("적 그룹 데이터가 유효하지 않습니다.");
+            yield break;
+        }
+
         // 스타트 딜레이 대기
         yield return new WaitForSeconds(enemyGroupData.f_startDelay);
-
         for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
         {
-            EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
+            // null 체크 및 안전한 스폰
+            if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
+            {
+                EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
+            }
+            else
+            {
+                Debug.LogError("오브젝트 풀 키가 null입니다.");
+                break;
+            }
+
             yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
         }
     }
@@ -126,5 +147,22 @@ public class StageManager : MonoBehaviour
     {
         return currentWaveIndex >= currentStage.f_WaveData.Count;
     }
+
+
+
+    private void CleanUp()
+    {
+        // 실행 중인 코루틴이 있다면 정지
+
+        StopAllCoroutines();
+
+     
+
+        // 스테이지 데이터 초기화
+        currentStage = null;
+        placedMap = null;
+        tileMapGrid = null;
+    }
+
 
 }

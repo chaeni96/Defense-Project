@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 
-[UIInfo("FieldGameResultPopup", "FieldGameResultPopup", false)]
+[UIInfo("FieldGameResultPopup", "FieldGameResultPopup", true)]
 public class FieldGameResultPopup : PopupBase
 {
 
@@ -25,11 +25,7 @@ public class FieldGameResultPopup : PopupBase
 
     public void OnResultButton()
     {
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                    Application.Quit();
-        #endif
+        GameSceneManager.Instance.LoadScene(SceneKind.Lobby);
     }
 
 }

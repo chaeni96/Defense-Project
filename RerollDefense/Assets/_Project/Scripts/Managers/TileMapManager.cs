@@ -60,12 +60,14 @@ public class TileMapManager : MonoBehaviour
  
     public void InitializeManager(Tilemap gameMap, D_MapData mapData, Transform grid)
     {
-        tileMapDatas = new Dictionary<Vector2, TileData>();
+        // 기존 데이터 정리
+        CleanUp();
 
+        // 새로 초기화
+        tileMapDatas = new Dictionary<Vector2, TileData>();
         tileMap = gameMap;
         this.mapData = mapData;
         tileMapGrid = grid;
-        tileMapDatas.Clear();
 
     }
 
@@ -306,6 +308,24 @@ public class TileMapManager : MonoBehaviour
 
     public Vector2 GetStartPosition() => startTilePos;
     public Vector2 GetEndPosition() => endTilePos;
+
+    private void CleanUp()
+    {
+        // Dictionary 정리
+        if (tileMapDatas != null)
+        {
+            tileMapDatas.Clear();
+        }
+
+        // 참조 데이터 정리
+        tileMap = null;
+        mapData = null;
+        tileMapGrid = null;
+
+        // 시작/끝 타일 위치 초기화
+        startTilePos = Vector2.zero;
+        endTilePos = Vector2.zero;
+    }
 
     //시작 타일, 도착타일 pos
     //private void Update()

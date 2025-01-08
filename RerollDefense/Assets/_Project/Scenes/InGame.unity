@@ -4150,6 +4150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d556b8375ad71434a928cba5590ed32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fullWindowCanvas: {fileID: 1607360939}
+  filedCanvas: {fileID: 1689902997}
+  scenekind: 1
   placedTileMap: {fileID: 1420055970}
   tileMapGrid: {fileID: 545611165}
 --- !u!1 &589993358

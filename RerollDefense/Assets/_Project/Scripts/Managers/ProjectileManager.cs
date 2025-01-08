@@ -47,6 +47,11 @@ public class ProjectileManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void InitializeManager()
+    {
+        CleanUp();  // 기존 데이터 정리
+        activeProjectiles = new List<TheProjectile>();
+    }
 
     private void Update()
     {
@@ -163,18 +168,22 @@ public class ProjectileManager : MonoBehaviour
     // 투사체 오브젝트 풀 반환
     private void ReturnProjectile(TheProjectile projectile)
     {
+        projectile.CleanUp();
         PoolingManager.Instance.ReturnObject(projectile.gameObject);
         activeProjectiles.Remove(projectile);
     }
 
-    // JobSystem 배열 정리
-    private void OnDestroy()
+    private void CleanUp()
     {
+        // Job System 리소스 정리
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (speeds.IsCreated) speeds.Dispose();
+
+        // 활성화된 투사체 목록 정리
         activeProjectiles.Clear();
     }
+
 }
 
 public struct ProjectileMoveJob : IJobParallelForTransform

@@ -51,10 +51,13 @@ public class UnitManager : MonoBehaviour
 
     public void InitializeManager()
     {
+
+        // 기존 데이터 정리
+        CleanUp();
+
         units = new List<UnitController>();
 
     }
-
 
     public List<UnitController> GetUnits() => units;
 
@@ -75,68 +78,76 @@ public class UnitManager : MonoBehaviour
 
     private void Update()
     {
-
         //enemy가 한마리도 없으면 return
         if (EnemyManager.Instance.GetEnemyCount() == 0) return;
 
         int enemyCount = EnemyManager.Instance.GetEnemyCount();
-        InitializeArrays(units.Count, enemyCount);
 
-        for (int i = 0; i < units.Count; i++)
+        try
         {
-            unitPositions[i] = units[i].transform.position;
-            attackRanges[i] = units[i].attackRange;
-            attackTimers[i] = units[i].attackTimer;
-        }
+            // NativeArray 초기화
+            InitializeArrays(units.Count, enemyCount);
 
-        //enemy 트랜스폼 enemyPositions에 담아오기 
-        //NativeArray는 참조타입이므로 EnemyManager에서 값 변경되면 똑같이 적용됨
-        EnemyManager.Instance.GetEnemyPositions(enemyPositions);
-
-
-        var attackJob = new UnitAttackJob
-        {
-            UnitPositions = unitPositions,
-            EnemyPositions = enemyPositions,
-            AttackRanges = attackRanges,
-            TargetIndices = targetIndices,
-            AttackTimers = attackTimers,
-            DeltaTime = Time.deltaTime
-        };
-
-        JobHandle jobHandle = attackJob.Schedule(units.Count, 64);
-        jobHandle.Complete();
-        // 공격 처리
-        for (int i = 0; i < units.Count; i++)
-        {
-            int targetIndex = targetIndices[i];
-            if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
+            // 유닛 데이터 설정
+            for (int i = 0; i < units.Count; i++)
             {
-                UnitController unit = units[i];
-                Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
-                if (targetEnemy != null)
+                unitPositions[i] = units[i].transform.position;
+                attackRanges[i] = units[i].attackRange;
+                attackTimers[i] = units[i].attackTimer;
+            }
+
+            //enemy 트랜스폼 enemyPositions에 담아오기 
+            EnemyManager.Instance.GetEnemyPositions(enemyPositions);
+
+            // Job 생성 및 실행
+            var attackJob = new UnitAttackJob
+            {
+                UnitPositions = unitPositions,
+                EnemyPositions = enemyPositions,
+                AttackRanges = attackRanges,
+                TargetIndices = targetIndices,
+                AttackTimers = attackTimers,
+                DeltaTime = Time.deltaTime
+            };
+
+            JobHandle jobHandle = attackJob.Schedule(units.Count, 64);
+            jobHandle.Complete();
+
+            // 공격 처리
+            for (int i = 0; i < units.Count; i++)
+            {
+                int targetIndex = targetIndices[i];
+                if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
                 {
-                    string skillId = unit.attackType == SkillAttackType.Projectile ? "Projectile" : "AoeRange";
-                    Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
-                        targetEnemy.transform.position : unit.transform.position;
-
-                    if (unit.attackType == SkillAttackType.Projectile)
+                    UnitController unit = units[i];
+                    Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
+                    if (targetEnemy != null)
                     {
-                        unit.MoveScale();
-                    }
+                        string skillId = unit.attackType == SkillAttackType.Projectile ? "Projectile" : "AoeRange";
+                        Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
+                            targetEnemy.transform.position : unit.transform.position;
 
-                    AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
-                    unit.attackTimer = 0f;
+                        if (unit.attackType == SkillAttackType.Projectile)
+                        {
+                            unit.MoveScale();
+                        }
+
+                        AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
+                        unit.attackTimer = 0f;
+                    }
+                }
+                else
+                {
+                    units[i].attackTimer = attackTimers[i];
                 }
             }
-            else
-            {
-                units[i].attackTimer = attackTimers[i];
-            }
+        }
+        finally
+        {
+            // 항상 NativeArray 정리 보장
+            DisposeArrays();
         }
     }
-
-
     public void RegisterUnit(UnitController unit)
     {
         if (!units.Contains(unit))
@@ -181,15 +192,27 @@ public class UnitManager : MonoBehaviour
         if (attackTimers.IsCreated) attackTimers.Dispose();
     }
 
-    private void OnDestroy()
+    
+    public void CleanUp()
     {
-        CleanUp();
-    }
-
-    private void CleanUp()
-    {
+        // Job System 배열들 정리
         DisposeArrays();
-        units.Clear();
+
+        for (int i = units.Count - 1; i >= 0; i--)
+        {
+            var unit = units[i];
+
+            if (unit != null)
+            {
+                PoolingManager.Instance.ReturnObject(unit.gameObject);
+            }
+        }
+
+        // 유닛 리스트 정리
+        if (units != null)
+        {
+            units.Clear();
+        }
     }
 
     

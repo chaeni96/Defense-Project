@@ -27,8 +27,9 @@ public class CostGaugeUI : MonoBehaviour
 
     public void Initialize(int storeLevel)
     {
+        CleanUP();
+
         UpdateText();
-        ClearBarFills();
         CreateBarFills(storeLevel);
 
         // 초기 코스트만큼 바로 채우기
@@ -42,6 +43,9 @@ public class CostGaugeUI : MonoBehaviour
             barFills[i].fillAmount = 1f;
         }
         circleProgress.fillAmount = 0;
+
+        GameManager.Instance.OnCostUsed += UpdateBarFillsOnCostUsed;
+
     }
 
     public void UpdateText()
@@ -117,7 +121,7 @@ public class CostGaugeUI : MonoBehaviour
     }
 
 
-    private void OnDestroy()
+    public void CleanUP()
     {
         // 이벤트 구독 해제
         GameManager.Instance.OnCostUsed -= UpdateBarFillsOnCostUsed;
