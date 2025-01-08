@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class FullWindowLobbyDlg : MonoBehaviour
 {
-    public void OnClickGamePlayBtn()
+    public async void OnClickGamePlayBtn()
     {
-        GameSceneManager.Instance.LoadScene(SceneKind.InGame);
-
+        await UIManager.Instance.ShowUI<BoosterSelectUI>();
     }
 }
