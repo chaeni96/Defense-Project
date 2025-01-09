@@ -29,7 +29,7 @@ public class TheAOE : SkillBase
     private IEnumerator ApplyDamageSequence()
     {
         yield return new WaitForSeconds(damageDelay);
-        float radius = owner.attackRange * 2;
+        float radius = owner.GetStat(StatName.AttackRange) * 2;
         transform.localScale = new Vector3(radius, radius, radius);
 
         CheckEnemyInCollider();
@@ -50,7 +50,7 @@ public class TheAOE : SkillBase
             var enemy = EnemyManager.Instance.GetActiveEnemys(enemys[i]);
             if (enemy != null)
             {
-                enemy.onDamaged(owner, owner.attack);
+                enemy.onDamaged(owner, owner.GetStat(StatName.ATK));
             }
         }
     }

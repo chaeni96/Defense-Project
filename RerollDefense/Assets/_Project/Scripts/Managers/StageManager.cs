@@ -154,6 +154,12 @@ public class StageManager : MonoBehaviour
     {
         // 실행 중인 코루틴이 있다면 정지
 
+        if (waveCoroutine != null)
+        {
+            StopCoroutine(waveCoroutine);
+            waveCoroutine = null;
+        }
+
         StopAllCoroutines();
 
      

@@ -15,3 +15,16 @@ public enum Sound
     Effect,
     MaxCount,
 }
+
+
+public enum StatName
+{
+    Health, //체력
+    ATK, //공격력
+    AttackSpeed, //공격 속도, 몇초마다 공격할지
+    AttackRange,
+    MoveSpeed,
+    ProjectileSpeed,
+
+
+}

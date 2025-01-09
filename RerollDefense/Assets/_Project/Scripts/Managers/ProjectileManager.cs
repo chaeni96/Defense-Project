@@ -100,7 +100,7 @@ public class ProjectileManager : MonoBehaviour
         for (int i = 0; i < activeProjectiles.Count; i++)
         {
             targetPositions[i] = activeProjectiles[i].target.transform.position;
-            speeds[i] = activeProjectiles[i].owner.attackSpeed;
+            speeds[i] = activeProjectiles[i].owner.GetStat(StatName.ProjectileSpeed);
         }
     }
 
@@ -145,7 +145,7 @@ public class ProjectileManager : MonoBehaviour
     {
         if (IsTargetValid(projectile))
         {
-            projectile.target.onDamaged(projectile.owner, projectile.owner.attack);
+            projectile.target.onDamaged(projectile.owner, projectile.owner.GetStat(StatName.ATK));
         }
     }
 

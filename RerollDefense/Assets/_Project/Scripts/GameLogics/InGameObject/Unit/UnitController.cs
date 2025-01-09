@@ -9,18 +9,6 @@ using DG.Tweening;
 
 public class UnitController : BasicObject, IPointerClickHandler
 {
-    //BgDatabase에서 읽어오기
-    [HideInInspector]
-    public int attack;
-    [HideInInspector]
-    public int attackSpeed;
-    [HideInInspector]
-    public int attackRange;
-    [HideInInspector]
-    public int unitBlockSize;
-    [HideInInspector]
-    public float attackCoolDown;
-
     [HideInInspector]
     public float attackTimer = 0f;  // 타이머 추가
 
@@ -52,6 +40,7 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
     public D_UnitData unitData;
+    private Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
 
     public override void Initialize()
     {
@@ -68,43 +57,43 @@ public class UnitController : BasicObject, IPointerClickHandler
         if (unit == null) return;
 
         unitData = unit;
-
         tilePosition = new Vector2(tilePos.x, tilePos.y);
 
         attackType = unitData.f_SkillAttackType;
         upgradeUnitType = unitData.f_UnitUpgradeType;
 
-        if (unitData != null || attackType != SkillAttackType.None)
+
+        stats.Clear();
+        stats = new Dictionary<StatName, int>();
+
+        foreach (var statData in unitData.f_UnitsStat)
         {
-            // statDatas를 순회하면서 스탯 설정
-            foreach (var statData in unitData.f_statDatas)
-            {
-                switch (statData.f_stat.f_name)
-                {
-                    case "Attack":
-                        this.attack = statData.f_value;
-                        break;
-                    case "AttackSpeed":
-                        this.attackSpeed = statData.f_value;
-                        break;
-                    case "AttackRange":
-                        this.attackRange = statData.f_value;
-                        break;
-                    case "UnitBlockSize":
-                        this.unitBlockSize = statData.f_value;
-                        break;
-                    case "AttackCoolTime":
-                        this.attackCoolDown = statData.f_value;
-                        break;
-                }
-            }
-        }
-        else
-        {
-            Debug.LogError("UnitData 없음");
+            stats[statData.f_StatName] = statData.f_StatValue;
         }
 
+
+
     }
+
+    // Dictionary로 받아서 한번에 스탯 설정
+    public void SetStatValues(Dictionary<StatName, int> statValues)
+    {
+        foreach (var pair in statValues)
+        {
+            SetStatValue(pair.Key, pair.Value);
+        }
+    }
+
+    public void SetStatValue(StatName type, int value)
+    {
+        stats[type] = value;
+    }
+
+    public int GetStat(StatName type)
+    {
+        return stats.TryGetValue(type, out int value) ? value : 0;
+    }
+
 
     public void MoveScale()
     {
@@ -119,18 +108,6 @@ public class UnitController : BasicObject, IPointerClickHandler
 
        
 
-    }
-
-    //스탯 가져오기
-    public Dictionary<string, int> GetStats()
-    {
-        return new Dictionary<string, int>
-    {
-        { "Attack", attack },
-        { "AttackSpeed", attackSpeed },
-        { "AttackRange", attackRange },
-        { "UnitBlockSize", unitBlockSize }
-    };
     }
 
     public void SetActive(bool active)
@@ -191,13 +168,22 @@ public class UnitController : BasicObject, IPointerClickHandler
     }
 
 
+    public void CleanUp()
+    {
+        if (stats != null)
+        {
+            stats.Clear();
+        }
+        stats = null;
+    }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         // 공격 범위 시각화
         Gizmos.color = new UnityEngine.Color(1, 0, 0, 0.2f);
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, stats[StatName.AttackRange]);
     }
 #endif
 }

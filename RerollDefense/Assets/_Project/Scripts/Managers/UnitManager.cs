@@ -92,7 +92,7 @@ public class UnitManager : MonoBehaviour
             for (int i = 0; i < units.Count; i++)
             {
                 unitPositions[i] = units[i].transform.position;
-                attackRanges[i] = units[i].attackRange;
+                attackRanges[i] = units[i].GetStat(StatName.AttackRange);
                 attackTimers[i] = units[i].attackTimer;
             }
 
@@ -117,7 +117,7 @@ public class UnitManager : MonoBehaviour
             for (int i = 0; i < units.Count; i++)
             {
                 int targetIndex = targetIndices[i];
-                if (targetIndex != -1 && attackTimers[i] >= units[i].attackCoolDown)
+                if (targetIndex != -1 && attackTimers[i] >= 1f / units[i].GetStat(StatName.AttackSpeed))
                 {
                     UnitController unit = units[i];
                     Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
