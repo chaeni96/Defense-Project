@@ -137,6 +137,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436850a8cd26d3a44ad95b08aa410b11
+    m_Address: WildCardObject
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:

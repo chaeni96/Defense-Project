@@ -28,3 +28,10 @@ public enum StatName
 
 
 }
+
+public enum CardGrade
+{
+    Normal,
+    Rare,
+    Epic
+}
