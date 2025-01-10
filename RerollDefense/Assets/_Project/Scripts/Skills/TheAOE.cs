@@ -29,7 +29,7 @@ public class TheAOE : SkillBase
     private IEnumerator ApplyDamageSequence()
     {
         yield return new WaitForSeconds(damageDelay);
-        float radius = owner.GetStat(StatName.AttackRange) * 2;
+        float radius = owner.GetStat(StatName.AttackRange);
         transform.localScale = new Vector3(radius, radius, radius);
 
         CheckEnemyInCollider();
@@ -58,19 +58,17 @@ public class TheAOE : SkillBase
     private IEnumerator DestroyAfterDuration(float duration)
     {
         yield return new WaitForSeconds(duration);
+        CleanUp();
         PoolingManager.Instance.ReturnObject(this.gameObject);
     }
 
-    private void OnDisable()
+    public void CleanUp()
     {
         // 코루틴 정리
         StopAllCoroutines();
 
         // 리스트 정리
         enemys.Clear();
-
-        // 참조 정리
-        owner = null;
     }
 
 

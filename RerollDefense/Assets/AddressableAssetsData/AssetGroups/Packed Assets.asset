@@ -38,7 +38,14 @@ MonoBehaviour:
   - m_GUID: 5bada5ace7232744b9fdc73c7ae0d243
     m_Address: BoosterSelectUI
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d731bb218b32dce4889e598ad740c06b
+    m_Address: WildCardSelectUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}

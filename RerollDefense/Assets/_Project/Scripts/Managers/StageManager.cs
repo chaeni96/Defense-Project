@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using static BansheeGz.BGDatabase.BGSyncNameMapConfig;
 
@@ -79,6 +80,8 @@ public class StageManager : MonoBehaviour
 
         //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
         TileMapManager.Instance.InitializeTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
+
+        GameManager.Instance.InitializePlayerCamp(stageData.f_EndTilePos);
 
         StartNextWave();
 

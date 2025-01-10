@@ -15,14 +15,10 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
 
-    [SerializeField] private Slider hpBar;
-    [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
-    [SerializeField] private GameObject CostGauge;  // HP Bar 감소 속도
+
+    [SerializeField] private GameObject CostGauge;  
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
-
-    private float targetHPRatio;
-    private Coroutine hpUpdateCoroutine;
 
     //카드덱
     private List<GameObject> cardDecks;
@@ -50,7 +46,6 @@ public class FullWindowInGameDlg : FullWindowBase
         UpdateShopLevelUI();
 
         //이벤트 구독
-        GameManager.Instance.OnHPChanged += OnHPChanged;
         GameManager.Instance.OnCostUsed += OnCostUsed;  
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed; 
 
@@ -60,12 +55,6 @@ public class FullWindowInGameDlg : FullWindowBase
     //관련 유아이 초기화
     private void InitializeAssociateUI()
     {
-        //hp 초기화
-        if (GameManager.Instance != null)
-        {
-            hpBar.value = GameManager.Instance.PlayerHP / GameManager.Instance.MaxHP;
-            targetHPRatio = hpBar.value;
-        }
 
         //cost 초기화
         CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
@@ -278,37 +267,8 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
-    private void OnHPChanged(float currentHp)
-    {
-        targetHPRatio = currentHp / GameManager.Instance.MaxHP;
-
-        if (hpUpdateCoroutine != null)
-        {
-            StopCoroutine(hpUpdateCoroutine);
-        }
-        hpUpdateCoroutine = StartCoroutine(UpdateHPBarSmoothly());
-    }
-
-    private IEnumerator UpdateHPBarSmoothly()
-    {
-        while (Mathf.Abs(hpBar.value - targetHPRatio) > 0.01f)
-        {
-            hpBar.value = Mathf.Lerp(hpBar.value, targetHPRatio, Time.deltaTime * hpUpdateSpeed);
-            yield return null;
-        }
-        hpBar.value = targetHPRatio;
-
-        if(targetHPRatio <= 0)
-        {
-            GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
-
-        }
-    }
-
-
     public override void HideUI()
     {
-
         //TODO: hide애니메이션 추가했을때 주석 해제
         //base.HideUI();
 
@@ -321,13 +281,6 @@ public class FullWindowInGameDlg : FullWindowBase
 
     private void CleanUp()
     {
-        // 코루틴 정리
-        if (hpUpdateCoroutine != null)
-        {
-            StopCoroutine(hpUpdateCoroutine);
-            hpUpdateCoroutine = null;
-        }
-
         // 카드 관련 정리
         isChecking = false;
         if (currentCards != null)
@@ -346,7 +299,6 @@ public class FullWindowInGameDlg : FullWindowBase
         // 이벤트 구독 해제
         if (GameManager._instance != null)
         {
-            GameManager.Instance.OnHPChanged -= OnHPChanged;
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
         }

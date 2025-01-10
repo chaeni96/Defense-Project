@@ -110,7 +110,9 @@ public class Enemy : BasicObject
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
 
+        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
         PoolingManager.Instance.ReturnObject(gameObject);
+
     }
 
 
@@ -161,13 +163,6 @@ public class Enemy : BasicObject
                 }
             }
         }
-    }
-
-
-    private void OnDisable()
-    {
-        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
-        isActive = false;
     }
 
 }

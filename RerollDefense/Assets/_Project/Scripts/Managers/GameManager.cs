@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public enum GameStateType
 {
@@ -109,7 +110,7 @@ public class GameResultState : GameState
 
         UnitManager.Instance.CleanUp();
         EnemyManager.Instance.CleanUp();
-
+        GameManager.Instance.CleanUp(); 
 
         await UIManager.Instance.ShowUI<FieldGameResultPopup>();
 
@@ -131,7 +132,9 @@ public class GameManager : MonoBehaviour
 
     public Camera mainCamera;
 
-    public float PlayerHP { get; private set; } = 10f;
+    private PlayerCamp playerCamp;
+
+    public float PlayerHP { get; private set; } = 300f;
     public float MaxHP { get; private set; } = 1500f;
 
     //나중에 게임씬이니셜라이즈할때 사용하기
@@ -183,9 +186,13 @@ public class GameManager : MonoBehaviour
 
     public void InitializeManager()
     {
-
-        OnHPChanged = null;  // 이벤트 정리
+        // 이벤트 정리
+        OnHPChanged = null;  
         OnCostUsed = null;
+        OnCostAdd = null;
+
+
+        playerCamp = null;
 
         mainCamera = Camera.main;
    
@@ -245,7 +252,22 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void InitializePlayerCamp(Vector2 endTile)
+    {
+        //endTile에 playerCamp 설치
+        GameObject obj = ResourceManager.Instance.Instantiate("PlayerCamp");
+        playerCamp = obj.GetComponent<PlayerCamp>();
 
+        playerCamp.InitializeObect();
+
+        Vector3 campPosition = TileMapManager.Instance.GetTileToWorldPosition(endTile);
+        playerCamp.transform.position = campPosition;
+    }
+
+    public void CleanUp()
+    {
+
+    }
 
 
 }

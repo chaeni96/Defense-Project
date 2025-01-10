@@ -78,11 +78,6 @@ public class TileMapManager : MonoBehaviour
         startTilePos = startTile;
         endTilePos = endTile;
 
-        //endTile에 playerCamp 설치
-        GameObject playerCamp = ResourceManager.Instance.Instantiate("PlayerCamp");
-        Vector3 campPosition = GetTileToWorldPosition(endTile);
-        playerCamp.transform.position = campPosition;
-
         //tileMap 설치
         InstallTileMap(mapData);
 
