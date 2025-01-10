@@ -195,7 +195,7 @@ public class TileMapManager : MonoBehaviour
                 var previewUnit = previewUnits[i];
 
                 // 업그레이드 타입이 다르면 배치 불가
-                if (previewUnit.upgradeUnitType != placedUnit.upgradeUnitType || placedUnit.unitData.f_NextLevelUnit == null)
+                if (previewUnit.unitType != placedUnit.unitType || placedUnit.unitData.f_NextLevelUnit == null)
                 {
                     return false;
                 }

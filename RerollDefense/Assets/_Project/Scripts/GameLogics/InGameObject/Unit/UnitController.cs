@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
+
 public class UnitController : BasicObject, IPointerClickHandler
 {
     [HideInInspector]
@@ -19,7 +20,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     public SkillAttackType attackType;
 
 
-    public UpgradeUnitType upgradeUnitType;
+    public UnitType unitType;
 
     public GameObject unitStarObject;
 
@@ -60,7 +61,7 @@ public class UnitController : BasicObject, IPointerClickHandler
         tilePosition = new Vector2(tilePos.x, tilePos.y);
 
         attackType = unitData.f_SkillAttackType;
-        upgradeUnitType = unitData.f_UnitUpgradeType;
+        unitType = unitData.f_UnitType;
 
 
         stats.Clear();
@@ -175,6 +176,24 @@ public class UnitController : BasicObject, IPointerClickHandler
             stats.Clear();
         }
         stats = null;
+    }
+
+
+    public void ApplyEffect(float duration = 0.5f)
+    {
+        // 원래 색상 저장
+        UnityEngine.Color originalColor = unitSprite.color;
+        UnityEngine.Color effectColor = UnityEngine.Color.yellow; // 고정된 노란색
+
+        // DOTween으로 색상 변경
+        unitSprite.DOColor(effectColor, duration * 0.5f)
+            .OnComplete(() =>
+            {
+                unitSprite.DOColor(originalColor, duration * 0.5f);
+            });
+
+        unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+
     }
 
 

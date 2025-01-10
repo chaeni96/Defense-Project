@@ -14,7 +14,7 @@ public class WildCardSelectUI : FloatingPopupBase
 
 
     private List<WildCardObject> spawnedCards;
-    private float cardSpawnDelay = 0.2f; // 각 카드 생성 간격
+    private float cardSpawnDelay = 0.05f; // 각 카드 생성 간격
 
 
     public override void InitializeUI()
@@ -135,7 +135,7 @@ public class WildCardSelectUI : FloatingPopupBase
         {
             if (card != null)
             {
-                PoolingManager.Instance.ReturnObject(card.gameObject);
+                Destroy(card.gameObject);
             }
         }
         spawnedCards.Clear();

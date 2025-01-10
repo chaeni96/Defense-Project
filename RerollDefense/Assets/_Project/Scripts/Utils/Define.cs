@@ -35,3 +35,12 @@ public enum CardGrade
     Rare,
     Epic
 }
+
+
+public enum UnitType
+{
+    Base,
+    Archer,
+    Archer2,
+    Mage,
+}

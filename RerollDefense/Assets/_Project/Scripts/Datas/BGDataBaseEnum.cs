@@ -47,16 +47,6 @@ namespace BGDatabaseEnum
     }
 
 
-    public enum UpgradeUnitType
-    {
-        None,
-        Archer,
-        Archer2,
-        Mage,
-        Base,
-    }
-
-
     public enum EnemyType
     {
         Normal,

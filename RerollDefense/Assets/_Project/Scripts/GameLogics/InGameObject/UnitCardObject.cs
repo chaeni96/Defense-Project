@@ -227,7 +227,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             // 타일에 유닛이 있고 합성이 가능한 경우(유닛타입이 똑같고 다음 업그레이드할 유닛이 있는경우)
             if (tileData?.placedUnit != null &&
-                currentPreview.upgradeUnitType == tileData.placedUnit.upgradeUnitType &&
+                currentPreview.unitType == tileData.placedUnit.unitType &&
                 tileData.placedUnit.unitData.f_NextLevelUnit != null)
             {
                 //기존 배치된 유닛 별 비활성화
