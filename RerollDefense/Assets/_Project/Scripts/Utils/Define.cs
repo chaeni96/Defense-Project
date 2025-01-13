@@ -16,6 +16,16 @@ public enum Sound
     MaxCount,
 }
 
+public enum StatSubject
+{
+    System,         //시스템 스탯
+    PlayerCommon,   //플레이어 유닛 전부 적용
+    EnemyCommon,    //적 유닛 전부 적용
+
+    PlayerArchor,   //궁수류 플레이어 유닛
+    //...
+}
+
 
 public enum StatName
 {
