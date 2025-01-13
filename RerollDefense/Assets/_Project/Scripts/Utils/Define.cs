@@ -45,6 +45,13 @@ public enum StatName
     ProjectileCount,
     ProjectileInterval,   // 연속 발사 간격
     AOERange,
+
+    //상태이상 관련 스탯
+    Bleed,
+    Poison,
+    Stun,
+    Slow,
+    Curse,
 }
 
 public enum CardGrade

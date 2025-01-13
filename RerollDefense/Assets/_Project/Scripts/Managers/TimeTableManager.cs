@@ -10,6 +10,44 @@ public interface IScheduleCompleteSubscriber
 {
     abstract void OnCompleteSchedule(int scheduleUID);
 }
+
+
+public abstract class BuffTimeBase
+{
+    protected int buffUID;
+    protected BasicObject targetObject;
+    public abstract void StartBuff();
+}
+public class DebuffBleeding : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
+{
+
+    public override void StartBuff()
+    {
+        buffUID = TimeTableManager.Instance.RegisterSchedule(5f);
+        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, buffUID);
+        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, buffUID);
+
+        // 출혈 상태이상 +1 해줘서 몇개 걸려있는지 추가
+        targetObject.SetStatValue(StatName.Bleed, targetObject.GetStat(StatName.Bleed) + 1);
+    }
+
+    public void OnChangeTime(int scheduleUID, float remainTime)
+    {
+        //출혈이라 1초마다 출혈딜이 들어감
+        targetObject.SetStatValue(StatName.Health, targetObject.GetStat(StatName.Health) - 1);
+    }
+
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        targetObject.SetStatValue(StatName.Bleed, targetObject.GetStat(StatName.Bleed) - 1);
+
+        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(buffUID);
+        TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(buffUID);
+
+        targetObject = null;
+    }
+}
+
 public class TimeSchedule
 {
     public int UID;             //유니크 아이디
@@ -140,7 +178,13 @@ public class TimeTableManager : MonoBehaviour
             timeChangeSubscribers.Remove(subscriber);
         }
     }
-
+    public void RemoveTimeChangeTargetSubscriber(int scheduleUID)
+    {
+        if (!targetTimeChangeSubscribers.ContainsKey(scheduleUID))
+        {
+            targetTimeChangeSubscribers.Remove(scheduleUID);
+        }
+    }
 
     public void AddScheduleCompleteSubscriber(IScheduleCompleteSubscriber subscriber)
     {
@@ -163,12 +207,23 @@ public class TimeTableManager : MonoBehaviour
             scheduleCompleteSubscribers.Remove(subscriber);
         }
     }
-
+    public void RemoveScheduleCompleteTargetSubscriber(int scheduleUID)
+    {
+        if (!targetScheduleCompleteSubscribers.ContainsKey(scheduleUID))
+        {
+            targetScheduleCompleteSubscribers.Remove(scheduleUID);
+        }
+    }
     private void NotifyTimeChange(int scheduleUID, float remainTime)
     {
         for (int i = 0; i < timeChangeSubscribers.Count; i++)
         {
             timeChangeSubscribers[i].OnChangeTime(scheduleUID, remainTime);
+        }
+
+        if (targetTimeChangeSubscribers.ContainsKey(scheduleUID))
+        {
+            targetTimeChangeSubscribers[scheduleUID].OnChangeTime(scheduleUID, remainTime);
         }
     }
     private void NotifyScheduleComplete(int scheduleUID)
@@ -176,6 +231,10 @@ public class TimeTableManager : MonoBehaviour
         for (int i = 0; i < scheduleCompleteSubscribers.Count; i++)
         {
             scheduleCompleteSubscribers[i].OnCompleteSchedule(scheduleUID);
+        }
+        if (targetScheduleCompleteSubscribers.ContainsKey(scheduleUID))
+        {
+            targetScheduleCompleteSubscribers[scheduleUID].OnCompleteSchedule(scheduleUID);
         }
     }
 
