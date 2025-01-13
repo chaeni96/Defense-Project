@@ -87,7 +87,15 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     public void SetStatValue(StatName type, int value)
     {
-        stats[type] = value;
+        // 새로운 스탯 타입이면 추가, 기존 스탯이면 업데이트
+        if (stats.ContainsKey(type))
+        {
+            stats[type] = value;
+        }
+        else
+        {
+            stats.Add(type, value);
+        }
     }
 
     public int GetStat(StatName type)

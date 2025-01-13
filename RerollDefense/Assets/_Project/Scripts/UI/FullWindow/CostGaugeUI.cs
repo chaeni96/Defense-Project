@@ -18,7 +18,7 @@ public class CostGaugeUI : MonoBehaviour
 
     private List<Image> barFills = new List<Image>();
     private int currentFilledIndex = 0;
-
+    private int costPerTick; //한번의 틱마다 증가하는 코스트 양
     private void Start()
     {
         // 게임 매니저의 OnCostUsed 이벤트에 구독
@@ -35,7 +35,7 @@ public class CostGaugeUI : MonoBehaviour
         // 초기 코스트만큼 바로 채우기
         int initialCost = GameManager.Instance.CurrentCost;
 
-
+        costPerTick = 1;
         currentFilledIndex = initialCost;
 
         for (int i = 0; i < currentFilledIndex; i++)
@@ -57,20 +57,6 @@ public class CostGaugeUI : MonoBehaviour
         currentCostText.text = currentCost.ToString();
 
     }
-    private void UpdateBarFillsOnCostUsed(int usedCost)
-    {
-        for (int i = 0; i < usedCost; i++)
-        {
-            if (currentFilledIndex > 0)
-            {
-                currentFilledIndex--;
-                barFills[currentFilledIndex].fillAmount = 0f;
-            }
-        }
-
-        UpdateText();
-    }
-
 
     private void ClearBarFills()
     {
@@ -79,6 +65,44 @@ public class CostGaugeUI : MonoBehaviour
             if (fill != null) Destroy(fill.gameObject);
         }
         barFills.Clear();
+    }
+
+
+    private void Update()
+    {
+        // 현재 인덱스와 실제 코스트 값 동기화
+        if (currentFilledIndex != GameManager.Instance.CurrentCost)
+        {
+            currentFilledIndex = GameManager.Instance.CurrentCost;
+            UpdateBars();
+        }
+
+        // MaxCost보다 작을 때만 자동 증가 처리
+        if (GameManager.Instance.CurrentCost < GameManager.Instance.MaxCost)
+        {
+            circleProgress.fillAmount += Time.deltaTime / manaGenerateTime;
+            if (circleProgress.fillAmount >= 1f)
+            {
+                circleProgress.fillAmount = 0;
+                GameManager.Instance.AddCost(costPerTick);
+                UpdateText();
+            }
+        }
+        else
+        {
+            // MaxCost 이상일 때는 circle을 꽉 찬 상태로 유지
+            circleProgress.fillAmount = 1f;
+        }
+    }
+
+    private void UpdateBars()
+    {
+        // 현재 코스트에 따라 바 업데이트
+        for (int i = 0; i < barFills.Count; i++)
+        {
+            barFills[i].fillAmount = i < currentFilledIndex ? 1f : 0f;
+        }
+        UpdateText();
     }
 
     private void CreateBarFills(int storeLevel)
@@ -96,28 +120,24 @@ public class CostGaugeUI : MonoBehaviour
             barFills.Add(fill);
         }
     }
-
-    private void Update()
+    private void UpdateBarFillsOnCostUsed(int usedCost)
     {
-        if (currentFilledIndex != GameManager.Instance.CurrentCost)
-        {
-            currentFilledIndex = GameManager.Instance.CurrentCost;
-            for (int i = 0; i < barFills.Count; i++)
-            {
-                barFills[i].fillAmount = i < currentFilledIndex ? 1f : 0f;
-            }
-        }
 
-        if (currentFilledIndex < barFills.Count)
+        currentFilledIndex = Mathf.Min(currentFilledIndex, barFills.Count);
+
+        // 현재 코스트 인덱스에서 사용한 만큼 감소
+        for (int i = 0; i < usedCost; i++)
         {
-            circleProgress.fillAmount += Time.deltaTime / manaGenerateTime;
-            if (circleProgress.fillAmount >= 1f)
+            if (currentFilledIndex > 0)
             {
-                circleProgress.fillAmount = 0;
-                GameManager.Instance.AddCost();
-                UpdateText();
+                currentFilledIndex--;
+                if (currentFilledIndex < barFills.Count)  
+                {
+                    barFills[currentFilledIndex].fillAmount = 0f;
+                }
             }
         }
+        UpdateText();
     }
 
 

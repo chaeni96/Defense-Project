@@ -60,9 +60,18 @@ public class ProjectileManager : MonoBehaviour
         CheckDeadTargets();  // 죽은 타겟 처리
         if (activeProjectiles.Count == 0) return;
 
-        UpdateProjectileArrays();  // JobSystem 배열 업데이트
-        RunProjectileJob();  // 투사체 이동 Job 실행
-        CheckHits();  // 충돌 체크
+        try
+        {
+            UpdateProjectileArrays();  // JobSystem 배열 업데이트
+            RunProjectileJob();  // 투사체 이동 Job 실행
+            CheckHits();  // 충돌 체크
+        }
+        finally
+        {
+            if (transformAccessArray.isCreated) transformAccessArray.Dispose();
+            if (targetPositions.IsCreated) targetPositions.Dispose();
+            if (speeds.IsCreated) speeds.Dispose();
+        }
     }
 
     // 죽은 타겟을 가진 투사체 처리
@@ -71,7 +80,7 @@ public class ProjectileManager : MonoBehaviour
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
             TheProjectile projectile = activeProjectiles[i];
-            if (!IsTargetValid(projectile))
+            if (!IsTargetValid(projectile) || projectile.target.HP <= 0)  // HP 체크 추가
             {
                 ReturnProjectile(projectile);
             }

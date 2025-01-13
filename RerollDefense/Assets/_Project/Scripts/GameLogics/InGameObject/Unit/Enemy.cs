@@ -91,8 +91,6 @@ public class Enemy : BasicObject
         {
             HP = 0;
 
-            // 죽기 전에 이 Enemy를 향해 날아오는 모든 Projectile 제거
-            var projectiles = ProjectileManager.Instance.GetProjectilesTargetingEnemy(this);
             onDead(this);
         }
 

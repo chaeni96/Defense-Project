@@ -222,14 +222,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddCost()
+    public void AddCost(int amount)
     {
-        if (CurrentCost < MaxCost)
-        {
-            CurrentCost++;
-            OnCostAdd?.Invoke(); // 이벤트 호출
-
-        }
+        CurrentCost += amount;
+        OnCostAdd?.Invoke();
     }
 
     public bool UseCost(int amount)

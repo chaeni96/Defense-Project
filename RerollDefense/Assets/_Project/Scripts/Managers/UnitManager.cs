@@ -123,7 +123,6 @@ public class UnitManager : MonoBehaviour
                     Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
                     if (targetEnemy != null)
                     {
-                        string skillId = unit.attackType == SkillAttackType.Projectile ? "Projectile" : "AoeRange";
                         Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
                             targetEnemy.transform.position : unit.transform.position;
 
@@ -132,7 +131,7 @@ public class UnitManager : MonoBehaviour
                             unit.MoveScale();
                         }
 
-                        AttackSkillManager.Instance.ActiveSkill(skillId, unit, targetPos);
+                        AttackSkillManager.Instance.ActiveSkill(unit.unitData.f_SkillPoolingKey.f_PoolObjectAddressableKey, unit, targetPos);
                         unit.attackTimer = 0f;
                     }
                 }

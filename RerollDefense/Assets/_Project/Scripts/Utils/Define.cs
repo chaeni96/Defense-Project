@@ -19,14 +19,22 @@ public enum Sound
 
 public enum StatName
 {
+
+    //기존 유닛 스탯
     Health, //체력
     ATK, //공격력
     AttackSpeed, //공격 속도, 몇초마다 공격할지
     AttackRange,
     MoveSpeed,
+
+    //시스템 관련 스탯
+    CostAdded,
+    RerollCost,
+    //스킬 관련 스탯
     ProjectileSpeed,
-
-
+    ProjectileCount,
+    ProjectileInterval,   // 연속 발사 간격
+    AOERange,
 }
 
 public enum CardGrade

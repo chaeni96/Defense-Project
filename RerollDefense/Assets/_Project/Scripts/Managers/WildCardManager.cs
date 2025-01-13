@@ -51,48 +51,66 @@ public class WildCardManager : MonoBehaviour
                 ApplyStatBooster(statBooster);
             }
         }
-     
-
-        //TODO : 시스템 부스터, 스킬 부스터 추가
     }
 
     // 스탯 부스터 적용
     private void ApplyStatBooster(D_StatBoosterData statBoosterData)
     {
         if (statBoosterData == null) return;
-
-        var units = UnitManager.Instance.GetUnits();
         bool effectApplied = false;  // 효과 적용됐는지 체크
 
-        foreach (var unit in units)
-        {
-            // 타겟 리스트에 있는 유닛인 경우
-            if (statBoosterData.f_TargetUnitList.Contains(unit.unitData))
-            {
-                foreach (var boosterStat in statBoosterData.f_BoosterUnitStats)
-                {
-                    //적용 시킬 스탯 읽어오기
-                    StatName statType = boosterStat.f_StatName;
-                    int currentValue = unit.GetStat(statType);
-                    int newValue = currentValue + boosterStat.f_IncreaseValue;
-                    unit.SetStatValue(statType, newValue);
-                }
 
-                unit.ApplyEffect();
-                effectApplied = true;  // 최소 하나의 유닛에 효과 적용됨
+        // TargetUnitList가 비어있으면 시스템 스탯으로 처리
+        if (statBoosterData.f_TargetUnitList == null)
+        {
+            foreach (var boosterStat in statBoosterData.f_BoosterStats)
+            {
+                ApplySystemEffect(boosterStat.f_StatName, boosterStat.f_IncreaseValue);
+                effectApplied = true;
+            }
+        }
+        else
+        {
+            // 유닛 스탯/스킬 처리
+            //TODO : 한마리의 유닛 추가해주는것도 필요
+
+            var units = UnitManager.Instance.GetUnits();
+            foreach (var unit in units)
+            {
+                if (statBoosterData.f_TargetUnitList.Contains(unit.unitData))
+                {
+                    foreach (var boosterStat in statBoosterData.f_BoosterStats)
+                    {
+                        int currentValue = unit.GetStat(boosterStat.f_StatName);
+                        unit.SetStatValue(boosterStat.f_StatName, currentValue + boosterStat.f_IncreaseValue);
+                    }
+                    unit.ApplyEffect();
+                    effectApplied = true;
+                }
             }
         }
 
-        // 효과가 적용된 유닛이 하나도 없다면 -> 알림팝업으로 띄워줘도될듯
         if (!effectApplied)
         {
-            Debug.LogWarning("대상 유닛이 존재하지 않음");
+            Debug.LogWarning("대상이 존재하지 않음");
         }
+
     }
 
 
-    //TODO : 한마리의 유닛 추가해주는것도 필요
-
+    private void ApplySystemEffect(StatName statType, int value)
+    {
+        switch (statType)
+        {
+            // cost 획득 
+            case StatName.CostAdded:
+                GameManager.Instance.AddCost(value);
+                break;
+            case StatName.RerollCost:
+                // 리롤 비용 관련 처리
+                break;
+        }
+    }
 
     public void CleanUp()
     {
