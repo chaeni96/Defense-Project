@@ -4,28 +4,40 @@ using UnityEngine;
 
 public interface ITimeChangeSubscriber 
 {
+    //시간 변화를 구독할 객체는 ITimeChangeSubscriber를 구현해야됨
     abstract void OnChangeTime(int scheduleUID, float remainTime); //남은시간 1초 간격으로 전달할것. 
 }
 public interface IScheduleCompleteSubscriber
 {
+
+    // 스케줄 완료를 구독할 객체는 IScheduleCompleteSubscriber를 구현
+    // 스케줄이 끝나면 통지받음
+
     abstract void OnCompleteSchedule(int scheduleUID);
 }
-
 
 public abstract class BuffTimeBase
 {
     protected int buffUID;
-    protected BasicObject targetObject;
+    protected BasicObject targetObject; //버프 받는 타겟 
     public abstract void StartBuff();
 }
+
+
+
 public class DebuffBleeding : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
 {
+    //이 작업 자체가 스탯데이터로 빠질수잇음 
 
     public override void StartBuff()
     {
         buffUID = TimeTableManager.Instance.RegisterSchedule(5f);
+
+        //구독을 함
         TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, buffUID);
         TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, buffUID);
+
+        //버프매니저나 유닛에서 targetObject넣는거 필요 
 
         // 출혈 상태이상 +1 해줘서 몇개 걸려있는지 추가
         targetObject.SetStatValue(StatName.Bleed, targetObject.GetStat(StatName.Bleed) + 1);
@@ -131,6 +143,8 @@ public class TimeTableManager : MonoBehaviour
             }
         }
     }
+
+    //스케줄 등록하면 UID 반환받음
     public int RegisterSchedule(float endTimeInSecond)
     {
         int newUID = GetUniqueScheduleID();
@@ -164,6 +178,8 @@ public class TimeTableManager : MonoBehaviour
             timeChangeSubscribers.Add(subscriber);
         }
     }
+
+    // 특정 스케줄만 구독
     public void AddTimeChangeTargetSubscriber(ITimeChangeSubscriber subscriber, int scheduleUID)
     {
         if (!targetTimeChangeSubscribers.ContainsKey(scheduleUID))
@@ -171,6 +187,8 @@ public class TimeTableManager : MonoBehaviour
             targetTimeChangeSubscribers.Add(scheduleUID, subscriber);
         }
     }
+
+    // 구독 해제
     public void RemoveTimeChangeSubscriber(ITimeChangeSubscriber subscriber)
     {
         if (timeChangeSubscribers.Contains(subscriber))
@@ -216,6 +234,8 @@ public class TimeTableManager : MonoBehaviour
     }
     private void NotifyTimeChange(int scheduleUID, float remainTime)
     {
+        // 전역 구독자들에게 알림
+
         for (int i = 0; i < timeChangeSubscribers.Count; i++)
         {
             timeChangeSubscribers[i].OnChangeTime(scheduleUID, remainTime);

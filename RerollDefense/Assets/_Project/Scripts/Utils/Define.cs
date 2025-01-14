@@ -52,6 +52,11 @@ public enum StatName
     Stun,
     Slow,
     Curse,
+
+    //웨이브 관련 시간 스탯 추가
+    WaveTime,           // 일반 웨이브 시간 (30초)
+    WaveRestTime,       // 웨이브 사이 쉬는 시간 (20초) 
+    WaveMinRestTime,    // 최소 쉬는 시간 (5초)
 }
 
 public enum CardGrade

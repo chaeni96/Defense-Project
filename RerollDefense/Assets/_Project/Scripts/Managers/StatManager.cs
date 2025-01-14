@@ -47,4 +47,37 @@ public class StatManager : MonoBehaviour
 
     internal Dictionary<StatSubject, List<StatStorage>> statDictionary;
 
+
+
+    public void InitializeManager()
+    {
+        statDictionary = new Dictionary<StatSubject, List<StatStorage>>();
+
+        //StatSubject∫∞∑Œ µÒº≈≥ ∏Æ √ ±‚»≠
+        foreach (StatSubject subject in System.Enum.GetValues(typeof(StatSubject)))
+        {
+            statDictionary[subject] = new List<StatStorage>();
+        }
+    }
+
+    public void SetStat(StatSubject subject, StatName statName, int value, float multiply = 1f)
+    {
+        if (!statDictionary.ContainsKey(subject))
+            statDictionary[subject] = new List<StatStorage>();
+
+        statDictionary[subject].Add(new StatStorage
+        {
+            stat = statName,
+            value = value,
+            multiply = multiply
+        });
+    }
+
+    public List<StatStorage> GetStats(StatSubject subject)
+    {
+        return statDictionary.TryGetValue(subject, out var stats) ? stats : new List<StatStorage>();
+    }
+
+
+
 }
