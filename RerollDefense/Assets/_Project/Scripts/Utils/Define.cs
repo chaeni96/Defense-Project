@@ -82,10 +82,9 @@ public enum UnitType
 }
 public enum BuffType
 {
-    Temporary,      // 시간 기반 임시 효과 
-    Permanent,      // 영구적 효과
-    AreaBased,      // 공간 기반 효과
-    Conditional     // 조건부 효과
+    Temporary,      // 일정시간동안 효과가 발동하는 버프 - 시간기반
+    Instant,      // 즉시 적용되는 영구 버프
+
 }
 
 

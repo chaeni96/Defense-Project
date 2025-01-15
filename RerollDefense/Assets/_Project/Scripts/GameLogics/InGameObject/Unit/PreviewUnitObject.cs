@@ -32,11 +32,6 @@ public class PreviewUnitObject : BasicObject
         {
             var buildData = tileShapeData.f_unitBuildData[tileIndex];
             var unitData = buildData.f_unitData;
-
-            //unitNameText.text = unitData.f_name;
-
-            //유닛 컨트롤러에 있는 스프라이트 가져와야됨
-            //sprite
         }
 
     }

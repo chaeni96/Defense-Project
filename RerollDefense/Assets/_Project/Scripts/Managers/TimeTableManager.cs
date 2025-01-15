@@ -17,41 +17,6 @@ public interface IScheduleCompleteSubscriber
 }
 
 
-public class DebuffBleeding : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
-{
-    //이 작업 자체가 스탯데이터로 빠질수잇음 
-
-    public override void StartBuff()
-    {
-        buffUID = TimeTableManager.Instance.RegisterSchedule(5f);
-
-        //구독을 함
-        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, buffUID);
-        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, buffUID);
-
-        //버프매니저나 유닛에서 targetObject넣는거 필요 
-
-        // 출혈 상태이상 +1 해줘서 몇개 걸려있는지 추가
-        targetObject.SetStatValue(StatName.Bleed, targetObject.GetStat(StatName.Bleed) + 1);
-    }
-
-    public void OnChangeTime(int scheduleUID, float remainTime)
-    {
-        //출혈이라 1초마다 출혈딜이 들어감
-        targetObject.SetStatValue(StatName.MaxHP, targetObject.GetStat(StatName.MaxHP) - 1);
-    }
-
-    public void OnCompleteSchedule(int scheduleUID)
-    {
-        targetObject.SetStatValue(StatName.Bleed, targetObject.GetStat(StatName.Bleed) - 1);
-
-        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(buffUID);
-        TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(buffUID);
-
-        targetObject = null;
-    }
-}
-
 public class TimeSchedule
 {
     public int UID;             //유니크 아이디

@@ -62,20 +62,69 @@ public class UnitController : BasicObject, IPointerClickHandler
         attackType = unitData.f_SkillAttackType;
         unitType = unitData.f_UnitType;
 
+        //TODO : enemy도 사용할수있으므로 basicObject로 이동
+        // Subject 등록
+        // 모든 StatSubject에 대해 스탯 가져오기 및 합산
+        Dictionary<StatName, StatStorage> mergedStats = new Dictionary<StatName, StatStorage>();
 
-        stats.Clear();
-        stats = new Dictionary<StatName, int>();
-
-        foreach (var statData in unitData.f_UnitsStat)
+        foreach (var subject in unitData.f_StatSubject)
         {
-            stats[statData.f_StatName] = statData.f_StatValue;
+            // StatManager에서 Subject의 스탯 가져오기
+            var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
+
+            foreach (var stat in subjectStats)
+            {
+                if (!mergedStats.ContainsKey(stat.stat))
+                {
+                    // 새로운 스탯 추가
+                    mergedStats[stat.stat] = new StatStorage
+                    {
+                        stat = stat.stat,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
+                else
+                {
+                    // 기존 스탯과 합산
+                    mergedStats[stat.stat].value += stat.value;
+                    mergedStats[stat.stat].multiply *= stat.multiply;
+                }
+            }
+
+            // Subject 구독
+            AddSubject(subject);
         }
 
+        // 합산 결과를 baseStats에 반영
+        baseStats = mergedStats;
 
-
+        // 현재 스탯을 기본 스탯으로 초기화
+        foreach (var baseStat in baseStats)
+        {
+            currentStats[baseStat.Key] = new StatStorage
+            {
+                stat = baseStat.Value.stat,
+                value = baseStat.Value.value,
+                multiply = baseStat.Value.multiply
+            };
+        }
     }
 
-  
+
+//스탯 변경시 할 행동들
+public override void OnStatChanged(StatSubject subject, StatStorage statChange)
+    {
+        base.OnStatChanged(subject, statChange);
+        ApplyEffect();
+
+
+        //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
+        if(statChange.stat ==  StatName.AttackSpeed)
+        {
+            attackTimer = 0;
+        }
+    }
 
     public void MoveScale()
     {
@@ -150,16 +199,6 @@ public class UnitController : BasicObject, IPointerClickHandler
     }
 
 
-    public void CleanUp()
-    {
-        if (stats != null)
-        {
-            stats.Clear();
-        }
-        stats = null;
-    }
-
-
     public void ApplyEffect(float duration = 0.5f)
     {
         // 원래 색상 저장
@@ -177,13 +216,4 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     }
 
-
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        // 공격 범위 시각화
-        Gizmos.color = new UnityEngine.Color(1, 0, 0, 0.2f);
-        Gizmos.DrawWireSphere(transform.position, stats[StatName.AttackRange]);
-    }
-#endif
 }

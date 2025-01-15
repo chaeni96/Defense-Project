@@ -288,10 +288,10 @@ public partial class D_UnitData : BGEntity
 		get => (UnitType) _f_UnitType.GetStoredValue(Index);
 		set => _f_UnitType.SetStoredValue(Index, (System.Int32) value);
 	}
-	public StatSubject f_StatSubject
+	public List<StatSubject> f_StatSubject
 	{
-		get => (StatSubject) _f_StatSubject.GetStoredValue(Index);
-		set => _f_StatSubject.SetStoredValue(Index, (System.Int32) value);
+		get => BGCodeGenUtils.EnumListGet<StatSubject>(_f_StatSubject, Index);
+		set => BGCodeGenUtils.EnumListSet<StatSubject>(_f_StatSubject, Index, value);
 	}
 	public List<D_UnitsStat> f_UnitsStat => BGCodeGenUtils.GetNested<D_UnitsStat>(_f_UnitsStat, Index);
 	public BGDatabaseEnum.SkillAttackType f_SkillAttackType
@@ -318,8 +318,8 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4978381386621882592UL, 9377071611302703509UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_UnitType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_UnitType => _ufle12jhs77_f_UnitType ?? (_ufle12jhs77_f_UnitType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4766701231171255779UL, 8920734757428101046UL), () => _ufle12jhs77_f_UnitType = null));
-	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_StatSubject;
-	public static BansheeGz.BGDatabase.BGFieldEnum _f_StatSubject => _ufle12jhs77_f_StatSubject ?? (_ufle12jhs77_f_StatSubject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5195431396154430378UL, 4516171086743362447UL), () => _ufle12jhs77_f_StatSubject = null));
+	private static BansheeGz.BGDatabase.BGFieldEnumList _ufle12jhs77_f_StatSubject;
+	public static BansheeGz.BGDatabase.BGFieldEnumList _f_StatSubject => _ufle12jhs77_f_StatSubject ?? (_ufle12jhs77_f_StatSubject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnumList>(MetaDefault, new BGId(5195431396154430378UL, 4516171086743362447UL), () => _ufle12jhs77_f_StatSubject = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_UnitsStat;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_UnitsStat => _ufle12jhs77_f_UnitsStat ?? (_ufle12jhs77_f_UnitsStat = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5236722205802388521UL, 8467347575873374648UL), () => _ufle12jhs77_f_UnitsStat = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SkillAttackType;
@@ -1914,6 +1914,7 @@ public partial class D_buffEffects : BGEntity
 		public const string BuffData = "BuffData";
 		public const string statName = "statName";
 		public const string value = "value";
+		public const string valueMultiply = "valueMultiply";
 		public const string tickType = "tickType";
 	}
 	private static BansheeGz.BGDatabase.BGMetaNested _metaDefault;
@@ -1935,10 +1936,15 @@ public partial class D_buffEffects : BGEntity
 		get => (StatName) _f_statName.GetStoredValue(Index);
 		set => _f_statName.SetStoredValue(Index, (System.Int32) value);
 	}
-	public System.Single f_value
+	public System.Int32 f_value
 	{
 		get => _f_value[Index];
 		set => _f_value[Index] = value;
+	}
+	public System.Single f_valueMultiply
+	{
+		get => _f_valueMultiply[Index];
+		set => _f_valueMultiply[Index] = value;
 	}
 	public BuffTickType f_tickType
 	{
@@ -1951,8 +1957,10 @@ public partial class D_buffEffects : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_BuffData => _ufle12jhs77_f_BuffData ?? (_ufle12jhs77_f_BuffData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5516401778010689734UL, 243574926929816725UL), () => _ufle12jhs77_f_BuffData = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_statName;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_statName => _ufle12jhs77_f_statName ?? (_ufle12jhs77_f_statName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5130250489602307827UL, 10870334875760719517UL), () => _ufle12jhs77_f_statName = null));
-	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_value;
-	public static BansheeGz.BGDatabase.BGFieldFloat _f_value => _ufle12jhs77_f_value ?? (_ufle12jhs77_f_value = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5384050326230750970UL, 5440153106100768445UL), () => _ufle12jhs77_f_value = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_value;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_value => _ufle12jhs77_f_value ?? (_ufle12jhs77_f_value = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5384050326230750970UL, 5440153106100768445UL), () => _ufle12jhs77_f_value = null));
+	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_valueMultiply;
+	public static BansheeGz.BGDatabase.BGFieldFloat _f_valueMultiply => _ufle12jhs77_f_valueMultiply ?? (_ufle12jhs77_f_valueMultiply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5530346178345344594UL, 4454355475631574712UL), () => _ufle12jhs77_f_valueMultiply = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_tickType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_tickType => _ufle12jhs77_f_tickType ?? (_ufle12jhs77_f_tickType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5451793032940163154UL, 3057518018361559690UL), () => _ufle12jhs77_f_tickType = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();

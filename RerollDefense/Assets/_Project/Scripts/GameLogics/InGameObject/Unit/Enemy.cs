@@ -34,11 +34,7 @@ public class Enemy : BasicObject
         // 프리팹에 설정된 초기값들을 stats 딕셔너리에 설정
 
         // 프리팹에 설정된 초기값들을 stats 딕셔너리에 설정
-        SetStatValue(StatName.MaxHP, (int)maxHP);
-        SetStatValue(StatName.ATK, (int)attackPower);
-        SetStatValue(StatName.MoveSpeed, (int)moveSpeed);
-        SetStatValue(StatName.currentHp, (int)maxHP);
-
+  
         HP = maxHP;
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
@@ -78,7 +74,7 @@ public class Enemy : BasicObject
         }
     }
 
-    public void onDamaged(BasicObject attacker, int damage = 0)
+    public void onDamaged(BasicObject attacker, float damage = 0)
     {
         if (attacker != null)
         {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StatStorage
@@ -44,37 +45,131 @@ public class StatManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        InitializeBaseStats();
     }
 
-    internal Dictionary<StatSubject, List<StatStorage>> statDictionary;
+
+    // StatSubject별 기본 스탯값 저장 (초기값 저장용)
+    private Dictionary<StatSubject, List<StatStorage>> baseStats = new Dictionary<StatSubject, List<StatStorage>>();
+
+    // StatSubject별 구독자(BasicObject) 목록
+    private Dictionary<StatSubject, List<BasicObject>> subscribers = new Dictionary<StatSubject, List<BasicObject>>();
 
 
-    //UnitData 읽어와서 
-    private void InitializeBaseStats()
+
+    // 데이터베이스에서 유닛들의 기본 스탯을 읽어와서 초기화
+    public void InitializeManager()
     {
+        CleanUp();
+
         D_UnitData.ForEachEntity(unitData =>
         {
-            var subject = unitData.f_StatSubject;
-            if (!statDictionary.ContainsKey(subject))
+            foreach (var subject in unitData.f_StatSubject)
             {
-                statDictionary[subject] = new List<StatStorage>();
-            }
-
-            foreach (var stat in unitData.f_UnitsStat)
-            {
-                var statStorage = new StatStorage
+                if (!baseStats.ContainsKey(subject))
                 {
-                    stat = stat.f_StatName,          
-                    value = stat.f_StatValue,       
-                    multiply = stat.f_ValueMultiply 
-                };
+                    baseStats[subject] = new List<StatStorage>();
+                }
 
-                statDictionary[subject].Add(statStorage);
+                foreach (var stat in unitData.f_UnitsStat)
+                {
+                    InitializeBaseStats(subject, stat.f_StatName, stat.f_StatValue, stat.f_ValueMultiply);
+                }
             }
         });
     }
 
 
+    // 기본 스탯 저장
+    private void InitializeBaseStats(StatSubject subject, StatName statName, int value, float multiply)
+    {
+        var storage = new StatStorage
+        {
+            stat = statName,
+            value = value,
+            multiply = multiply
+        };
+        
+         baseStats[subject].Add(storage);
+        
+    }
+
+    // 특정 Subject의 구독자들에게 스탯 변경 알림
+    // 실제 스탯 변경은 각 BasicObject의 currentStats에서 이루어짐
+    public void BroadcastStatChange(StatSubject subject, StatStorage statChange)
+    {
+        if (!subscribers.ContainsKey(subject)) return;
+
+        foreach (var subscriber in subscribers[subject])
+        {
+            subscriber.OnStatChanged(subject, statChange);
+        }
+    }
+
+    // Subject의 statName에 해당하는 기본 스탯 가져오기
+    public StatStorage GetSubjectStat(StatSubject subject, StatName statName)
+    {
+        if (!baseStats.ContainsKey(subject)) return null;
+        return baseStats[subject].Find(s => s.stat == statName);
+    }
+
+
+
+    // Subject의 모든 기본 스탯 가져오기
+    public List<StatStorage> GetAllStatsForSubject(StatSubject subject)
+    {
+        if (!baseStats.ContainsKey(subject))
+        {
+            return new List<StatStorage>();
+        }
+
+        // 중복된 StatSubject가 있을수있으므로 중복 제거
+        var uniqueStats = new Dictionary<StatName, StatStorage>();
+        foreach (var stat in baseStats[subject])
+        {
+            if (!uniqueStats.ContainsKey(stat.stat))
+            {
+                uniqueStats[stat.stat] = new StatStorage
+                {
+                    stat = stat.stat,
+                    value = stat.value,
+                    multiply = stat.multiply
+                };
+            }
+        }
+
+        return uniqueStats.Values.ToList();
+    }
+
+
+    // 구독 추가
+    public void Subscribe(BasicObject subscriber, StatSubject subject)
+    {
+        if (!subscribers.ContainsKey(subject))
+        {
+            subscribers[subject] = new List<BasicObject>();
+        }
+
+        if (!subscribers[subject].Contains(subscriber))
+        {
+            subscribers[subject].Add(subscriber);
+
+        }
+    }
+
+    // 구독 제거
+    public void Unsubscribe(BasicObject subscriber, StatSubject subject)
+    {
+        if (subscribers.ContainsKey(subject))
+        {
+            subscribers[subject].Remove(subscriber);
+        }
+    }
+
+
+    public void CleanUp()
+    {
+        baseStats.Clear();
+        subscribers.Clear();
+    }
 
 }

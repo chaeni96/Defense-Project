@@ -66,6 +66,7 @@ public class SceneStarter : MonoBehaviour
 
 
         StageManager.Instance.InitializeManager(placedTileMap, tileMapGrid);
+        StatManager.Instance.InitializeManager();
         //TODO : 로비에서 선택한 스테이지를 인자값으로 넘겨줘야됨
 
         StageManager.Instance.StartStage(1);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuffManager : MonoBehaviour
@@ -37,41 +38,30 @@ public class BuffManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        CacheBuffData();
     }
 
-    private Dictionary<string, D_BuffData> buffDataCache = new Dictionary<string, D_BuffData>();
-    private Dictionary<BasicObject, List<BuffTimeBase>> activeBuffs = new Dictionary<BasicObject, List<BuffTimeBase>>();
+    //현재 적용된 버프들 -> 나중에 특정 subject 모든 버프 제거하거나, 특정 ID 버프 제거등 사용하기 위함
+    private Dictionary<StatSubject, List<BuffTimeBase>> activeBuffs = new Dictionary<StatSubject, List<BuffTimeBase>>();
 
-
-    private void CacheBuffData()
+  
+    //WildCard나 아이템 등에서 버프 적용하는 메서드 -> 호출하면 버프 적용
+    public void ApplyBuff(D_BuffData buffData, StatSubject subject)
     {
-        // BGDatabase에서 모든 버프 데이터를 가져와 캐싱
-        D_BuffData.ForEachEntity(buffData =>
-        {
-            buffDataCache[buffData.f_name] = buffData;
-        });
-    }
-
-
-    //BasicObject가 아님...
-    public void ApplyBuff(string buffName, BasicObject target)
-    {
-        if (!buffDataCache.TryGetValue(buffName, out D_BuffData buffData))
-            return;
-
+        //버프 타입에 맞는 버프 객체 생성
         var buff = CreateBuff(buffData.f_buffType);
-        if (buff != null)
-        {
-            if (!activeBuffs.ContainsKey(target))
-            {
-                activeBuffs[target] = new List<BuffTimeBase>();
-            }
+        if (buff == null) return;
 
-            buff.Initialize(target, buffData);
-            buff.StartBuff();
-            activeBuffs[target].Add(buff);
+
+        if (!activeBuffs.ContainsKey(subject))
+        {
+            activeBuffs[subject] = new List<BuffTimeBase>();
         }
+
+        //버프 초기화
+        buff.Initialize(buffData);
+        //버프 시작
+        buff.StartBuff(subject);
+        activeBuffs[subject].Add(buff);
     }
 
     private BuffTimeBase CreateBuff(BuffType type)
@@ -80,24 +70,60 @@ public class BuffManager : MonoBehaviour
         {
             case BuffType.Temporary:
                 return new TemporaryBuff();
-            case BuffType.Permanent:
-                return new PermanentBuff();
-            case BuffType.AreaBased:
-                return new AreaBuff();
+            case BuffType.Instant:
+                return new InstantBuff();
             default:
                 return null;
         }
     }
 
-    public void RemoveAllBuffsFromTarget(BasicObject target)
+    //버프 삭제 관련 메서드들
+    public void RemoveAllBuffsFromSubject(StatSubject subject)
     {
-        if (activeBuffs.TryGetValue(target, out var buffs))
+        if (activeBuffs.TryGetValue(subject, out var buffs))
         {
             foreach (var buff in buffs)
             {
-                //버프 비워주기
+                RemoveBuff(buff, subject);
             }
-            activeBuffs.Remove(target);
+            activeBuffs.Remove(subject);
         }
     }
+
+    private void RemoveBuff(BuffTimeBase buff, StatSubject subject)
+    {
+        if (buff is TemporaryBuff tempBuff)
+        {
+            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(tempBuff.GetBuffUID());
+            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(tempBuff.GetBuffUID());
+        }
+        else if (buff is InstantBuff permBuff)
+        {
+            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(permBuff.GetBuffUID());
+        }
+
+        activeBuffs[subject].Remove(buff);
+    }
+
+    public void RemoveBuffById(int buffId, StatSubject subject)
+    {
+        if (activeBuffs.TryGetValue(subject, out var buffs))
+        {
+            var buff = buffs.FirstOrDefault(b => b.GetBuffUID() == buffId);
+            if (buff != null)
+            {
+                RemoveBuff(buff, subject);
+            }
+        }
+    }
+
+    public void CleanUp()
+    {
+        foreach (var subject in activeBuffs.Keys.ToList())
+        {
+            RemoveAllBuffsFromSubject(subject);
+        }
+        activeBuffs.Clear();
+    }
+
 }
