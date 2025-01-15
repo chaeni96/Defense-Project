@@ -1353,7 +1353,7 @@ public partial class D_UnitsStat : BGEntity
 		get => (StatName) _f_StatName.GetStoredValue(Index);
 		set => _f_StatName.SetStoredValue(Index, (System.Int32) value);
 	}
-	public System.Int32 f_StatValue
+	public System.Single f_StatValue
 	{
 		get => _f_StatValue[Index];
 		set => _f_StatValue[Index] = value;
@@ -1364,8 +1364,8 @@ public partial class D_UnitsStat : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitData => _ufle12jhs77_f_UnitData ?? (_ufle12jhs77_f_UnitData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5279262837531328826UL, 18114834706161121940UL), () => _ufle12jhs77_f_UnitData = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_StatName;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_StatName => _ufle12jhs77_f_StatName ?? (_ufle12jhs77_f_StatName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4712175172402461235UL, 6579426968821257134UL), () => _ufle12jhs77_f_StatName = null));
-	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_StatValue;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_StatValue => _ufle12jhs77_f_StatValue ?? (_ufle12jhs77_f_StatValue = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5208713176665404809UL, 8766299320695892408UL), () => _ufle12jhs77_f_StatValue = null));
+	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_StatValue;
+	public static BansheeGz.BGDatabase.BGFieldFloat _f_StatValue => _ufle12jhs77_f_StatValue ?? (_ufle12jhs77_f_StatValue = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5208713176665404809UL, 8766299320695892408UL), () => _ufle12jhs77_f_StatValue = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_BoostDeck.Factory _factory2_PFS = new D_BoostDeck.Factory();

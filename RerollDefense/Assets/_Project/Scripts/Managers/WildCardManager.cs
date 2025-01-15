@@ -81,7 +81,7 @@ public class WildCardManager : MonoBehaviour
                 {
                     foreach (var boosterStat in statBoosterData.f_BoosterStats)
                     {
-                        int currentValue = unit.GetStat(boosterStat.f_StatName);
+                        float currentValue = unit.GetStat(boosterStat.f_StatName);
                         unit.SetStatValue(boosterStat.f_StatName, currentValue + boosterStat.f_IncreaseValue);
                     }
                     unit.ApplyEffect();

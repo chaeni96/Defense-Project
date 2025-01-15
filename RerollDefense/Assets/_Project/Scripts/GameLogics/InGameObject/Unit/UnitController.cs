@@ -64,7 +64,7 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
         stats.Clear();
-        stats = new Dictionary<StatName, int>();
+        stats = new Dictionary<StatName, float>();
 
         foreach (var statData in unitData.f_UnitsStat)
         {

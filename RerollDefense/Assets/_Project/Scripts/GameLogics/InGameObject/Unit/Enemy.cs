@@ -69,7 +69,7 @@ public class Enemy : BasicObject
         }
     }
 
-    public void onDamaged(BasicObject attacker, int damage = 0)
+    public void onDamaged(BasicObject attacker, float damage = 0)
     {
         if (attacker != null)
         {

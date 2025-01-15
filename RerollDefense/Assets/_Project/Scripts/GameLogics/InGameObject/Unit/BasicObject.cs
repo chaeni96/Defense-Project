@@ -7,7 +7,7 @@ using UnityEngine;
 public class BasicObject : MonoBehaviour
 {
 
-    public Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
+    public Dictionary<StatName, float> stats = new Dictionary<StatName, float>();
 
     public virtual void Initialize()
     {
@@ -15,7 +15,7 @@ public class BasicObject : MonoBehaviour
 
 
     // Dictionary로 받아서 한번에 스탯 설정
-    public void SetStatValues(Dictionary<StatName, int> statValues)
+    public void SetStatValues(Dictionary<StatName, float> statValues)
     {
         foreach (var pair in statValues)
         {
@@ -23,7 +23,7 @@ public class BasicObject : MonoBehaviour
         }
     }
 
-    public void SetStatValue(StatName type, int value)
+    public void SetStatValue(StatName type, float value)
     {
         // 새로운 스탯 타입이면 추가, 기존 스탯이면 업데이트
         if (stats.ContainsKey(type))
@@ -36,9 +36,9 @@ public class BasicObject : MonoBehaviour
         }
     }
 
-    public int GetStat(StatName type)
+    public float GetStat(StatName type)
     {
-        return stats.TryGetValue(type, out int value) ? value : 0;
+        return stats.TryGetValue(type, out float value) ? value : 0;
     }
 
 
