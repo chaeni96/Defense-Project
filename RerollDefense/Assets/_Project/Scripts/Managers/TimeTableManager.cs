@@ -16,14 +16,6 @@ public interface IScheduleCompleteSubscriber
     abstract void OnCompleteSchedule(int scheduleUID);
 }
 
-public abstract class BuffTimeBase
-{
-    protected int buffUID;
-    protected BasicObject targetObject; //버프 받는 타겟 
-    public abstract void StartBuff();
-}
-
-
 
 public class DebuffBleeding : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
 {
@@ -46,7 +38,7 @@ public class DebuffBleeding : BuffTimeBase, IScheduleCompleteSubscriber, ITimeCh
     public void OnChangeTime(int scheduleUID, float remainTime)
     {
         //출혈이라 1초마다 출혈딜이 들어감
-        targetObject.SetStatValue(StatName.Health, targetObject.GetStat(StatName.Health) - 1);
+        targetObject.SetStatValue(StatName.MaxHP, targetObject.GetStat(StatName.MaxHP) - 1);
     }
 
     public void OnCompleteSchedule(int scheduleUID)

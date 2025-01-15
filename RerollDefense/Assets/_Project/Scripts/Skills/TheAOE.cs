@@ -18,6 +18,9 @@ public class TheAOE : SkillBase
 
         // 리스트 초기화
         enemys.Clear();
+
+        float radius = owner.GetStat(StatName.AttackRange);
+        transform.localScale = new Vector3(radius, radius, radius);
     }
 
     public override void Fire(Vector3 targetPosition)
@@ -29,9 +32,7 @@ public class TheAOE : SkillBase
     private IEnumerator ApplyDamageSequence()
     {
         yield return new WaitForSeconds(damageDelay);
-        float radius = owner.GetStat(StatName.AttackRange);
-        transform.localScale = new Vector3(radius, radius, radius);
-
+        
         CheckEnemyInCollider();
         StartCoroutine(DestroyAfterDuration(totalFXDelay));
     }

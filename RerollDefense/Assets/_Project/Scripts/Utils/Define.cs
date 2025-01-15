@@ -22,8 +22,10 @@ public enum StatSubject
     PlayerCommon,   //플레이어 유닛 전부 적용
     EnemyCommon,    //적 유닛 전부 적용
 
-    PlayerArchor,   //궁수류 플레이어 유닛
-    //...
+    PlayerArcher,   //궁수류 플레이어 유닛
+    PlayerMage,     //마법사류 플레이어 유닛
+    PlayerBase,
+
 }
 
 
@@ -31,7 +33,7 @@ public enum StatName
 {
 
     //기존 유닛 스탯
-    Health, //체력
+    MaxHP, //체력
     ATK, //공격력
     AttackSpeed, //공격 속도, 몇초마다 공격할지
     AttackRange,
@@ -57,6 +59,10 @@ public enum StatName
     WaveTime,           // 일반 웨이브 시간 (30초)
     WaveRestTime,       // 웨이브 사이 쉬는 시간 (20초) 
     WaveMinRestTime,    // 최소 쉬는 시간 (5초)
+
+    //추가 스탯
+    currentHp,
+
 }
 
 public enum CardGrade
@@ -73,4 +79,19 @@ public enum UnitType
     Archer,
     Archer2,
     Mage,
+}
+public enum BuffType
+{
+    Temporary,      // 시간 기반 임시 효과 
+    Permanent,      // 영구적 효과
+    AreaBased,      // 공간 기반 효과
+    Conditional     // 조건부 효과
+}
+
+
+public enum BuffTickType
+{
+    Instant,    // 버프 시작시 한번만 적용
+    Periodic,   // 틱마다 적용 (DoT/HoT)
+    Continuous  // 지속적으로 적용되다가 버프 종료시 제거
 }

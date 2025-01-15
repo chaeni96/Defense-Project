@@ -56,7 +56,7 @@ public class AttackSkillManager : MonoBehaviour
 
     private void ActiveProjectileSkill(string skillPoolingKey, UnitController unit, Vector3 targetPos)
     {
-        int projectileCount = Mathf.Max(1, (int)unit.GetStat(StatName.ProjectileCount));
+        int projectileCount = Mathf.Max(1, unit.GetStat(StatName.ProjectileCount));
 
         if (projectileCount > 1)
         {

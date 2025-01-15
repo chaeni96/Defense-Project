@@ -7,23 +7,14 @@ using UnityEngine;
 public class BasicObject : MonoBehaviour
 {
 
-    public Dictionary<StatName, float> stats = new Dictionary<StatName, float>();
+    public Dictionary<StatName, int> stats = new Dictionary<StatName, int>();
 
     public virtual void Initialize()
     {
     }
 
 
-    // Dictionary로 받아서 한번에 스탯 설정
-    public void SetStatValues(Dictionary<StatName, float> statValues)
-    {
-        foreach (var pair in statValues)
-        {
-            SetStatValue(pair.Key, pair.Value);
-        }
-    }
-
-    public void SetStatValue(StatName type, float value)
+    public void SetStatValue(StatName type, int value)
     {
         // 새로운 스탯 타입이면 추가, 기존 스탯이면 업데이트
         if (stats.ContainsKey(type))
@@ -34,12 +25,25 @@ public class BasicObject : MonoBehaviour
         {
             stats.Add(type, value);
         }
+
+
+
     }
 
-    public float GetStat(StatName type)
+    public int GetStat(StatName type)
     {
-        return stats.TryGetValue(type, out float value) ? value : 0;
+        return stats.TryGetValue(type, out int value) ? value : 0;
     }
 
+    //개별 스탯 변경시
+    protected virtual void OnStatValueChanged(StatName type, float value)
+    {
+        // 스탯 변경 시 추가 동작이 필요한 경우 오버라이드
+    }
+
+    public virtual void OnSubjectStatChanged(StatSubject subject, StatName statName, float value)
+    {
+        // Subject 스탯 변경 시 호출됨
+    }
 
 }

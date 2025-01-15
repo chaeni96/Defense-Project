@@ -43,39 +43,36 @@ public class StatManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+
+        InitializeBaseStats();
     }
 
     internal Dictionary<StatSubject, List<StatStorage>> statDictionary;
 
 
-
-    public void InitializeManager()
+    //UnitData 읽어와서 
+    private void InitializeBaseStats()
     {
-        statDictionary = new Dictionary<StatSubject, List<StatStorage>>();
-
-        //StatSubject별로 딕셔너리 초기화
-        foreach (StatSubject subject in System.Enum.GetValues(typeof(StatSubject)))
+        D_UnitData.ForEachEntity(unitData =>
         {
-            statDictionary[subject] = new List<StatStorage>();
-        }
-    }
+            var subject = unitData.f_StatSubject;
+            if (!statDictionary.ContainsKey(subject))
+            {
+                statDictionary[subject] = new List<StatStorage>();
+            }
 
-    public void SetStat(StatSubject subject, StatName statName, int value, float multiply = 1f)
-    {
-        if (!statDictionary.ContainsKey(subject))
-            statDictionary[subject] = new List<StatStorage>();
+            foreach (var stat in unitData.f_UnitsStat)
+            {
+                var statStorage = new StatStorage
+                {
+                    stat = stat.f_StatName,          
+                    value = stat.f_StatValue,       
+                    multiply = stat.f_ValueMultiply 
+                };
 
-        statDictionary[subject].Add(new StatStorage
-        {
-            stat = statName,
-            value = value,
-            multiply = multiply
+                statDictionary[subject].Add(statStorage);
+            }
         });
-    }
-
-    public List<StatStorage> GetStats(StatSubject subject)
-    {
-        return statDictionary.TryGetValue(subject, out var stats) ? stats : new List<StatStorage>();
     }
 
 
