@@ -73,8 +73,9 @@ public enum StatName
 
     //√ﬂ∞° Ω∫≈»
     CurrentHp, 
-    StoreLevel,
+    MaxCost,
     UnitStarLevel,
+    StoreLevel,
 
 
 }

@@ -89,13 +89,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     //cost 색 -> 변경 가능 : 하얀색, 불가능 : 빨간색
     private void UpdateCostTextColor()
     {
-        cardCostText.color = GameManager.Instance.CurrentCost >= cardCost ? Color.white : Color.red;
+        cardCostText.color = GameManager.Instance.GetSystemStat(StatName.Cost) >= cardCost ? Color.white : Color.red;
     }
 
     // 드래그 시작: 코스트 체크 후 프리뷰 인스턴스 생성
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (GameManager.Instance.CurrentCost < cardCost) return;
+        if (GameManager.Instance.GetSystemStat(StatName.Cost) < cardCost) return;
 
         isDragging = true;
         canPlace = false;
@@ -301,7 +301,14 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         //타일 배치 불가상태로 변경, 코스트 사용
         TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
 
-        GameManager.Instance.UseCost(cardCost);
+
+        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+        {
+            stat = StatName.Cost,
+            value = cardCost * -1,
+            multiply = 1f
+        });
+        
         //enemy path 업데이트
         EnemyManager.Instance.UpdateEnemiesPath();
 

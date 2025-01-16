@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
-public class BasicObject : MonoBehaviour
+public class BasicObject : MonoBehaviour, IStatSubscriber
 {
 
     //처음 Subject에서 가져온 기본 스탯

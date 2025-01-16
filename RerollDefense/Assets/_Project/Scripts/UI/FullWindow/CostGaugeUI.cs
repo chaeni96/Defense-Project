@@ -33,7 +33,7 @@ public class CostGaugeUI : MonoBehaviour
         CreateBarFills(storeLevel);
 
         // 초기 코스트만큼 바로 채우기
-        int initialCost = GameManager.Instance.CurrentCost;
+        int initialCost = GameManager.Instance.GetSystemStat(StatName.Cost);
 
         costPerTick = 1;
         currentFilledIndex = initialCost;
@@ -51,9 +51,9 @@ public class CostGaugeUI : MonoBehaviour
     public void UpdateText()
     {
 
-        int maxCost = GameManager.Instance.MaxCost;
+        int maxCost = GameManager.Instance.GetSystemStat(StatName.MaxCost);
         maxCostText.text = $"Max : {maxCost.ToString()}";
-        int currentCost = GameManager.Instance.CurrentCost;
+        int currentCost = GameManager.Instance.GetSystemStat(StatName.Cost);
         currentCostText.text = currentCost.ToString();
 
     }
@@ -71,20 +71,29 @@ public class CostGaugeUI : MonoBehaviour
     private void Update()
     {
         // 현재 인덱스와 실제 코스트 값 동기화
-        if (currentFilledIndex != GameManager.Instance.CurrentCost)
+        if (currentFilledIndex != GameManager.Instance.GetSystemStat(StatName.Cost))
         {
-            currentFilledIndex = GameManager.Instance.CurrentCost;
+            currentFilledIndex = GameManager.Instance.GetSystemStat(StatName.Cost);
             UpdateBars();
         }
 
         // MaxCost보다 작을 때만 자동 증가 처리
-        if (GameManager.Instance.CurrentCost < GameManager.Instance.MaxCost)
+        if (GameManager.Instance.GetSystemStat(StatName.Cost) < GameManager.Instance.GetSystemStat(StatName.MaxCost))
         {
             circleProgress.fillAmount += Time.deltaTime / manaGenerateTime;
             if (circleProgress.fillAmount >= 1f)
             {
                 circleProgress.fillAmount = 0;
-                GameManager.Instance.AddCost(costPerTick);
+
+
+                // costPerTick 값을 바로 넘겨 변경사항 브로드캐스트
+                StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+                {
+                    stat = StatName.Cost,
+                    value = costPerTick, // 직접 변경값 전달
+                    multiply = 1f
+                });
+
                 UpdateText();
             }
         }
@@ -137,6 +146,9 @@ public class CostGaugeUI : MonoBehaviour
                 }
             }
         }
+
+        // 코스트를 사용하면 서클 게이지를 초기화
+        circleProgress.fillAmount = 0f;
         UpdateText();
     }
 

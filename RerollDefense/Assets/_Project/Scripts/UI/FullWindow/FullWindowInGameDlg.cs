@@ -58,10 +58,10 @@ public class FullWindowInGameDlg : FullWindowBase
 
         //cost 초기화
         CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-        costUI.Initialize(GameManager.Instance.StoreLevel);
+        costUI.Initialize(GameManager.Instance.GetSystemStat(StatName.StoreLevel));
 
         //shopLevel 초기화
-        shopLevel = GameManager.Instance.StoreLevel;
+        shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
         shopLevelText.text = $"Shop Level : {shopLevel}";
     }
 
@@ -190,7 +190,7 @@ public class FullWindowInGameDlg : FullWindowBase
     {
 
         //코스트 1보다 낮으면 불가
-        if (!GameManager.Instance.UseCost(1)) return;
+        if (GameManager.Instance.GetSystemStat(StatName.Cost) < 1) return;
 
         // 기존 카드 제거
         for (int i = 0; i < cardDecks.Count; i++)
@@ -213,7 +213,7 @@ public class FullWindowInGameDlg : FullWindowBase
     private void UpdateShopLevelUI()
     {
         // 상점 레벨 텍스트 업데이트
-        shopLevel = GameManager.Instance.StoreLevel;
+        shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
         shopLevelText.text = $"Shop Level : {shopLevel}";
 
         // 업그레이드 비용 계산 및 표시
@@ -232,20 +232,31 @@ public class FullWindowInGameDlg : FullWindowBase
 
         shopUpgradeCost = shopProbabilityData.f_upgradeCost;
 
-        if (GameManager.Instance.CurrentCost >= shopUpgradeCost)
+        if (GameManager.Instance.GetSystemStat(StatName.Cost) >= shopUpgradeCost)
         {
-            if (GameManager.Instance.UseCost(shopUpgradeCost))
+            // 비용 소모 처리
+            StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
             {
-                shopLevel++;
-                GameManager.Instance.SetStoreLevel(shopLevel);
+                stat = StatName.Cost,
+                value = -shopUpgradeCost, // 비용 소모는 음수로 전달
+                multiply = 1f
+            });
 
-                UpdateShopLevelUI();
-                // CostGauge UI 갱신
-                CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-                costUI.Initialize(shopLevel);
+            // 상점 레벨 증가 처리
+            var newShopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel) + 1;
+            StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+            {
+                stat = StatName.StoreLevel,
+                value = newShopLevel, // 새로운 상점 레벨 전달
+                multiply = 1f
+            });
 
+            // UI 업데이트
+            UpdateShopLevelUI();
 
-            }
+            // CostGauge UI 갱신
+            CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
+            costUI.Initialize(newShopLevel);
         }
     }
 

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+public interface IStatSubscriber
+{
+    void OnStatChanged(StatSubject subject, StatStorage statChange);
+}
+
 public class StatStorage
 {
     internal StatName stat;
@@ -52,7 +58,7 @@ public class StatManager : MonoBehaviour
     private Dictionary<StatSubject, List<StatStorage>> baseStats = new Dictionary<StatSubject, List<StatStorage>>();
 
     // StatSubject별 구독자(BasicObject) 목록
-    private Dictionary<StatSubject, List<BasicObject>> subscribers = new Dictionary<StatSubject, List<BasicObject>>();
+    private Dictionary<StatSubject, List<IStatSubscriber>> subscribers = new Dictionary<StatSubject, List<IStatSubscriber>>();
 
 
 
@@ -143,11 +149,11 @@ public class StatManager : MonoBehaviour
 
 
     // 구독 추가
-    public void Subscribe(BasicObject subscriber, StatSubject subject)
+    public void Subscribe(IStatSubscriber subscriber, StatSubject subject)
     {
         if (!subscribers.ContainsKey(subject))
         {
-            subscribers[subject] = new List<BasicObject>();
+            subscribers[subject] = new List<IStatSubscriber>();
         }
 
         if (!subscribers[subject].Contains(subscriber))
@@ -158,7 +164,7 @@ public class StatManager : MonoBehaviour
     }
 
     // 구독 제거
-    public void Unsubscribe(BasicObject subscriber, StatSubject subject)
+    public void Unsubscribe(IStatSubscriber subscriber, StatSubject subject)
     {
         if (subscribers.ContainsKey(subject))
         {

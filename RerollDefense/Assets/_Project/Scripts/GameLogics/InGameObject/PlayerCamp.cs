@@ -22,7 +22,7 @@ public class PlayerCamp : MonoBehaviour
         //hp √ ±‚»≠
         if (GameManager.Instance != null)
         {
-            hpBar.value = GameManager.Instance.PlayerHP / GameManager.Instance.MaxHP;
+            hpBar.value = GameManager.Instance.GetSystemStat(StatName.CurrentHp) / GameManager.Instance.GetSystemStat(StatName.MaxHP);
             targetHPRatio = hpBar.value;
         }
 
@@ -34,7 +34,7 @@ public class PlayerCamp : MonoBehaviour
 
     private void OnHPChanged(float currentHp)
     {
-        targetHPRatio = currentHp / GameManager.Instance.MaxHP;
+        targetHPRatio = currentHp / GameManager.Instance.GetSystemStat(StatName.MaxHP);
 
         if (hpUpdateCoroutine != null)
         {

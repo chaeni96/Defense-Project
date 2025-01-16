@@ -76,7 +76,18 @@ public class Enemy : BasicObject
                 multiply = baseStat.Value.multiply
             };
         }
-        Debug.Log($"{GetStat(StatName.CurrentHp)}");
+
+        // currentHP를 maxHP로 초기화
+        if (!currentStats.ContainsKey(StatName.CurrentHp))
+        {
+            var maxHp = GetStat(StatName.MaxHP);
+            currentStats[StatName.CurrentHp] = new StatStorage
+            {
+                stat = StatName.CurrentHp,
+                value = Mathf.FloorToInt(maxHp),
+                multiply = 1f
+            };
+        }
 
         UpdateHpBar();
     }
@@ -137,11 +148,15 @@ public class Enemy : BasicObject
 
     public void OnReachEndTile()
     {
-        if (GameManager.Instance != null)
+        //enemy의 공격력만큼 player의 hp감소 -> 스탯매니저 통해서 값 변경
+        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
-            GameManager.Instance.TakeDamage(GetStat(StatName.ATK));
-            isActive = false;
-        }
+            stat = StatName.CurrentHp,
+            value = currentStats[StatName.ATK].value * -1 ,
+            multiply = currentStats[StatName.ATK].multiply
+        });
+
+        isActive = false;
     }
 
     //TODO : projectile과 aoe도 StatManager의 메서드를 부르도록 바꾸기

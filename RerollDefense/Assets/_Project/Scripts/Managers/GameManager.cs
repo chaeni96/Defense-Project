@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.CullingGroup;
 
 public enum GameStateType
 {
@@ -124,7 +125,7 @@ public class GameResultState : GameState
 
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IStatSubscriber
 {
     public static GameManager _instance;
 
@@ -134,14 +135,9 @@ public class GameManager : MonoBehaviour
 
     private PlayerCamp playerCamp;
 
-    public float PlayerHP { get; private set; } = 300f;
-    public float MaxHP { get; private set; } = 1500f;
 
-    //나중에 게임씬이니셜라이즈할때 사용하기
-    public int CurrentCost = 2;
-    public int MaxCost = 10;
-    public int StoreLevel { get; private set; } = 1;
-
+    // 시스템 스탯 저장소
+    private Dictionary<StatName, StatStorage> systemStats = new Dictionary<StatName, StatStorage>();
 
     public event System.Action<float> OnHPChanged;    // HP 변경 이벤트
 
@@ -197,6 +193,71 @@ public class GameManager : MonoBehaviour
         mainCamera = Camera.main;
    
     }
+
+    // StatManager로부터 시스템 스탯 로드
+    public void LoadSystemStats()
+    {
+        var stats = StatManager.Instance.GetAllStatsForSubject(StatSubject.System);
+        foreach (var stat in stats)
+        {
+            systemStats[stat.stat] = new StatStorage
+            {
+                stat = stat.stat,
+                value = stat.value,
+                multiply = stat.multiply
+            };
+        }
+
+        // currentHP를 maxHP로 초기화
+        if (!systemStats.ContainsKey(StatName.CurrentHp))
+        {
+            var maxHp = GetSystemStat(StatName.MaxHP);
+            systemStats[StatName.CurrentHp] = new StatStorage
+            {
+                stat = StatName.CurrentHp,
+                value = Mathf.FloorToInt(maxHp),
+                multiply = 1f
+            };
+        }
+
+        // 시스템 스탯 변경 구독
+        StatManager.Instance.Subscribe(this, StatSubject.System);
+    }
+
+
+    // StatManager로부터 스탯 변경 알림 받기
+    public virtual void OnStatChanged(StatSubject subject, StatStorage statChange)
+    {
+        if (subject != StatSubject.System) return;
+
+        // 변경된 스탯에 따른 이벤트 발생
+        switch (statChange.stat)
+        {
+            case StatName.CurrentHp:
+                ChangeStatHP(statChange);
+                break;
+            case StatName.MaxHP:
+                ChangeStatMaxHP(statChange);
+                break;
+            case StatName.Cost:
+                ChangeStatCost(statChange);
+                break;
+            case StatName.StoreLevel:
+                ChangeStatStoreLevel(statChange);
+                break;
+        }
+    }
+
+    // 특정 스탯 값 가져오기
+    public int GetSystemStat(StatName statName)
+    {
+        if (systemStats.TryGetValue(statName, out var stat))
+        {
+            return stat.value;
+        }
+        return 0;
+    }
+
     private void Update()
     {
         currentState?.UpdateState();
@@ -210,44 +271,92 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void TakeDamage(float damage)
+    public void ChangeStatHP(StatStorage statChange)
     {
-        PlayerHP = Mathf.Max(0f, PlayerHP - damage);
-        OnHPChanged?.Invoke(PlayerHP);  // HP 변경시에만 이벤트 발생
-
-        if (PlayerHP <= 0)
+        var currentHp = systemStats.ContainsKey(StatName.CurrentHp)? systemStats[StatName.CurrentHp].value : 0;
+        OnHPChanged?.Invoke(GetSystemStat(StatName.CurrentHp));
+        
+        systemStats[StatName.CurrentHp] = new StatStorage
         {
-            // TODO : 게임오버 처리
-            //hp Bar 다 닳고나면 게임오버처리하기
+            stat = StatName.CurrentHp,
+            value = Mathf.Max(0, currentHp + statChange.value), // 체력 감소 처리
+            multiply = statChange.multiply
+        };
+
+        // 체력이 0 이하인 경우 게임 오버 처리
+        if (GetSystemStat(StatName.CurrentHp) <= 0)
+        {
+            // TODO: 게임 오버 로직
+        }
+
+        OnHPChanged?.Invoke(GetSystemStat(StatName.CurrentHp));
+
+    }
+
+    private void ChangeStatMaxHP(StatStorage statChange)
+    {
+        var maxHp = systemStats.ContainsKey(StatName.MaxHP)
+            ? systemStats[StatName.MaxHP].value
+            : 0;
+
+        systemStats[StatName.MaxHP] = new StatStorage
+        {
+            stat = StatName.MaxHP,
+            value = maxHp + statChange.value, // 최대 체력 증가
+            multiply = statChange.multiply
+        };
+
+        OnHPChanged?.Invoke(GetSystemStat(StatName.CurrentHp));
+    }
+
+    private void ChangeStatCost(StatStorage statChange)
+    {
+        var currentCost = systemStats.ContainsKey(StatName.Cost)? systemStats[StatName.Cost].value: 0;
+
+        var newCost = currentCost + statChange.value;
+
+        // 시스템 스탯 업데이트
+        systemStats[StatName.Cost] = new StatStorage
+        {
+            stat = StatName.Cost,
+            value = newCost,
+            multiply = statChange.multiply
+        };
+
+        // 이벤트 호출: value가 양수인지 음수인지에 따라 결정
+        if (statChange.value > 0)
+        {
+            OnCostAdd?.Invoke(); // 코스트 증가 이벤트
+        }
+        else if (statChange.value < 0)
+        {
+            OnCostUsed?.Invoke(Mathf.Abs(statChange.value)); // 코스트 소모 이벤트
         }
     }
 
-    public void AddCost(int amount)
-    {
-        CurrentCost += amount;
-        OnCostAdd?.Invoke();
-    }
 
-    public bool UseCost(int amount)
+    private void ChangeStatStoreLevel(StatStorage statChange)
     {
-        if (CurrentCost >= amount)
+        // StoreLevel 업데이트
+        systemStats[StatName.StoreLevel] = new StatStorage
         {
-            CurrentCost -= amount;
-            OnCostUsed?.Invoke(amount); // 이벤트 호출
-            return true;
-        }
-        return false;
+            stat = StatName.StoreLevel,
+            value = statChange.value, // 새로운 레벨로 덮어쓰기
+            multiply = statChange.multiply
+        };
+
+        // MaxCost 업데이트
+        var maxCost = Mathf.Clamp(9 + statChange.value, 10, 20);
+
+        systemStats[StatName.MaxCost] = new StatStorage
+        {
+            stat = StatName.MaxCost,
+            value = maxCost,
+            multiply = 1f
+        };
+
+        Debug.Log($"StoreLevel updated to {statChange.value}, MaxCost updated to {maxCost}");
     }
-
-   
-
-    public void SetStoreLevel(int level)
-    {
-        StoreLevel = level;
-        MaxCost = Mathf.Clamp(9 + level, 10, 20);
-
-    }
-
     public void InitializePlayerCamp(Vector2 endTile)
     {
         //endTile에 playerCamp 설치
@@ -262,7 +371,11 @@ public class GameManager : MonoBehaviour
 
     public void CleanUp()
     {
-
+        StatManager.Instance.Unsubscribe(this, StatSubject.System);
+        systemStats.Clear();
+        OnHPChanged = null;
+        OnCostUsed = null;
+        OnCostAdd = null;
     }
 
 
