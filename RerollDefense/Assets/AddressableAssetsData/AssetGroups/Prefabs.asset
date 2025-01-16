@@ -101,42 +101,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2535a8c937e8f6f4caf931f16bd6c14d
-    m_Address: Unit_Archer_2Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d344e6f460ac0594bb35ec29718a9e93
-    m_Address: Unit_Archer_3Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bd5004650e1a42a40957fce714b4caee
-    m_Address: Unit_Archor2_2Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0d6f4a2094a978c4f8fadaa77fbd2071
-    m_Address: Unit_Archor2_3Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 429fc65808d15b54e921b0a6c01df80a
-    m_Address: Unit_Mage_2Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c473bc5401de4c242948b018dd9c3d5a
-    m_Address: Unit_Mage_3Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 436850a8cd26d3a44ad95b08aa410b11
     m_Address: WildCardObject
     m_ReadOnly: 0

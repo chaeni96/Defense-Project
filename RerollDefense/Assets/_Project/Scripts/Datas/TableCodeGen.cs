@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using BansheeGz.BGDatabase;
-using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_unitBuildData = D_unitBuildData;
 using Alias_rifegrt_SpecialTile = D_SpecialTile;
 using Alias_rifegrt_StatBoosterData = D_StatBoosterData;
+using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_EnemyData = D_EnemyData;
 using Alias_rifegrt_StageData = D_StageData;
 using Alias_rifegrt_enemyGroup = D_enemyGroup;
@@ -273,7 +273,6 @@ public partial class D_UnitData : BGEntity
 		public const string StatSubject = "StatSubject";
 		public const string SkillAttackType = "SkillAttackType";
 		public const string UnitPoolingKey = "UnitPoolingKey";
-		public const string NextLevelUnit = "NextLevelUnit";
 		public const string SkillPoolingKey = "SkillPoolingKey";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
@@ -305,11 +304,6 @@ public partial class D_UnitData : BGEntity
 		get => (D_ObjectPoolData) _f_UnitPoolingKey[Index];
 		set => _f_UnitPoolingKey[Index] = value;
 	}
-	public D_UnitData f_NextLevelUnit
-	{
-		get => (D_UnitData) _f_NextLevelUnit[Index];
-		set => _f_NextLevelUnit[Index] = value;
-	}
 	public D_ObjectPoolData f_SkillPoolingKey
 	{
 		get => (D_ObjectPoolData) _f_SkillPoolingKey[Index];
@@ -325,11 +319,8 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SkillAttackType => _ufle12jhs77_f_SkillAttackType ?? (_ufle12jhs77_f_SkillAttackType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5274816935596477599UL, 15588288739445877685UL), () => _ufle12jhs77_f_SkillAttackType = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_UnitPoolingKey;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitPoolingKey => _ufle12jhs77_f_UnitPoolingKey ?? (_ufle12jhs77_f_UnitPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4766850798404632622UL, 6480570574369079984UL), () => _ufle12jhs77_f_UnitPoolingKey = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_NextLevelUnit;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_NextLevelUnit => _ufle12jhs77_f_NextLevelUnit ?? (_ufle12jhs77_f_NextLevelUnit = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5426984868221947997UL, 15426135925314411659UL), () => _ufle12jhs77_f_NextLevelUnit = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_SkillPoolingKey;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_SkillPoolingKey => _ufle12jhs77_f_SkillPoolingKey ?? (_ufle12jhs77_f_SkillPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4721613304390874734UL, 7492828072908847792UL), () => _ufle12jhs77_f_SkillPoolingKey = null));
-	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingNextLevelUnitRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_NextLevelUnit, Id);
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	public List<Alias_rifegrt_SpecialTile> RelatedSpecialTileListUsingspecialObjectRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpecialTile>(Alias_rifegrt_SpecialTile._f_specialObject, Id);
 	public List<Alias_rifegrt_StatBoosterData> RelatedStatBoosterDataListUsingTargetUnitListRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StatBoosterData>(Alias_rifegrt_StatBoosterData._f_TargetUnitList, Id);

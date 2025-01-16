@@ -19,6 +19,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     [HideInInspector]
     public SkillAttackType attackType;
 
+    public List<GameObject> starObjects = new List<GameObject>();  // 생성된 별들을 관리하기 위한 리스트
 
     public UnitType unitType;
 
@@ -51,6 +52,35 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     }
 
+    public void UpdateStarDisplay(int? starLevel = null)
+    {
+        if (unitStarObject == null) return;
+
+        int currentStarLevel = Mathf.RoundToInt(GetStat(StatName.UnitStarLevel));
+
+        if(starLevel != null)
+        {
+            currentStarLevel = starLevel.Value;
+        }
+
+        foreach (var star in starObjects)
+        {
+            Destroy(star);
+        }
+        starObjects.Clear();
+
+        float spacing = 0.4f;
+        float totalWidth = (currentStarLevel - 1) * spacing;
+        float startX = -totalWidth / 2f;
+
+        for (int i = 0; i < currentStarLevel; i++)
+        {
+            GameObject star = Instantiate(unitStarObject, transform);
+            star.transform.localPosition = new Vector3(startX + (i * spacing), 0, 0);
+            starObjects.Add(star);
+        }
+    }
+
     //유닛 정보 초기화
     public void InitializeUnitInfo(D_UnitData unit, Vector2 tilePos)
     {
@@ -62,22 +92,23 @@ public class UnitController : BasicObject, IPointerClickHandler
         attackType = unitData.f_SkillAttackType;
         unitType = unitData.f_UnitType;
 
+        // 기존 스탯들 초기화
+        baseStats.Clear();
+        currentStats.Clear();
+
+
         //TODO : enemy도 사용할수있으므로 basicObject로 이동
         // Subject 등록
         // 모든 StatSubject에 대해 스탯 가져오기 및 합산
-        Dictionary<StatName, StatStorage> mergedStats = new Dictionary<StatName, StatStorage>();
-
         foreach (var subject in unitData.f_StatSubject)
         {
-            // StatManager에서 Subject의 스탯 가져오기
             var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
 
             foreach (var stat in subjectStats)
             {
-                if (!mergedStats.ContainsKey(stat.stat))
+                if (!baseStats.ContainsKey(stat.stat))
                 {
-                    // 새로운 스탯 추가
-                    mergedStats[stat.stat] = new StatStorage
+                    baseStats[stat.stat] = new StatStorage
                     {
                         stat = stat.stat,
                         value = stat.value,
@@ -86,41 +117,48 @@ public class UnitController : BasicObject, IPointerClickHandler
                 }
                 else
                 {
-                    // 기존 스탯과 합산
-                    mergedStats[stat.stat].value += stat.value;
-                    mergedStats[stat.stat].multiply *= stat.multiply;
+                    baseStats[stat.stat].value += stat.value;
+                    baseStats[stat.stat].multiply *= stat.multiply;
                 }
             }
 
-            // Subject 구독
             AddSubject(subject);
         }
 
-        // 합산 결과를 baseStats에 반영
-        baseStats = mergedStats;
 
         // 현재 스탯을 기본 스탯으로 초기화
         foreach (var baseStat in baseStats)
         {
+            int statValue = baseStat.Value.value;
+
+            // StarLevel에 따른 스탯 보정
+            if (baseStat.Key != StatName.UnitStarLevel && baseStats.ContainsKey(StatName.UnitStarLevel))
+            {
+                statValue *= baseStats[StatName.UnitStarLevel].value;
+            }
+
             currentStats[baseStat.Key] = new StatStorage
             {
                 stat = baseStat.Value.stat,
-                value = baseStat.Value.value,
+                value = statValue,
                 multiply = baseStat.Value.multiply
             };
         }
+
+        UpdateStarDisplay();
+
     }
 
 
-//스탯 변경시 할 행동들
-public override void OnStatChanged(StatSubject subject, StatStorage statChange)
+    //스탯 변경시 할 행동들
+    public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
         base.OnStatChanged(subject, statChange);
         ApplyEffect();
 
 
         //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
-        if(statChange.stat ==  StatName.AttackSpeed)
+        if (statChange.stat == StatName.AttackSpeed)
         {
             attackTimer = 0;
         }
@@ -135,9 +173,6 @@ public override void OnStatChanged(StatSubject subject, StatStorage statChange)
         // elasticity: 탄성 (0~1)
 
         unitSprite.transform.DOPunchScale(punch: new Vector3(0.4f, 0.4f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
-
-
-       
 
     }
 
@@ -166,6 +201,43 @@ public override void OnStatChanged(StatSubject subject, StatStorage statChange)
 
 
     }
+
+    public void UpdateUnitStat(StatName statName, int value)
+    {
+        if (!currentStats.ContainsKey(statName))
+        {
+            currentStats[statName] = new StatStorage
+            {
+                stat = statName,
+                value = value,
+                multiply = 1f
+            };
+        }
+        else
+        {
+            // StarLevel인 경우
+            if (statName == StatName.UnitStarLevel)
+            {
+                // 현재 StarLevel 저장
+                float oldStarLevel = currentStats[StatName.UnitStarLevel].value;
+                // 새로운 StarLevel 설정
+                currentStats[StatName.UnitStarLevel].value = value;
+
+                // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
+                foreach (var stat in currentStats)
+                {
+                    if (stat.Key != StatName.UnitStarLevel)
+                    {
+                        // baseStats에서 기본값을 가져와서 새로운 StarLevel을 곱함
+                        stat.Value.value = baseStats[stat.Key].value * value;
+                    }
+                }
+            }
+        }
+
+        UpdateStarDisplay();
+    }
+
 
     public void SetPreviewMaterial(bool canPlace)
     {

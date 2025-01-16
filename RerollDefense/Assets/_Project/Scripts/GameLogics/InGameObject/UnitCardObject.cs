@@ -205,9 +205,10 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 // 해당 위치의 기존 배치된 유닛의 별 다시 활성화
                 Vector2 position = previousTilePosition + tileOffsets[i];
                 var tileData = TileMapManager.Instance.GetTileData(position);
-                if (tileData?.placedUnit != null)
+
+                foreach (var star in tileData.placedUnit.starObjects)
                 {
-                    tileData.placedUnit.unitStarObject.SetActive(true);
+                    star.SetActive(true);
                 }
 
                 PoolingManager.Instance.ReturnObject(currentPreviews[i].gameObject);
@@ -228,13 +229,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             // 타일에 유닛이 있고 합성이 가능한 경우(유닛타입이 똑같고 다음 업그레이드할 유닛이 있는경우)
             if (tileData?.placedUnit != null &&
                 currentPreview.unitType == tileData.placedUnit.unitType &&
-                tileData.placedUnit.unitData.f_NextLevelUnit != null)
+                tileData.placedUnit.GetStat(StatName.UnitStarLevel) < 3)
             {
-                //기존 배치된 유닛 별 비활성화
-                tileData.placedUnit.unitStarObject.SetActive(false);
-
-                var nextLevelUnitData = tileData.placedUnit.unitData.f_NextLevelUnit;
-                var poolingKey = nextLevelUnitData.f_UnitPoolingKey.f_PoolObjectAddressableKey;
+                foreach (var star in tileData.placedUnit.starObjects)
+                {
+                    star.SetActive(false);
+                }
 
                 Vector3 mergedPosition = TileMapManager.Instance.GetTileToWorldPosition(previewPosition);
 
@@ -242,10 +242,14 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 currentPreview.gameObject.SetActive(false);
 
                 // 새로운 합성 유닛 생성 및 설정
-                GameObject mergedPreview = PoolingManager.Instance.GetObject(poolingKey, mergedPosition);
+                GameObject mergedPreview = PoolingManager.Instance.GetObject(currentPreview.unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey, mergedPosition);
                 var mergedUnit = mergedPreview.GetComponent<UnitController>();
                 mergedUnit.Initialize();
-                mergedUnit.InitializeUnitInfo(nextLevelUnitData, previewPosition);
+                mergedUnit.InitializeUnitInfo(currentPreview.unitData, previewPosition);
+
+                int newStarLevel = (int)tileData.placedUnit.GetStat(StatName.UnitStarLevel) + 1;
+                mergedUnit.UpdateUnitStat(StatName.UnitStarLevel, newStarLevel);
+
                 mergedUnit.SetPreviewMaterial(canPlace);
                 mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
                 // 현재 프리뷰를 합성된 것으로 교체
@@ -305,7 +309,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
             stat = StatName.Cost,
-            value = cardCost * -1,
+            value = cardCost * -1, // 음수로 소모
             multiply = 1f
         });
         
