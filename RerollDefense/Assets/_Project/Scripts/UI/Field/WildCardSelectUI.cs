@@ -122,11 +122,7 @@ public class WildCardSelectUI : FloatingPopupBase
         return null;
     }
 
-    //select 창 외부의 영역 선택했을때 ui창 닫기
-    public void onClickBackGroundBtn()
-    {
-        UIManager.Instance.CloseUI<WildCardSelectUI>(); 
-    }
+    
 
     public override void HideUI()
     {

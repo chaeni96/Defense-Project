@@ -6,6 +6,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.CullingGroup;
 
 public class Enemy : BasicObject
 {
@@ -75,6 +76,7 @@ public class Enemy : BasicObject
                 multiply = baseStat.Value.multiply
             };
         }
+        Debug.Log($"{GetStat(StatName.CurrentHp)}");
 
         UpdateHpBar();
     }
@@ -83,8 +85,30 @@ public class Enemy : BasicObject
     {
         base.OnStatChanged(subject, statChange);
 
+        
+        // 체력 관련 스탯이 변경되었을 때
         if (statChange.stat == StatName.CurrentHp || statChange.stat == StatName.MaxHP)
         {
+            // 체력 변화 전후를 비교하여 데미지 처리
+            float currentHp = GetStat(StatName.CurrentHp);
+
+            if (statChange.stat == StatName.CurrentHp)
+            {
+                // 데미지를 입었을 경우 깜빡이는 효과 적용
+                DOTween.Sequence()
+                .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+                .Append(spriteRenderer.DOColor(Color.white, 0.1f))  // 0.1초 동안 원래 색으로
+                .OnComplete(() =>
+                {
+                    // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
+                    if (GetStat(StatName.CurrentHp) <= 0)
+                    {
+                        OnDead();
+                    }
+                });
+            }
+
+            // HP 바 업데이트
             UpdateHpBar();
         }
     }
@@ -120,11 +144,11 @@ public class Enemy : BasicObject
         }
     }
 
+    //TODO : projectile과 aoe도 StatManager의 메서드를 부르도록 바꾸기
     public void onDamaged(BasicObject attacker, float damage = 0)
     {
         if (attacker != null)
         {
-
             //attacker의 공격력 
             if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
             {

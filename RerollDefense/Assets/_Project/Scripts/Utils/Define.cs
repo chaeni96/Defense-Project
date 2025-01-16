@@ -96,7 +96,7 @@ public enum UnitType
 }
 public enum BuffType
 {
-    Temporary,      // 일정시간동안 효과가 발동하는 버프 - 시간기반
+    Temporal,      // 일정시간동안 효과가 발동하는 버프 - 시간기반
     Instant,      // 즉시 적용되는 영구 버프
 
 }

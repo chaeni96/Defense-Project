@@ -25,15 +25,12 @@ public abstract class BuffTimeBase
 
 
 
-//일시적인 버프 
-public class TemporaryBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
+//일시적인 버프 - 시간 기반으로 지속적인 변화를 주는 버프
+public class TemporalBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
 {
-
-    //마지막 효과 발동된 시간
-    private float lastTickTime;
-
     //버프 적용 대상
     private StatSubject currentSubject;
+    private float elapsedTime = 0f;  // 경과 시간
 
 
     public override void StartBuff(StatSubject subject)
@@ -55,9 +52,6 @@ public class TemporaryBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeCha
             TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, buffUID);
         }
 
-        lastTickTime = Time.time;
-
-        ApplyEffects(subject);
     }
 
     public override void ApplyEffects(StatSubject subject)
@@ -83,14 +77,14 @@ public class TemporaryBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeCha
     {
         if (scheduleUID != buffUID || buffData.f_tickInterval <= 0) return;
 
+        // 전체 지속시간에서 남은 시간을 빼서 경과 시간 계산
+        elapsedTime = buffData.f_duration - remainTime;
 
-        // 마지막 효과 발동 후 틱 간격만큼 시간이 지났는지 체크
-        if (Time.time - lastTickTime >= buffData.f_tickInterval)
+        // 경과 시간을 tick interval로 나눈 값이 정수가 될 때마다 효과 적용
+        if (Mathf.FloorToInt(elapsedTime / buffData.f_tickInterval) >
+            Mathf.FloorToInt((elapsedTime - Time.deltaTime) / buffData.f_tickInterval))
         {
-            // 현재 시간 기록
-            lastTickTime = Time.time;
-
-            ApplyEffects(currentSubject);  // 효과 다시 적용
+            ApplyEffects(currentSubject);
         }
     }
 

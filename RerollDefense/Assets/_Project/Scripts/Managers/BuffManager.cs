@@ -68,8 +68,8 @@ public class BuffManager : MonoBehaviour
     {
         switch (type)
         {
-            case BuffType.Temporary:
-                return new TemporaryBuff();
+            case BuffType.Temporal:
+                return new TemporalBuff();
             case BuffType.Instant:
                 return new InstantBuff();
             default:
@@ -92,7 +92,7 @@ public class BuffManager : MonoBehaviour
 
     private void RemoveBuff(BuffTimeBase buff, StatSubject subject)
     {
-        if (buff is TemporaryBuff tempBuff)
+        if (buff is TemporalBuff tempBuff)
         {
             TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(tempBuff.GetBuffUID());
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(tempBuff.GetBuffUID());
