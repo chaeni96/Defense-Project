@@ -14,34 +14,92 @@ public class Enemy : BasicObject
     public SpriteRenderer spriteRenderer;
     public Collider2D enemyCollider;
     
-    //enemy Stat -> 프리팹에 저장해두기
-    public float maxHP;
-    public float HP;
-    public float attackPower;
-    public float moveSpeed;
-    private bool isActive = true;
-    
     [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
     [SerializeField] private Slider hpBar;  // Inspector에서 할당
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
 
+    private D_EnemyData enemyData;
+
+    private bool isActive = true;
+
     public override void Initialize()
     {
         base.Initialize();
-
-        // 프리팹에 설정된 초기값들을 stats 딕셔너리에 설정
-
-        // 프리팹에 설정된 초기값들을 stats 딕셔너리에 설정
-  
-        HP = maxHP;
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
-        UpdateHpText();
+        UpdateHpBar();
     }
 
- 
+  public void InitializeEnemyInfo(D_EnemyData data)
+    {
+        enemyData = data;
+
+        // StatSubject에 따른 스탯 합산
+        Dictionary<StatName, StatStorage> mergedStats = new Dictionary<StatName, StatStorage>();
+
+        foreach (var subject in enemyData.f_statSubject)
+        {
+            var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
+            foreach (var stat in subjectStats)
+            {
+                if (!mergedStats.ContainsKey(stat.stat))
+                {
+                    mergedStats[stat.stat] = new StatStorage
+                    {
+                        stat = stat.stat,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
+                else
+                {
+                    mergedStats[stat.stat].value += stat.value;
+                    mergedStats[stat.stat].multiply *= stat.multiply;
+                }
+            }
+            AddSubject(subject);
+        }
+
+        // 합산된 스탯을 기본값으로 설정
+        baseStats = mergedStats;
+
+        // 현재 스탯 초기화
+        foreach (var baseStat in baseStats)
+        {
+            currentStats[baseStat.Key] = new StatStorage
+            {
+                stat = baseStat.Value.stat,
+                value = baseStat.Value.value,
+                multiply = baseStat.Value.multiply
+            };
+        }
+
+        UpdateHpBar();
+    }
+
+    public override void OnStatChanged(StatSubject subject, StatStorage statChange)
+    {
+        base.OnStatChanged(subject, statChange);
+
+        if (statChange.stat == StatName.CurrentHp || statChange.stat == StatName.MaxHP)
+        {
+            UpdateHpBar();
+        }
+    }
+
+    private void UpdateHpBar()
+    {
+        float currentHp = GetStat(StatName.CurrentHp);
+        float maxHp = GetStat(StatName.MaxHP);
+
+        if (hpBar != null && maxHp > 0)
+        {
+            hpBar.value = currentHp / maxHp;
+        }
+    }
+
 
     // 활성화 상태 확인 메서드
     public bool IsActive() => isActive;
@@ -52,24 +110,12 @@ public class Enemy : BasicObject
         isActive = active;
     }
 
-    public void UpdateHpText()
-    {
-        var hp = HP;
-
-
-        if (hpBar != null)
-        {
-            hpBar.value = hp / maxHP;
-
-        }
-    }
-
 
     public void OnReachEndTile()
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.TakeDamage(attackPower);
+            GameManager.Instance.TakeDamage(GetStat(StatName.ATK));
             isActive = false;
         }
     }
@@ -80,7 +126,11 @@ public class Enemy : BasicObject
         {
 
             //attacker의 공격력 
-            HP -= damage;
+            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
+            {
+                hpStat.value -= (int)damage;
+                UpdateHpBar();
+            }
 
             // 데미지를 입으면 빨간색으로 깜빡임
             if (spriteRenderer != null)
@@ -92,17 +142,13 @@ public class Enemy : BasicObject
             }
         }
 
-        if (HP <= 0)
+        if (GetStat(StatName.CurrentHp) <= 0)
         {
-            HP = 0;
-
-            onDead(this);
+            OnDead();
         }
-
-        UpdateHpText();
     }
 
-    public void onDead(BasicObject controller)
+    public void OnDead()
     {
         if (enemyType == EnemyType.Boss)
         {
@@ -162,7 +208,7 @@ public class Enemy : BasicObject
 
                 for (int j = 0; j < spawnCount; j++)
                 {
-                    EnemyManager.Instance.SpawnEnemy("Enemy_Normal", validPositions[i]);
+                   EnemyManager.Instance.SpawnEnemy(enemyData.f_DeathSpawnEnemyData, validPositions[i]);
                 }
             }
         }

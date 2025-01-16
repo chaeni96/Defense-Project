@@ -89,19 +89,20 @@ public class EnemyManager : MonoBehaviour
         moveSpeeds = new NativeArray<float>(enemyCount, Allocator.TempJob);
     }
 
-    public void SpawnEnemy(string enemyName, Vector3? initPos = null)
+    public void SpawnEnemy(D_EnemyData enemyData, Vector3? initPos = null)
     {
 
         var startTilePos = TileMapManager.Instance.GetStartPosition();
         Vector3 startPos = initPos ?? TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
 
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyName, startPos, 10);
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, startPos, 10);
 
         if (enemyObj != null)
         {
             Enemy enemy = enemyObj.GetComponent<Enemy>();
             enemy.transform.position = startPos;
             enemy.Initialize();
+            enemy.InitializeEnemyInfo(enemyData);
 
             // 초기 경로 설정
             List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
@@ -177,7 +178,7 @@ public class EnemyManager : MonoBehaviour
                 List<Vector3> enemyPath = enemyPaths[enemy];
                 int pathIndex = enemyPathIndex[enemy];
 
-                moveSpeeds[i] = enemy.moveSpeed;
+                moveSpeeds[i] = enemy.GetStat(StatName.MoveSpeed);
 
                 if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
                 {

@@ -22,9 +22,20 @@ public enum StatSubject
     PlayerCommon,   //플레이어 유닛 전부 적용
     EnemyCommon,    //적 유닛 전부 적용
 
-    PlayerArcher,   //궁수류 플레이어 유닛
-    PlayerMage,     //마법사류 플레이어 유닛
+    PlayerArcher_1Star,   //궁수류 플레이어 유닛
+    PlayerMage_1Star,     //마법사류 플레이어 유닛
     PlayerBase,
+
+    PlayerArhcer_2Star,
+    PlayerArhcer_3Star,
+    PlayerMage_2Star,
+    PlayerMage_3Star,
+
+
+    EnemyNormal, // 일반 몬스터
+    EnemyFaster, // 스피드 빠른 일반 몬스터
+    EnemyBoss, //보스 몬스터
+    
 
 }
 
@@ -33,14 +44,14 @@ public enum StatName
 {
 
     //기존 유닛 스탯
-    MaxHP, //체력
+    MaxHP,
     ATK, //공격력
     AttackSpeed, //공격 속도, 몇초마다 공격할지
     AttackRange,
     MoveSpeed,
 
     //시스템 관련 스탯
-    CostAdded,
+    Cost,
     RerollCost,
     //스킬 관련 스탯
     ProjectileSpeed,
@@ -61,7 +72,10 @@ public enum StatName
     WaveMinRestTime,    // 최소 쉬는 시간 (5초)
 
     //추가 스탯
-    currentHp,
+    CurrentHp, 
+    StoreLevel,
+    UnitStarLevel,
+
 
 }
 

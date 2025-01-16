@@ -80,7 +80,7 @@ public class ProjectileManager : MonoBehaviour
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
             TheProjectile projectile = activeProjectiles[i];
-            if (!IsTargetValid(projectile) || projectile.target.HP <= 0)  // HP 체크 추가
+            if (!IsTargetValid(projectile) || projectile.target.GetStat(StatName.CurrentHp) <= 0)  // HP 체크 추가
             {
                 ReturnProjectile(projectile);
             }

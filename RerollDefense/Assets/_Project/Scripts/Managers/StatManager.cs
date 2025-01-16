@@ -61,19 +61,20 @@ public class StatManager : MonoBehaviour
     {
         CleanUp();
 
-        D_UnitData.ForEachEntity(unitData =>
+        D_StatSubjectData.ForEachEntity(subjectData =>
         {
-            foreach (var subject in unitData.f_StatSubject)
-            {
-                if (!baseStats.ContainsKey(subject))
-                {
-                    baseStats[subject] = new List<StatStorage>();
-                }
+            var subject = subjectData.f_subjectType;
 
-                foreach (var stat in unitData.f_UnitsStat)
-                {
-                    InitializeBaseStats(subject, stat.f_StatName, stat.f_StatValue, stat.f_ValueMultiply);
-                }
+            // 해당 Subject가 Dictionary에 없으면 새로 생성
+            if (!baseStats.ContainsKey(subject))
+            {
+                baseStats[subject] = new List<StatStorage>();
+            }
+
+            // Subject의 모든 스탯 데이터를 읽어서 저장
+            foreach (var statData in subjectData.f_subjectStats)
+            {
+                InitializeBaseStats(subject, statData.f_statName, statData.f_statValue, statData.f_valueMultiply);
             }
         });
     }

@@ -247,7 +247,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             // null 체크 및 안전한 스폰
             if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
             {
-                EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
+                EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy);
             }
             else
             {
