@@ -11,7 +11,7 @@ public class ProjectileManager : MonoBehaviour
 {
     private static ProjectileManager _instance;
 
-
+    private Dictionary<UnitController, (int remainingShots, float nextFireTime, Enemy target)> sequenceData = new Dictionary<UnitController, (int, float, Enemy)>();
     // 활성화된 투사체 목록과 JobSystem용 배열들
     private List<TheProjectile> activeProjectiles = new List<TheProjectile>();
     private TransformAccessArray transformAccessArray;
@@ -46,6 +46,7 @@ public class ProjectileManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
 
     public void InitializeManager()
     {
