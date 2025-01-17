@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  damageDelay: 0
   totalFXDelay: 0.7
   enemyMask:
     serializedVersion: 2

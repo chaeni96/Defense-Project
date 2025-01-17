@@ -5,12 +5,14 @@ using static UnityEngine.GraphicsBuffer;
 
 public class TheAOE : SkillBase
 {
-    [SerializeField] float damageDelay = 0f;
-    [SerializeField] float totalFXDelay = 0.7f;
+    [SerializeField] float totalFXDelay = 0.5f;
     [SerializeField] LayerMask enemyMask;
     [SerializeField] Collider2D myCollider;
 
-    private readonly List<Collider2D> enemys = new List<Collider2D>();
+    private List<Collider2D> enemys = new List<Collider2D>();
+    private HashSet<Enemy> damagedEnemies = new HashSet<Enemy>();  // 이미 데미지를 준 적들 
+
+    private ContactFilter2D filter;
 
     public override void Initialize(UnitController unit)
     {
@@ -19,50 +21,51 @@ public class TheAOE : SkillBase
         // 리스트 초기화
         enemys.Clear();
 
-        float radius = owner.GetStat(StatName.AttackRange);
+        float radius = owner.GetStat(StatName.AttackRange) * 2f;
         transform.localScale = new Vector3(radius, radius, radius);
+
+        // filter 초기화
+        filter = new ContactFilter2D();
+        filter.useLayerMask = true;
+        filter.layerMask = enemyMask;
     }
 
     public override void Fire(Vector3 targetPosition)
     {
         transform.position = owner.transform.position;
-        StartCoroutine(ApplyDamageSequence());
+        StartCoroutine(CheckEnemiesInRange());
     }
 
-    private IEnumerator ApplyDamageSequence()
+    private IEnumerator CheckEnemiesInRange()
     {
-        yield return new WaitForSeconds(damageDelay);
-        
-        CheckEnemyInCollider();
-        StartCoroutine(DestroyAfterDuration(totalFXDelay));
-    }
+        float checkInterval = 0.1f;  // 체크 주기
+        float elapsedTime = 0f;
 
-
-    public void CheckEnemyInCollider()
-    {
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.useLayerMask = true;
-        filter.layerMask = enemyMask;
-
-        int enemyCount = myCollider.OverlapCollider(filter, enemys);
-
-        for(int i = 0; i < enemyCount; i++)
+        while (elapsedTime < totalFXDelay)
         {
-            var enemy = EnemyManager.Instance.GetActiveEnemys(enemys[i]);
-            if (enemy != null)
+            enemys.Clear();
+            myCollider.OverlapCollider(filter, enemys);
+            float damage = owner.GetStat(StatName.ATK);
+
+            foreach (var enemyCollider in enemys)
             {
-                enemy.onDamaged(owner, owner.GetStat(StatName.ATK));
+                var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
+                if (enemy != null && !damagedEnemies.Contains(enemy))
+                {
+                    enemy.onDamaged(owner, damage);
+                    damagedEnemies.Add(enemy);  // 데미지를 준 적 기록
+                }
             }
+
+            elapsedTime += checkInterval;
+            yield return new WaitForSeconds(checkInterval);
         }
-    }
 
-    private IEnumerator DestroyAfterDuration(float duration)
-    {
-        yield return new WaitForSeconds(duration);
         CleanUp();
-        PoolingManager.Instance.ReturnObject(this.gameObject);
+        PoolingManager.Instance.ReturnObject(gameObject);
     }
 
+  
     public void CleanUp()
     {
         // 코루틴 정리
@@ -70,6 +73,8 @@ public class TheAOE : SkillBase
 
         // 리스트 정리
         enemys.Clear();
+        damagedEnemies.Clear();
+
     }
 
 

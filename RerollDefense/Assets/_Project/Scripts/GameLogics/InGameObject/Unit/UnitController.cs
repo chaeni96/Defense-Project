@@ -202,38 +202,24 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     }
 
-    public void UpdateUnitStat(StatName statName, int value)
+    public void UpGradeUnitLevel(int value)
     {
-        if (!currentStats.ContainsKey(statName))
-        {
-            currentStats[statName] = new StatStorage
-            {
-                stat = statName,
-                value = value,
-                multiply = 1f
-            };
-        }
-        else
-        {
-            // StarLevel인 경우
-            if (statName == StatName.UnitStarLevel)
-            {
-                // 현재 StarLevel 저장
-                float oldStarLevel = currentStats[StatName.UnitStarLevel].value;
-                // 새로운 StarLevel 설정
-                currentStats[StatName.UnitStarLevel].value = value;
 
-                // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
-                foreach (var stat in currentStats)
-                {
-                    if (stat.Key != StatName.UnitStarLevel)
-                    {
-                        // baseStats에서 기본값을 가져와서 새로운 StarLevel을 곱함
-                        stat.Value.value = baseStats[stat.Key].value * value;
-                    }
-                }
+        if (!currentStats.ContainsKey(StatName.UnitStarLevel)) return;
+
+            // 새로운 StarLevel 설정
+            currentStats[StatName.UnitStarLevel].value = value;
+
+        // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
+        foreach (var stat in currentStats)
+        {
+            if (stat.Key != StatName.UnitStarLevel)
+            {
+                // baseStats에서 기본값을 가져와서 새로운 StarLevel을 곱함
+                stat.Value.value = baseStats[stat.Key].value * value;
             }
         }
+   
 
         UpdateStarDisplay();
     }

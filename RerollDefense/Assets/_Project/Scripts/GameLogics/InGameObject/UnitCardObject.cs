@@ -248,7 +248,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 mergedUnit.InitializeUnitInfo(currentPreview.unitData, previewPosition);
 
                 int newStarLevel = (int)tileData.placedUnit.GetStat(StatName.UnitStarLevel) + 1;
-                mergedUnit.UpdateUnitStat(StatName.UnitStarLevel, newStarLevel);
+                mergedUnit.UpGradeUnitLevel(newStarLevel);
 
                 mergedUnit.SetPreviewMaterial(canPlace);
                 mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
