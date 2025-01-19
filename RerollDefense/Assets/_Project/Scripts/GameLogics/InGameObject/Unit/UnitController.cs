@@ -154,8 +154,8 @@ public class UnitController : BasicObject, IPointerClickHandler
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
         base.OnStatChanged(subject, statChange);
+        
         ApplyEffect();
-
 
         //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
         if (statChange.stat == StatName.AttackSpeed)

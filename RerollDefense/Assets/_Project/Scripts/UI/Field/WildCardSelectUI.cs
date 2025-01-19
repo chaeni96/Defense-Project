@@ -95,9 +95,9 @@ public class WildCardSelectUI : FloatingPopupBase
         // 등급별 출현확률 설정 -> database에서 grade enum값으로 하지말고 확률로 넣을지 고민중
         var weights = new Dictionary<CardGrade, float>
         {
-            { CardGrade.Normal, 0.6f },
-            { CardGrade.Rare, 0.3f },
-            { CardGrade.Epic, 0.1f },
+            { CardGrade.Normal, 0.7f },
+            { CardGrade.Rare, 0.25f },
+            { CardGrade.Epic, 0.05f },
         };
 
         float random = Random.value; //0부터 1까지 사이 랜덤값
