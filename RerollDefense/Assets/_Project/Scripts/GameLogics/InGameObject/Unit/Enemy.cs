@@ -35,6 +35,8 @@ public class Enemy : BasicObject
 
   public void InitializeEnemyInfo(D_EnemyData data)
     {
+        isEnemy = true;
+
         enemyData = data;
 
         // StatSubject에 따른 스탯 합산
@@ -45,19 +47,19 @@ public class Enemy : BasicObject
             var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
             foreach (var stat in subjectStats)
             {
-                if (!mergedStats.ContainsKey(stat.stat))
+                if (!mergedStats.ContainsKey(stat.statName))
                 {
-                    mergedStats[stat.stat] = new StatStorage
+                    mergedStats[stat.statName] = new StatStorage
                     {
-                        stat = stat.stat,
+                        statName = stat.statName,
                         value = stat.value,
                         multiply = stat.multiply
                     };
                 }
                 else
                 {
-                    mergedStats[stat.stat].value += stat.value;
-                    mergedStats[stat.stat].multiply *= stat.multiply;
+                    mergedStats[stat.statName].value += stat.value;
+                    mergedStats[stat.statName].multiply *= stat.multiply;
                 }
             }
             AddSubject(subject);
@@ -71,7 +73,7 @@ public class Enemy : BasicObject
         {
             currentStats[baseStat.Key] = new StatStorage
             {
-                stat = baseStat.Value.stat,
+                statName = baseStat.Value.statName,
                 value = baseStat.Value.value,
                 multiply = baseStat.Value.multiply
             };
@@ -83,7 +85,7 @@ public class Enemy : BasicObject
             var maxHp = GetStat(StatName.MaxHP);
             currentStats[StatName.CurrentHp] = new StatStorage
             {
-                stat = StatName.CurrentHp,
+                statName = StatName.CurrentHp,
                 value = Mathf.FloorToInt(maxHp),
                 multiply = 1f
             };
@@ -98,12 +100,12 @@ public class Enemy : BasicObject
 
         
         // 체력 관련 스탯이 변경되었을 때
-        if (statChange.stat == StatName.CurrentHp || statChange.stat == StatName.MaxHP)
+        if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
             // 체력 변화 전후를 비교하여 데미지 처리
             float currentHp = GetStat(StatName.CurrentHp);
 
-            if (statChange.stat == StatName.CurrentHp)
+            if (statChange.statName == StatName.CurrentHp)
             {
                 // 데미지를 입었을 경우 깜빡이는 효과 적용
                 DOTween.Sequence()
@@ -151,11 +153,12 @@ public class Enemy : BasicObject
         //enemy의 공격력만큼 player의 hp감소 -> 스탯매니저 통해서 값 변경
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
-            stat = StatName.CurrentHp,
+            statName = StatName.CurrentHp,
             value = currentStats[StatName.ATK].value * -1 ,
             multiply = currentStats[StatName.ATK].multiply
         });
 
+        StageManager.Instance.DecreaseEnemyCount();
         isActive = false;
     }
 
@@ -197,6 +200,9 @@ public class Enemy : BasicObject
             GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
+
+        StageManager.Instance.DecreaseEnemyCount();
+
 
         EnemyManager.Instance.UnregisterEnemy(enemyCollider);
         PoolingManager.Instance.ReturnObject(gameObject);
@@ -250,6 +256,9 @@ public class Enemy : BasicObject
                    EnemyManager.Instance.SpawnEnemy(enemyData.f_DeathSpawnEnemyData, validPositions[i]);
                 }
             }
+
+            // 실제 스폰된 enemy 수만큼 remainEnemies 증가
+            StageManager.Instance.AddRemainingEnemies(spawnEnemyCount);
         }
     }
 

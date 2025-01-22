@@ -89,7 +89,7 @@ public class CostGaugeUI : MonoBehaviour
                 // costPerTick 값을 바로 넘겨 변경사항 브로드캐스트
                 StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
                 {
-                    stat = StatName.Cost,
+                    statName = StatName.Cost,
                     value = costPerTick, // 직접 변경값 전달
                     multiply = 1f
                 });

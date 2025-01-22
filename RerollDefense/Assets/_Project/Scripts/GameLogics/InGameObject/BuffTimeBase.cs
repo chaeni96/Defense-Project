@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class BuffTimeBase
@@ -61,7 +62,7 @@ public class TemporalBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChan
             // StatManager를 통해 변경사항 알림
             StatManager.Instance.BroadcastStatChange(subject, new StatStorage
             {
-                stat = effect.f_statName,
+                statName = effect.f_statName,
                 value = effect.f_value,
                 multiply = effect.f_valueMultiply
             });
@@ -123,7 +124,7 @@ public class InstantBuff : BuffTimeBase
             //해당 Subject를 구독 중인 모든 BasicObject에게 알림
             StatManager.Instance.BroadcastStatChange(subject, new StatStorage
             {
-                stat = effect.f_statName,
+                statName = effect.f_statName,
                 value = effect.f_value,
                 multiply = effect.f_valueMultiply
             });
@@ -133,3 +134,161 @@ public class InstantBuff : BuffTimeBase
     public override void RemoveEffects(StatSubject subject) { }
 
 }
+
+//TODO : 수정해야됨 -> 콜라이더 체크가 잘안됨.
+public class RangeBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChangeSubscriber
+{
+    private StatSubject casterSubject;  // 버프를 시전할 오브젝트, 공간 버프 생기는 주체
+    private BuffRangeObject buffRangeObject;
+    private HashSet<BasicObject> objectsInRange = new HashSet<BasicObject>();
+    private float buffRange = 1f;
+    private StatStorage buffEffect;
+
+    //원래 스탯 저장
+    private Dictionary<BasicObject, StatStorage> originalStats = new Dictionary<BasicObject, StatStorage>();
+
+    public override void StartBuff(StatSubject subject)
+    {
+        if (buffData == null) return;
+
+        casterSubject = subject;
+
+        // 버프 효과 미리 계산
+        var effect = buffData.f_buffEffects.First();
+        buffEffect = new StatStorage
+        {
+            statName = effect.f_statName,
+            value = effect.f_value,
+            multiply = effect.f_valueMultiply
+        };
+
+        // 버프 시전할 오브젝트 모두 가져오기
+        var subscribers = StatManager.Instance.GetAllSubscribers(casterSubject);
+
+        foreach (var sub in subscribers)
+        {
+            var owner = sub as BasicObject;
+
+            if (owner != null)
+            {
+                CreateRangeCollider(owner.transform.position, owner);
+            }
+        }
+
+        buffUID = TimeTableManager.Instance.RegisterSchedule(buffData.f_duration);
+        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, buffUID);
+
+        // 시간 변화 구독(틱 인터벌과 무관하게 항상 구독)
+        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, buffUID);
+    }
+
+    public void OnChangeTime(int scheduleUID, float remainTime)
+    {
+        if (scheduleUID != buffUID) return;
+
+        // BuffRangeObject를 통해 콜라이더 범위 체크
+        if (buffRangeObject != null)
+        {
+            buffRangeObject.CheckRangeObjects();
+        }
+
+        // 틱 간격이 있는 경우에만 주기적 효과 적용
+        if (buffData.f_tickInterval > 0)
+        {
+            float elapsedTime = buffData.f_duration - remainTime;
+            if (Mathf.FloorToInt(elapsedTime / buffData.f_tickInterval) >
+                Mathf.FloorToInt((elapsedTime - Time.deltaTime) / buffData.f_tickInterval))
+            {
+                ApplyEffects(casterSubject);
+            }
+        }
+    }
+
+    public override void ApplyEffects(StatSubject subject)
+    {
+        if (buffData.f_tickInterval <= 0) return;
+
+        foreach (var obj in objectsInRange.ToList())
+        {
+            if (obj != null)
+            {
+                obj.OnStatChanged(obj.subjects[0], buffEffect);
+            }
+        }
+    }
+
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        if (scheduleUID != buffUID) return;
+
+        // 버프 종료 시 모든 오브젝트의 스탯 복원
+        foreach (var obj in objectsInRange.ToList())
+        {
+            RemoveObjectInRange(obj);
+        }
+
+        // 구독 해제
+        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(buffUID);
+        TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(buffUID);
+
+        if (buffRangeObject != null)
+        {
+            PoolingManager.Instance.ReturnObject(buffRangeObject.gameObject);
+            buffRangeObject = null;
+        }
+
+        objectsInRange.Clear();
+        originalStats.Clear();
+        buffData = null;
+    }
+
+    public override void RemoveEffects(StatSubject subject) 
+    {
+        OnCompleteSchedule(buffUID);
+    }
+
+    private void CreateRangeCollider(Vector3 position, BasicObject owner)
+    {
+        GameObject buffRangeObj = PoolingManager.Instance.GetObject("BuffRangeObject", position);
+
+
+        buffRangeObject = buffRangeObj.GetComponent<BuffRangeObject>();
+        buffRangeObject.Initialize(this, buffRange, owner);
+    }
+
+    // BuffRangeObject에서 범위 내 오브젝트 추적을 위한 메서드
+    public void AddObjectInRange(BasicObject obj)
+    {
+        if (obj != null && !objectsInRange.Contains(obj))
+        {
+            // 현재 스탯 저장
+            var currentStat = obj.currentStats[buffEffect.statName];
+            originalStats[obj] = new StatStorage
+            {
+                statName = currentStat.statName,
+                value = currentStat.value,
+                multiply = currentStat.multiply
+            };
+
+            // 효과 적용 (첫 번째 Subject에만)
+            obj.OnStatChanged(obj.subjects[0], buffEffect);
+            objectsInRange.Add(obj);
+        }
+    }
+
+    public void RemoveObjectInRange(BasicObject obj)
+    {
+        if (obj != null && objectsInRange.Contains(obj))
+        {
+            objectsInRange.Remove(obj);
+
+            if (originalStats.TryGetValue(obj, out var originalStat))
+            {
+                // 원래 저장해둔 스탯으로 그대로 복원
+                obj.OnStatChanged(obj.subjects[0], originalStat);
+                originalStats.Remove(obj);
+            }
+        }
+    }
+}
+

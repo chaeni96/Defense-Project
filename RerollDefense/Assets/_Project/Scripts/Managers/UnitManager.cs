@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UnitManager : MonoBehaviour
 {
@@ -126,11 +127,6 @@ public class UnitManager : MonoBehaviour
                         Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
                             targetEnemy.transform.position : unit.transform.position;
 
-                        if (unit.attackType == SkillAttackType.Projectile)
-                        {
-                            unit.MoveScale();
-                        }
-
                         AttackSkillManager.Instance.ActiveSkill(unit.unitData.f_SkillPoolingKey.f_PoolObjectAddressableKey, unit, targetPos);
                         unit.attackTimer = 0f;
                     }
@@ -159,12 +155,19 @@ public class UnitManager : MonoBehaviour
     {
         if (units.Contains(unit))
         {
-            // 타일 위치를 배치 가능한 상태로 변경            
-            var tileData = new TileData(unit.tilePosition)
-            { 
-                isAvailable = true 
-            };
-            TileMapManager.Instance.SetTileData(tileData);
+            // 먼저 기존 타일 데이터 가져오기
+            var existingTileData = TileMapManager.Instance.GetTileData(unit.tilePosition);
+
+            if (existingTileData != null)
+            {
+                // 기존 타일 데이터의 placedUnit 초기화
+                existingTileData.isAvailable = true;
+                existingTileData.placedUnit = null;
+
+                // 타일 데이터 업데이트
+                TileMapManager.Instance.SetTileData(existingTileData);
+            }
+
 
             units.Remove(unit);
             PoolingManager.Instance.ReturnObject(unit.gameObject);

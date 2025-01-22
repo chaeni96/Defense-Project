@@ -45,7 +45,7 @@ public class BuffManager : MonoBehaviour
 
   
     //WildCard나 아이템 등에서 버프 적용하는 메서드 -> 호출하면 버프 적용
-    public void ApplyBuff(D_BuffData buffData, StatSubject subject)
+    public void ApplyBuff(D_BuffData buffData, StatSubject subject, BasicObject owner = null)
     {
         //버프 타입에 맞는 버프 객체 생성
         var buff = CreateBuff(buffData.f_buffType);
@@ -72,6 +72,8 @@ public class BuffManager : MonoBehaviour
                 return new TemporalBuff();
             case BuffType.Instant:
                 return new InstantBuff();
+            case BuffType.Range:
+                return new RangeBuff();
             default:
                 return null;
         }

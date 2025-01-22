@@ -7,16 +7,19 @@ using UnityEngine;
 public class BasicObject : MonoBehaviour, IStatSubscriber
 {
 
+
     //처음 Subject에서 가져온 기본 스탯
-    protected Dictionary<StatName, StatStorage> baseStats = new Dictionary<StatName, StatStorage>();
+    public Dictionary<StatName, StatStorage> baseStats = new Dictionary<StatName, StatStorage>();
 
     //현재 적용중인 스탯값
-    protected Dictionary<StatName, StatStorage> currentStats = new Dictionary<StatName, StatStorage>();
+    public Dictionary<StatName, StatStorage> currentStats = new Dictionary<StatName, StatStorage>();
 
     //구독중인 
-    protected List<StatSubject> subjects = new List<StatSubject>();
+    public List<StatSubject> subjects = new List<StatSubject>();
 
 
+    public bool isEnemy = false;
+   
     public virtual void Initialize()
     {
         foreach (var subject in subjects)
@@ -39,19 +42,18 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         if (!subjects.Contains(subject)) return;
 
         // currentStats 업데이트
-        if (!currentStats.ContainsKey(statChange.stat))
+        if (!currentStats.ContainsKey(statChange.statName))
         {
-            currentStats[statChange.stat] = new StatStorage
+            currentStats[statChange.statName] = new StatStorage
             {
-                stat = statChange.stat,
-                value = baseStats.ContainsKey(statChange.stat) ? baseStats[statChange.stat].value : 0,
-                multiply = baseStats.ContainsKey(statChange.stat) ? baseStats[statChange.stat].multiply : 1f
+                statName = statChange.statName,
+                value = baseStats.ContainsKey(statChange.statName) ? baseStats[statChange.statName].value : 0,
+                multiply = baseStats.ContainsKey(statChange.statName) ? baseStats[statChange.statName].multiply : 1f
             };
         }
 
-        var current = currentStats[statChange.stat];
-        current.value += statChange.value;
-        current.multiply *= statChange.multiply;
+        currentStats[statChange.statName].value += statChange.value;
+        currentStats[statChange.statName].multiply *= statChange.multiply;
     }
 
     //유닛의 현재 특정 스탯의 값 반환

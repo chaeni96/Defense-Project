@@ -237,7 +237,7 @@ public class FullWindowInGameDlg : FullWindowBase
             // 비용 소모 처리
             StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
             {
-                stat = StatName.Cost,
+                statName = StatName.Cost,
                 value = -shopUpgradeCost, // 비용 소모는 음수로 전달
                 multiply = 1f
             });
@@ -246,7 +246,7 @@ public class FullWindowInGameDlg : FullWindowBase
             var newShopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel) + 1;
             StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
             {
-                stat = StatName.StoreLevel,
+                statName = StatName.StoreLevel,
                 value = newShopLevel, // 새로운 상점 레벨 전달
                 multiply = 1f
             });
@@ -263,6 +263,15 @@ public class FullWindowInGameDlg : FullWindowBase
     private void OnCostUsed(int amount)
     {
         UpdateShopLevelUI();  // 코스트가 변경될 때마다 버튼 상태 업데이트
+
+
+        foreach(var card in currentCards)
+        {
+            if(card != null)
+            {
+                card.UpdateCostTextColor();
+            }
+        }
     }
 
 

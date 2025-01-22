@@ -28,21 +28,25 @@ public class SceneStarter : MonoBehaviour
         SaveLoadManager.Instance.LoadData();
         ResourceManager.Instance.InitializeManager();
         GameManager.Instance.InitializeManager();
-        // UI 초기화
-        UIManager.Instance.InitializeManager(scenekind);
 
 
+        StartCoroutine(InitializeScene());
+
+    }
+
+    private IEnumerator InitializeScene()
+    {
         if (scenekind == SceneKind.Lobby)
         {
-
+            // 로비 초기화 작업이 있다면 여기서 수행
         }
-
-        if(scenekind == SceneKind.InGame)
+        if (scenekind == SceneKind.InGame)
         {
-            StartCoroutine(InitializeGameScene());
+            yield return StartCoroutine(InitializeGameScene());
         }
 
-
+        // 모든 초기화가 끝난 후 UI 초기화
+        UIManager.Instance.InitializeManager(scenekind);
     }
 
     private IEnumerator InitializeGameScene()

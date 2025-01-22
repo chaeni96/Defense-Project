@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1183667827297006579}
   - component: {fileID: -8371793040103205213}
   - component: {fileID: 5268007554410033449}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: AoeRangeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 4065619894839972288}
   - component: {fileID: 1955743531545067715}
   - component: {fileID: 2508863745721040707}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Explosions_Frame_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

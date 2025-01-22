@@ -42,6 +42,7 @@ public class AttackSkillManager : MonoBehaviour
         switch (unit.attackType)
         {
             case SkillAttackType.Projectile:
+                unit.MoveScale();
                 StartCoroutine(ActiveProjectileSkill(skillPoolingKey, unit, targetPos));
                 break;
 

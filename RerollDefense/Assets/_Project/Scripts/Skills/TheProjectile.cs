@@ -14,8 +14,8 @@ public class TheProjectile : SkillBase
 
     public override void Fire(Vector3 targetPosition)
     {
-        // 타겟이 Enemy 컴포넌트를 가지고 있는지 체크
-        target = Physics2D.OverlapPoint(targetPosition)?.GetComponent<Enemy>();
+        target = EnemyManager.Instance.GetEnemyAtPosition(targetPosition);
+
         if (target == null) return;
 
         transform.position = owner.transform.position;

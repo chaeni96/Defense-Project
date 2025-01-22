@@ -11,7 +11,7 @@ public interface IStatSubscriber
 
 public class StatStorage
 {
-    internal StatName stat;
+    internal StatName statName;
     internal int value;         //스탯 수치
     internal float multiply;    //스탯 배율(1이 기본 배율)
 }
@@ -91,7 +91,7 @@ public class StatManager : MonoBehaviour
     {
         var storage = new StatStorage
         {
-            stat = statName,
+            statName = statName,
             value = value,
             multiply = multiply
         };
@@ -116,7 +116,7 @@ public class StatManager : MonoBehaviour
     public StatStorage GetSubjectStat(StatSubject subject, StatName statName)
     {
         if (!baseStats.ContainsKey(subject)) return null;
-        return baseStats[subject].Find(s => s.stat == statName);
+        return baseStats[subject].Find(s => s.statName == statName);
     }
 
 
@@ -133,11 +133,11 @@ public class StatManager : MonoBehaviour
         var uniqueStats = new Dictionary<StatName, StatStorage>();
         foreach (var stat in baseStats[subject])
         {
-            if (!uniqueStats.ContainsKey(stat.stat))
+            if (!uniqueStats.ContainsKey(stat.statName))
             {
-                uniqueStats[stat.stat] = new StatStorage
+                uniqueStats[stat.statName] = new StatStorage
                 {
-                    stat = stat.stat,
+                    statName = stat.statName,
                     value = stat.value,
                     multiply = stat.multiply
                 };
@@ -172,7 +172,14 @@ public class StatManager : MonoBehaviour
         }
     }
 
-
+    public List<IStatSubscriber> GetAllSubscribers(StatSubject subject)
+    {
+        if (subscribers.TryGetValue(subject, out var subscriberList))
+        {
+            return subscriberList;
+        }
+        return new List<IStatSubscriber>();
+    }
     public void CleanUp()
     {
         baseStats.Clear();

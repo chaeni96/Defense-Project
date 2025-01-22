@@ -61,9 +61,9 @@ public enum StatName
     Curse,
 
     //웨이브 관련 시간 스탯 추가
-    WaveTime,           // 일반 웨이브 시간 (30초)
-    WaveRestTime,       // 웨이브 사이 쉬는 시간 (20초) 
-    WaveMinRestTime,    // 최소 쉬는 시간 (5초)
+    WaveTime,           // 일반 웨이브 시간
+    WaveRestTime,       // 웨이브 사이 쉬는 시간 - 와일드 카드 등장
+    WaveMinRestTime,    // 최소 쉬는 시간
 
     //추가 스탯
     CurrentHp, 
@@ -93,6 +93,7 @@ public enum BuffType
 {
     Temporal,      // 일정시간동안 효과가 발동하는 버프 - 시간기반
     Instant,      // 즉시 적용되는 영구 버프
+    Range,        // 범위기반 버프
 
 }
 

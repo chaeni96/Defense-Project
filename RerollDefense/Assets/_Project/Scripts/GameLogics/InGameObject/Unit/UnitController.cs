@@ -82,12 +82,14 @@ public class UnitController : BasicObject, IPointerClickHandler
     }
 
     //유닛 정보 초기화
-    public void InitializeUnitInfo(D_UnitData unit, Vector2 tilePos)
+    public void InitializeUnitInfo(D_UnitData unit)
     {
         if (unit == null) return;
 
+        isEnemy = false;
+
         unitData = unit;
-        tilePosition = new Vector2(tilePos.x, tilePos.y);
+        Debug.Log($"Original tilePos: {tilePosition}");
 
         attackType = unitData.f_SkillAttackType;
         unitType = unitData.f_UnitType;
@@ -106,19 +108,19 @@ public class UnitController : BasicObject, IPointerClickHandler
 
             foreach (var stat in subjectStats)
             {
-                if (!baseStats.ContainsKey(stat.stat))
+                if (!baseStats.ContainsKey(stat.statName))
                 {
-                    baseStats[stat.stat] = new StatStorage
+                    baseStats[stat.statName] = new StatStorage
                     {
-                        stat = stat.stat,
+                        statName = stat.statName,
                         value = stat.value,
                         multiply = stat.multiply
                     };
                 }
                 else
                 {
-                    baseStats[stat.stat].value += stat.value;
-                    baseStats[stat.stat].multiply *= stat.multiply;
+                    baseStats[stat.statName].value += stat.value;
+                    baseStats[stat.statName].multiply *= stat.multiply;
                 }
             }
 
@@ -139,7 +141,7 @@ public class UnitController : BasicObject, IPointerClickHandler
 
             currentStats[baseStat.Key] = new StatStorage
             {
-                stat = baseStat.Value.stat,
+                statName = baseStat.Value.statName,
                 value = statValue,
                 multiply = baseStat.Value.multiply
             };
@@ -158,7 +160,7 @@ public class UnitController : BasicObject, IPointerClickHandler
         ApplyEffect();
 
         //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
-        if (statChange.stat == StatName.AttackSpeed)
+        if (statChange.statName == StatName.AttackSpeed)
         {
             attackTimer = 0;
         }
@@ -207,22 +209,53 @@ public class UnitController : BasicObject, IPointerClickHandler
 
         if (!currentStats.ContainsKey(StatName.UnitStarLevel)) return;
 
-            // 새로운 StarLevel 설정
-            currentStats[StatName.UnitStarLevel].value = value;
+        // 새로운 StarLevel 설정
+        currentStats[StatName.UnitStarLevel].value = value;
 
         // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
         foreach (var stat in currentStats)
         {
-            if (stat.Key != StatName.UnitStarLevel)
+            if (stat.Key == StatName.UnitStarLevel) continue;
+
+            float upgradePercent = GetStatUpgradePercent(stat.Key);
+            float baseValue = baseStats[stat.Key].value;
+
+            if (upgradePercent == 100)
             {
-                // baseStats에서 기본값을 가져와서 새로운 StarLevel을 곱함
+                // 100은 level만큼 곱하는 특수 케이스 (Atk, ProjectileCount 등)
                 stat.Value.value = baseStats[stat.Key].value * value;
+            }
+            else if (upgradePercent > 0)
+            {
+                // 일반적인 퍼센트 증가
+                float percentIncrease = (value == 3) ? upgradePercent * 2 : upgradePercent;
+                float multiplier = 1 + (percentIncrease / 100f);
+                stat.Value.value = Mathf.RoundToInt(baseStats[stat.Key].value * multiplier);
             }
         }
    
 
         UpdateStarDisplay();
     }
+
+    private float GetStatUpgradePercent(StatName statName)
+    {
+        switch (statName)
+        {
+            case StatName.ATK:
+            case StatName.ProjectileCount:
+                return 100;  // level만큼 곱하기
+
+            case StatName.AttackRange:
+            case StatName.ProjectileSpeed:
+                return 10;   // 10% 증가, level3에서는 20%
+
+            // 다른 스탯들
+            default:
+                return 0;    // 증가하지 않음
+        }
+    }
+
 
 
     public void SetPreviewMaterial(bool canPlace)

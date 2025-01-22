@@ -129,12 +129,21 @@ public class EnemyManager : MonoBehaviour
         return (index >= 0 && index < enemies.Count) ? enemies[index] : null;
     }
 
+
+
     //특정 조건의 enemy 반환
     public Enemy GetActiveEnemys(Collider2D collider)
     {
         Enemy enemy = null;
         activeEnemies.TryGetValue(collider, out enemy);
         return enemy;
+    }
+
+    public Enemy GetEnemyAtPosition(Vector3 position)
+    {
+        return activeEnemies
+            .FirstOrDefault(kvp => kvp.Value.transform.position == position)
+            .Value;
     }
 
     // Collider2D를 키로 사용하여 Enemy 등록
@@ -159,6 +168,7 @@ public class EnemyManager : MonoBehaviour
             enemyPathIndex.Remove(enemy);
         }
     }
+
 
     private void Update()
     {

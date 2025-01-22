@@ -106,7 +106,8 @@ public class TileMapManager : MonoBehaviour
             var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos);
 
             var objectController = newSpecialObject.GetComponent<UnitController>();
-            objectController.InitializeUnitInfo(specialTile.f_specialObject, position);
+            objectController.InitializeUnitInfo(specialTile.f_specialObject);
+            objectController.tilePosition = position;
             UnitManager.Instance.RegisterUnit(objectController);
 
 
@@ -154,6 +155,9 @@ public class TileMapManager : MonoBehaviour
         for (int i = 0; i < tileOffsets.Count; i++)
         {
             Vector2 position = basePosition + tileOffsets[i];
+
+            // 각 유닛의 tilePosition 직접 설정
+            units[i].tilePosition = position;
 
             // 각 프리뷰 유닛에 맞는 타일 데이터 설정
             var tileData = new TileData(position)

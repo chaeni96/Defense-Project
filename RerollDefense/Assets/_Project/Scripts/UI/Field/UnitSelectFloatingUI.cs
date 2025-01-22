@@ -71,6 +71,7 @@ public class UnitSelectFloatingUI : FloatingPopupBase
         UnitManager.Instance.UnregisterUnit(unitObject);
         UIManager.Instance.CloseUI<UnitSelectFloatingUI>();
 
+        EnemyManager.Instance.UpdateEnemiesPath();
 
     }
 

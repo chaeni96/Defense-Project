@@ -155,7 +155,7 @@ public class TimeTableManager : MonoBehaviour
     }
     public void RemoveTimeChangeTargetSubscriber(int scheduleUID)
     {
-        if (!targetTimeChangeSubscribers.ContainsKey(scheduleUID))
+        if (targetTimeChangeSubscribers.ContainsKey(scheduleUID))
         {
             targetTimeChangeSubscribers.Remove(scheduleUID);
         }
@@ -184,7 +184,7 @@ public class TimeTableManager : MonoBehaviour
     }
     public void RemoveScheduleCompleteTargetSubscriber(int scheduleUID)
     {
-        if (!targetScheduleCompleteSubscribers.ContainsKey(scheduleUID))
+        if (targetScheduleCompleteSubscribers.ContainsKey(scheduleUID))
         {
             targetScheduleCompleteSubscribers.Remove(scheduleUID);
         }

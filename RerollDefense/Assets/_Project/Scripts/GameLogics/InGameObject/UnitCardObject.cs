@@ -47,8 +47,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         cardCostText.text = cardCost.ToString();
 
         InitializeTileShape();
-        CreateTilePreview(unitData);
         UpdateCostTextColor();
+        CreateTilePreview(unitData);
 
         //cost 사용 이벤트 구독 -> cost 추가될때 tile Cost Text 업데이트
         GameManager.Instance.OnCostAdd += OnCostChanged;
@@ -87,7 +87,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
     //cost 색 -> 변경 가능 : 하얀색, 불가능 : 빨간색
-    private void UpdateCostTextColor()
+    public void UpdateCostTextColor()
     {
         cardCostText.color = GameManager.Instance.GetSystemStat(StatName.Cost) >= cardCost ? Color.white : Color.red;
     }
@@ -182,7 +182,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             if (previewUnit != null)
             {
                 previewUnit.Initialize();
-                previewUnit.InitializeUnitInfo(unitBuildData.f_unitData, tilePos);
+                previewUnit.InitializeUnitInfo(unitBuildData.f_unitData);
                 originalPreviews[i] = previewUnit;
                 currentPreviews[i] = previewUnit;
             }
@@ -245,11 +245,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 GameObject mergedPreview = PoolingManager.Instance.GetObject(currentPreview.unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey, mergedPosition);
                 var mergedUnit = mergedPreview.GetComponent<UnitController>();
                 mergedUnit.Initialize();
-                mergedUnit.InitializeUnitInfo(currentPreview.unitData, previewPosition);
+                mergedUnit.InitializeUnitInfo(currentPreview.unitData);
+                
 
                 int newStarLevel = (int)tileData.placedUnit.GetStat(StatName.UnitStarLevel) + 1;
                 mergedUnit.UpGradeUnitLevel(newStarLevel);
-
+                
                 mergedUnit.SetPreviewMaterial(canPlace);
                 mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
                 // 현재 프리뷰를 합성된 것으로 교체
@@ -284,9 +285,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 if (tileData?.placedUnit != null)
                 {
                     UnitManager.Instance.UnregisterUnit(tileData.placedUnit);
-                    PoolingManager.Instance.ReturnObject(tileData.placedUnit.gameObject);
-                    var newTileData = new TileData(position);
-                    TileMapManager.Instance.SetTileData(newTileData);
+                    
                 }
             }
         }
@@ -298,17 +297,17 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             var unitInstance = pair.Value;
 
             unitInstance.DestroyPreviewUnit();
-            Vector3Int pos = TileMapManager.Instance.tileMap.WorldToCell(unitInstance.transform.position);
             UnitManager.Instance.RegisterUnit(unitInstance);
         }
 
         //타일 배치 불가상태로 변경, 코스트 사용
         TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
 
+        Debug.Log($"OccupyTiles tilePos: {previousTilePosition}");
 
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
-            stat = StatName.Cost,
+            statName = StatName.Cost,
             value = cardCost * -1, // 음수로 소모
             multiply = 1f
         });
@@ -389,6 +388,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         // 이벤트 구독 해제
         GameManager.Instance.OnCostAdd -= OnCostChanged;
+
     }
 
 

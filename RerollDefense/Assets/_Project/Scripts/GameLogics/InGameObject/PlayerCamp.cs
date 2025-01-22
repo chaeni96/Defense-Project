@@ -10,7 +10,7 @@ public class PlayerCamp : MonoBehaviour
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
-    [SerializeField] private float hpUpdateSpeed = 2f;  // HP Bar 감소 속도
+    [SerializeField] private float hpUpdateSpeed = 5f;  // HP Bar 감소 속도
 
 
     private float targetHPRatio;
@@ -52,7 +52,7 @@ public class PlayerCamp : MonoBehaviour
         }
         hpBar.value = targetHPRatio;
 
-        if (targetHPRatio <= 0)
+        if (GameManager.Instance.GetSystemStat(StatName.CurrentHp) <= 0)
         {
             GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
 

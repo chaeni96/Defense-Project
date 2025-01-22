@@ -200,9 +200,9 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         var stats = StatManager.Instance.GetAllStatsForSubject(StatSubject.System);
         foreach (var stat in stats)
         {
-            systemStats[stat.stat] = new StatStorage
+            systemStats[stat.statName] = new StatStorage
             {
-                stat = stat.stat,
+                statName = stat.statName,
                 value = stat.value,
                 multiply = stat.multiply
             };
@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
             var maxHp = GetSystemStat(StatName.MaxHP);
             systemStats[StatName.CurrentHp] = new StatStorage
             {
-                stat = StatName.CurrentHp,
+                statName = StatName.CurrentHp,
                 value = Mathf.FloorToInt(maxHp),
                 multiply = 1f
             };
@@ -231,7 +231,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         if (subject != StatSubject.System) return;
 
         // 변경된 스탯에 따른 이벤트 발생
-        switch (statChange.stat)
+        switch (statChange.statName)
         {
             case StatName.CurrentHp:
                 ChangeStatHP(statChange);
@@ -278,7 +278,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         
         systemStats[StatName.CurrentHp] = new StatStorage
         {
-            stat = StatName.CurrentHp,
+            statName = StatName.CurrentHp,
             value = Mathf.Max(0, currentHp + statChange.value), // 체력 감소 처리
             multiply = statChange.multiply
         };
@@ -301,7 +301,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
         systemStats[StatName.MaxHP] = new StatStorage
         {
-            stat = StatName.MaxHP,
+            statName = StatName.MaxHP,
             value = maxHp + statChange.value, // 최대 체력 증가
             multiply = statChange.multiply
         };
@@ -318,7 +318,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         // 시스템 스탯 업데이트
         systemStats[StatName.Cost] = new StatStorage
         {
-            stat = StatName.Cost,
+            statName = StatName.Cost,
             value = newCost,
             multiply = statChange.multiply
         };
@@ -340,7 +340,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         // StoreLevel 업데이트
         systemStats[StatName.StoreLevel] = new StatStorage
         {
-            stat = StatName.StoreLevel,
+            statName = StatName.StoreLevel,
             value = statChange.value, // 새로운 레벨로 덮어쓰기
             multiply = statChange.multiply
         };
@@ -350,7 +350,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
         systemStats[StatName.MaxCost] = new StatStorage
         {
-            stat = StatName.MaxCost,
+            statName = StatName.MaxCost,
             value = maxCost,
             multiply = 1f
         };

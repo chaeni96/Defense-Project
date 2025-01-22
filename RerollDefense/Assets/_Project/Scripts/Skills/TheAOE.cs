@@ -38,31 +38,38 @@ public class TheAOE : SkillBase
 
     private IEnumerator CheckEnemiesInRange()
     {
-        float checkInterval = 0.1f;  // 체크 주기
-        float elapsedTime = 0f;
-
-        while (elapsedTime < totalFXDelay)
+        try
         {
-            enemys.Clear();
-            myCollider.OverlapCollider(filter, enemys);
-            float damage = owner.GetStat(StatName.ATK);
+            float checkInterval = 0.1f;  // 체크 주기
+            float elapsedTime = 0f;
 
-            foreach (var enemyCollider in enemys)
+            while (elapsedTime < totalFXDelay)
             {
-                var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
-                if (enemy != null && !damagedEnemies.Contains(enemy))
+                enemys.Clear();
+                myCollider.OverlapCollider(filter, enemys);
+                float damage = owner.GetStat(StatName.ATK);
+
+                foreach (var enemyCollider in enemys)
                 {
-                    enemy.onDamaged(owner, damage);
-                    damagedEnemies.Add(enemy);  // 데미지를 준 적 기록
+                    var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
+                    if (enemy != null && !damagedEnemies.Contains(enemy))
+                    {
+                        enemy.onDamaged(owner, damage);
+                        damagedEnemies.Add(enemy);  // 데미지를 준 적 기록
+                    }
                 }
+
+                elapsedTime += checkInterval;
+                yield return new WaitForSeconds(checkInterval);
             }
-
-            elapsedTime += checkInterval;
-            yield return new WaitForSeconds(checkInterval);
         }
+        finally
+        {
+            CleanUp();
 
-        CleanUp();
-        PoolingManager.Instance.ReturnObject(gameObject);
+            PoolingManager.Instance.ReturnObject(gameObject);
+        }
+       
     }
 
   
