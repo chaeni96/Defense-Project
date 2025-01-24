@@ -96,11 +96,3 @@ public enum BuffType
     Range,        // 범위기반 버프
 
 }
-
-
-public enum BuffTickType
-{
-    Instant,    // 버프 시작시 한번만 적용
-    Periodic,   // 틱마다 적용 (DoT/HoT)
-    Continuous  // 지속적으로 적용되다가 버프 종료시 제거
-}

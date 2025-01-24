@@ -106,9 +106,13 @@ public class StatManager : MonoBehaviour
     {
         if (!subscribers.ContainsKey(subject)) return;
 
-        foreach (var subscriber in subscribers[subject])
+        // ToList()로 복사본을 만들어서 순회 - 도중에 리스트가 변경되는 것 방지
+        foreach (var subscriber in subscribers[subject].ToList())
         {
-            subscriber.OnStatChanged(subject, statChange);
+            if (subscriber != null)
+            {
+                subscriber.OnStatChanged(subject, statChange);
+            }
         }
     }
 

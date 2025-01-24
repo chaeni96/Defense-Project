@@ -547,12 +547,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e6089088c0341544a2fb08fe71779f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  subjects: 
+  isEnemy: 0
   spriteRenderer: {fileID: 333312759545504093}
   enemyCollider: {fileID: 7174515326430547063}
-  maxHP: 10
-  HP: 0
-  attackPower: 5
-  moveSpeed: 0.3
   enemyType: 0
   hpBar: {fileID: 2995499982571823016}
   hpBarCanvas: {fileID: 7213748503801390195}
@@ -571,7 +569,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.29}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.5
 --- !u!1 &5730299943397982104
 GameObject:
   m_ObjectHideFlags: 0

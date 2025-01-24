@@ -249,12 +249,6 @@ public class EnemyManager : MonoBehaviour
                     // 마지막 지점 도달
                     enemy.OnReachEndTile();
 
-                    if (enemy.enemyCollider != null)
-                    {
-                        UnregisterEnemy(enemy.enemyCollider);
-                    }
-
-                    PoolingManager.Instance.ReturnObject(enemy.gameObject);
                 }
             }
         }

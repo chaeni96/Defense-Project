@@ -3,6 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 딜레이 후 버프 적용을 위한 클래스
+public class ScheduleBuffApplier : IScheduleCompleteSubscriber
+{
+    private D_BuffData buffData;
+
+    public ScheduleBuffApplier(D_BuffData buffData)
+    {
+        this.buffData = buffData;
+    }
+
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject);
+    }
+}
+
+
 public class WildCardManager : MonoBehaviour
 {
     private static WildCardManager _instance;
@@ -45,8 +62,18 @@ public class WildCardManager : MonoBehaviour
 
         foreach (var buffData in cardData.f_BuffData)
         {
-            // 버프의 대상 Subject에 따라 적용
-            BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject);
+            // 딜레이가 0이면 즉시 적용
+            if (buffData.f_startDelayTime <= 0)
+            {
+                // 버프의 대상 Subject에 따라 적용
+                BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject);
+            }
+            else
+            {
+                // 딜레이가 있으면 TimeTableManager를 통해 예약
+                int scheduleUID = TimeTableManager.Instance.RegisterSchedule(buffData.f_startDelayTime);
+                TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(new ScheduleBuffApplier(buffData), scheduleUID);
+            }      
         }
     }
 

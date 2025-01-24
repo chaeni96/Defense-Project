@@ -1538,6 +1538,7 @@ public partial class D_BuffData : BGEntity
 		public const string buffType = "buffType";
 		public const string duration = "duration";
 		public const string tickInterval = "tickInterval";
+		public const string startDelayTime = "startDelayTime";
 		public const string targetSubject = "targetSubject";
 		public const string buffEffects = "buffEffects";
 	}
@@ -1565,6 +1566,11 @@ public partial class D_BuffData : BGEntity
 		get => _f_tickInterval[Index];
 		set => _f_tickInterval[Index] = value;
 	}
+	public System.Int32 f_startDelayTime
+	{
+		get => _f_startDelayTime[Index];
+		set => _f_startDelayTime[Index] = value;
+	}
 	public StatSubject f_targetSubject
 	{
 		get => (StatSubject) _f_targetSubject.GetStoredValue(Index);
@@ -1579,6 +1585,8 @@ public partial class D_BuffData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_duration => _ufle12jhs77_f_duration ?? (_ufle12jhs77_f_duration = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5604027641232083368UL, 6438707996669211787UL), () => _ufle12jhs77_f_duration = null));
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_tickInterval;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_tickInterval => _ufle12jhs77_f_tickInterval ?? (_ufle12jhs77_f_tickInterval = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4690010415295022485UL, 14268751412956003969UL), () => _ufle12jhs77_f_tickInterval = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_startDelayTime;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_startDelayTime => _ufle12jhs77_f_startDelayTime ?? (_ufle12jhs77_f_startDelayTime = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5643119041523169710UL, 16115676842799606964UL), () => _ufle12jhs77_f_startDelayTime = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_targetSubject;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_targetSubject => _ufle12jhs77_f_targetSubject ?? (_ufle12jhs77_f_targetSubject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5201219649389349169UL, 3802183932482509222UL), () => _ufle12jhs77_f_targetSubject = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_buffEffects;
@@ -1637,7 +1645,6 @@ public partial class D_buffEffects : BGEntity
 		public const string statName = "statName";
 		public const string value = "value";
 		public const string valueMultiply = "valueMultiply";
-		public const string tickType = "tickType";
 	}
 	private static BansheeGz.BGDatabase.BGMetaNested _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaNested MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaNested>(new BGId(5631040277948286811UL,13007909191616308359UL), () => _metaDefault = null));
@@ -1668,11 +1675,6 @@ public partial class D_buffEffects : BGEntity
 		get => _f_valueMultiply[Index];
 		set => _f_valueMultiply[Index] = value;
 	}
-	public BuffTickType f_tickType
-	{
-		get => (BuffTickType) _f_tickType.GetStoredValue(Index);
-		set => _f_tickType.SetStoredValue(Index, (System.Int32) value);
-	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5092157275259816070UL, 4385982813115435139UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_BuffData;
@@ -1683,8 +1685,6 @@ public partial class D_buffEffects : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_value => _ufle12jhs77_f_value ?? (_ufle12jhs77_f_value = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5384050326230750970UL, 5440153106100768445UL), () => _ufle12jhs77_f_value = null));
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_valueMultiply;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_valueMultiply => _ufle12jhs77_f_valueMultiply ?? (_ufle12jhs77_f_valueMultiply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5530346178345344594UL, 4454355475631574712UL), () => _ufle12jhs77_f_valueMultiply = null));
-	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_tickType;
-	public static BansheeGz.BGDatabase.BGFieldEnum _f_tickType => _ufle12jhs77_f_tickType ?? (_ufle12jhs77_f_tickType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5451793032940163154UL, 3057518018361559690UL), () => _ufle12jhs77_f_tickType = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_BoostDeck.Factory _factory2_PFS = new D_BoostDeck.Factory();

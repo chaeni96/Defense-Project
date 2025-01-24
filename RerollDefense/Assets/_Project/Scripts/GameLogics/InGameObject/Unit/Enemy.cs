@@ -23,7 +23,8 @@ public class Enemy : BasicObject
 
     private D_EnemyData enemyData;
 
-    private bool isActive = true;
+    private bool isReach;
+    private bool isActive;
 
     public override void Initialize()
     {
@@ -39,17 +40,20 @@ public class Enemy : BasicObject
 
         enemyData = data;
 
-        // StatSubject에 따른 스탯 합산
-        Dictionary<StatName, StatStorage> mergedStats = new Dictionary<StatName, StatStorage>();
 
+        baseStats.Clear();
+        currentStats.Clear();
+
+        // StatSubject에 따른 스탯 합산
         foreach (var subject in enemyData.f_statSubject)
         {
             var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
+
             foreach (var stat in subjectStats)
             {
-                if (!mergedStats.ContainsKey(stat.statName))
+                if (!baseStats.ContainsKey(stat.statName))
                 {
-                    mergedStats[stat.statName] = new StatStorage
+                    baseStats[stat.statName] = new StatStorage
                     {
                         statName = stat.statName,
                         value = stat.value,
@@ -58,15 +62,13 @@ public class Enemy : BasicObject
                 }
                 else
                 {
-                    mergedStats[stat.statName].value += stat.value;
-                    mergedStats[stat.statName].multiply *= stat.multiply;
+                    baseStats[stat.statName].value += stat.value;
+                    baseStats[stat.statName].multiply *= stat.multiply;
                 }
             }
+
             AddSubject(subject);
         }
-
-        // 합산된 스탯을 기본값으로 설정
-        baseStats = mergedStats;
 
         // 현재 스탯 초기화
         foreach (var baseStat in baseStats)
@@ -78,6 +80,7 @@ public class Enemy : BasicObject
                 multiply = baseStat.Value.multiply
             };
         }
+
 
         // currentHP를 maxHP로 초기화
         if (!currentStats.ContainsKey(StatName.CurrentHp))
@@ -91,11 +94,16 @@ public class Enemy : BasicObject
             };
         }
 
+        isActive = true;
+        isReach = false;
+
         UpdateHpBar();
     }
 
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
+        if(!isActive) return;
+
         base.OnStatChanged(subject, statChange);
 
         
@@ -137,10 +145,6 @@ public class Enemy : BasicObject
         }
     }
 
-
-    // 활성화 상태 확인 메서드
-    public bool IsActive() => isActive;
-
     // 상태 변경 메서드
     public void SetActive(bool active)
     {
@@ -158,8 +162,8 @@ public class Enemy : BasicObject
             multiply = currentStats[StatName.ATK].multiply
         });
 
-        StageManager.Instance.DecreaseEnemyCount();
-        isActive = false;
+        isReach = true;
+        OnDead();
     }
 
     //TODO : projectile과 aoe도 StatManager의 메서드를 부르도록 바꾸기
@@ -192,7 +196,7 @@ public class Enemy : BasicObject
 
     public void OnDead()
     {
-        if (enemyType == EnemyType.Boss)
+        if (enemyType == EnemyType.Boss && !isReach)
         {
             //effect 발생, enemy spawn
             SpawnMinions(10);
@@ -201,12 +205,12 @@ public class Enemy : BasicObject
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
 
-        StageManager.Instance.DecreaseEnemyCount();
-
-
         EnemyManager.Instance.UnregisterEnemy(enemyCollider);
         PoolingManager.Instance.ReturnObject(gameObject);
-
+        isActive = false;
+        baseStats.Clear();
+        currentStats.Clear();
+        StageManager.Instance.DecreaseEnemyCount();
     }
 
 

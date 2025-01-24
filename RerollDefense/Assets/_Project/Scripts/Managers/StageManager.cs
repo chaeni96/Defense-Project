@@ -20,15 +20,23 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private bool hasSelectedWildCard = false;
 
     private bool isSpawnDone = false; //현재 웨이브의 모든적이 스폰완료됐는지
-    private int totalSpawnCount = 0; //현재 웨이브에서 스폰된 에너미 총 수 
+    private int totalGroupCount = 0; // 현재 스폰 중인 에너미 그룹 수
+    private int completedGroupCount = 0; // 스폰 완료된 에너미 그룹 수
     private int remainEnemies = 0; //현재 웨이브에서 살아있는 에너미 수
 
-    private float restTime = 20f;
-    private float minRestTime = 5f;
+    //와일드 카드 관련 : restTime = 와일드카드 선택시간 -
+    private float restTime;
+    private float minRestTime;
     private int currentRestScheduleUID = -1;
 
+    //웨이브 관련 설명창
+    private int currentWaveInfoScheduleUID = -1;
+    private const float waveInfoDuration = 5f;
+
     private WildCardSelectUI selectUI;
-    
+    private WaveInfoFloatingUI waveInfoUI;
+
+
     public static StageManager Instance
     {
         get
@@ -96,17 +104,38 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         }
 
         isSpawnDone = false;
-        totalSpawnCount = 0;
 
         // 현재 웨이브의 총 적 수 계산
         D_WaveData waveData = currentStage.f_WaveData[currentWaveIndex];
         remainEnemies = waveData.f_enemyGroup.Sum(group => group.f_amount);
 
-        SpawnWaveEnemies(waveData);
+        ShowWaveInfo(waveData);
+    }
+
+    private async void ShowWaveInfo(D_WaveData waveData)
+    {
+        waveInfoUI = await UIManager.Instance.ShowUI<WaveInfoFloatingUI>();
+
+        string waveText = $"Wave {currentWaveIndex + 1} Start!";
+        string enemyInfo = "";
+        foreach (var group in waveData.f_enemyGroup)
+        {
+            enemyInfo += $"{group.f_enemy.f_name} x{group.f_amount}\n";
+        }
+
+        waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);
+
+        currentWaveInfoScheduleUID = TimeTableManager.Instance.RegisterSchedule(waveInfoDuration);
+        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentWaveInfoScheduleUID);
     }
 
     private void SpawnWaveEnemies(D_WaveData waveData)
     {
+
+        totalGroupCount = waveData.f_enemyGroup.Count; //총 생성되어야하는 에너미 그룹 수
+
+        completedGroupCount = 0;
+
         foreach (D_enemyGroup groupData in waveData.f_enemyGroup)
         {
             StartCoroutine(CoSpawnEnemyGroup(groupData));
@@ -128,7 +157,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
             {
                 EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy);
-                totalSpawnCount++;
             }
             else
             {
@@ -139,8 +167,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
         }
 
+        ++completedGroupCount;
+
         // 모든 그룹의 스폰이 완료되었는지 체크
-        if (totalSpawnCount >= remainEnemies)
+        if (completedGroupCount >= totalGroupCount)
         {
             isSpawnDone = true;
             CheckWaveCompletion();
@@ -247,7 +277,13 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void OnCompleteSchedule(int scheduleUID)
     {
-        if (scheduleUID == currentRestScheduleUID)
+        if (scheduleUID == currentWaveInfoScheduleUID)
+        {
+            UIManager.Instance.CloseUI<WaveInfoFloatingUI>();
+            currentWaveInfoScheduleUID = -1;
+            SpawnWaveEnemies(currentStage.f_WaveData[currentWaveIndex]);
+        }
+        else if (scheduleUID == currentRestScheduleUID)
         {
             // 와일드카드를 선택하지 않았다면 자동으로 처리
             if (!hasSelectedWildCard)
@@ -271,6 +307,12 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private void CleanUp()
     {
+
+        if (currentWaveInfoScheduleUID != -1)
+        {
+            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentWaveInfoScheduleUID);
+        }
+
         if (currentRestScheduleUID != -1)
         {
             TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentRestScheduleUID);
@@ -286,7 +328,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         tileMapGrid = null;
 
         isSpawnDone = false;
-        totalSpawnCount = 0;
         remainEnemies = 0;
     }
 }
