@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class TheAOE : SkillBase
+public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscriber
 {
     [SerializeField] float totalFXDelay = 0.5f;
     [SerializeField] LayerMask enemyMask;
@@ -13,6 +13,7 @@ public class TheAOE : SkillBase
     private HashSet<Enemy> damagedEnemies = new HashSet<Enemy>();  // 이미 데미지를 준 적들 
 
     private ContactFilter2D filter;
+    private int currentScheduleUID;
 
     public override void Initialize(UnitController unit)
     {
@@ -33,50 +34,45 @@ public class TheAOE : SkillBase
     public override void Fire(Vector3 targetPosition)
     {
         transform.position = owner.transform.position;
-        StartCoroutine(CheckEnemiesInRange());
+
+        currentScheduleUID = TimeTableManager.Instance.RegisterSchedule(totalFXDelay);
+        TimeTableManager.Instance.AddTimeChangeSubscriber(this);
+        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentScheduleUID);
+
     }
 
-    private IEnumerator CheckEnemiesInRange()
+    public void OnChangeTime(int scheduleUID, float remainTime)
     {
-        try
+        if (currentScheduleUID != scheduleUID) return;
+
+        enemys.Clear();
+
+        //콜라이더에 들어온 enemy 충돌 체크
+        myCollider.OverlapCollider(filter, enemys);
+        float damage = owner.GetStat(StatName.ATK);
+
+        foreach (var enemyCollider in enemys)
         {
-            float checkInterval = 0.1f;  // 체크 주기
-            float elapsedTime = 0f;
-
-            while (elapsedTime < totalFXDelay)
+            var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
+            if (enemy != null && !damagedEnemies.Contains(enemy))
             {
-                enemys.Clear();
-                myCollider.OverlapCollider(filter, enemys);
-                float damage = owner.GetStat(StatName.ATK);
-
-                foreach (var enemyCollider in enemys)
-                {
-                    var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
-                    if (enemy != null && !damagedEnemies.Contains(enemy))
-                    {
-                        enemy.onDamaged(owner, damage);
-                        damagedEnemies.Add(enemy);  // 데미지를 준 적 기록
-                    }
-                }
-
-                elapsedTime += checkInterval;
-                yield return new WaitForSeconds(checkInterval);
+                enemy.onDamaged(owner, damage);
+                damagedEnemies.Add(enemy);
             }
         }
-        finally
-        {
-            CleanUp();
-
-            PoolingManager.Instance.ReturnObject(gameObject);
-        }
-       
     }
 
-  
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        if (currentScheduleUID != scheduleUID) return;
+        CleanUp();
+        PoolingManager.Instance.ReturnObject(gameObject);
+    }
+
     public void CleanUp()
     {
-        // 코루틴 정리
-        StopAllCoroutines();
+        TimeTableManager.Instance.RemoveTimeChangeSubscriber(this);
+        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentScheduleUID);
 
         // 리스트 정리
         enemys.Clear();

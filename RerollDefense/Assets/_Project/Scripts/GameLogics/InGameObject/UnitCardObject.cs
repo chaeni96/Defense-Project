@@ -303,8 +303,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         //타일 배치 불가상태로 변경, 코스트 사용
         TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
 
-        Debug.Log($"OccupyTiles tilePos: {previousTilePosition}");
-
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
             statName = StatName.Cost,

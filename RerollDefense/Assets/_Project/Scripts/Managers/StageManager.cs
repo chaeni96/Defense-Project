@@ -27,6 +27,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private float minRestTime = 5f;
     private int currentRestScheduleUID = -1;
 
+    private WildCardSelectUI selectUI;
+    
     public static StageManager Instance
     {
         get
@@ -183,8 +185,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
         TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
 
-        var wildCardUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
-        wildCardUI.SetWildCardDeck();
+        selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
+        selectUI.SetWildCardDeck();
     }
 
     public void OnWildCardSelected()
@@ -236,6 +238,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         if (scheduleUID == currentRestScheduleUID)
         {
             // 휴식 시간 변경 시 필요한 처리
+            if(selectUI != null)
+            {
+                selectUI.UpdateSelectTime(Mathf.CeilToInt(remainTime));
+            }
         }
     }
 

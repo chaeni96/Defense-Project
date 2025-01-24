@@ -89,8 +89,6 @@ public class UnitController : BasicObject, IPointerClickHandler
         isEnemy = false;
 
         unitData = unit;
-        Debug.Log($"Original tilePos: {tilePosition}");
-
         attackType = unitData.f_SkillAttackType;
         unitType = unitData.f_UnitType;
 

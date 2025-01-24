@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
@@ -12,6 +13,7 @@ public class WildCardSelectUI : FloatingPopupBase
     [SerializeField] private Transform secondCardDeck;
     [SerializeField] private Transform thirdCardDeck;
 
+    [SerializeField] private TMP_Text cardSelectTimeText;
 
     private List<WildCardObject> spawnedCards;
     private float cardSpawnDelay = 0.05f; // 각 카드 생성 간격
@@ -123,7 +125,12 @@ public class WildCardSelectUI : FloatingPopupBase
         return null;
     }
 
-    
+
+    public void UpdateSelectTime(int leftTime)
+    {
+        cardSelectTimeText.text = $"Time Left to Choose Card : {leftTime}..";
+    }
+
 
     public override void HideUI()
     {
