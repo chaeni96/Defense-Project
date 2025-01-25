@@ -16,4 +16,6 @@ public abstract class SkillBase : MonoBehaviour
         this.owner = owner;
     }
     public abstract void Fire(Vector3 targetPosition);
+
+    public abstract void CleanUp();
 }

@@ -54,6 +54,37 @@ public class GamePlayState : GameState
     }
 }
 
+public class GamePauseState : GameState
+{
+    private GameState previousState;
+
+    public GamePauseState(GameState priorState)
+    {
+        previousState = priorState;
+    }
+
+    public override void EnterState()
+    {
+        // 게임 일시정지
+        Time.timeScale = 0;
+
+        // TODO : 일시정지 UI 표시
+
+        
+    }
+
+    public override void ExitState()
+    {
+        // 게임 속도 복구
+        Time.timeScale = 1;
+
+        // 필요하다면 게임 씬 정리 또는 이전 상태로 돌아가기(다시 게임진행)
+        GameManager.Instance.ClearGameScene();
+
+        GameSceneManager.Instance.LoadScene(SceneKind.Lobby);
+    }
+}
+
 public class GameResultState : GameState
 {
     private GameStateType resultType;
@@ -68,32 +99,7 @@ public class GameResultState : GameState
         // 모든 진행중인 게임플레이 중지
         Time.timeScale = 0;  // 게임 일시정지
 
-        // 유닛과 적 상태 변경
-        var units = UnitManager.Instance.GetUnits();
-        foreach (var unit in units)
-        {
-            unit.SetActive(false);
-        }
-
-        var enemies = EnemyManager.Instance.GetAllEnemys();
-        foreach (var enemy in enemies)
-        {
-            enemy.SetActive(false);
-        }
-
-        // 진행 중인 모든 투사체 제거
-        var projectiles = Object.FindObjectsOfType<TheProjectile>();
-        foreach (var projectile in projectiles)
-        {
-            PoolingManager.Instance.ReturnObject(projectile.gameObject);
-        }
-
-        // TODO : 진행 중인 모든 AOE 이펙트 제거 -> 나중에 변경 list로 모아서 관리
-        var aoes = Object.FindObjectsOfType<TheAOE>();
-        foreach (var aoe in aoes)
-        {
-            PoolingManager.Instance.ReturnObject(aoe.gameObject);
-        }
+       
 
         // 결과 UI 표시
         if (resultType == GameStateType.Victory)
@@ -109,9 +115,10 @@ public class GameResultState : GameState
             Debug.Log("플레이어 패배");
         }
 
-        UnitManager.Instance.CleanUp();
-        EnemyManager.Instance.CleanUp();
-        GameManager.Instance.CleanUp(); 
+
+        GameManager.Instance.ClearGameScene();
+
+     
 
         await UIManager.Instance.ShowUI<FieldGameResultPopup>();
 
@@ -132,6 +139,8 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     public GameState currentState;
 
     public Camera mainCamera;
+
+    public int SelectedStageNumber { get; private set; }
 
     private PlayerCamp playerCamp;
 
@@ -258,6 +267,26 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         return 0;
     }
 
+    // 스테이지 선택 메서드
+    public bool SelectStage(int stageNumber)
+    {
+        // 해금된 스테이지인지 확인
+        if (IsStageUnlocked(stageNumber))
+        {
+            SelectedStageNumber = stageNumber;
+            return true;
+        }
+        return false;
+    }
+    // 스테이지 해금 상태 확인
+    private bool IsStageUnlocked(int stageNumber)
+    {
+        // TODO  : 여기에 스테이지 해금 로직 구현
+        // ex) 저장된 데이터나 게임 진행 상황 확인
+        return stageNumber <= 2; // 현재는 2까지만 해금
+    }
+
+
     private void Update()
     {
         currentState?.UpdateState();
@@ -282,12 +311,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
             value = Mathf.Max(0, currentHp + statChange.value), // 체력 감소 처리
             multiply = statChange.multiply
         };
-
-        // 체력이 0 이하인 경우 게임 오버 처리
-        if (GetSystemStat(StatName.CurrentHp) <= 0)
-        {
-            // TODO: 게임 오버 로직
-        }
 
         OnHPChanged?.Invoke(GetSystemStat(StatName.CurrentHp));
 
@@ -367,6 +390,37 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
         Vector3 campPosition = TileMapManager.Instance.GetTileToWorldPosition(endTile);
         playerCamp.transform.position = campPosition;
+    }
+
+    public void ClearGameScene()
+    {
+        // 유닛과 적 상태 변경
+        var units = UnitManager.Instance.GetUnits();
+        foreach (var unit in units)
+        {
+            unit.SetActive(false);
+        }
+
+        var enemies = EnemyManager.Instance.GetAllEnemys();
+        foreach (var enemy in enemies)
+        {
+            enemy.SetActive(false);
+        }
+
+
+
+        // 진행 중인 모든 투사체 제거
+        ProjectileManager.Instance.CleanUp();
+
+        // 진행중인 모든 스킬 제거
+        AttackSkillManager.Instance.CleanUp();  
+
+        UnitManager.Instance.CleanUp();
+        EnemyManager.Instance.CleanUp();
+        BuffManager.Instance.CleanUp();
+        TimeTableManager.Instance.CleanUp();
+
+        CleanUp();
     }
 
     public void CleanUp()

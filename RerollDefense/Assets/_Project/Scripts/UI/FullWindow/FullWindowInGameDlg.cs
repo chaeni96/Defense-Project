@@ -324,5 +324,10 @@ public class FullWindowInGameDlg : FullWindowBase
         }
     }
 
+    public void OnClickSettingBtn()
+    {
+        //일시정지 상태로 전환
+        GameManager.Instance.ChangeState(new GamePauseState(GameManager.Instance.currentState));
 
+    }
 }

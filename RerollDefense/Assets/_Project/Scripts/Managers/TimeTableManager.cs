@@ -215,4 +215,19 @@ public class TimeTableManager : MonoBehaviour
         }
     }
 
+    public void CleanUp()
+    {
+        // 모든 스케줄 제거
+        registeredSchedules.Clear();
+
+        // 모든 구독자 제거
+        timeChangeSubscribers.Clear();
+        targetTimeChangeSubscribers.Clear();
+        scheduleCompleteSubscribers.Clear();
+        targetScheduleCompleteSubscribers.Clear();
+
+        // UID 카운터 초기화
+        uidCounter = 0;
+    }
+
 }

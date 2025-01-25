@@ -51,7 +51,7 @@ public class BuffManager : MonoBehaviour
         var buff = CreateBuff(buffData.f_buffType);
         if (buff == null) return;
 
-
+        //특정 대상(statSubject)에 대한 버프리스트 초기화, 해당 대상에 대한 버프리스트 존재하지않으면 만들어서 추가
         if (!activeBuffs.ContainsKey(subject))
         {
             activeBuffs[subject] = new List<BuffTimeBase>();
@@ -94,15 +94,7 @@ public class BuffManager : MonoBehaviour
 
     private void RemoveBuff(BuffTimeBase buff, StatSubject subject)
     {
-        if (buff is TemporalBuff tempBuff)
-        {
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(tempBuff.GetBuffUID());
-            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(tempBuff.GetBuffUID());
-        }
-        else if (buff is InstantBuff permBuff)
-        {
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(permBuff.GetBuffUID());
-        }
+        buff.RemoveEffects(subject);
 
         activeBuffs[subject].Remove(buff);
     }
@@ -125,6 +117,7 @@ public class BuffManager : MonoBehaviour
         {
             RemoveAllBuffsFromSubject(subject);
         }
+
         activeBuffs.Clear();
     }
 

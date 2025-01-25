@@ -96,3 +96,11 @@ public enum BuffType
     Range,        // 범위기반 버프
 
 }
+
+
+public enum BuffTickType
+{
+    Fixed, // 한번 적용되고 유지되는 효과 (이동속도 50% 등)
+    Periodic, // 주기적으로 적용되는 효과 (틱마다 체력 -1 등)
+
+}

@@ -69,7 +69,7 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
         PoolingManager.Instance.ReturnObject(gameObject);
     }
 
-    public void CleanUp()
+    public override void CleanUp()
     {
         TimeTableManager.Instance.RemoveTimeChangeSubscriber(this);
         TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentScheduleUID);

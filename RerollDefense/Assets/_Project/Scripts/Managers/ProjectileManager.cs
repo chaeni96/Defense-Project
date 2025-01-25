@@ -183,12 +183,20 @@ public class ProjectileManager : MonoBehaviour
         activeProjectiles.Remove(projectile);
     }
 
-    private void CleanUp()
+    public void CleanUp()
     {
         // Job System 리소스 정리
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (speeds.IsCreated) speeds.Dispose();
+
+        // 남아있는 모든 투사체를 오브젝트 풀로 반환
+        for (int i = activeProjectiles.Count - 1; i >= 0; i--)
+        {
+            TheProjectile projectile = activeProjectiles[i];
+            projectile.CleanUp();
+            PoolingManager.Instance.ReturnObject(projectile.gameObject);
+        }
 
         // 활성화된 투사체 목록 정리
         activeProjectiles.Clear();

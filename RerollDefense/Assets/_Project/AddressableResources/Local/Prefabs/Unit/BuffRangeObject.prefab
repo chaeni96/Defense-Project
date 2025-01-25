@@ -136,5 +136,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26a3304b6f8b7554b9edf3b5a43a2326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rangeCollider: {fileID: 516868632117587191}
+  myCollider: {fileID: 516868632117587191}
   rangeIndicator: {fileID: 516868632117587188}

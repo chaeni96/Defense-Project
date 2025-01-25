@@ -36,11 +36,21 @@ public class PlayerCamp : MonoBehaviour
     {
         targetHPRatio = currentHp / GameManager.Instance.GetSystemStat(StatName.MaxHP);
 
-        if (hpUpdateCoroutine != null)
+        hpBar.value = targetHPRatio;
+
+
+        if (GameManager.Instance.GetSystemStat(StatName.CurrentHp) <= 0)
         {
-            StopCoroutine(hpUpdateCoroutine);
+            GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
+
         }
-        hpUpdateCoroutine = StartCoroutine(UpdateHPBarSmoothly());
+
+        //부드럽게 감속시키기
+        //if (hpUpdateCoroutine != null)
+        //{
+        //    StopCoroutine(hpUpdateCoroutine);
+        //}
+        //hpUpdateCoroutine = StartCoroutine(UpdateHPBarSmoothly());
     }
 
     private IEnumerator UpdateHPBarSmoothly()
@@ -63,11 +73,11 @@ public class PlayerCamp : MonoBehaviour
     public void CleanUp()
     {
         // 코루틴 정리
-        if (hpUpdateCoroutine != null)
-        {
-            StopCoroutine(hpUpdateCoroutine);
-            hpUpdateCoroutine = null;
-        }
+        //if (hpUpdateCoroutine != null)
+        //{
+        //    StopCoroutine(hpUpdateCoroutine);
+        //    hpUpdateCoroutine = null;
+        //}
 
         GameManager.Instance.OnHPChanged -= OnHPChanged;
     }

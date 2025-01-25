@@ -9,7 +9,7 @@ public class PathFindingManager : MonoBehaviour
     public static PathFindingManager _instance;
 
     public bool allowDiagonal = true; // 대각선 이동 허용 여부
-    public bool dontCrossCorner = true; // 코너 통과 금지 여부
+    public bool dontCrossCorner = true; // 코너(모서리) 통과 금지 여부, 대각선으로 이동하려면 주변 두 타일 모두 이동가능, 코너의 인접 타일중 하나라도 막혀있으면 이동불가
 
     public static PathFindingManager Instance
     {

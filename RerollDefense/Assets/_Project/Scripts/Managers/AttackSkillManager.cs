@@ -6,6 +6,8 @@ using UnityEngine;
 public class AttackSkillManager : MonoBehaviour
 {
     private static AttackSkillManager _instance;
+
+    private List<SkillBase> activeSkillObjects = new List<SkillBase>();
     public static AttackSkillManager Instance
     {
         get
@@ -76,7 +78,28 @@ public class AttackSkillManager : MonoBehaviour
             var skill = skillObj.GetComponent<SkillBase>();
             skill.Initialize(unit);
             skill.Fire(targetPos);
+
+            // Projectile이 아닌 스킬 오브젝트만 등록 -> ProjectTile은 ProjectileManager 통해서 관리
+            if (unit.attackType != SkillAttackType.Projectile)
+            {
+                activeSkillObjects.Add(skill);
+
+            }
+
         }
+    }
+    // 게임 종료 시 모든 스킬 오브젝트들 정리
+    public void CleanUp()
+    {
+        for (int i = activeSkillObjects.Count - 1; i >= 0; i--)
+        {
+            SkillBase skillObject = activeSkillObjects[i];
+            skillObject.CleanUp();
+            PoolingManager.Instance.ReturnObject(skillObject.gameObject);
+            activeSkillObjects.RemoveAt(i);
+        }
+
+        activeSkillObjects.Clear();
     }
 
 }

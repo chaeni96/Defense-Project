@@ -21,7 +21,7 @@ public class TheProjectile : SkillBase
         transform.position = owner.transform.position;
     }
 
-    public void CleanUp()
+    public override void CleanUp()
     {
         owner = null;
         target = null;
