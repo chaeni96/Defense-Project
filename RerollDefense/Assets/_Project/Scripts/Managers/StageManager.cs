@@ -305,7 +305,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         }
     }
 
-    private void CleanUp()
+    public void CleanUp()
     {
 
         if (currentWaveInfoScheduleUID != -1)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[UIInfo("FullWindowLobbyDlg", "FullWindowLobbyDlg", false)]
+[UIInfo("FullWindowLobbyDlg", "FullWindowLobbyDlg", true)]
 public class FullWindowLobbyDlg : FullWindowBase
 {
     public void OnClickStageButton(int stageNumber)

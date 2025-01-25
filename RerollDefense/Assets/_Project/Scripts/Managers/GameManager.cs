@@ -28,10 +28,27 @@ public class GameState
 
     }
 }
+
+public class GameLobbyState : GameState
+{
+    public override void EnterState()
+    {
+        GameSceneManager.Instance.LoadScene(SceneKind.Lobby);
+    }
+
+    public override void UpdateState()
+    {
+     
+    }
+
+
+    public override void ExitState()
+    {
+
+    }
+}
 public class GamePlayState : GameState
 {
-   
-
     public override void EnterState()
     {
         //매개변수로 현재 스테이지 던져야됨
@@ -63,13 +80,13 @@ public class GamePauseState : GameState
         previousState = priorState;
     }
 
-    public override void EnterState()
+    public async override void EnterState()
     {
         // 게임 일시정지
         Time.timeScale = 0;
 
         // TODO : 일시정지 UI 표시
-
+        await UIManager.Instance.ShowUI<FieldGameSettingPopup>();
         
     }
 
@@ -78,10 +95,21 @@ public class GamePauseState : GameState
         // 게임 속도 복구
         Time.timeScale = 1;
 
-        // 필요하다면 게임 씬 정리 또는 이전 상태로 돌아가기(다시 게임진행)
-        GameManager.Instance.ClearGameScene();
+        UIManager.Instance.CloseUI<FieldGameSettingPopup>();
 
-        GameSceneManager.Instance.LoadScene(SceneKind.Lobby);
+    }
+
+    // 게임으로 돌아가기
+    public void ResumeGame()
+    {
+        GameManager.Instance.ChangeState(new GamePlayState());
+    }
+
+    // 로비로 돌아가기
+    public void ReturnToLobby()
+    {
+        GameManager.Instance.ClearGameScene();
+        GameManager.Instance.ChangeState(new GameLobbyState()); 
     }
 }
 
@@ -417,6 +445,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
         UnitManager.Instance.CleanUp();
         EnemyManager.Instance.CleanUp();
+        StageManager.Instance.CleanUp();
         BuffManager.Instance.CleanUp();
         TimeTableManager.Instance.CleanUp();
 

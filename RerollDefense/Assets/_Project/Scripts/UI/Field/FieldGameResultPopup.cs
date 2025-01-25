@@ -25,7 +25,7 @@ public class FieldGameResultPopup : PopupBase
 
     public void OnResultButton()
     {
-        GameSceneManager.Instance.LoadScene(SceneKind.Lobby);
+        GameManager.Instance.ChangeState(new GameLobbyState());
     }
 
 }

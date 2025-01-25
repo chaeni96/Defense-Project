@@ -84,7 +84,9 @@ public class BuffManager : MonoBehaviour
     {
         if (activeBuffs.TryGetValue(subject, out var buffs))
         {
-            foreach (var buff in buffs)
+            // 게임 상태 급히 변경될때(로비로 이동)나 비동기 작업할때 순회중에 수정이 발생해서 버그남 -> 버프 리스트의 복사본을 만들어 순회
+            var buffsCopy = buffs.ToList();
+            foreach (var buff in buffsCopy)
             {
                 RemoveBuff(buff, subject);
             }
@@ -117,7 +119,6 @@ public class BuffManager : MonoBehaviour
         {
             RemoveAllBuffsFromSubject(subject);
         }
-
         activeBuffs.Clear();
     }
 

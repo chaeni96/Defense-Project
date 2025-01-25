@@ -61,9 +61,12 @@ public class AttackSkillManager : MonoBehaviour
     {
         int projectileCount = (int)unit.GetStat(StatName.ProjectileCount);
 
+        Enemy target = EnemyManager.Instance.GetEnemyAtPosition(targetPos);
+
         for (int i = 0; i < projectileCount; i++)
         {
-            CreateSkillObject(skillPoolingKey, unit, targetPos);
+            Vector3 currentTargetPos = target.transform.position;
+            CreateSkillObject(skillPoolingKey, unit, currentTargetPos);
 
             // 0.1초 간격으로 생성
             yield return new WaitForSeconds(0.1f);
