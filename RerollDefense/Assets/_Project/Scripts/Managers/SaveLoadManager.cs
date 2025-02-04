@@ -58,8 +58,8 @@ public class SaveLoadManager : MonoBehaviour
 
     public void SaveData()
     {
-        byte[] bytes = BGRepo.I.Addons.Get<BGAddonSaveLoad>().Save();
-        File.WriteAllBytes(SaveFilePath, bytes);
+        byte[] bytes = BGRepo.I.Addons.Get<BGAddonSaveLoad>().Save(); 
+        File.WriteAllBytes(SaveFilePath, bytes); // 파일에 저장
     }
 
     public void LoadData()
@@ -68,9 +68,11 @@ public class SaveLoadManager : MonoBehaviour
         {
             var content = File.ReadAllBytes(SaveFilePath);
             BGRepo.I.Addons.Get<BGAddonSaveLoad>().Load(content);
+            Debug.Log("Save file path: " + SaveFilePath);
         }
         else
         {
+            //새 로컬 데이터 생성
             Debug.Log("no save file found at " + SaveFilePath);
             SaveData();
         }

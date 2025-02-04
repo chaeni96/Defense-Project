@@ -183,7 +183,7 @@ public class UIManager : MonoBehaviour
         switch (nextSceneKind)
         {
             case SceneKind.Lobby:
-                //await ShowUI<FullWindowLobbyDlg>();
+                await ShowUI<FullWindowLobbyDlg>();
                 break;
             case SceneKind.InGame:
                 await ShowUI<FullWindowInGameDlg>();

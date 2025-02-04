@@ -58,10 +58,7 @@ public class GamePlayState : GameState
 
     public override void UpdateState()
     {
-        if (EnemyManager.Instance.GetAllEnemys().Count == 0 && StageManager.Instance.IsLastWave())
-        {
-            GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
-        }
+      
     }
 
   
@@ -309,9 +306,9 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     // 스테이지 해금 상태 확인
     private bool IsStageUnlocked(int stageNumber)
     {
-        // TODO  : 여기에 스테이지 해금 로직 구현
-        // ex) 저장된 데이터나 게임 진행 상황 확인
-        return stageNumber <= 2; // 현재는 2까지만 해금
+        var userData = D_LocalUserData.GetEntity(0); // 첫 번째 엔티티 사용
+
+        return stageNumber == 1 || stageNumber <= userData.f_lastClearedStageNumber + 1;
     }
 
 

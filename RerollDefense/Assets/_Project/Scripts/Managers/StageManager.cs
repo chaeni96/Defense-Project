@@ -191,10 +191,25 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     {
         if (isSpawnDone && remainEnemies <= 0)
         {
-            StartRestPhase();
+            if (IsLastWave())
+            {
+                OnGameClear();
+            }
+            else
+            {
+                StartRestPhase();
+            }
         }
     }
 
+    private void OnGameClear()
+    {
+        var userData = D_LocalUserData.GetEntity(0);
+        userData.f_lastClearedStageNumber = Mathf.Max(userData.f_lastClearedStageNumber, currentStage.f_StageNumber);
+        SaveLoadManager.Instance.SaveData();
+
+        GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
+    }
 
     private async void StartRestPhase()
     {

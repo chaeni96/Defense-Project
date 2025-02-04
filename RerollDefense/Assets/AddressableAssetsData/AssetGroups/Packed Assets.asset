@@ -56,8 +56,7 @@ MonoBehaviour:
   - m_GUID: e55a82bc3c7f3b4419e971337a3db18e
     m_Address: FullWindowLobbyDlg
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - UI
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 12d58817267d2254abb4701ac32d8ec1
     m_Address: FieldGameSettingPopup

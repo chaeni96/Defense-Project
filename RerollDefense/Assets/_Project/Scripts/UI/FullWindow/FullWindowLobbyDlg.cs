@@ -1,26 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 [UIInfo("FullWindowLobbyDlg", "FullWindowLobbyDlg", true)]
 public class FullWindowLobbyDlg : FullWindowBase
 {
-    public void OnClickStageButton(int stageNumber)
+    [SerializeField] private SwipeUI swipeUI;
+    [SerializeField] private Transform contentTransform;
+    [SerializeField] private StageInfoUI stageInfoPrefab;
+
+    public override void InitializeUI()
     {
-        if (GameManager.Instance.SelectStage(stageNumber))
-        {
-            OnClickGamePlayBtn();
-        }
-        else
-        {
-            // 스테이지가 해금되지 않았을 때 처리
-            Debug.Log($"Stage {stageNumber}에 들어갈수없음");
-        }
+        base.InitializeUI();
+        CreateStageInfo();
+        swipeUI.InitializeSwipe();
     }
 
-    public async void OnClickGamePlayBtn()
+    private void CreateStageInfo()
     {
-        await UIManager.Instance.ShowUI<BoosterSelectUI>();
+        var stages = D_StageData.FindEntities(null);
+
+        foreach (var stage in stages)
+        {
+            var stageInfo = Instantiate(stageInfoPrefab, contentTransform);
+            stageInfo.SetStageInfo(stage.f_StageNumber);
+        }
     }
 }
