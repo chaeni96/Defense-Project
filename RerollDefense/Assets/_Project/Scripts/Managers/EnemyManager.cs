@@ -13,7 +13,6 @@ public class EnemyManager : MonoBehaviour
 
     //test용 변수
     [SerializeField] private float arrivalDist = 0.1f;
-    [SerializeField] private bool showDebugPath = true;
 
     //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
@@ -108,7 +107,11 @@ public class EnemyManager : MonoBehaviour
             List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
             enemyPaths[enemy] = initialPath;
             enemyPathIndex[enemy] = 0;
+
+            UpdatePathVisuals();
+
         }
+
     }
 
     // 모든 enemy List 가지고 오기
@@ -163,6 +166,7 @@ public class EnemyManager : MonoBehaviour
         {
             Enemy enemy = activeEnemies[collider];
             activeEnemies.Remove(collider);
+            enemy.pathRenderer.positionCount = 0;
             enemies.Remove(enemy);
             enemyPaths.Remove(enemy);
             enemyPathIndex.Remove(enemy);
@@ -173,8 +177,6 @@ public class EnemyManager : MonoBehaviour
     private void Update()
     {
         if (enemies.Count == 0 || Time.timeScale == 0) return; //enemy 없거나 비활성화면 리턴해야됨
-
-        ShowDebug(); //디버깅용, scene에서 길 보여줌
 
         try
         {
@@ -242,6 +244,7 @@ public class EnemyManager : MonoBehaviour
                     if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
                     {
                         enemyPathIndex[enemy]++;
+                        UpdatePathVisuals();  // 인덱스가 변경될 때마다 경로 업데이트
                     }
                 }
                 else
@@ -251,6 +254,7 @@ public class EnemyManager : MonoBehaviour
 
                 }
             }
+
         }
         finally
         {
@@ -272,10 +276,21 @@ public class EnemyManager : MonoBehaviour
                 enemyPathIndex[enemy] = 0;
             }
         }
+
+        UpdatePathVisuals();
     }
 
     public void CleanUp()
     {
+        // 모든 라인 렌더러 초기화
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null && enemy.pathRenderer != null)
+            {
+                enemy.pathRenderer.positionCount = 0;
+            }
+        }
+
         if (transformAccessArray.isCreated) transformAccessArray.Dispose();
         if (targetPositions.IsCreated) targetPositions.Dispose();
         if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
@@ -297,26 +312,31 @@ public class EnemyManager : MonoBehaviour
         activeEnemies.Clear();
     }
 
-    #region 길찾기 Debug
-    private void ShowDebug()
+
+  
+    private void UpdatePathVisuals()
     {
-        // 디버그 경로 표시
-        if (showDebugPath)
+        foreach (var enemyPath in enemyPaths)
         {
-            foreach (var entry in enemyPaths)
+            Enemy enemy = enemyPath.Key;
+            List<Vector3> path = enemyPath.Value;
+            if (path != null && path.Count > 0)
             {
-                List<Vector3> path = entry.Value;
-                if (path != null && path.Count > 1)
+                LineRenderer pathRenderer = enemy.pathRenderer;
+                if (pathRenderer != null)
                 {
-                    for (int i = 0; i < path.Count - 1; i++)
+                    // 현재 위치부터 남은 경로까지만 표시
+                    int currentIndex = enemyPathIndex[enemy];
+                    int remainingPoints = path.Count - currentIndex;
+                    pathRenderer.positionCount = remainingPoints;
+                    for (int i = 0; i < remainingPoints; i++)
                     {
-                        Debug.DrawLine(path[i], path[i + 1], Color.yellow);
+                        pathRenderer.SetPosition(i, path[currentIndex + i]);
                     }
                 }
             }
         }
     }
-    #endregion
 }
 
 public struct MoveEnemiesJob : IJobParallelForTransform

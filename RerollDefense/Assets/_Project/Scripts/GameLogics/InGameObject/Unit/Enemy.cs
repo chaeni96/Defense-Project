@@ -20,6 +20,7 @@ public class Enemy : BasicObject
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
+    public LineRenderer pathRenderer;  // Inspector에서 할당
 
     private D_EnemyData enemyData;
 
@@ -32,9 +33,20 @@ public class Enemy : BasicObject
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
         UpdateHpBar();
+
+        InitializeLineRenderer();
+
     }
 
-  public void InitializeEnemyInfo(D_EnemyData data)
+    private void InitializeLineRenderer()
+    {
+        pathRenderer.positionCount = 0;
+        pathRenderer.startWidth = 0.03f;
+        pathRenderer.endWidth = 0.03f;
+        pathRenderer.sortingOrder = 1; // 경로가 타일맵 위에 그려지도록
+    }
+
+    public void InitializeEnemyInfo(D_EnemyData data)
     {
         isEnemy = true;
 
@@ -205,11 +217,11 @@ public class Enemy : BasicObject
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
 
-        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
-        PoolingManager.Instance.ReturnObject(gameObject);
         isActive = false;
         baseStats.Clear();
         currentStats.Clear();
+        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
+        PoolingManager.Instance.ReturnObject(gameObject);
         StageManager.Instance.DecreaseEnemyCount();
     }
 

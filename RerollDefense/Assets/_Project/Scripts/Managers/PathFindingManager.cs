@@ -9,7 +9,6 @@ public class PathFindingManager : MonoBehaviour
     public static PathFindingManager _instance;
 
     public bool allowDiagonal = true; // 대각선 이동 허용 여부
-    public bool dontCrossCorner = true; // 코너(모서리) 통과 금지 여부, 대각선으로 이동하려면 주변 두 타일 모두 이동가능, 코너의 인접 타일중 하나라도 막혀있으면 이동불가
 
     public static PathFindingManager Instance
     {
@@ -92,7 +91,7 @@ public class PathFindingManager : MonoBehaviour
                     continue;
                 }
 
-                if (allowDiagonal && dontCrossCorner)
+                if (allowDiagonal)
                 {
                     if (IsDiagonalMoveBlocked(currentNode.Position, neighborPosition))
                     {
@@ -102,7 +101,7 @@ public class PathFindingManager : MonoBehaviour
 
                 Node neighborNode = new Node(neighborPosition);
                 float tentativeGCost = currentNode.GCost +
-                    (IsDiagonalMove(currentNode.Position, neighborPosition) ? 1.414f : 1.0f);
+                     (IsDiagonalMove(currentNode.Position, neighborPosition) ? 14 : 10);
 
                 if (!openList.Contains(neighborNode) || tentativeGCost < neighborNode.GCost)
                 {
@@ -153,14 +152,15 @@ public class PathFindingManager : MonoBehaviour
 
     private List<Vector2> GetNeighbors(Vector2 position)
     {
-        List<Vector2> neighbors = new List<Vector2>
-        {
-            position + Vector2.up,
-            position + Vector2.down,
-            position + Vector2.left,
-            position + Vector2.right
-        };
+        List<Vector2> neighbors = new List<Vector2>();
 
+        // 직선 방향을 먼저 추가
+        neighbors.Add(position + Vector2.up);
+        neighbors.Add(position + Vector2.right);
+        neighbors.Add(position + Vector2.down);
+        neighbors.Add(position + Vector2.left);
+
+        // 대각선은 나중에 추가
         if (allowDiagonal)
         {
             neighbors.Add(position + new Vector2(1, 1));
@@ -188,11 +188,12 @@ public class PathFindingManager : MonoBehaviour
             var tileData1 = TileMapManager.Instance.GetTileData(side1);
             var tileData2 = TileMapManager.Instance.GetTileData(side2);
 
-            if (tileData1 == null || !tileData1.isAvailable ||
-                tileData2 == null || !tileData2.isAvailable)
-            {
-                return true;
-            }
+            // dontCrossCorner가 true일 때는 하나라도 막혀있으면 안됨
+            // false일 때는 둘 다 막혀있을 때만 안됨
+           
+          
+           return (tileData1 == null || !tileData1.isAvailable) && (tileData2 == null || !tileData2.isAvailable);
+            
         }
         return false;
     }
