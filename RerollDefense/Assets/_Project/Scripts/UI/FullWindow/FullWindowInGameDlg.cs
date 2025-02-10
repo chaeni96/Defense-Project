@@ -20,6 +20,22 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
 
+    [SerializeField] private TMP_ColorGradient normalColorGradient;
+    [SerializeField] private TMP_ColorGradient rareColorGradient;
+    [SerializeField] private TMP_ColorGradient epicColorGradient;
+    [SerializeField] private TMP_ColorGradient legendaryColorGradient;
+    [SerializeField] private TMP_ColorGradient mythicColorGradient;
+
+
+    [SerializeField] private TMP_Text normalPercent;
+    [SerializeField] private TMP_Text rarePercent;
+    [SerializeField] private TMP_Text epicPercent;
+    [SerializeField] private TMP_Text legendaryPercent;
+    [SerializeField] private TMP_Text mythicPercent;
+
+    [SerializeField] private List<Image> cardGradeImages;  // Inspector에서 firstCardGrade, secondCardGrade, thirdCardGrade 순서대로 할당
+    [SerializeField] private TMP_Text remainEnemyCount; //남은 enemy 수
+
     //카드덱
     private List<GameObject> cardDecks;
     private List<GameObject> emptyCardObjects;
@@ -47,10 +63,12 @@ public class FullWindowInGameDlg : FullWindowBase
 
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;  
-        UnitCardObject.OnCardUsed += OnUnitCardDestroyed; 
+        UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
+        StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
 
 
     }
+
 
     //관련 유아이 초기화
     private void InitializeAssociateUI()
@@ -83,6 +101,10 @@ public class FullWindowInGameDlg : FullWindowBase
         StartCoroutine(CheckAndFillCardDecks());
     }
 
+    private void UpdateRemainEnemyCount(int count)
+    {
+        remainEnemyCount.text = count.ToString();
+    }
 
 
     // 덱 상태를 주기적으로 체크하고 비어 있으면 UnitCardObject 생성
@@ -123,12 +145,41 @@ public class FullWindowInGameDlg : FullWindowBase
 
             // UnitCardObject 초기화
             UnitCardObject cardObject = unitCard.GetComponent<UnitCardObject>();
+
             if (cardObject != null)
             {
-                cardObject.InitializeCardInform(GetCardKeyBasedOnProbability());
+                // 카드 데이터 가져오기
+                var cardData = GetCardKeyBasedOnProbability();
+                cardObject.InitializeCardInform(cardData);
                 currentCards[deckIndex] = cardObject;
                 // UnitCard_Empty를 비활성화
                 emptyCardObjects[deckIndex].SetActive(false);
+
+
+                // 카드 등급에 따른 색상 설정
+                Color gradeColor;
+                switch (cardData.f_grade)
+                {
+                    case UnitGrade.Normal:
+                        gradeColor = normalColorGradient.topLeft;
+                        break;
+                    case UnitGrade.Rare:
+                        gradeColor = rareColorGradient.topLeft;
+                        break;
+                    case UnitGrade.Epic:
+                        gradeColor = epicColorGradient.topLeft;
+                        break;
+                    case UnitGrade.Legendary:
+                        gradeColor = legendaryColorGradient.topLeft;
+                        break;
+                    case UnitGrade.Mythic:
+                        gradeColor = mythicColorGradient.topLeft;
+                        break;
+                    default:
+                        gradeColor = Color.white;
+                        break;
+                }
+                cardGradeImages[deckIndex].color = gradeColor;
             }
         }
     }
@@ -188,9 +239,17 @@ public class FullWindowInGameDlg : FullWindowBase
     //TODO : 리롤 쿨타임, 클릭속도 제한 추가
     public void RerollCardDecks()
     {
-
         //코스트 1보다 낮으면 불가
         if (GameManager.Instance.GetSystemStat(StatName.Cost) < 1) return;
+
+
+        // 코스트 소모 처리 추가
+        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+        {
+            statName = StatName.Cost,
+            value = -1, // 리롤 비용 1 소모
+            multiply = 1f
+        });
 
         // 기존 카드 제거
         for (int i = 0; i < cardDecks.Count; i++)
@@ -201,6 +260,8 @@ public class FullWindowInGameDlg : FullWindowBase
                 Destroy(currentCards[i].gameObject);
                 currentCards[i] = null;
             }
+
+            cardGradeImages[i].color = Color.white;
 
             // UnitCard_Empty 활성화
             emptyCardObjects[i].SetActive(true);
@@ -222,8 +283,14 @@ public class FullWindowInGameDlg : FullWindowBase
 
         shopUpgradeCost = shopProbabilityData.f_upgradeCost;
 
-        shopLevelUpCostText.text = $"Upgrade {shopUpgradeCost.ToString()} Cost";
+        shopLevelUpCostText.text = shopUpgradeCost.ToString();
 
+        // 확률 텍스트 업데이트 추가
+        normalPercent.text = $"{shopProbabilityData.f_normalGradeChance}%";
+        rarePercent.text = $"{shopProbabilityData.f_rareGradeChance}%";
+        epicPercent.text = $"{shopProbabilityData.f_epicGradeChance}%";
+        legendaryPercent.text = $"{shopProbabilityData.f_legendaryGradeChance}%";
+        mythicPercent.text = $"{shopProbabilityData.f_mythicGradeChance}%";
     }
 
     public void OnShopLevelUpgradeClick()
@@ -321,6 +388,8 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
+            StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
+
         }
     }
 

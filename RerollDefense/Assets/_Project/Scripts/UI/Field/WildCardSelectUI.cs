@@ -128,7 +128,7 @@ public class WildCardSelectUI : FloatingPopupBase
 
     public void UpdateSelectTime(int leftTime)
     {
-        cardSelectTimeText.text = $"Time Left to Choose Card : {leftTime}..";
+        cardSelectTimeText.text = $"카드 선택 남은 시간 : {leftTime}..";
     }
 
 

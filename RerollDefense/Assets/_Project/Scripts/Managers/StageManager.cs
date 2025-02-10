@@ -35,8 +35,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private WildCardSelectUI selectUI;
     private WaveInfoFloatingUI waveInfoUI;
+    private InGameCountdownUI countdownUI;
 
 
+    public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
     public static StageManager Instance
     {
         get
@@ -115,18 +117,28 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private async void ShowWaveInfo(D_WaveData waveData)
     {
         waveInfoUI = await UIManager.Instance.ShowUI<WaveInfoFloatingUI>();
+        countdownUI = await UIManager.Instance.ShowUI<InGameCountdownUI>(); // 웨이브 시작 전 남은시간 보여주는 ui
 
         string waveText = $"Wave {currentWaveIndex + 1} Start!";
         string enemyInfo = "";
-        foreach (var group in waveData.f_enemyGroup)
+
+        //LINQ -> GroupBy 사용해서 같은 적 타입끼리 그룹화해서 보여주기
+        var groupedEnemies = waveData.f_enemyGroup
+                            .GroupBy(g => g.f_enemy.f_name)
+                            .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
+
+        foreach (var group in groupedEnemies)
         {
-            enemyInfo += $"{group.f_enemy.f_name} x{group.f_amount}\n";
+            enemyInfo += $"{group.Name} x{group.TotalAmount}\n";
         }
+
+        OnEnemyCountChanged?.Invoke(remainEnemies);
 
         waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);
 
         currentWaveInfoScheduleUID = TimeTableManager.Instance.RegisterSchedule(waveInfoDuration);
         TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentWaveInfoScheduleUID);
+        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentWaveInfoScheduleUID); 
     }
 
     private void SpawnWaveEnemies(D_WaveData waveData)
@@ -179,11 +191,13 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     public void AddRemainingEnemies(int count)
     {
         remainEnemies += count;
+        OnEnemyCountChanged?.Invoke(remainEnemies);
     }
 
     public void DecreaseEnemyCount()
     {
         --remainEnemies;
+        OnEnemyCountChanged?.Invoke(remainEnemies);  // 이벤트 발생
         CheckWaveCompletion();
     }
 
@@ -260,6 +274,9 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(minRestTime);
             TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
             TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
+
+            // 와일드카드 선택 후 minRestTime 카운트다운 시작할 때 UI 표시
+            UIManager.Instance.ShowUI<InGameCountdownUI>();
         }
     }
 
@@ -287,6 +304,18 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             {
                 selectUI.UpdateSelectTime(Mathf.CeilToInt(remainTime));
             }
+
+            if (countdownUI != null)
+            {
+                countdownUI.UpdateCountdown(remainTime);
+            }
+        }
+        else if (scheduleUID == currentWaveInfoScheduleUID)
+        {
+            if (countdownUI != null)
+            {
+                countdownUI.UpdateCountdown(remainTime);
+            }
         }
     }
 
@@ -295,12 +324,14 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         if (scheduleUID == currentWaveInfoScheduleUID)
         {
             UIManager.Instance.CloseUI<WaveInfoFloatingUI>();
+            UIManager.Instance.CloseUI<InGameCountdownUI>();
             currentWaveInfoScheduleUID = -1;
             SpawnWaveEnemies(currentStage.f_WaveData[currentWaveIndex]);
         }
         else if (scheduleUID == currentRestScheduleUID)
         {
             // 와일드카드를 선택하지 않았다면 자동으로 처리
+            UIManager.Instance.CloseUI<InGameCountdownUI>();
             if (!hasSelectedWildCard)
             {
                 UIManager.Instance.CloseUI<WildCardSelectUI>();
@@ -332,6 +363,12 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         {
             TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentRestScheduleUID);
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentRestScheduleUID);
+        }
+
+
+        if (countdownUI != null)
+        {
+            UIManager.Instance.CloseUI<InGameCountdownUI>();
         }
 
         StopAllCoroutines();

@@ -403,7 +403,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
             multiply = 1f
         };
 
-        Debug.Log($"StoreLevel updated to {statChange.value}, MaxCost updated to {maxCost}");
     }
     public void InitializePlayerCamp(Vector2 endTile)
     {

@@ -211,7 +211,7 @@ public class Enemy : BasicObject
         if (enemyType == EnemyType.Boss && !isReach)
         {
             //effect ¹ß»ý, enemy spawn
-            SpawnMinions(10);
+            SpawnMinions(5);
 
             GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
