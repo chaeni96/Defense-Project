@@ -248,7 +248,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         selectUI.SetWildCardDeck();
     }
 
-    public void OnWildCardSelected()
+    public async void OnWildCardSelected()
     {
         hasSelectedWildCard = true;
 
@@ -276,7 +276,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
 
             // 와일드카드 선택 후 minRestTime 카운트다운 시작할 때 UI 표시
-            UIManager.Instance.ShowUI<InGameCountdownUI>();
+            await UIManager.Instance.ShowUI<InGameCountdownUI>();
         }
     }
 

@@ -90,6 +90,9 @@ MonoBehaviour:
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
   unitSprite: {fileID: 4166387686762327151}
   unitBaseSprite: {fileID: 8548240474736407140}
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}

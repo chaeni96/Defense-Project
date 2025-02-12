@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1183667827297006579}
   - component: {fileID: -8371793040103205213}
   - component: {fileID: 5268007554410033449}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: AoeRangeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 4065619894839972288}
   - component: {fileID: 1955743531545067715}
   - component: {fileID: 2508863745721040707}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: Explosions_Frame_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,9 +139,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingLayerID: 1714173797
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 1df6a88d6cbf26040a29d36f1c44b1f1, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.7058824}
   m_FlipX: 0

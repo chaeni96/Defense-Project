@@ -190,6 +190,8 @@ public class UnitController : BasicObject, IPointerClickHandler
 
         if(isActive)
         {
+
+
             //À¯´Ö Å¬¸¯ÇßÀ»¶§ ÆË¾÷Ã¢ ¶ç¿ì±â
             var unitInfo = await UIManager.Instance.ShowUI<UnitSelectFloatingUI>();
 

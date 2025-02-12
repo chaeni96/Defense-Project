@@ -17,7 +17,6 @@ public class UIManager : MonoBehaviour
 
     // UI 캐시를 위한 딕셔너리. Type을 키로 사용하여 UI 인스턴스를 저장
     private Dictionary<Type, UIBase> uiCache = new Dictionary<Type, UIBase>();
-    private bool isUIOperationInProgress = false;
 
     public static UIManager Instance
     {
@@ -78,15 +77,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public async Task<T> ShowUI<T>() where T : UIBase
     {
-        if (isUIOperationInProgress)
-        {
-            Debug.LogWarning("다른 UI 작업이 진행 중입니다.");
-            return null;
-        }
-
-        isUIOperationInProgress = true;
+       
         T ui = await OpenUI<T>();
-        isUIOperationInProgress = false;
 
         return ui;
     }
@@ -204,8 +196,6 @@ public class UIManager : MonoBehaviour
         }
         uiCache.Clear();
 
-        // 진행 중인 작업 플래그 초기화
-        isUIOperationInProgress = false;
     }
 
 

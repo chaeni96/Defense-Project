@@ -29,6 +29,7 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
         filter = new ContactFilter2D();
         filter.useLayerMask = true;
         filter.layerMask = enemyMask;
+
     }
 
     public override void Fire(Vector3 targetPosition)

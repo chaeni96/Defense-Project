@@ -7,6 +7,8 @@ public class BuffManager : MonoBehaviour
 {
     public static BuffManager _instance;
 
+    private BuffIconFloatingUI buffIconUI;
+
     public static BuffManager Instance
     {
         get
@@ -45,7 +47,7 @@ public class BuffManager : MonoBehaviour
 
   
     //WildCard나 아이템 등에서 버프 적용하는 메서드 -> 호출하면 버프 적용
-    public void ApplyBuff(D_BuffData buffData, StatSubject subject, BasicObject owner = null)
+    public async void ApplyBuff(D_BuffData buffData, StatSubject subject,string buffDescription = null)
     {
         //버프 타입에 맞는 버프 객체 생성
         var buff = CreateBuff(buffData.f_buffType);
@@ -62,6 +64,14 @@ public class BuffManager : MonoBehaviour
         //버프 시작
         buff.StartBuff(subject);
         activeBuffs[subject].Add(buff);
+
+        if(buffIconUI == null)
+        {
+            buffIconUI = await UIManager.Instance.ShowUI<BuffIconFloatingUI>();
+        }
+
+        buffIconUI.AddBuffIcon(buff, buffDescription);
+
     }
 
     private BuffTimeBase CreateBuff(BuffType type)

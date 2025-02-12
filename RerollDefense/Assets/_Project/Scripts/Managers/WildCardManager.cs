@@ -7,15 +7,17 @@ using UnityEngine;
 public class ScheduleBuffApplier : IScheduleCompleteSubscriber
 {
     private D_BuffData buffData;
+    private string buffDescription;
 
-    public ScheduleBuffApplier(D_BuffData buffData)
+    public ScheduleBuffApplier(D_BuffData buffData, string description)
     {
         this.buffData = buffData;
+        this.buffDescription = description; 
     }
 
     public void OnCompleteSchedule(int scheduleUID)
     {
-        BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject);
+        BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject, buffDescription);
     }
 }
 
@@ -66,13 +68,13 @@ public class WildCardManager : MonoBehaviour
             if (buffData.f_startDelayTime <= 0)
             {
                 // 버프의 대상 Subject에 따라 적용
-                BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject);
+                BuffManager.Instance.ApplyBuff(buffData, buffData.f_targetSubject, cardData.f_Description);
             }
             else
             {
                 // 딜레이가 있으면 TimeTableManager를 통해 예약
                 int scheduleUID = TimeTableManager.Instance.RegisterSchedule(buffData.f_startDelayTime);
-                TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(new ScheduleBuffApplier(buffData), scheduleUID);
+                TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(new ScheduleBuffApplier(buffData, cardData.f_Description), scheduleUID);
             }      
         }
     }

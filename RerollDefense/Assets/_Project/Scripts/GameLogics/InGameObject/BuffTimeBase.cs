@@ -127,7 +127,6 @@ public class InstantBuff : BuffTimeBase
     {
         if (buffData == null) return;
         ApplyEffects(subject);
-        buffData = null;
     }
 
     public override void ApplyEffects(StatSubject subject)

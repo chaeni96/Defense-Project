@@ -79,18 +79,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481cfc4e0ad18bb4db1103e1c43d1bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attack: 0
-  attackSpeed: 0
-  attackRange: 0
-  unitBlockSize: 0
-  attackCoolDown: 0
+  subjects: 
+  isEnemy: 0
   attackTimer: 0
   tilePosition: {x: 0, y: 0}
   attackType: 0
-  upgradeUnitType: 0
+  starObjects: []
+  unitType: 0
   unitStarObject: {fileID: 0}
   unitSprite: {fileID: 4231129650014913199}
   unitBaseSprite: {fileID: 4231129650014913199}
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
