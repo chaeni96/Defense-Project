@@ -30,6 +30,13 @@ public class EnemyManager : MonoBehaviour
     private NativeArray<float3> targetPositions;
     private NativeArray<float> moveSpeeds;  // 추가
 
+
+    private LineRenderer mainPathRenderer;  // 메인 경로용 LineRenderer
+    private float pathDistanceGap = 0.5f;  // 경로 이탈 판정하는 수치,enemy의 개인경로가 메인경로와 얼마나 달라야 개별 경로를 그릴지 결정하는 기준값
+                                                  
+    private List<Vector3> mainPath = new List<Vector3>();
+
+
     public static EnemyManager Instance
     {
         get
@@ -65,6 +72,14 @@ public class EnemyManager : MonoBehaviour
     {
         //기존 데이터가 있다면 먼저 정리
         CleanUp();
+
+        if (mainPathRenderer == null)
+        {
+            mainPathRenderer = gameObject.AddComponent<LineRenderer>();
+            mainPathRenderer.startWidth = 0.03f;
+            mainPathRenderer.endWidth = 0.03f;
+            mainPathRenderer.sortingOrder = 1;
+        }
 
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
         enemyPathIndex = new Dictionary<Enemy, int>();
@@ -108,8 +123,7 @@ public class EnemyManager : MonoBehaviour
             enemyPaths[enemy] = initialPath;
             enemyPathIndex[enemy] = 0;
 
-            UpdatePathVisuals();
-
+            UpdateEnemiesPath();
         }
 
     }
@@ -244,7 +258,6 @@ public class EnemyManager : MonoBehaviour
                     if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
                     {
                         enemyPathIndex[enemy]++;
-                        UpdatePathVisuals();  // 인덱스가 변경될 때마다 경로 업데이트
                     }
                 }
                 else
@@ -266,7 +279,12 @@ public class EnemyManager : MonoBehaviour
     }
     public void UpdateEnemiesPath()
     {
-        // 각 enemy마다 현재 위치에서 새로운 경로 계산
+        // 메인 경로 업데이트
+        var startPos = TileMapManager.Instance.GetTileToWorldPosition(TileMapManager.Instance.GetStartPosition());
+        mainPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
+        UpdateMainPathVisual(); //메인 경로 라인 그리기
+
+        // 각 enemy의 경로 업데이트
         foreach (var enemy in enemies)
         {
             List<Vector3> newPath = PathFindingManager.Instance.FindPathFromPosition(enemy.transform.position);
@@ -274,15 +292,77 @@ public class EnemyManager : MonoBehaviour
             {
                 enemyPaths[enemy] = newPath;
                 enemyPathIndex[enemy] = 0;
+
+                // 메인 경로와 크게 다른 경우에만 개별 경로 표시
+                bool shouldShowPath = IsPathDifferentMainPath(newPath);
+                UpdateEnemyPathVisual(enemy, shouldShowPath ? newPath : null);
             }
         }
-
-        UpdatePathVisuals();
     }
+
+    //메인경로 라인 그리기
+    private void UpdateMainPathVisual()
+    {
+        mainPathRenderer.positionCount = mainPath.Count;
+        mainPathRenderer.SetPositions(mainPath.ToArray());
+    }
+
+    private void UpdateEnemyPathVisual(Enemy enemy, List<Vector3> path)
+    {
+        if (path == null)
+        {
+            // 메인 경로와 비슷하면 개별 경로를 지움
+            // 경로가 null이면 LineRenderer 비활성화
+            if (enemy.pathRenderer != null)
+            {
+                enemy.pathRenderer.positionCount = 0;
+            }
+        }
+        else
+        {
+            // 메인 경로와 많이 다르면 개별 경로를 그림
+            if (enemy.pathRenderer != null)
+            {
+                enemy.pathRenderer.positionCount = path.Count;
+                enemy.pathRenderer.SetPositions(path.ToArray());
+            }
+        }
+    }
+
+    //메인 경로와 차이 검사
+    private bool IsPathDifferentMainPath(List<Vector3> enemyPath)
+    {
+        if (mainPath.Count == 0 || enemyPath.Count == 0)
+            return true;
+
+        // 중간 지점들을 비교하여 차이가 큰지 확인
+        for (int i = 1; i < enemyPath.Count - 1; i++)
+        {
+            float minDistance = float.MaxValue;
+
+            foreach (var mainPoint in mainPath)
+            {
+                float distance = Vector3.Distance(enemyPath[i], mainPoint);
+                minDistance = Mathf.Min(minDistance, distance);
+            }
+
+            // 한 지점이라도 기준값보다 멀면 다른 경로로 판단
+            if (minDistance > pathDistanceGap)
+                return true;
+        }
+
+        return false;
+    }
+
 
     public void CleanUp()
     {
-        // 모든 라인 렌더러 초기화
+        if(mainPathRenderer != null)
+        {
+            mainPathRenderer.positionCount = 0;
+        }
+        mainPath.Clear();
+
         foreach (var enemy in enemies)
         {
             if (enemy != null && enemy.pathRenderer != null)
@@ -312,31 +392,6 @@ public class EnemyManager : MonoBehaviour
         activeEnemies.Clear();
     }
 
-
-  
-    private void UpdatePathVisuals()
-    {
-        foreach (var enemyPath in enemyPaths)
-        {
-            Enemy enemy = enemyPath.Key;
-            List<Vector3> path = enemyPath.Value;
-            if (path != null && path.Count > 0)
-            {
-                LineRenderer pathRenderer = enemy.pathRenderer;
-                if (pathRenderer != null)
-                {
-                    // 현재 위치부터 남은 경로까지만 표시
-                    int currentIndex = enemyPathIndex[enemy];
-                    int remainingPoints = path.Count - currentIndex;
-                    pathRenderer.positionCount = remainingPoints;
-                    for (int i = 0; i < remainingPoints; i++)
-                    {
-                        pathRenderer.SetPosition(i, path[currentIndex + i]);
-                    }
-                }
-            }
-        }
-    }
 }
 
 public struct MoveEnemiesJob : IJobParallelForTransform
