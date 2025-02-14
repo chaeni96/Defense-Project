@@ -38,6 +38,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private InGameCountdownUI countdownUI;
 
 
+    private WaveFinishFloatingUI waveFinishUI;
+
     public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
     public static StageManager Instance
     {
@@ -211,7 +213,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             }
             else
             {
-                StartRestPhase();
+                ShowWaveFinishUI();
             }
         }
     }
@@ -223,6 +225,23 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         SaveLoadManager.Instance.SaveData();
 
         GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
+    }
+
+    private async void ShowWaveFinishUI()
+    {
+        isSpawnDone = false;
+
+        // 웨이브 완료 UI 표시
+        waveFinishUI = await UIManager.Instance.ShowUI<WaveFinishFloatingUI>();
+        string waveFinishText = $"Wave {currentWaveIndex + 1} Finish!";
+        waveFinishUI.UpdateWaveInfo(waveFinishText);
+
+        // FadeOut 완료 대기
+        await waveFinishUI.WaitForFadeOut();
+
+        // UI 닫고 와일드 카드 선택타임으로
+        UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+        StartRestPhase();
     }
 
     private async void StartRestPhase()
@@ -248,7 +267,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         selectUI.SetWildCardDeck();
     }
 
-    public async void OnWildCardSelected()
+    public void OnWildCardSelected()
     {
         hasSelectedWildCard = true;
 
@@ -274,9 +293,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(minRestTime);
             TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
             TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
-
-            // 와일드카드 선택 후 minRestTime 카운트다운 시작할 때 UI 표시
-            await UIManager.Instance.ShowUI<InGameCountdownUI>();
         }
     }
 
@@ -369,6 +385,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         if (countdownUI != null)
         {
             UIManager.Instance.CloseUI<InGameCountdownUI>();
+        }
+
+        if (waveFinishUI != null)
+        {
+            UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
         }
 
         StopAllCoroutines();
