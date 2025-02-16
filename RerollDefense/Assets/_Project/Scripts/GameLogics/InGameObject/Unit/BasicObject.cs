@@ -8,10 +8,10 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 {
 
 
-    //처음 Subject에서 가져온 기본 스탯
+    //처음 Subject에서 가져온 기본 스탯, 레벨업이나 버프 적용시 참조하는 기준값
     public Dictionary<StatName, StatStorage> baseStats = new Dictionary<StatName, StatStorage>();
 
-    //현재 적용중인 스탯값
+    //실제 게임에서 사용되는 현재 스탯 값, 버프나 디버프로 변화 적용하는 값
     public Dictionary<StatName, StatStorage> currentStats = new Dictionary<StatName, StatStorage>();
 
     //구독중인 

@@ -50,9 +50,13 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
 
         //콜라이더에 들어온 enemy 충돌 체크
         myCollider.OverlapCollider(filter, enemys);
+
+        //TODO :  순회할 enemys의 복사본 생성
+        var enemyColliders = new List<Collider2D>(enemys);
+
         float damage = owner.GetStat(StatName.ATK);
 
-        foreach (var enemyCollider in enemys)
+        foreach (var enemyCollider in enemyColliders)
         {
             var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
             if (enemy != null && !damagedEnemies.Contains(enemy))

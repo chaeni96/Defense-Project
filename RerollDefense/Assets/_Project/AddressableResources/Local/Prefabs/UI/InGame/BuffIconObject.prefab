@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 992582326366219303}
+  - component: {fileID: 3063078158443464682}
   - component: {fileID: 992582326366219297}
   - component: {fileID: 992582326366219302}
   - component: {fileID: 992582326366219296}
   - component: {fileID: 992582326366219299}
-  - component: {fileID: 3063078158443464682}
   m_Layer: 5
   m_Name: BuffIconObject
   m_TagString: Untagged
@@ -42,6 +42,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3063078158443464682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992582326366219300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ca2a06aaf90274e942bc6d10580652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageEnemyBuffImage: {fileID: 21300000, guid: 1b0dcc7e5212efe408ee1d059c2270ac, type: 3}
+  IncreaseStatBuffImage: {fileID: 21300000, guid: 86ae54051ff39a74ca0363e174bd4140, type: 3}
+  rangeBuffImage: {fileID: 21300000, guid: bb03b24bc58d2f94cb234d88b4714190, type: 3}
+  instantBuffMat: {fileID: 2100000, guid: 9ea886cc70383ab40a962e7c9e10d2d5, type: 2}
+  TemporalBuffMat: {fileID: 2100000, guid: 34b0863e0f000d84fa456bf6fcbebb3c, type: 2}
+  descriptionPanel: {fileID: 8471257163081741131}
+  descriptionText: {fileID: 8471257163171344033}
+  iconImage: {fileID: 992582326366219302}
 --- !u!222 &992582326366219297
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -95,8 +115,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 85
-  m_PreferredHeight: 85
+  m_PreferredWidth: 75
+  m_PreferredHeight: 75
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -156,24 +176,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3063078158443464682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 992582326366219300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51ca2a06aaf90274e942bc6d10580652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageEnemyBuffImage: {fileID: 21300000, guid: 1b0dcc7e5212efe408ee1d059c2270ac, type: 3}
-  IncreaseStatBuffImage: {fileID: 21300000, guid: 86ae54051ff39a74ca0363e174bd4140, type: 3}
-  rangeBuffImage: {fileID: 21300000, guid: bb03b24bc58d2f94cb234d88b4714190, type: 3}
-  descriptionPanel: {fileID: 8471257163081741131}
-  descriptionText: {fileID: 8471257163171344033}
-  iconImage: {fileID: 992582326366219302}
 --- !u!1 &8471257161827711033
 GameObject:
   m_ObjectHideFlags: 0

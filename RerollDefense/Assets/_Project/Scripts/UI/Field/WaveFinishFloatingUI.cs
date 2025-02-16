@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-[UIInfo("WaveFinishFloatingUI", "WaveFinishFloatingUI", false)]
+[UIInfo("WaveFinishFloatingUI", "WaveFinishFloatingUI", true)]
 public class WaveFinishFloatingUI : FloatingPopupBase
 {
     [SerializeField] private TMP_Text waveFinishText;
@@ -34,8 +34,9 @@ public class WaveFinishFloatingUI : FloatingPopupBase
         // FadeIn 시작
         canvasGroup.DOFade(1, fadeInDuration)
             .OnComplete(() => {
-                // FadeIn 완료 후 바로 FadeOut 시작
+                // FadeIn 완료 후 2초 대기했다가 FadeOut 시작
                 canvasGroup.DOFade(0, fadeOutDuration)
+                    .SetDelay(2f)  // 여기에 원하는 지연 시간(초) 설정
                     .OnComplete(() => {
                         fadeOutComplete.SetResult(true);
                     });

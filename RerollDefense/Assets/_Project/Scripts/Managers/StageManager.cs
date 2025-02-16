@@ -40,7 +40,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private WaveFinishFloatingUI waveFinishUI;
 
+    // 웨이브 시작/종료 관련 이벤트
+    public event Action OnWaveFinish;  // 웨이브 종료시 발생하는 이벤트
     public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
+
     public static StageManager Instance
     {
         get
@@ -241,12 +244,16 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         // UI 닫고 와일드 카드 선택타임으로
         UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+
         StartRestPhase();
     }
 
     private async void StartRestPhase()
     {
         isSpawnDone = false;
+
+        // 웨이브 종료 이벤트 발생
+        OnWaveFinish?.Invoke();
 
         D_WaveData currentWaveData = currentStage.f_WaveData[currentWaveIndex];
 
@@ -308,7 +315,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public bool IsLastWave()
     {
-        return currentWaveIndex >= currentStage.f_WaveData.Count;
+        return currentWaveIndex + 1 >= currentStage.f_WaveData.Count;  // 다음 웨이브가 마지막인지 미리 체크
     }
 
     public void OnChangeTime(int scheduleUID, float remainTime)

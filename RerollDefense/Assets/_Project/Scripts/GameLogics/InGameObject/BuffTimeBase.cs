@@ -76,7 +76,7 @@ public class TemporalBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChan
         TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(buffUID);
 
         // 틱 간격이 있었다면 시간 변화 구독도 해제
-        if (buffData.f_tickInterval > 0)
+        if (buffData != null && buffData.f_tickInterval > 0)
         {
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(buffUID);
         }
@@ -111,7 +111,7 @@ public class TemporalBuff : BuffTimeBase, IScheduleCompleteSubscriber, ITimeChan
         TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(buffUID);
 
         // 틱 간격이 있었다면 시간 변화 구독도 해제
-        if (buffData.f_tickInterval > 0)
+        if (buffData != null && buffData.f_tickInterval > 0)
         {
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(buffUID);
         }

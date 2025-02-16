@@ -56,13 +56,14 @@ public class ProjectileManager : MonoBehaviour
 
     private void Update()
     {
-        if (activeProjectiles.Count == 0) return;
-
-        CheckDeadTargets();  // 죽은 타겟 처리
-        if (activeProjectiles.Count == 0) return;
+        if (activeProjectiles == null || activeProjectiles.Count == 0) return;
 
         try
         {
+
+            CheckDeadTargets();  // 죽은 타겟 처리
+            if (activeProjectiles.Count == 0) return;
+
             UpdateProjectileArrays();  // JobSystem 배열 업데이트
             RunProjectileJob();  // 투사체 이동 Job 실행
             CheckHits();  // 충돌 체크
@@ -133,7 +134,18 @@ public class ProjectileManager : MonoBehaviour
     {
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
+            // 인덱스가 여전히 유효한지 확인
+            if (i >= activeProjectiles.Count) continue;
+
             TheProjectile projectile = activeProjectiles[i];
+
+            // null 체크 추가
+            if (projectile == null)
+            {
+                activeProjectiles.RemoveAt(i);
+                continue;
+            }
+
             if (!projectile.gameObject.activeSelf) continue;
 
             if (IsHit(projectile))

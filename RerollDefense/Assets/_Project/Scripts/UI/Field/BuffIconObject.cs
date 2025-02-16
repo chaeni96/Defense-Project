@@ -11,6 +11,9 @@ public class BuffIconObject : MonoBehaviour
     [SerializeField] private Sprite IncreaseStatBuffImage;
     [SerializeField] private Sprite rangeBuffImage;
 
+    [SerializeField] private Material instantBuffMat;
+    [SerializeField] private Material TemporalBuffMat;
+
     [SerializeField] private GameObject descriptionPanel;
     [SerializeField] private TMP_Text descriptionText;
 
@@ -29,14 +32,17 @@ public class BuffIconObject : MonoBehaviour
         {
             case BuffType.Temporal:
                 iconImage.sprite = IncreaseStatBuffImage;
+                iconImage.material = TemporalBuffMat;
                 break;
 
             case BuffType.Instant:
                 iconImage.sprite = damageEnemyBuffImage;
+                iconImage.material = instantBuffMat;
                 break;
 
             case BuffType.Range:
                 iconImage.sprite = rangeBuffImage;
+                iconImage.material = instantBuffMat;
                 break;
         }
 

@@ -1,5 +1,6 @@
 using BGDatabaseEnum;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,9 +9,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.CullingGroup;
 
+public class DistanceChecker
+{
+    public BuffTimeBase linkedTimeBaseBuff;
+    public float maxDistance;
+
+    public void InitiliazeDistanceChecker(Enemy targetObject)
+    {
+        targetObject.OnUpdateDistanceCheck += OnUpdate;
+    }
+
+    public void OnUpdate()
+    {
+
+    }
+
+
+}
+
 public class Enemy : BasicObject
 {
-
 
     public SpriteRenderer spriteRenderer;
     public Collider2D enemyCollider;
@@ -27,6 +45,12 @@ public class Enemy : BasicObject
     private bool isReach;
     private bool isActive;
 
+    public Action OnUpdateDistanceCheck;
+
+    private void Update()
+    {
+        OnUpdateDistanceCheck?.Invoke();
+    }
     public override void Initialize()
     {
         base.Initialize();
@@ -114,17 +138,13 @@ public class Enemy : BasicObject
 
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
-        if(!isActive) return;
+        if (GetStat(StatName.CurrentHp) <= 0) return;  // 이미 죽었거나 죽는 중이면 스탯 변경 무시
 
         base.OnStatChanged(subject, statChange);
-
-        
+  
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-            // 체력 변화 전후를 비교하여 데미지 처리
-            float currentHp = GetStat(StatName.CurrentHp);
-
             if (statChange.statName == StatName.CurrentHp)
             {
                 // 데미지를 입었을 경우 깜빡이는 효과 적용
@@ -134,7 +154,7 @@ public class Enemy : BasicObject
                 .OnComplete(() =>
                 {
                     // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
-                    if (GetStat(StatName.CurrentHp) <= 0)
+                    if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
                     {
                         OnDead();
                     }
@@ -213,6 +233,7 @@ public class Enemy : BasicObject
             //effect 발생, enemy spawn
             SpawnMinions(5);
 
+
             GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
@@ -229,6 +250,9 @@ public class Enemy : BasicObject
 
     private void SpawnMinions(int spawnEnemyCount)
     {
+        // 실제 스폰된 enemy 수만큼 remainEnemies 증가
+        StageManager.Instance.AddRemainingEnemies(spawnEnemyCount);
+
         Vector2 centerPos = TileMapManager.Instance.GetWorldToTilePosition(transform.position);
 
         List<Vector2> directions = new List<Vector2>
@@ -272,9 +296,6 @@ public class Enemy : BasicObject
                    EnemyManager.Instance.SpawnEnemy(enemyData.f_DeathSpawnEnemyData, validPositions[i]);
                 }
             }
-
-            // 실제 스폰된 enemy 수만큼 remainEnemies 증가
-            StageManager.Instance.AddRemainingEnemies(spawnEnemyCount);
         }
     }
 

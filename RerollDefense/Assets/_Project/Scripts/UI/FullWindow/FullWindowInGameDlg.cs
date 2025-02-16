@@ -152,6 +152,14 @@ public class FullWindowInGameDlg : FullWindowBase
                 var cardData = GetCardKeyBasedOnProbability();
                 cardObject.InitializeCardInform(cardData);
                 currentCards[deckIndex] = cardObject;
+
+                // CardDeckDragHandler에 새로운 UnitCardObject 참조 설정
+                var dragHandler = cardDeck.GetComponent<CardDeckDragHandler>();
+                if (dragHandler != null)
+                {
+                    dragHandler.SetUnitCard(cardObject);
+                }
+
                 // UnitCard_Empty를 비활성화
                 emptyCardObjects[deckIndex].SetActive(false);
 

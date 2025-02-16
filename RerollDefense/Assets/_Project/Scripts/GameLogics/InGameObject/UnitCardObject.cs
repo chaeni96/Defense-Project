@@ -53,6 +53,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         //cost 사용 이벤트 구독 -> cost 추가될때 tile Cost Text 업데이트
         GameManager.Instance.OnCostAdd += OnCostChanged;
 
+        StageManager.Instance.OnWaveFinish += CancelDragging;
+
     }
 
     // 타일 모양 데이터를 기반으로 오프셋 위치 초기화
@@ -378,6 +380,16 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
 
+    private void CancelDragging()
+    {
+        if (isDragging)
+        {
+            SetUIVisibility(true);
+            CancelPlacement();
+            isDragging = false;
+        }
+    }
+
     private void CleanUp()
     {
         originalPreviews.Clear();
@@ -386,6 +398,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         // 이벤트 구독 해제
         GameManager.Instance.OnCostAdd -= OnCostChanged;
+        StageManager.Instance.OnWaveFinish -= CancelDragging;
 
     }
 
