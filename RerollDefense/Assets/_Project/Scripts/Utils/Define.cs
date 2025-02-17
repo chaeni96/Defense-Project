@@ -70,7 +70,7 @@ public enum StatName
     MaxCost,
     UnitStarLevel,
     StoreLevel,
-
+    CostChargingSpeed,
 
 }
 
@@ -103,4 +103,11 @@ public enum BuffTickType
     Fixed, // 한번 적용되고 유지되는 효과 (이동속도 50% 등)
     Periodic, // 주기적으로 적용되는 효과 (틱마다 체력 -1 등)
 
+}
+
+public enum ObjectLayer
+{
+    IgnoereRayCast = 2,
+    Enemy = 7,
+    Player = 8,
 }

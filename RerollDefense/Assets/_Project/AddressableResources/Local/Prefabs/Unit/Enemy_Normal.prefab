@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8821638345116628946}
   - component: {fileID: 333312759545504093}
   - component: {fileID: 823469577158176638}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: Enemy_Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8880524715552176610}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4733375230910029881}
   - component: {fileID: 2995499982571823016}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 7061911321563069849}
   - component: {fileID: 6262370850987015297}
   - component: {fileID: 7864807736942014335}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 1329206758718544253}
   - component: {fileID: 5665732017315282331}
   - component: {fileID: 6630445220090266688}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   - component: {fileID: 2596381112738844887}
   - component: {fileID: 8710471366483355064}
   - component: {fileID: 3173059239720879727}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1496582922831634737}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: EnemyHpBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -512,7 +512,7 @@ GameObject:
   - component: {fileID: 5423760262259863768}
   - component: {fileID: 7174515326430547063}
   - component: {fileID: 7172626490324683573}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: Enemy_Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,7 +680,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2761072371244121929}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -716,7 +716,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7751589660085401690}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -756,7 +756,7 @@ GameObject:
   - component: {fileID: 7213748503801390195}
   - component: {fileID: 4081951257848036665}
   - component: {fileID: 4464927912599769718}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: Enemy_HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}

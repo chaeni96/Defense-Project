@@ -9,26 +9,16 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
     [SerializeField] LayerMask enemyMask;
     [SerializeField] Collider2D myCollider;
 
-    private List<Collider2D> enemys = new List<Collider2D>();
     private HashSet<Enemy> damagedEnemies = new HashSet<Enemy>();  // 이미 데미지를 준 적들 
-
-    private ContactFilter2D filter;
     private int currentScheduleUID;
+    private float radius;
 
     public override void Initialize(UnitController unit)
     {
         base.Initialize(unit);
 
-        // 리스트 초기화
-        enemys.Clear();
-
-        float radius = owner.GetStat(StatName.AttackRange) * 2f;
-        transform.localScale = new Vector3(radius, radius, radius);
-
-        // filter 초기화
-        filter = new ContactFilter2D();
-        filter.useLayerMask = true;
-        filter.layerMask = enemyMask;
+        radius = owner.GetStat(StatName.AttackRange);
+        transform.localScale = new Vector3(radius * 2f, radius * 2f, radius * 2f);
 
     }
 
@@ -46,19 +36,13 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
     {
         if (currentScheduleUID != scheduleUID) return;
 
-        enemys.Clear();
-
-        //콜라이더에 들어온 enemy 충돌 체크
-        myCollider.OverlapCollider(filter, enemys);
-
-        //TODO :  순회할 enemys의 복사본 생성
-        var enemyColliders = new List<Collider2D>(enemys);
+        // 원형 범위 내의 모든 콜라이더 감지
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, radius, enemyMask);
 
         float damage = owner.GetStat(StatName.ATK);
-
-        foreach (var enemyCollider in enemyColliders)
+        foreach (var hitCollider in hitColliders)
         {
-            var enemy = EnemyManager.Instance.GetActiveEnemys(enemyCollider);
+            var enemy = EnemyManager.Instance.GetActiveEnemys(hitCollider);
             if (enemy != null && !damagedEnemies.Contains(enemy))
             {
                 enemy.onDamaged(owner, damage);
@@ -80,7 +64,6 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
         TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentScheduleUID);
 
         // 리스트 정리
-        enemys.Clear();
         damagedEnemies.Clear();
 
     }

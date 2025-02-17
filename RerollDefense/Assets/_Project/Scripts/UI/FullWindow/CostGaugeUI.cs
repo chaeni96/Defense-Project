@@ -8,7 +8,6 @@ public class CostGaugeUI : MonoBehaviour
 {
     [Header("Circle UI")]
     [SerializeField] private Image circleProgress;
-    [SerializeField] private float manaGenerateTime = 3f;
 
     [Header("Bar UI")]
     [SerializeField] private RectTransform barContainer;
@@ -19,11 +18,8 @@ public class CostGaugeUI : MonoBehaviour
     private List<Image> barFills = new List<Image>();
     private int currentFilledIndex = 0;
     private int costPerTick; //한번의 틱마다 증가하는 코스트 양
-    private void Start()
-    {
-        // 게임 매니저의 OnCostUsed 이벤트에 구독
-        GameManager.Instance.OnCostUsed += UpdateBarFillsOnCostUsed;
-    }
+
+    private bool canAddCost;
 
     public void Initialize(int storeLevel)
     {
@@ -38,6 +34,8 @@ public class CostGaugeUI : MonoBehaviour
         costPerTick = 1;
         currentFilledIndex = initialCost;
 
+        canAddCost = true;
+
         for (int i = 0; i < currentFilledIndex; i++)
         {
             barFills[i].fillAmount = 1f;
@@ -45,7 +43,9 @@ public class CostGaugeUI : MonoBehaviour
         circleProgress.fillAmount = 0;
 
         GameManager.Instance.OnCostUsed += UpdateBarFillsOnCostUsed;
-
+        // 와일드카드 선택 시작/종료 이벤트 구독
+        StageManager.Instance.OnWaveFinish += StopCostAdd;
+        StageManager.Instance.OnWaveStart += StartCostAdd;
     }
 
     public void UpdateText()
@@ -67,6 +67,17 @@ public class CostGaugeUI : MonoBehaviour
         barFills.Clear();
     }
 
+    private void StopCostAdd()
+    {
+        canAddCost = false;
+        circleProgress.fillAmount = 0f;  // 프로그레스 바도 초기화
+    }
+
+    private void StartCostAdd()
+    {
+        canAddCost = true;
+    }
+
 
     private void Update()
     {
@@ -78,9 +89,9 @@ public class CostGaugeUI : MonoBehaviour
         }
 
         // MaxCost보다 작을 때만 자동 증가 처리
-        if (GameManager.Instance.GetSystemStat(StatName.Cost) < GameManager.Instance.GetSystemStat(StatName.MaxCost))
+        if (canAddCost && GameManager.Instance.GetSystemStat(StatName.Cost) < GameManager.Instance.GetSystemStat(StatName.MaxCost))
         {
-            circleProgress.fillAmount += Time.deltaTime / manaGenerateTime;
+            circleProgress.fillAmount += Time.deltaTime / GameManager.Instance.GetSystemStat(StatName.CostChargingSpeed);
             if (circleProgress.fillAmount >= 1f)
             {
                 circleProgress.fillAmount = 0;
@@ -157,6 +168,8 @@ public class CostGaugeUI : MonoBehaviour
     {
         // 이벤트 구독 해제
         GameManager.Instance.OnCostUsed -= UpdateBarFillsOnCostUsed;
+        StageManager.Instance.OnWaveFinish -= StopCostAdd;
+        StageManager.Instance.OnWaveStart -= StartCostAdd;
         ClearBarFills();
     }
 }

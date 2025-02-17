@@ -84,6 +84,9 @@ public class EnemyManager : MonoBehaviour
         enemyPaths = new Dictionary<Enemy, List<Vector3>>();
         enemyPathIndex = new Dictionary<Enemy, int>();
         activeEnemies = new Dictionary<Collider2D, Enemy>();
+
+        // OnWaveFinish 이벤트 구독
+        StageManager.Instance.OnWaveFinish += HidePathLines;
     }
 
     private void InitializeArrays(int enemyCount)
@@ -109,7 +112,7 @@ public class EnemyManager : MonoBehaviour
         var startTilePos = TileMapManager.Instance.GetStartPosition();
         Vector3 startPos = initPos ?? TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
 
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, startPos, 10);
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, startPos, (int)ObjectLayer.Enemy);
 
         if (enemyObj != null)
         {
@@ -282,7 +285,13 @@ public class EnemyManager : MonoBehaviour
         // 메인 경로 업데이트
         var startPos = TileMapManager.Instance.GetTileToWorldPosition(TileMapManager.Instance.GetStartPosition());
         mainPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
-        UpdateMainPathVisual(); //메인 경로 라인 그리기
+       
+        // 경로 라인 활성화 및 업데이트
+        if (mainPathRenderer != null)
+        {
+            mainPathRenderer.enabled = true;
+            UpdateMainPathVisual();
+        }
 
         // 각 enemy의 경로 업데이트
         foreach (var enemy in enemies)
@@ -354,6 +363,22 @@ public class EnemyManager : MonoBehaviour
         return false;
     }
 
+    // 웨이브 종료시 라인 숨기기
+    private void HidePathLines()
+    {
+        if (mainPathRenderer != null)
+        {
+            mainPathRenderer.enabled = false;
+        }
+
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null && enemy.pathRenderer != null)
+            {
+                enemy.pathRenderer.enabled = false;
+            }
+        }
+    }
 
     public void CleanUp()
     {
@@ -390,6 +415,9 @@ public class EnemyManager : MonoBehaviour
         enemyPathIndex.Clear();
         enemies.Clear();
         activeEnemies.Clear();
+
+        StageManager.Instance.OnWaveFinish -= HidePathLines;
+
     }
 
 }

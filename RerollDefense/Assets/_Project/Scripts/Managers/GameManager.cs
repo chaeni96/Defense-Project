@@ -279,6 +279,9 @@ public class GameManager : MonoBehaviour, IStatSubscriber
             case StatName.StoreLevel:
                 ChangeStatStoreLevel(statChange);
                 break;
+            case StatName.CostChargingSpeed:
+                ChangeStatCostChargingSpeed(statChange);
+                break;
         }
     }
 
@@ -403,6 +406,16 @@ public class GameManager : MonoBehaviour, IStatSubscriber
             multiply = 1f
         };
 
+    }
+
+    private void ChangeStatCostChargingSpeed(StatStorage statChange)
+    {
+        systemStats[StatName.CostChargingSpeed] = new StatStorage
+        {
+            statName = StatName.CostChargingSpeed,
+            value = statChange.value,
+            multiply = statChange.multiply
+        };
     }
     public void InitializePlayerCamp(Vector2 endTile)
     {

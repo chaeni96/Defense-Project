@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7932130213024786228}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197257633261067458}
   - component: {fileID: 8494380669334004852}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Triangle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 3631279279435126715}
   - component: {fileID: 6533918697068061961}
   - component: {fileID: 4463978599955908756}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Unit_Archor2_1Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,12 +174,12 @@ MonoBehaviour:
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
   unitSprite: {fileID: 6610365595354033619}
   unitBaseSprite: {fileID: 8494380669334004852}
-  unitLayer:
-    serializedVersion: 2
-    m_Bits: 2048
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 2304
 --- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4
@@ -211,7 +211,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -238,7 +238,7 @@ GameObject:
   - component: {fileID: 3376941634186059179}
   - component: {fileID: 6610365595354033619}
   - component: {fileID: 581131749487388403}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

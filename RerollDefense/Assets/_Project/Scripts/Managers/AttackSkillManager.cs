@@ -75,7 +75,7 @@ public class AttackSkillManager : MonoBehaviour
 
     private void CreateSkillObject(string skillPoolingKey, UnitController unit, Vector3 targetPos)
     {
-        GameObject skillObj = PoolingManager.Instance.GetObject(skillPoolingKey, unit.transform.position);
+        GameObject skillObj = PoolingManager.Instance.GetObject(skillPoolingKey, unit.transform.position, (int)ObjectLayer.IgnoereRayCast);
         if (skillObj != null)
         {
             var skill = skillObj.GetComponent<SkillBase>();

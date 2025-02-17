@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7932130213024786228}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 3631279279435126715}
   - component: {fileID: 6533918697068061961}
   - component: {fileID: 4463978599955908756}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Unit_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,12 +89,12 @@ MonoBehaviour:
   unitStarObject: {fileID: 0}
   unitSprite: {fileID: 4231129650014913199}
   unitBaseSprite: {fileID: 4231129650014913199}
-  unitLayer:
-    serializedVersion: 2
-    m_Bits: 2048
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 2304
 --- !u!50 &6533918697068061961
 Rigidbody2D:
   serializedVersion: 4
@@ -126,7 +126,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -152,7 +152,7 @@ GameObject:
   m_Component:
   - component: {fileID: 652497714655313060}
   - component: {fileID: 4231129650014913199}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Triangle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

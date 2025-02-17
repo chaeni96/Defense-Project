@@ -177,7 +177,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             var unitBuildData = tileShapeData.f_unitBuildData[i];
             var unitPoolinKey = unitBuildData.f_unitData.f_UnitPoolingKey;
             
-            GameObject previewInstance = PoolingManager.Instance.GetObject(unitPoolinKey.f_PoolObjectAddressableKey, worldPos);
+            GameObject previewInstance = PoolingManager.Instance.GetObject(unitPoolinKey.f_PoolObjectAddressableKey, worldPos, (int)ObjectLayer.Player);
 
             UnitController previewUnit = previewInstance.GetComponent<UnitController>();
 
@@ -244,7 +244,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 currentPreview.gameObject.SetActive(false);
 
                 // 새로운 합성 유닛 생성 및 설정
-                GameObject mergedPreview = PoolingManager.Instance.GetObject(currentPreview.unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey, mergedPosition);
+                GameObject mergedPreview = PoolingManager.Instance.GetObject(currentPreview.unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey, mergedPosition, (int)ObjectLayer.Player);
                 var mergedUnit = mergedPreview.GetComponent<UnitController>();
                 mergedUnit.Initialize();
                 mergedUnit.InitializeUnitInfo(currentPreview.unitData);

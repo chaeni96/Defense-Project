@@ -41,7 +41,9 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private WaveFinishFloatingUI waveFinishUI;
 
     // 웨이브 시작/종료 관련 이벤트
+    public event Action OnWaveStart;  // 웨이브 종료시 발생하는 이벤트
     public event Action OnWaveFinish;  // 웨이브 종료시 발생하는 이벤트
+
     public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
 
     public static StageManager Instance
@@ -109,12 +111,13 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             Debug.Log("모든 웨이브 완료!");
             return;
         }
-
         isSpawnDone = false;
 
         // 현재 웨이브의 총 적 수 계산
         D_WaveData waveData = currentStage.f_WaveData[currentWaveIndex];
         remainEnemies = waveData.f_enemyGroup.Sum(group => group.f_amount);
+
+        OnWaveStart?.Invoke();
 
         ShowWaveInfo(waveData);
     }
@@ -251,7 +254,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private async void StartRestPhase()
     {
         isSpawnDone = false;
-
+        hasSelectedWildCard = false;
         // 웨이브 종료 이벤트 발생
         OnWaveFinish?.Invoke();
 
@@ -353,8 +356,9 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         }
         else if (scheduleUID == currentRestScheduleUID)
         {
-            // 와일드카드를 선택하지 않았다면 자동으로 처리
             UIManager.Instance.CloseUI<InGameCountdownUI>();
+
+            // 와일드카드를 선택하지 않았다면 자동으로 처리
             if (!hasSelectedWildCard)
             {
                 UIManager.Instance.CloseUI<WildCardSelectUI>();

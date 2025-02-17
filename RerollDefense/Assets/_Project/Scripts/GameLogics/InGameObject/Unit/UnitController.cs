@@ -35,6 +35,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
     [SerializeField] private Material originalMaterial; //기본 머테리얼
+    [SerializeField] private LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
 
     private int unitSortingOrder;
     private int baseSortingOrder;
@@ -46,6 +47,7 @@ public class UnitController : BasicObject, IPointerClickHandler
     public override void Initialize()
     {
         base.Initialize();
+        gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
 
         unitSortingOrder = unitSprite.sortingOrder;
         baseSortingOrder = unitBaseSprite.sortingOrder;
@@ -188,18 +190,19 @@ public class UnitController : BasicObject, IPointerClickHandler
     public async void OnPointerClick(PointerEventData eventData)
     {
 
-        if(isActive)
+        if (!isActive) return;
+
+        Ray ray = GameManager.Instance.mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, unitLayer);
+
+
+
+        if (hit.collider != null && hit.collider.gameObject == gameObject)
         {
-
-
-            //유닛 클릭했을때 팝업창 띄우기
             var unitInfo = await UIManager.Instance.ShowUI<UnitSelectFloatingUI>();
-
-            //팝업창에 타일 정보 넘겨주기
-
             unitInfo.InitUnitInfo(this);
         }
-     
+
 
 
     }

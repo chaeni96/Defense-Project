@@ -103,7 +103,7 @@ public class TileMapManager : MonoBehaviour
 
             Vector3 newObjectPos = GetTileToWorldPosition(position);
 
-            var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos);
+            var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos, (int)ObjectLayer.Player);
 
             var objectController = newSpecialObject.GetComponent<UnitController>();
             objectController.InitializeUnitInfo(specialTile.f_specialObject);
