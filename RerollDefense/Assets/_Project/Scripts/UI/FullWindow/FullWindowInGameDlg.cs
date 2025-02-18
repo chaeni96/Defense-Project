@@ -34,6 +34,7 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private TMP_Text mythicPercent;
 
     [SerializeField] private List<Image> cardGradeImages;  // Inspector에서 firstCardGrade, secondCardGrade, thirdCardGrade 순서대로 할당
+    [SerializeField] private TMP_Text progressWaveIndex; //진행중인 웨이브 인덱스
     [SerializeField] private TMP_Text remainEnemyCount; //남은 enemy 수
 
     //카드덱
@@ -65,8 +66,7 @@ public class FullWindowInGameDlg : FullWindowBase
         GameManager.Instance.OnCostUsed += OnCostUsed;  
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
         StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
-
-
+        StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
     }
 
 
@@ -81,6 +81,8 @@ public class FullWindowInGameDlg : FullWindowBase
         //shopLevel 초기화
         shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
         shopLevelText.text = $"Shop Level : {shopLevel}";
+
+
     }
 
 
@@ -101,6 +103,10 @@ public class FullWindowInGameDlg : FullWindowBase
         StartCoroutine(CheckAndFillCardDecks());
     }
 
+    private void UpdateWaveIndex(int currentIndex, int maxIndex)
+    {
+        progressWaveIndex.text = $"{currentIndex} / {maxIndex} \n Wave";
+    }
     private void UpdateRemainEnemyCount(int count)
     {
         remainEnemyCount.text = count.ToString();
@@ -397,6 +403,7 @@ public class FullWindowInGameDlg : FullWindowBase
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
             StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
+            StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
 
         }
     }

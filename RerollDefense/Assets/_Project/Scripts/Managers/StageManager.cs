@@ -45,6 +45,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     public event Action OnWaveFinish;  // 웨이브 종료시 발생하는 이벤트
 
     public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
+    public event Action<int, int> OnWaveIndexChanged;
 
     public static StageManager Instance
     {
@@ -117,6 +118,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         D_WaveData waveData = currentStage.f_WaveData[currentWaveIndex];
         remainEnemies = waveData.f_enemyGroup.Sum(group => group.f_amount);
 
+   
         OnWaveStart?.Invoke();
 
         ShowWaveInfo(waveData);
@@ -140,6 +142,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             enemyInfo += $"{group.Name} x{group.TotalAmount}\n";
         }
 
+        // 웨이브 인덱스 변경 알림
+        OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, currentStage.f_WaveData.Count);
         OnEnemyCountChanged?.Invoke(remainEnemies);
 
         waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);

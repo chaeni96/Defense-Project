@@ -8,7 +8,7 @@ public class PathFindingManager : MonoBehaviour
     //경로 찾기만 담당
     public static PathFindingManager _instance;
 
-    public bool allowDiagonal = true; // 대각선 이동 허용 여부
+    public bool allowDiagonal = false; // 대각선 이동 허용 여부
 
     public static PathFindingManager Instance
     {
