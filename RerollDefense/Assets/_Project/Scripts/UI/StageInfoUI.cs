@@ -30,9 +30,9 @@ public class StageInfoUI : MonoBehaviour
         stageButton.interactable = isUnlocked;
     }
 
-    public async void OnClickStage()
+    public void OnClickStage()
     {
         GameManager.Instance.SelectStage(stageNumber);
-        await UIManager.Instance.ShowUI<BoosterSelectUI>();
+        GameSceneManager.Instance.LoadScene(SceneKind.InGame);
     }
 }
