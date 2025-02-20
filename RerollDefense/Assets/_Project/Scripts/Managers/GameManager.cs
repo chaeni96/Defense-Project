@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
     public Camera mainCamera;
 
-    public int SelectedStageNumber { get; private set; }
+    public int SelectedEpisodeNumber { get; private set; }
 
     private PlayerCamp playerCamp;
 
@@ -296,22 +296,22 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     }
 
     // 스테이지 선택 메서드
-    public bool SelectStage(int stageNumber)
+    public bool SelectEpisode(int episodeNumber)
     {
         // 해금된 스테이지인지 확인
-        if (IsStageUnlocked(stageNumber))
+        if (IsEpisodeUnlocked(episodeNumber))
         {
-            SelectedStageNumber = stageNumber;
+            SelectedEpisodeNumber = episodeNumber;
             return true;
         }
         return false;
     }
     // 스테이지 해금 상태 확인
-    private bool IsStageUnlocked(int stageNumber)
+    private bool IsEpisodeUnlocked(int episodeNumber)
     {
         var userData = D_LocalUserData.GetEntity(0); // 첫 번째 엔티티 사용
 
-        return stageNumber == 1 || stageNumber <= userData.f_lastClearedStageNumber + 1;
+        return episodeNumber == 1 || episodeNumber <= userData.f_clearEpisodeNumber + 1;
     }
 
 

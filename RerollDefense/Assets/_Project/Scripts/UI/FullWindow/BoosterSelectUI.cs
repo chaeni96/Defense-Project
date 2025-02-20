@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[UIInfo("BoosterSelectUI", "BoosterSelectUI", false)]
-public class BoosterSelectUI : FullWindowBase
+[UIInfo("BoosterSelectUI", "BoosterSelectUI", true)]
+public class BoosterSelectUI : FloatingPopupBase
 {
     public override void InitializeUI()
     {

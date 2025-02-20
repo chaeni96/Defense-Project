@@ -73,9 +73,11 @@ public class SceneStarter : MonoBehaviour
         StatManager.Instance.InitializeManager();
 
         GameManager.Instance.LoadSystemStats();
-        //TODO : 로비에서 선택한 스테이지를 인자값으로 넘겨줘야됨
 
-        StageManager.Instance.StartStage(GameManager.Instance.SelectedStageNumber);
+
+        //TODO : 로비에서 선택한 스테이지를 인자값으로 넘겨줘야됨, episodeInfoUI에서 선택된 스테이지 넘버를 넘겨줘야함
+
+        //StageManager.Instance.StartStage(GameManager.Instance.SelectedEpisodeNumber);
 
         // 게임 시작
         GameManager.Instance.ChangeState(new GamePlayState());

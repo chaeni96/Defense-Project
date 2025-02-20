@@ -11,6 +11,15 @@ public class SwipeUI : MonoBehaviour
 
     [SerializeField] private float swipeDistance = 50.0f; // 페이지 swipe되기 위해 움직여야하는 최소거리
 
+    [SerializeField] private Transform circlePanel;         // 원형 인디케이터들을 담을 패널
+    [SerializeField] private GameObject circleTemplate;     // 복제할 원형 인디케이터 템플릿
+    [SerializeField] private float activeCircleScale = 1.4f;// 현재 페이지 원형 크기 배율
+    [SerializeField] private Color activeCircleColor = Color.black;    // 현재 페이지 원형 색상
+    [SerializeField] private Color inactiveCircleColor = Color.white;  // 비활성 페이지 원형 색상
+
+    private List<GameObject> circleIndicators = new List<GameObject>();  // 생성된 원형 인디케이터들
+
+
     private float[] scrollPageValues;           // 각 페이지의 위치 값 [0.0 - 1.0]
     private float valueDistance = 0;            // 각 페이지 사이의 거리
     private int currentPage = 0;            // 현재 페이지
@@ -35,14 +44,60 @@ public class SwipeUI : MonoBehaviour
 
         // 최대 페이지의 수
         maxPage = transform.childCount;
+
+        // 원형 인디케이터 초기화
+        InitializeCircleIndicators();
+
+
         // 최초 시작할 때 0번 페이지를 볼 수 있도록 설정
         SetScrollBarValue(0);
+    }
+    private void InitializeCircleIndicators()
+    {
+        // 기존 인디케이터 제거
+        foreach (var indicator in circleIndicators)
+        {
+            if (indicator != null && indicator != circleTemplate)
+            {
+                Destroy(indicator);
+            }
+        }
+        circleIndicators.Clear();
+
+        // 템플릿이 없거나 패널이 없으면 종료
+        if (circleTemplate == null || circlePanel == null)
+        {
+            Debug.LogWarning("Circle template or panel is not assigned!");
+            return;
+        }
+
+        // 페이지 수에 맞게 인디케이터 생성
+        for (int i = 0; i < maxPage; i++)
+        {
+            GameObject newCircle = Instantiate(circleTemplate, circlePanel);
+            newCircle.SetActive(true);
+            circleIndicators.Add(newCircle);
+
+            // 클릭 이벤트 추가 (선택 사항)
+            int pageIndex = i; // 클로저를 위한 변수 복사
+            Button circleButton = newCircle.GetComponent<Button>();
+            if (circleButton != null)
+            {
+                circleButton.onClick.AddListener(() => {
+                    StartCoroutine(OnSwipeOneStep(pageIndex));
+                });
+            }
+        }
+
+        // 초기 상태 설정
+        UpdateCircleIndicators();
     }
 
     public void SetScrollBarValue(int index)
     {
         currentPage = index;
         scrollBar.value = scrollPageValues[index];
+        UpdateCircleIndicators();
     }
 
     private void Update()
@@ -146,10 +201,43 @@ public class SwipeUI : MonoBehaviour
 
             scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
 
+            UpdateCircleIndicators();
+
             yield return null;
         }
 
         isSwipeMode = false;
     }
 
+
+    /// <summary>
+    /// 현재 페이지에 따라 원형 인디케이터 상태 업데이트
+    /// </summary>
+    private void UpdateCircleIndicators()
+    {
+        if (circleIndicators.Count == 0) return;
+
+        for (int i = 0; i < circleIndicators.Count; i++)
+        {
+            // 스케일 초기화
+            circleIndicators[i].transform.localScale = Vector3.one;
+
+            // 색상 초기화
+            Image circleImage = circleIndicators[i].GetComponent<Image>();
+            if (circleImage != null)
+            {
+                circleImage.color = inactiveCircleColor;
+            }
+
+            // 현재 페이지 강조
+            if (i == currentPage)
+            {
+                circleIndicators[i].transform.localScale = Vector3.one * activeCircleScale;
+                if (circleImage != null)
+                {
+                    circleImage.color = activeCircleColor;
+                }
+            }
+        }
+    }
 }

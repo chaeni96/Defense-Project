@@ -116,6 +116,7 @@ public partial class D_LocalUserData : BGEntity
 	{
 		public const string Meta = "LocalUserData";
 		public const string name = "name";
+		public const string clearEpisodeNumber = "clearEpisodeNumber";
 		public const string lastClearedStageNumber = "lastClearedStageNumber";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
@@ -127,6 +128,11 @@ public partial class D_LocalUserData : BGEntity
 		get => _f_name[Index];
 		set => _f_name[Index] = value;
 	}
+	public System.Int32 f_clearEpisodeNumber
+	{
+		get => _f_clearEpisodeNumber[Index];
+		set => _f_clearEpisodeNumber[Index] = value;
+	}
 	public System.Int32 f_lastClearedStageNumber
 	{
 		get => _f_lastClearedStageNumber[Index];
@@ -134,8 +140,10 @@ public partial class D_LocalUserData : BGEntity
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5570864947923372496UL, 16114093359231942036UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_clearEpisodeNumber;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_clearEpisodeNumber => _ufle12jhs77_f_clearEpisodeNumber ?? (_ufle12jhs77_f_clearEpisodeNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5371381866835969752UL, 2168720030824874419UL), () => _ufle12jhs77_f_clearEpisodeNumber = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_lastClearedStageNumber;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_lastClearedStageNumber => _ufle12jhs77_f_lastClearedStageNumber ?? (_ufle12jhs77_f_lastClearedStageNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4993476659409105743UL, 9490168929070830737UL), () => _ufle12jhs77_f_lastClearedStageNumber = null));
+	public static BansheeGz.BGDatabase.BGFieldInt _f_lastClearedStageNumber => _ufle12jhs77_f_lastClearedStageNumber ?? (_ufle12jhs77_f_lastClearedStageNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5612662480888816242UL, 14296249210567434408UL), () => _ufle12jhs77_f_lastClearedStageNumber = null));
 	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

@@ -8,7 +8,7 @@ public class StageSelectUI : FloatingPopupBase
 {
     [SerializeField] private SwipeUI swipeUI;
     [SerializeField] private Transform contentTransform;
-    [SerializeField] private StageInfoUI stageInfoPrefab;
+    [SerializeField] private EpisodeInfoUI stageInfoPrefab;
 
     public override void InitializeUI()
     {
