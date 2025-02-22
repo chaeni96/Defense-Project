@@ -89,7 +89,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void StartStage(int stageNumber)
     {
-        D_StageData stageData = D_StageData.FindEntity(data => data.f_StageNumber == stageNumber);
+        // episodeNumber도 함께 고려하여 스테이지 찾기
+        D_StageData stageData = D_StageData.FindEntity(data => data.f_EpisodeData.f_episodeNumber == GameManager.Instance.SelectedEpisodeNumber && data.f_StageNumber == stageNumber);
 
         currentStage = stageData;
         currentWaveIndex = 0;

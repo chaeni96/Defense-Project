@@ -86,6 +86,7 @@ public partial class D_TileShpeData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_TileShpeData() : base(MetaDefault) {}
 	private D_TileShpeData(BGId id) : base(MetaDefault, id) {}
 	private D_TileShpeData(BGMetaEntity meta) : base(meta) {}
@@ -164,6 +165,7 @@ public partial class D_LocalUserData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_LocalUserData() : base(MetaDefault) {}
 	private D_LocalUserData(BGId id) : base(MetaDefault, id) {}
 	private D_LocalUserData(BGMetaEntity meta) : base(meta) {}
@@ -266,6 +268,7 @@ public partial class D_UnitData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_UnitData() : base(MetaDefault) {}
 	private D_UnitData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitData(BGMetaEntity meta) : base(meta) {}
@@ -350,6 +353,7 @@ public partial class D_unitBuildData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_unitBuildData() : base(MetaDefault) {}
 	private D_unitBuildData(BGId id) : base(MetaDefault, id) {}
 	private D_unitBuildData(BGMetaEntity meta) : base(meta) {}
@@ -472,6 +476,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_UnitShopChanceData() : base(MetaDefault) {}
 	private D_UnitShopChanceData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitShopChanceData(BGMetaEntity meta) : base(meta) {}
@@ -560,6 +565,7 @@ public partial class D_ObjectPoolData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_ObjectPoolData() : base(MetaDefault) {}
 	private D_ObjectPoolData(BGId id) : base(MetaDefault, id) {}
 	private D_ObjectPoolData(BGMetaEntity meta) : base(meta) {}
@@ -637,6 +643,7 @@ public partial class D_WaveData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_WaveData() : base(MetaDefault) {}
 	private D_WaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveData(BGMetaEntity meta) : base(meta) {}
@@ -665,7 +672,9 @@ public partial class D_StageData : BGEntity
 	{
 		public const string Meta = "StageData";
 		public const string name = "name";
+		public const string EpisodeData = "EpisodeData";
 		public const string StageNumber = "StageNumber";
+		public const string StageDescription = "StageDescription";
 		public const string WaveData = "WaveData";
 		public const string StartTilePos = "StartTilePos";
 		public const string EndTilePos = "EndTilePos";
@@ -680,10 +689,20 @@ public partial class D_StageData : BGEntity
 		get => _f_name[Index];
 		set => _f_name[Index] = value;
 	}
+	public D_EpisodeData f_EpisodeData
+	{
+		get => (D_EpisodeData) _f_EpisodeData[Index];
+		set => _f_EpisodeData[Index] = value;
+	}
 	public System.Int32 f_StageNumber
 	{
 		get => _f_StageNumber[Index];
 		set => _f_StageNumber[Index] = value;
+	}
+	public System.String f_StageDescription
+	{
+		get => _f_StageDescription[Index];
+		set => _f_StageDescription[Index] = value;
 	}
 	public List<D_WaveData> f_WaveData
 	{
@@ -707,8 +726,12 @@ public partial class D_StageData : BGEntity
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5107560990730887598UL, 14806839362490910632UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_EpisodeData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_EpisodeData => _ufle12jhs77_f_EpisodeData ?? (_ufle12jhs77_f_EpisodeData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4784008122447646202UL, 13067861932297786298UL), () => _ufle12jhs77_f_EpisodeData = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_StageNumber;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_StageNumber => _ufle12jhs77_f_StageNumber ?? (_ufle12jhs77_f_StageNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5727885512308789180UL, 5793001234893590713UL), () => _ufle12jhs77_f_StageNumber = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_StageDescription;
+	public static BansheeGz.BGDatabase.BGFieldString _f_StageDescription => _ufle12jhs77_f_StageDescription ?? (_ufle12jhs77_f_StageDescription = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4735349357882227549UL, 15837191542169728688UL), () => _ufle12jhs77_f_StageDescription = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationMultiple _ufle12jhs77_f_WaveData;
 	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_WaveData => _ufle12jhs77_f_WaveData ?? (_ufle12jhs77_f_WaveData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(5213647395619301713UL, 7900555549665711264UL), () => _ufle12jhs77_f_WaveData = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_StartTilePos;
@@ -737,6 +760,7 @@ public partial class D_StageData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_StageData() : base(MetaDefault) {}
 	private D_StageData(BGId id) : base(MetaDefault, id) {}
 	private D_StageData(BGMetaEntity meta) : base(meta) {}
@@ -825,6 +849,7 @@ public partial class D_EnemyData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_EnemyData() : base(MetaDefault) {}
 	private D_EnemyData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyData(BGMetaEntity meta) : base(meta) {}
@@ -925,6 +950,7 @@ public partial class D_enemyGroup : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_enemyGroup() : base(MetaDefault) {}
 	private D_enemyGroup(BGId id) : base(MetaDefault, id) {}
 	private D_enemyGroup(BGMetaEntity meta) : base(meta) {}
@@ -997,6 +1023,7 @@ public partial class D_TilePosData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_TilePosData() : base(MetaDefault) {}
 	private D_TilePosData(BGId id) : base(MetaDefault, id) {}
 	private D_TilePosData(BGMetaEntity meta) : base(meta) {}
@@ -1084,6 +1111,7 @@ public partial class D_ObstacleTileMapData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_ObstacleTileMapData() : base(MetaDefault) {}
 	private D_ObstacleTileMapData(BGId id) : base(MetaDefault, id) {}
 	private D_ObstacleTileMapData(BGMetaEntity meta) : base(meta) {}
@@ -1150,6 +1178,7 @@ public partial class D_MapData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_MapData() : base(MetaDefault) {}
 	private D_MapData(BGId id) : base(MetaDefault, id) {}
 	private D_MapData(BGMetaEntity meta) : base(meta) {}
@@ -1234,6 +1263,7 @@ public partial class D_SpecialTile : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_SpecialTile() : base(MetaDefault) {}
 	private D_SpecialTile(BGId id) : base(MetaDefault, id) {}
 	private D_SpecialTile(BGMetaEntity meta) : base(meta) {}
@@ -1332,6 +1362,7 @@ public partial class D_WildCardData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_WildCardData() : base(MetaDefault) {}
 	private D_WildCardData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardData(BGMetaEntity meta) : base(meta) {}
@@ -1420,6 +1451,7 @@ public partial class D_WaveTimeData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_WaveTimeData() : base(MetaDefault) {}
 	private D_WaveTimeData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveTimeData(BGMetaEntity meta) : base(meta) {}
@@ -1528,6 +1560,7 @@ public partial class D_BuffData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_BuffData() : base(MetaDefault) {}
 	private D_BuffData(BGId id) : base(MetaDefault, id) {}
 	private D_BuffData(BGMetaEntity meta) : base(meta) {}
@@ -1628,6 +1661,7 @@ public partial class D_buffEffects : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_buffEffects() : base(MetaDefault) {}
 	private D_buffEffects(BGId id) : base(MetaDefault, id) {}
 	private D_buffEffects(BGMetaEntity meta) : base(meta) {}
@@ -1703,6 +1737,7 @@ public partial class D_StatSubjectData : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_StatSubjectData() : base(MetaDefault) {}
 	private D_StatSubjectData(BGId id) : base(MetaDefault, id) {}
 	private D_StatSubjectData(BGMetaEntity meta) : base(meta) {}
@@ -1795,6 +1830,7 @@ public partial class D_subjectStats : BGEntity
 	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
 	private D_subjectStats() : base(MetaDefault) {}
 	private D_subjectStats(BGId id) : base(MetaDefault, id) {}
 	private D_subjectStats(BGMetaEntity meta) : base(meta) {}
@@ -1811,5 +1847,91 @@ public partial class D_subjectStats : BGEntity
 	public static D_subjectStats NewEntity(D_StatSubjectData owner) => (D_subjectStats) MetaDefault.NewEntity(owner);
 	public static D_subjectStats NewEntity(D_StatSubjectData owner, BGId entityId) => (D_subjectStats) MetaDefault.NewEntity(owner, entityId);
 	public static D_subjectStats NewEntity(D_StatSubjectData owner, Action<D_subjectStats> callback) => (D_subjectStats) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_subjectStats)entity)));
+}
+
+public partial class D_EpisodeData : BGEntity
+{
+
+	public class Factory : BGEntity.EntityFactory
+	{
+		public BGEntity NewEntity(BGMetaEntity meta) => new D_EpisodeData(meta);
+		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_EpisodeData(meta, id);
+	}
+
+	public static class __Names
+	{
+		public const string Meta = "EpisodeData";
+		public const string name = "name";
+		public const string episodeNumber = "episodeNumber";
+		public const string episodeTitle = "episodeTitle";
+		public const string episodeDescription = "episodeDescription";
+	}
+	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
+	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4748811259824635660UL,2691968706770037180UL), () => _metaDefault = null));
+	public static BansheeGz.BGDatabase.BGRepoEvents Events => BGRepo.I.Events;
+	public static int CountEntities => MetaDefault.CountEntities;
+	public System.String f_name
+	{
+		get => _f_name[Index];
+		set => _f_name[Index] = value;
+	}
+	public System.Int32 f_episodeNumber
+	{
+		get => _f_episodeNumber[Index];
+		set => _f_episodeNumber[Index] = value;
+	}
+	public System.String f_episodeTitle
+	{
+		get => _f_episodeTitle[Index];
+		set => _f_episodeTitle[Index] = value;
+	}
+	public System.String f_episodeDescription
+	{
+		get => _f_episodeDescription[Index];
+		set => _f_episodeDescription[Index] = value;
+	}
+	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
+	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4673367198392211597UL, 10796729627121814147UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_episodeNumber;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_episodeNumber => _ufle12jhs77_f_episodeNumber ?? (_ufle12jhs77_f_episodeNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5734194201930936214UL, 17034143442782541238UL), () => _ufle12jhs77_f_episodeNumber = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_episodeTitle;
+	public static BansheeGz.BGDatabase.BGFieldString _f_episodeTitle => _ufle12jhs77_f_episodeTitle ?? (_ufle12jhs77_f_episodeTitle = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5209109661268413002UL, 15590832163721709754UL), () => _ufle12jhs77_f_episodeTitle = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_episodeDescription;
+	public static BansheeGz.BGDatabase.BGFieldString _f_episodeDescription => _ufle12jhs77_f_episodeDescription ?? (_ufle12jhs77_f_episodeDescription = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5596414729176742488UL, 13995345094606251674UL), () => _ufle12jhs77_f_episodeDescription = null));
+	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingEpisodeDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_EpisodeData, Id);
+	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
+	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
+	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
+	private static readonly D_UnitShopChanceData.Factory _factory4_PFS = new D_UnitShopChanceData.Factory();
+	private static readonly D_ObjectPoolData.Factory _factory5_PFS = new D_ObjectPoolData.Factory();
+	private static readonly D_WaveData.Factory _factory6_PFS = new D_WaveData.Factory();
+	private static readonly D_StageData.Factory _factory7_PFS = new D_StageData.Factory();
+	private static readonly D_EnemyData.Factory _factory8_PFS = new D_EnemyData.Factory();
+	private static readonly D_enemyGroup.Factory _factory9_PFS = new D_enemyGroup.Factory();
+	private static readonly D_TilePosData.Factory _factory10_PFS = new D_TilePosData.Factory();
+	private static readonly D_ObstacleTileMapData.Factory _factory11_PFS = new D_ObstacleTileMapData.Factory();
+	private static readonly D_MapData.Factory _factory12_PFS = new D_MapData.Factory();
+	private static readonly D_SpecialTile.Factory _factory13_PFS = new D_SpecialTile.Factory();
+	private static readonly D_WildCardData.Factory _factory14_PFS = new D_WildCardData.Factory();
+	private static readonly D_WaveTimeData.Factory _factory15_PFS = new D_WaveTimeData.Factory();
+	private static readonly D_BuffData.Factory _factory16_PFS = new D_BuffData.Factory();
+	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
+	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
+	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
+	private D_EpisodeData() : base(MetaDefault) {}
+	private D_EpisodeData(BGId id) : base(MetaDefault, id) {}
+	private D_EpisodeData(BGMetaEntity meta) : base(meta) {}
+	private D_EpisodeData(BGMetaEntity meta, BGId id) : base(meta, id) {}
+	public static D_EpisodeData FindEntity(Predicate<D_EpisodeData> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
+	public static List<D_EpisodeData> FindEntities(Predicate<D_EpisodeData> filter, List<D_EpisodeData> result=null, Comparison<D_EpisodeData> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
+	public static void ForEachEntity(Action<D_EpisodeData> action, Predicate<D_EpisodeData> filter=null, Comparison<D_EpisodeData> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
+	public static D_EpisodeData GetEntity(BGId entityId) => (D_EpisodeData) MetaDefault.GetEntity(entityId);
+	public static D_EpisodeData GetEntity(int index) => (D_EpisodeData) MetaDefault[index];
+	public static D_EpisodeData GetEntity(string entityName) => (D_EpisodeData) MetaDefault.GetEntity(entityName);
+	public static D_EpisodeData NewEntity() => (D_EpisodeData) MetaDefault.NewEntity();
+	public static D_EpisodeData NewEntity(BGId entityId) => (D_EpisodeData) MetaDefault.NewEntity(entityId);
+	public static D_EpisodeData NewEntity(Action<D_EpisodeData> callback) => (D_EpisodeData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_EpisodeData)entity)));
 }
 #pragma warning restore 414

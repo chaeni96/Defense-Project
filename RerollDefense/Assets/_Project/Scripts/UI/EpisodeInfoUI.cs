@@ -14,15 +14,20 @@ public class EpisodeInfoUI : MonoBehaviour
     [SerializeField] private Image episodeDescBg;
     [SerializeField] private Button episodeButton;
 
-    private int episodeNumber;
- 
-    public void SetStageInfo(int episodeNumber)
+    private D_EpisodeData episodeData;
+    private StageSelectUI parentUI;
+    public void Initialize(StageSelectUI parent)
     {
-        this.episodeNumber = episodeNumber;
-        episodeName.text = $"Episode {episodeNumber}";
-        episodeDesc.text = $"Episode {episodeNumber}에 대한 어쩌구저쩌구..";
+        parentUI = parent;
+    }
+
+    public void SetEpisodeInfo(D_EpisodeData episode)
+    {
+        this.episodeData = episode;
+        episodeName.text = $"Episode {episodeData.f_episodeNumber} : {episodeData.f_episodeTitle}";
+        episodeDesc.text = $"{episodeData.f_episodeDescription}";
         var userData = D_LocalUserData.GetEntity(0);
-        bool isUnlocked = episodeNumber == 1 || episodeNumber <= userData.f_clearEpisodeNumber + 1;
+        bool isUnlocked = episodeData.f_episodeNumber == 1 || episodeData.f_episodeNumber <= userData.f_clearEpisodeNumber + 1;
 
         lockIcon.SetActive(!isUnlocked);
         episodeNameBg.color = isUnlocked ? Color.white : new Color(0.5f, 0.5f, 0.5f);
@@ -30,12 +35,18 @@ public class EpisodeInfoUI : MonoBehaviour
         episodeButton.interactable = isUnlocked;
     }
 
-    public void OnClickEpisode()
+    public async void OnClickEpisode()
     {
-        GameManager.Instance.SelectEpisode(episodeNumber);
-        
-        //씬넘어가는게 아니라 해당 에피소드의 스테이지를 보여줘야함
-        
-        //GameSceneManager.Instance.LoadScene(SceneKind.InGame);
+        if (GameManager.Instance.SelectEpisode(episodeData.f_episodeNumber))
+        {
+            // 스테이지 선택 UI 표시
+            var stageSelectUI = await UIManager.Instance.ShowUI<SelectStagePopup>();
+            stageSelectUI.ShowStages(episodeData);
+            stageSelectUI.Initialize(parentUI);
+
+            //swipeUI의 update 멈춰야됨
+            parentUI.PauseSwipeUI();
+
+        }
     }
 }

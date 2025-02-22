@@ -166,6 +166,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     public Camera mainCamera;
 
     public int SelectedEpisodeNumber { get; private set; }
+    public int SelectedStageNumber { get; set; }
 
     private PlayerCamp playerCamp;
 
