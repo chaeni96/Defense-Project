@@ -36,6 +36,7 @@ public class EnemyManager : MonoBehaviour
                                                   
     private List<Vector3> mainPath = new List<Vector3>();
 
+    private const int BASE_ORDER = 0; // Order in Layer의 기본값
 
     public static EnemyManager Instance
     {
@@ -250,6 +251,11 @@ public class EnemyManager : MonoBehaviour
 
                 if (enemy == null) continue;
 
+
+                // Sorting Order 업데이트
+                UpdateEnemySortingOrder(enemy);
+
+                // 기존 도착 체크 로직
                 if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;
 
                 int pathIndex = enemyPathIndex[enemy];
@@ -306,6 +312,40 @@ public class EnemyManager : MonoBehaviour
                 bool shouldShowPath = IsPathDifferentMainPath(newPath);
                 UpdateEnemyPathVisual(enemy, shouldShowPath ? newPath : null);
             }
+        }
+    }
+
+
+    private void UpdateEnemySortingOrder(Enemy enemy)
+    {
+        Vector2 enemyTilePos = TileMapManager.Instance.GetWorldToTilePosition(enemy.transform.position);
+        TileData tileData = TileMapManager.Instance.GetTileData(new Vector2(enemyTilePos.x, Mathf.Floor(enemyTilePos.y)));
+
+        if (tileData != null && tileData.placedUnit != null)
+        {
+            UnitController unit = tileData.placedUnit;
+            float unitY = unit.transform.position.y;
+            float enemyY = enemy.transform.position.y;
+
+            if (enemyY > unitY + 0.1f)
+            {
+                // Enemy가 Unit보다 위에 있으면 뒤로
+                enemy.spriteRenderer.sortingOrder = BASE_ORDER - Mathf.RoundToInt((enemyY - unitY) * 10);
+            }
+            else if (Mathf.Abs(enemyY - unitY) <= 0.1f)
+            {
+                // 같은 높이면 Enemy가 앞에
+                enemy.spriteRenderer.sortingOrder = BASE_ORDER + 1;
+            }
+            else
+            {
+                // Enemy가 Unit보다 아래에 있으면 앞으로
+                enemy.spriteRenderer.sortingOrder = BASE_ORDER + Mathf.RoundToInt((unitY - enemyY) * 10);
+            }
+        }
+        else
+        {
+            enemy.spriteRenderer.sortingOrder = BASE_ORDER;
         }
     }
 

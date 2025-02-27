@@ -29,7 +29,9 @@ public class UnitController : BasicObject, IPointerClickHandler
 
 
     [SerializeField] private SpriteRenderer unitBaseSprite;
-    
+
+    private const int UNIT_BASE_SORTING_ORDER = 1000;
+
 
     //inspector에 할당
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
@@ -49,8 +51,10 @@ public class UnitController : BasicObject, IPointerClickHandler
         base.Initialize();
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
 
-        unitSortingOrder = unitSprite.sortingOrder;
-        baseSortingOrder = unitBaseSprite.sortingOrder;
+        unitSortingOrder = 0;
+        baseSortingOrder = -1;
+        unitSprite.sortingOrder = unitSortingOrder;
+        unitBaseSprite.sortingOrder = baseSortingOrder; // 베이스는 항상 한단계 뒤에
 
     }
 

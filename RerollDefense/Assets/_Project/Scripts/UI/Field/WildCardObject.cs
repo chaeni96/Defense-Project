@@ -38,6 +38,9 @@ public class WildCardObject : MonoBehaviour
 
         UIManager.Instance.CloseUI<WildCardSelectUI>();
 
+        //버프아이콘 생성
+        BuffManager.Instance.ShowBuffIcon(wildCardData);
+
         WildCardManager.Instance.ApplyWildCardEffect(wildCardData);
     }
 

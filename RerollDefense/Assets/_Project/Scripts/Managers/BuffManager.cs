@@ -47,7 +47,7 @@ public class BuffManager : MonoBehaviour
 
   
     //WildCard나 아이템 등에서 버프 적용하는 메서드 -> 호출하면 버프 적용
-    public async void ApplyBuff(D_BuffData buffData, StatSubject subject,string buffDescription = null)
+    public void ApplyBuff(D_BuffData buffData, StatSubject subject)
     {
         //버프 타입에 맞는 버프 객체 생성
         var buff = CreateBuff(buffData.f_buffType);
@@ -65,13 +65,26 @@ public class BuffManager : MonoBehaviour
         buff.StartBuff(subject);
         activeBuffs[subject].Add(buff);
 
-        if(buffIconUI == null)
+    }
+
+    // 버프 프리뷰 표시
+    public async void ShowBuffIcon(D_WildCardData cardData)
+    {
+        if (cardData.f_BuffData == null || cardData.f_BuffData.Count == 0) return;
+
+        if (buffIconUI == null)
         {
             buffIconUI = await UIManager.Instance.ShowUI<BuffIconFloatingUI>();
         }
 
-        buffIconUI.AddBuffIcon(buff, buffDescription);
-
+        // 모든 버프효과를 대표하는 하나의 프리뷰 버프 생성
+        // 첫 번째 버프데이터의 타입을 사용하거나, 별도의 대표 아이콘을 사용할 수 있음
+        var buffIcon = CreateBuff(cardData.f_BuffData[0].f_buffType);
+        if (buffIcon != null)
+        {
+            buffIcon.Initialize(cardData.f_BuffData[0]);  // 기본 정보 초기화
+            buffIconUI.AddBuffIcon(buffIcon, cardData.f_Description);  // 하나의 통합된 아이콘 표시
+        }
     }
 
     private BuffTimeBase CreateBuff(BuffType type)
