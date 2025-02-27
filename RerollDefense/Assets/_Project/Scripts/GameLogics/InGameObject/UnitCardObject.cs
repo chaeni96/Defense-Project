@@ -351,10 +351,18 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         {
             Vector2 tilePos = buildData.f_TilePos.f_TilePos;
 
-            // 3x3 그리드에서 중앙을 (0,0)으로 보고 인덱스 계산
-            int x = Mathf.RoundToInt(tilePos.x) + 1;
-            int y = Mathf.RoundToInt(-tilePos.y) + 1;
-            int index = y * 3 + x;
+
+
+            // 2x2 그리드에서 좌표를 인덱스로 변환
+            // 인덱스 레이아웃:
+            // [0] [1]
+            // [2] [3]
+
+            // 좌표 범위를 인덱스로 매핑
+            int gridX = (tilePos.x >= 0) ? 1 : 0;
+            int gridY = (tilePos.y <= 0) ? 1 : 0;  // y 좌표는 반전
+
+            int index = gridY * 2 + gridX;
 
             if (index >= 0 && index < tileImages.Count)
             {
@@ -370,7 +378,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     {
                         tileImages[index].sprite = unitController.unitSprite.sprite;
                     }
-                    
+
                     activeImageIndices.Add(index);  // 활성화된 인덱스 저장
                 }
 

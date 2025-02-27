@@ -14,6 +14,7 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject firstCardDeck;
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
+    public GameObject forthCardDeck;
 
 
     [SerializeField] private GameObject CostGauge;  
@@ -39,7 +40,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     //카드덱
     private List<GameObject> cardDecks;
-    private List<GameObject> emptyCardObjects;
+    [SerializeField] private List<GameObject> emptyCardObjects;
     private List<UnitCardObject> currentCards;
 
     private bool isChecking = false;
@@ -88,15 +89,13 @@ public class FullWindowInGameDlg : FullWindowBase
 
     private void InitializeCardDecks()
     {
-        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck };
+        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, forthCardDeck };
 
-        // Empty 오브젝트와 현재 카드 배열 초기화
-        emptyCardObjects = new List<GameObject>();
+      
         currentCards = new List<UnitCardObject>();
 
         foreach (var deck in cardDecks)
         {
-            emptyCardObjects.Add(deck.transform.GetChild(1).gameObject);
             currentCards.Add(null);
         }
 
@@ -395,7 +394,6 @@ public class FullWindowInGameDlg : FullWindowBase
 
         // 리스트 정리
         cardDecks?.Clear();
-        emptyCardObjects?.Clear();
 
         // 이벤트 구독 해제
         if (GameManager._instance != null)
