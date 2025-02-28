@@ -132,7 +132,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
 
             //canPlace에 따라 배치 가능불가능 판정
-            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, currentPreviews);
+            canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, originalPreviews);
             UpdatePreviewInstancesPosition(tilePos);
             previousTilePosition = tilePos;
         }
@@ -148,7 +148,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
         //배치 가능한지 체크
-        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, currentPreviews);
+        canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, originalPreviews);
 
         if (hasDragged && canPlace)
         {
@@ -231,6 +231,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             // 타일에 유닛이 있고 합성이 가능한 경우(유닛타입이 똑같고 다음 업그레이드할 유닛이 있는경우)
             if (tileData?.placedUnit != null &&
                 currentPreview.unitType == tileData.placedUnit.unitType &&
+                 currentPreview.GetStat(StatName.UnitStarLevel) == tileData.placedUnit.GetStat(StatName.UnitStarLevel) &&
                 tileData.placedUnit.GetStat(StatName.UnitStarLevel) < 3)
             {
                 foreach (var star in tileData.placedUnit.starObjects)

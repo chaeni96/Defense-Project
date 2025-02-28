@@ -12,6 +12,7 @@ public class UnitManager : MonoBehaviour
     private static UnitManager _instance;
 
     private List<UnitController> units = new List<UnitController>();
+    private List<UnitController> activeUnits = new List<UnitController>();
 
     //job System 변수
     private NativeArray<float3> unitPositions;
@@ -57,6 +58,7 @@ public class UnitManager : MonoBehaviour
         CleanUp();
 
         units = new List<UnitController>();
+        activeUnits = new List<UnitController>();
 
     }
 
@@ -82,19 +84,32 @@ public class UnitManager : MonoBehaviour
         //enemy가 한마리도 없으면 return
         if (EnemyManager.Instance.GetEnemyCount() == 0) return;
 
+        activeUnits.Clear();
+
+        //공격 가능한 유닛만 담아두기
+        for (int i = 0; i < units.Count; i++)
+        {
+            if (units[i] != null && !units[i].isDragging)
+            {
+                activeUnits.Add(units[i]);
+            }
+        }
+        // 공격 가능한 유닛이 없으면 리턴
+        if (activeUnits.Count == 0) return;
+
         int enemyCount = EnemyManager.Instance.GetEnemyCount();
 
         try
         {
             // NativeArray 초기화
-            InitializeArrays(units.Count, enemyCount);
+            InitializeArrays(activeUnits.Count, enemyCount);
 
             // 유닛 데이터 설정
-            for (int i = 0; i < units.Count; i++)
+            for (int i = 0; i < activeUnits.Count; i++)
             {
-                unitPositions[i] = units[i].transform.position;
-                attackRanges[i] = units[i].GetStat(StatName.AttackRange);
-                attackTimers[i] = units[i].attackTimer;
+                unitPositions[i] = activeUnits[i].transform.position;
+                attackRanges[i] = activeUnits[i].GetStat(StatName.AttackRange);
+                attackTimers[i] = activeUnits[i].attackTimer;
             }
 
             //enemy 트랜스폼 enemyPositions에 담아오기 
@@ -111,16 +126,16 @@ public class UnitManager : MonoBehaviour
                 DeltaTime = Time.deltaTime
             };
 
-            JobHandle jobHandle = attackJob.Schedule(units.Count, 64);
+            JobHandle jobHandle = attackJob.Schedule(activeUnits.Count, 64);
             jobHandle.Complete();
 
             // 공격 처리
-            for (int i = 0; i < units.Count; i++)
+            for (int i = 0; i < activeUnits.Count; i++)
             {
                 int targetIndex = targetIndices[i];
                 if (targetIndex != -1 && attackTimers[i] >= 1f / units[i].GetStat(StatName.AttackSpeed))
                 {
-                    UnitController unit = units[i];
+                    UnitController unit = activeUnits[i];
                     Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
                     if (targetEnemy != null)
                     {
@@ -133,7 +148,7 @@ public class UnitManager : MonoBehaviour
                 }
                 else
                 {
-                    units[i].attackTimer = attackTimers[i];
+                    activeUnits[i].attackTimer = attackTimers[i];
                 }
             }
         }
@@ -192,6 +207,8 @@ public class UnitManager : MonoBehaviour
         if (attackRanges.IsCreated) attackRanges.Dispose();
         if (targetIndices.IsCreated) targetIndices.Dispose();
         if (attackTimers.IsCreated) attackTimers.Dispose();
+
+
     }
 
     
@@ -214,6 +231,11 @@ public class UnitManager : MonoBehaviour
         if (units != null)
         {
             units.Clear();
+        }
+
+        if (activeUnits != null)
+        {
+            activeUnits.Clear();
         }
     }
 

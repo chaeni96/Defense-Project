@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 
 
-public class UnitController : BasicObject, IPointerClickHandler
+public class UnitController : BasicObject, IPointerClickHandler, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [HideInInspector]
     public float attackTimer = 0f;  // 타이머 추가
@@ -30,8 +30,6 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     [SerializeField] private SpriteRenderer unitBaseSprite;
 
-    private const int UNIT_BASE_SORTING_ORDER = 1000;
-
 
     //inspector에 할당
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
@@ -43,9 +41,17 @@ public class UnitController : BasicObject, IPointerClickHandler
     private int baseSortingOrder;
     private bool isActive = true;
 
+    // 드래그 앤 드롭을 위한 변수 추가
+    public bool isDragging = false;
+    private Vector3 originalPosition;
+    private Vector2 originalTilePosition;
+    private Vector2 previousTilePosition; // 이전 타일 위치 추적용
+    private bool hasDragged = false;
+    private bool canPlace = false;
 
     public D_UnitData unitData;
-
+    private UnitController mergedPreviewUnit = null; // 합성 미리보기 유닛
+    private TileData targetTileData = null; // 합성 대상 타일 데이터
     public override void Initialize()
     {
         base.Initialize();
@@ -193,6 +199,12 @@ public class UnitController : BasicObject, IPointerClickHandler
 
     public async void OnPointerClick(PointerEventData eventData)
     {
+        // 드래그가 발생했으면 클릭 이벤트를 무시
+        if (hasDragged)
+        {
+            hasDragged = false;
+            return;
+        }
 
         if (!isActive) return;
 
@@ -206,10 +218,286 @@ public class UnitController : BasicObject, IPointerClickHandler
             var unitInfo = await UIManager.Instance.ShowUI<UnitSelectFloatingUI>();
             unitInfo.InitUnitInfo(this);
         }
-
-
-
     }
+
+    // 드래그 시작 시 호출
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (!isActive) return;
+
+        isDragging = true;
+        hasDragged = false; // 드래그 시작 시 초기화
+        originalPosition = transform.position;
+        originalTilePosition = tilePosition;
+
+        // 드래깅 시 유닛을 약간 위로 올려 드래그 중임을 시각적으로 표시
+        Vector3 position = transform.position;
+        position.z = -1;
+        transform.position = position;
+
+        // 드래그 중 Sorting Order 변경하여 다른 유닛 위에 표시되도록
+        unitSprite.sortingOrder = 100;
+        unitBaseSprite.sortingOrder = 99;
+
+        // 배치 가능 여부 초기화
+        canPlace = false;
+    }
+
+    // 드래그 중 호출
+    
+public void OnDrag(PointerEventData eventData)
+    {
+        if (!isDragging) return;
+
+        hasDragged = true; // 드래그 발생 표시
+
+        // 마우스 위치에서 타일 위치 계산
+        Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
+        worldPos.z = 0;
+        Vector2 currentTilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
+
+        // 항상 드래그 위치 추적 (previousTilePosition 비교 제거)
+        // 타일맵 색상 업데이트
+        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0.1f));
+
+        // 합성 미리보기 유닛이 있다면 제거
+        ClearMergedPreview();
+
+        // 배치 가능 여부 확인
+        List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
+        Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>()
+    {
+        { 0, this }
+    };
+
+        // 배치 가능성 확인 (원래 위치 고려)
+        canPlace = CheckPlacementPossibility(currentTilePos, tileOffsets, currentPreviews);
+
+        // 타겟 타일 데이터 획득
+        targetTileData = TileMapManager.Instance.GetTileData(currentTilePos);
+
+        // 합성 가능 여부 확인 및 처리
+        bool isMergePreview = CheckAndCreateMergePreview(currentTilePos);
+
+        if (!isMergePreview)
+        {
+            // 일반 이동 - 타일 위치에 맞게 유닛 이동
+            Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
+            newPosition.z = -0.1f; // 약간 앞에 표시
+            transform.position = newPosition;
+
+            // 머테리얼 업데이트
+            SetPreviewMaterial(canPlace);
+            // 유닛을 보이게 설정
+            gameObject.SetActive(true);
+        }
+
+        // 이전 위치 업데이트
+        previousTilePosition = currentTilePos;
+    }
+
+    // 드래그 종료 시 호출
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!isDragging) return;
+
+        isDragging = false;
+
+        // 타일 색상 복원
+        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0));
+
+        // 렌더러 상태 복원 (항상 활성화)
+        unitSprite.enabled = true;
+        unitBaseSprite.enabled = true;
+
+        // 위치 및 머테리얼 복원
+        DestroyPreviewUnit();
+
+        // 드래그 후 배치 처리
+        if (hasDragged)
+        {
+            // 원래 위치와 다른 곳에 배치하려는 경우만 처리
+            if (previousTilePosition != originalTilePosition)
+            {
+                // 합성 미리보기가 있는 경우
+                if (mergedPreviewUnit != null)
+                {
+                    // 합성 처리
+                    PerformMerge();
+                    return;
+                }
+
+                if (canPlace)
+                {
+                    // 일반 이동 처리
+                    // 기존 타일에서 유닛 제거
+                    TileMapManager.Instance.ReleaseTile(originalTilePosition);
+
+                    // 새 타일 점유
+                    List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
+                    Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>()
+                    {
+                        { 0, this }
+                    };
+                    TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
+
+                    // 유닛 위치 최종 업데이트
+                    tilePosition = previousTilePosition;
+                    Vector3 finalPosition = TileMapManager.Instance.GetTileToWorldPosition(previousTilePosition);
+                    finalPosition.z = 0;
+                    transform.position = finalPosition;
+
+                    // 적 경로 업데이트
+                    EnemyManager.Instance.UpdateEnemiesPath();
+                    return;
+                }
+            }
+        }
+
+        // 배치 실패 또는 원래 위치로 돌아가는 경우
+        ReturnToOriginalPosition();
+    }
+
+    // 합성 가능 여부 확인 및 프리뷰 생성
+    private bool CheckAndCreateMergePreview(Vector2 tilePos)
+    {
+        // 타일에 유닛이 있고 합성이 가능한 경우
+        if (targetTileData?.placedUnit != null &&
+            targetTileData.placedUnit != this &&
+            unitType == targetTileData.placedUnit.unitType &&
+            GetStat(StatName.UnitStarLevel) == targetTileData.placedUnit.GetStat(StatName.UnitStarLevel) &&
+            targetTileData.placedUnit.GetStat(StatName.UnitStarLevel) < 3)
+        {
+            // 기존 유닛의 별 비활성화
+            foreach (var star in targetTileData.placedUnit.starObjects)
+            {
+                star.SetActive(false);
+            }
+
+            // 현재 유닛의 렌더러만 숨기고 GameObject는 활성화 유지
+            // gameObject.SetActive(false); // 이 부분 제거
+            unitSprite.enabled = false;      // 대신 렌더러만 비활성화
+            unitBaseSprite.enabled = false;  // 베이스 렌더러도 비활성화
+
+            // 새로운 합성 유닛 생성 및 설정
+            Vector3 mergedPosition = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+            GameObject mergedPreviewObj = PoolingManager.Instance.GetObject(unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey, mergedPosition, (int)ObjectLayer.Player);
+
+            // 기존 미리보기가 있었다면 먼저 제거
+            if (mergedPreviewUnit != null)
+            {
+                PoolingManager.Instance.ReturnObject(mergedPreviewUnit.gameObject);
+            }
+
+            mergedPreviewUnit = mergedPreviewObj.GetComponent<UnitController>();
+            mergedPreviewUnit.Initialize();
+            mergedPreviewUnit.InitializeUnitInfo(unitData);
+
+            // 새 스타 레벨 설정
+            int newStarLevel = (int)targetTileData.placedUnit.GetStat(StatName.UnitStarLevel) + 1;
+            mergedPreviewUnit.UpGradeUnitLevel(newStarLevel);
+
+            // 미리보기 머테리얼 설정
+            mergedPreviewUnit.SetPreviewMaterial(canPlace);
+
+            // 시각적 효과
+            mergedPreviewUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // 합성 미리보기 정리
+    private void ClearMergedPreview()
+    {
+        if (mergedPreviewUnit != null)
+        {
+            // 기존 합성 대상 유닛의 별 다시 활성화
+            if (targetTileData?.placedUnit != null)
+            {
+                foreach (var star in targetTileData.placedUnit.starObjects)
+                {
+                    star.SetActive(true);
+                }
+            }
+
+            // 합성 미리보기 유닛 반환
+            PoolingManager.Instance.ReturnObject(mergedPreviewUnit.gameObject);
+            mergedPreviewUnit = null;
+        }
+
+        // 현재 유닛 다시 표시 (mergedPreviewUnit이 null이어도 항상 실행)
+        gameObject.SetActive(true);
+    }
+
+    // 실제 합성 수행
+    private void PerformMerge()
+    {
+        if (mergedPreviewUnit == null || targetTileData?.placedUnit == null) return;
+
+        // 원래 타일에서 현재 유닛 제거
+        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+
+        // 합성 대상 유닛 가져오기
+        UnitController targetUnit = targetTileData.placedUnit;
+
+        // 새 스타 레벨 설정
+        int newStarLevel = (int)GetStat(StatName.UnitStarLevel) + 1;
+        targetUnit.UpGradeUnitLevel(newStarLevel);
+
+        // 합성 효과 적용
+        targetUnit.ApplyEffect(1.0f);
+
+        // 합성 프리뷰 유닛 반환
+        PoolingManager.Instance.ReturnObject(mergedPreviewUnit.gameObject);
+        mergedPreviewUnit = null;
+
+        // 현재 유닛(드래그한 유닛) 제거
+        UnitManager.Instance.UnregisterUnit(this);
+        Destroy(gameObject);
+
+        // 적 경로 업데이트
+        EnemyManager.Instance.UpdateEnemiesPath();
+    }
+
+    // 배치 가능성 확인을 위한 별도 메서드 (원래 위치 처리를 위해)
+    private bool CheckPlacementPossibility(Vector2 targetPos, List<Vector2> offsets, Dictionary<int, UnitController> units)
+    {
+        // 원래 타일 데이터 임시 저장
+        TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
+        bool originalAvailable = false;
+
+        if (originalTileData != null)
+        {
+            // 원래 위치는 일시적으로 사용 가능한 것으로 표시
+            originalAvailable = originalTileData.isAvailable;
+            originalTileData.isAvailable = true;
+            originalTileData.placedUnit = null;
+            TileMapManager.Instance.SetTileData(originalTileData);
+        }
+
+        // 배치 가능성 확인
+        bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, offsets, units);
+
+        // 원래 타일 상태 복원
+        if (originalTileData != null)
+        {
+            originalTileData.isAvailable = originalAvailable;
+            originalTileData.placedUnit = this;
+            TileMapManager.Instance.SetTileData(originalTileData);
+        }
+
+        return canPlace;
+    }
+
+    // 원래 위치로 돌아가기
+    private void ReturnToOriginalPosition()
+    {
+        transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
+    }
+
 
     public void UpGradeUnitLevel(int value)
     {

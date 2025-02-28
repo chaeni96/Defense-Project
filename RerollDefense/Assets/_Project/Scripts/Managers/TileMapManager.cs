@@ -195,11 +195,21 @@ public class TileMapManager : MonoBehaviour
             // 배치된 유닛이 있는 경우 타입 비교
             if (tileData?.placedUnit != null)
             {
+
                 var placedUnit = tileData.placedUnit;
                 var previewUnit = previewUnits[i];
 
-                // 업그레이드 타입이 다르면 배치 불가
-                if (previewUnit.unitType != placedUnit.unitType || placedUnit.unitType == UnitType.Base || placedUnit.GetStat(StatName.UnitStarLevel) >= 3)
+                // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 3성 미만
+                bool canMerge = (previewUnit.unitType == placedUnit.unitType) &&
+                               (previewUnit.GetStat(StatName.UnitStarLevel) == placedUnit.GetStat(StatName.UnitStarLevel)) &&
+                               (placedUnit.GetStat(StatName.UnitStarLevel) < 3);
+
+                Debug.Log($"Preview Unit: Type={previewUnit.unitType}, Level={previewUnit.GetStat(StatName.UnitStarLevel)}");
+                Debug.Log($"Placed Unit: Type={placedUnit.unitType}, Level={placedUnit.GetStat(StatName.UnitStarLevel)}");
+                Debug.Log($"Can Merge: {canMerge}");
+
+                // 합성 불가능하면 배치 불가
+                if (!canMerge)
                 {
                     return false;
                 }
@@ -289,6 +299,17 @@ public class TileMapManager : MonoBehaviour
                 tileMap.SetTileFlags(position, TileFlags.None);
                 tileMap.SetColor(position, color);
             }
+        }
+    }
+    // 타일에서 제거
+    public void ReleaseTile(Vector2 tilePos)
+    {
+        TileData tileData = GetTileData(tilePos);
+        if (tileData != null)
+        {
+            tileData.isAvailable = true;
+            tileData.placedUnit = null;
+            SetTileData(tileData);
         }
     }
 
