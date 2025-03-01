@@ -40,6 +40,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     //inspector에 할당
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
+    [SerializeField] private Material deleteMaterial;   // 배치 삭제할 때 사용
     [SerializeField] private Material originalMaterial; //기본 머테리얼
     [SerializeField] private LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
 
@@ -59,7 +60,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     private int originalStarLevel = 0;
     private bool isShowingMergePreview = false;
 
-    
+
+    private bool isOverTrashCan = false;
 
     public override void Initialize()
     {
@@ -202,8 +204,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         // y가 9보다 크면 공격 불가
         canAttack = tilePosition.y <= 9;
-
-        Debug.Log($"{canAttack}, tileposY : {tilePosition.y}");
     }
 
     public void SetActive(bool active)
@@ -226,7 +226,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         originalTilePosition = tilePosition;
 
         canAttack = false;
-        Debug.Log($"드래그 시작: {gameObject.name}, canAttack = {canAttack}");
 
         // 현재 별 레벨 저장
         originalStarLevel = (int)GetStat(StatName.UnitStarLevel);
@@ -244,6 +243,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         unitBaseSprite.sortingOrder = 99;
 
         canPlace = false;
+
+        // 쓰레기통 표시
+        GameManager.Instance.ShowTrashCan();
     }
 
     // 드래그 중 호출
@@ -256,6 +258,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 마우스 위치에서 타일 위치 계산
         Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
         worldPos.z = 0;
+
         Vector2 currentTilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
 
         // 타일맵 색상 업데이트
@@ -291,6 +294,17 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             previousTilePosition = currentTilePos;
         }
+
+        // 쓰레기통 위에 있는지 확인
+        if (GameManager.Instance.IsOverTrashCan(worldPos))
+        {
+            isOverTrashCan = true;
+            SetDeleteMat();
+        }
+        else
+        {
+            isOverTrashCan = false;
+        }
     }
 
     // 드래그 종료
@@ -300,12 +314,22 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         isDragging = false;
 
+        // 쓰레기통 숨기기
+        GameManager.Instance.HideTrashCan();
+
         // 타일 색상 복원
         TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0));
 
         bool isSuccess = false;
 
-        if (hasDragged && previousTilePosition != originalTilePosition)
+        // 쓰레기통 위에 드롭한 경우 유닛 삭제
+        if (isOverTrashCan)
+        {
+            DeleteUnit();
+            
+            isSuccess = true;
+        }
+        else if(hasDragged && previousTilePosition != originalTilePosition)
         {
             // 합성 처리
             if (isShowingMergePreview && mergeTargetTile != null && CanMergeWithTarget(mergeTargetTile))
@@ -330,6 +354,39 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             CheckAttackAvailability();
         }
+    }
+
+    private void DeleteUnit()
+    {
+        // 원본 타일에서 유닛 제거
+        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+
+        // 유닛 매니저에서 등록 해제
+        UnitManager.Instance.UnregisterUnit(this);
+        EnemyManager.Instance.UpdateEnemiesPath();
+
+        //코스트 정산
+        int refundCost = 0;
+
+        if(unitType == UnitType.Base)
+        {
+            refundCost = -1;
+        }
+        else
+        {
+            int starLevel = (int)GetStat(StatName.UnitStarLevel);
+
+            refundCost = (starLevel == 1) ? 1 : starLevel - 1;
+        }
+
+        // costPerTick 값을 바로 넘겨 변경사항 브로드캐스트
+        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+        {
+            statName = StatName.Cost,
+            value = refundCost, 
+            multiply = 1f
+        });
+
     }
 
     // 배치 가능한지 확인
@@ -571,6 +628,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
+    private void SetDeleteMat()
+    {
+        if (unitSprite != null)
+        {
+            unitSprite.material = deleteMaterial;
+            unitBaseSprite.material = deleteMaterial;
+        }
+    }
 
     // 프리뷰 종료 시 원본 머테리얼로 복원
     public void DestroyPreviewUnit()

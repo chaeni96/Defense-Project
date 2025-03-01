@@ -169,6 +169,7 @@ MonoBehaviour:
   attackTimer: 0
   tilePosition: {x: 0, y: 0}
   attackType: 0
+  canAttack: 1
   starObjects: []
   unitType: 0
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
@@ -176,6 +177,7 @@ MonoBehaviour:
   unitBaseSprite: {fileID: 8494380669334004852}
   enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
   disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
+  deleteMaterial: {fileID: 2100000, guid: 3ea0ab36c3513254d90aff3352c348c4, type: 2}
   originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   unitLayer:
     serializedVersion: 2

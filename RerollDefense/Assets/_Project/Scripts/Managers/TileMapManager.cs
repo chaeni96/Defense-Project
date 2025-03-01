@@ -232,10 +232,6 @@ public class TileMapManager : MonoBehaviour
                                (previewUnit.GetStat(StatName.UnitStarLevel) == placedUnit.GetStat(StatName.UnitStarLevel)) &&
                                (placedUnit.GetStat(StatName.UnitStarLevel) < 3);
 
-                Debug.Log($"Preview Unit: Type={previewUnit.unitType}, Level={previewUnit.GetStat(StatName.UnitStarLevel)}");
-                Debug.Log($"Placed Unit: Type={placedUnit.unitType}, Level={placedUnit.GetStat(StatName.UnitStarLevel)}");
-                Debug.Log($"Can Merge: {canMerge}");
-
                 // 합성 불가능하면 배치 불가
                 if (!canMerge)
                 {
@@ -406,7 +402,7 @@ public class TileMapManager : MonoBehaviour
     //        }
     //        else
     //        {
-    //            Debug.Log("클릭한 위치에 타일이 ");
+    //            Debug.Log("클릭한 위치에 타일이없음 ");
     //        }
     //    }
     //}

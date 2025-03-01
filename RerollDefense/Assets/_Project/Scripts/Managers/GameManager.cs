@@ -53,6 +53,7 @@ public class GamePlayState : GameState
     {
         //매개변수로 현재 스테이지 던져야됨
         GameManager.Instance.gameState = "Gema Play!";
+        GameManager.Instance.InitializeTrashCan();
        
     }
 
@@ -178,6 +179,11 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
     public event System.Action OnCostAdd; // 코스트 추가 이벤트
     public event System.Action<int> OnCostUsed; // 코스트 사용 이벤트
+
+    //인게임 내 오브젝트 삭제(쓰레기통) 관련 코드 
+    private string trashCanAddressableKey = "TrashCanObject";
+    private TrashCanObject trashCanInstance;
+
 
     //test용
 
@@ -429,6 +435,40 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         Vector3 campPosition = TileMapManager.Instance.GetTileToWorldPosition(endTile);
         playerCamp.transform.position = campPosition;
     }
+
+    // 쓰레기통 초기화 (게임 시작 시 호출)
+    public void InitializeTrashCan()
+    {
+        var obj =  ResourceManager.Instance.Instantiate(trashCanAddressableKey);
+        trashCanInstance = obj.GetComponent<TrashCanObject>();
+        trashCanInstance.InitializeTrashCan();
+    }
+
+    // 쓰레기통 표시
+    public void ShowTrashCan()
+    {
+        if (trashCanInstance != null)
+        {
+            trashCanInstance.Show();
+        }
+    }
+
+    // 쓰레기통 숨기기
+    public void HideTrashCan()
+    {
+        if (trashCanInstance != null)
+        {
+            trashCanInstance.Hide();
+        }
+    }
+
+    // 쓰레기통 위에 있는지 확인
+    public bool IsOverTrashCan(Vector3 position)
+    {
+        return trashCanInstance != null && trashCanInstance.IsPositionOver(position);
+    }
+
+
 
     public void ClearGameScene()
     {
