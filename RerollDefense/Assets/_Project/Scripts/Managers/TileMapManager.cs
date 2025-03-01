@@ -71,6 +71,25 @@ public class TileMapManager : MonoBehaviour
 
     }
 
+    // Unity 좌표를 사용자 정의 좌표로 변환 (왼쪽 상단이 0,0)
+    public Vector2 ConvertToCustomCoordinates(Vector3Int unityPosition)
+    {
+        BoundsInt bounds = tileMap.cellBounds;
+        // 왼쪽 상단 좌표는 (minX, maxY)
+        int customX = unityPosition.x - bounds.min.x;
+        int customY = bounds.max.y - 1 - unityPosition.y;
+        return new Vector2(customX, customY);
+    }
+
+    // 사용자 정의 좌표를 Unity 좌표로 변환
+    public Vector3Int ConvertToUnityCoordinates(Vector2 customPosition)
+    {
+        BoundsInt bounds = tileMap.cellBounds;
+        int unityX = (int)customPosition.x + bounds.min.x;
+        int unityY = bounds.max.y - 1 - (int)customPosition.y;
+        return new Vector3Int(unityX, unityY, 0);
+    }
+
     //endTile에 playerCamp 설치
     public void InitializeTiles(Vector2 startTile, Vector2 endTile)
     {
@@ -91,7 +110,9 @@ public class TileMapManager : MonoBehaviour
         {
             if (tileMap.HasTile(position))
             {
-                var tileData = new TileData(new Vector2(position.x, position.y));
+                Vector2 customPos = ConvertToCustomCoordinates(position);
+
+                var tileData = new TileData(customPos);
                 SetTileData(tileData);
             }
         }
@@ -125,14 +146,15 @@ public class TileMapManager : MonoBehaviour
     //타일 좌표 월드 좌표 변환
     public Vector3 GetTileToWorldPosition(Vector2 pos)
     {
-        return tileMap.GetCellCenterWorld(new Vector3Int((int)pos.x, (int)pos.y, 0));
+        Vector3Int unityCoord = ConvertToUnityCoordinates(pos);
+        return tileMap.GetCellCenterWorld(unityCoord);
     }
 
     //월드 좌표를 타일 좌표로 변환
     public Vector2 GetWorldToTilePosition(Vector3 worldPosition)
     {
-        Vector3Int cell = tileMap.WorldToCell(worldPosition);
-        return new Vector2(cell.x, cell.y);
+        Vector3Int unityCell = tileMap.WorldToCell(worldPosition);
+        return ConvertToCustomCoordinates(unityCell);
     }
 
     //타일 데이터 넣어주기
@@ -181,13 +203,16 @@ public class TileMapManager : MonoBehaviour
             Vector2 checkPosition = basePosition + tileOffsets[i];
             var tileData = GetTileData(checkPosition);
 
+            // 사용자 정의 좌표를 Unity 좌표로 변환하여 타일 존재 여부 확인
+            Vector3Int unityPos = ConvertToUnityCoordinates(checkPosition);
+
             // 시작/끝 타일 체크
             if (checkPosition == startTilePos || checkPosition == endTilePos)
             {
                 return false;
             }
 
-            if (tileData == null || !tileMap.HasTile(new Vector3Int((int)checkPosition.x, (int)checkPosition.y, 0)))
+            if (tileData == null || !tileMap.HasTile(unityPos))
             {
                 return false;
             }
@@ -293,7 +318,8 @@ public class TileMapManager : MonoBehaviour
             int x = baseX + offset.x;
             int y = baseY + offset.y;
 
-            Vector3Int position = new Vector3Int(x, y, 0);
+            Vector3Int position = ConvertToUnityCoordinates(new Vector2(x, y));
+
             if (tileMap.HasTile(position))
             {
                 tileMap.SetTileFlags(position, TileFlags.None);
@@ -348,21 +374,38 @@ public class TileMapManager : MonoBehaviour
     }
 
     //시작 타일, 도착타일 pos
-    //private void Update()
-    //{
-    //    if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
-    //    {
-    //        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //        Vector3Int tilePosition = tileMap.WorldToCell(worldPosition);
+    // 디버깅을 위한 Update 메서드 (필요에 따라 사용)
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && tileMap != null) // 마우스 왼쪽 버튼 클릭
+        {
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int unityPosition = tileMap.WorldToCell(worldPosition);
 
-    //        if (tileMap.HasTile(tilePosition))
-    //        {
-    //            Debug.Log($"Clicked Tile Position: {tilePosition}");
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("No tile found at clicked position.");
-    //        }
-    //    }
-    //}
+            if (tileMap.HasTile(unityPosition))
+            {
+                // Unity 좌표계 위치
+                Debug.Log($"Unity 좌표계: ({unityPosition.x}, {unityPosition.y})");
+
+                // 사용자 정의 좌표계 위치 (왼쪽 상단 0,0)
+                Vector2 customPos = ConvertToCustomCoordinates(unityPosition);
+                Debug.Log($"사용자 정의 좌표계: ({customPos.x}, {customPos.y})");
+
+                // 타일 데이터 확인
+                TileData tileData = GetTileData(customPos);
+                if (tileData != null)
+                {
+                    Debug.Log($"타일 데이터: isAvailable={tileData.isAvailable}, hasUnit={tileData.placedUnit != null}");
+                }
+                else
+                {
+                    Debug.Log("해당 위치에 타일 데이터가 없습니다.");
+                }
+            }
+            else
+            {
+                Debug.Log("클릭한 위치에 타일이 없습니다.");
+            }
+        }
+    }
 }

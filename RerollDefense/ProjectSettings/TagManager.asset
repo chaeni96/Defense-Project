@@ -54,3 +54,6 @@ TagManager:
   - name: UnitObject
     uniqueID: 3776046721
     locked: 0
+  - name: Effect
+    uniqueID: 3344823679
+    locked: 0
