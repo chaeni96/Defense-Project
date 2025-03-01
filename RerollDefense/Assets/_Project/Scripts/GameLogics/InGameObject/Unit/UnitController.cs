@@ -19,6 +19,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [HideInInspector]
     public SkillAttackType attackType;
 
+    [HideInInspector]
+    public bool canAttack = true; // 공격 가능 여부
+
+    [HideInInspector]
+    public D_UnitData unitData;
+
     public List<GameObject> starObjects = new List<GameObject>();  // 생성된 별들을 관리하기 위한 리스트
 
     public UnitType unitType;
@@ -53,7 +59,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     private int originalStarLevel = 0;
     private bool isShowingMergePreview = false;
 
-    public D_UnitData unitData;
+    
 
     public override void Initialize()
     {
@@ -191,6 +197,15 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     }
 
+    // 공격 가능 여부를 확인하는 메서드
+    public void CheckAttackAvailability()
+    {
+        // y가 9보다 크면 공격 불가
+        canAttack = tilePosition.y <= 9;
+
+        Debug.Log($"{canAttack}, tileposY : {tilePosition.y}");
+    }
+
     public void SetActive(bool active)
     {
         isActive = active;
@@ -209,6 +224,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         hasDragged = false; // 드래그 시작 시 초기화
         originalPosition = transform.position;
         originalTilePosition = tilePosition;
+
+        canAttack = false;
+        Debug.Log($"드래그 시작: {gameObject.name}, canAttack = {canAttack}");
 
         // 현재 별 레벨 저장
         originalStarLevel = (int)GetStat(StatName.UnitStarLevel);
@@ -309,6 +327,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             ResetMergePreview();
             DestroyPreviewUnit();
             ReturnToOriginalPosition();
+
+            CheckAttackAvailability();
         }
     }
 
@@ -441,6 +461,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 적 경로 업데이트
         EnemyManager.Instance.UpdateEnemiesPath();
+
+        //공격가능한 위치인지 체크
+        CheckAttackAvailability();
     }
 
     // 합성 수행

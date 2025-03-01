@@ -89,11 +89,13 @@ public class UnitManager : MonoBehaviour
         //공격 가능한 유닛만 담아두기
         for (int i = 0; i < units.Count; i++)
         {
-            if (units[i] != null && !units[i].isDragging)
+
+            if (units[i] != null && units[i].canAttack)
             {
                 activeUnits.Add(units[i]);
             }
         }
+
         // 공격 가능한 유닛이 없으면 리턴
         if (activeUnits.Count == 0) return;
 
@@ -133,7 +135,7 @@ public class UnitManager : MonoBehaviour
             for (int i = 0; i < activeUnits.Count; i++)
             {
                 int targetIndex = targetIndices[i];
-                if (targetIndex != -1 && attackTimers[i] >= 1f / units[i].GetStat(StatName.AttackSpeed))
+                if (targetIndex != -1 && attackTimers[i] >= 1f / activeUnits[i].GetStat(StatName.AttackSpeed))
                 {
                     UnitController unit = activeUnits[i];
                     Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
