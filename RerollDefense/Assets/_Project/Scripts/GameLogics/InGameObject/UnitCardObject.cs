@@ -243,7 +243,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             if (tileData?.placedUnit != null &&
                 currentPreview.unitType == tileData.placedUnit.unitType &&
                  currentPreview.GetStat(StatName.UnitStarLevel) == tileData.placedUnit.GetStat(StatName.UnitStarLevel) &&
-                tileData.placedUnit.GetStat(StatName.UnitStarLevel) < 3)
+                tileData.placedUnit.GetStat(StatName.UnitStarLevel) < 5)
             {
                 foreach (var star in tileData.placedUnit.starObjects)
                 {

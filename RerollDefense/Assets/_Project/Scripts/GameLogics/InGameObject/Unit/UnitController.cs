@@ -460,7 +460,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         return unitType == targetUnit.unitType &&
                originalStarLevel == targetUnit.GetStat(StatName.UnitStarLevel) &&
-               targetUnit.GetStat(StatName.UnitStarLevel) < 3;
+               targetUnit.GetStat(StatName.UnitStarLevel) < 5;
     }
 
     // 합성 프리뷰 표시

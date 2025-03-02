@@ -230,7 +230,7 @@ public class TileMapManager : MonoBehaviour
                 // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 3성 미만
                 bool canMerge = (previewUnit.unitType == placedUnit.unitType) &&
                                (previewUnit.GetStat(StatName.UnitStarLevel) == placedUnit.GetStat(StatName.UnitStarLevel)) &&
-                               (placedUnit.GetStat(StatName.UnitStarLevel) < 3);
+                               (placedUnit.GetStat(StatName.UnitStarLevel) < 5);
 
                 // 합성 불가능하면 배치 불가
                 if (!canMerge)

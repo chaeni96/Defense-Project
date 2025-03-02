@@ -44,6 +44,7 @@ public class Enemy : BasicObject
 
     private bool isReach;
     private bool isActive;
+    private Vector3 originalScale;
 
     public Action OnUpdateDistanceCheck;
 
@@ -56,6 +57,8 @@ public class Enemy : BasicObject
         base.Initialize();
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
+        originalScale = transform.localScale;
+
         UpdateHpBar();
 
         InitializeLineRenderer();
@@ -198,7 +201,6 @@ public class Enemy : BasicObject
         OnDead();
     }
 
-    //TODO : projectile과 aoe도 StatManager의 메서드를 부르도록 바꾸기
     public void onDamaged(BasicObject attacker, float damage = 0)
     {
         if (attacker != null)
@@ -209,20 +211,34 @@ public class Enemy : BasicObject
                 hpStat.value -= (int)damage;
                 UpdateHpBar();
             }
-
-            // 데미지를 입으면 빨간색으로 깜빡임
-            if (spriteRenderer != null)
-            {
-                // 색상 변경 시퀀스
-                DOTween.Sequence()
-                    .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                    .Append(spriteRenderer.DOColor(Color.white, 0.1f));  // 0.1초 동안 원래 색으로
-            }
         }
 
         if (GetStat(StatName.CurrentHp) <= 0)
         {
             OnDead();
+        }
+    }
+
+    public void HitEffect()
+    {
+
+        // 기존 트윈이 실행 중이면 중단
+        transform.DOKill(true);
+
+        // 원래 크기로 초기화
+        transform.localScale = originalScale;
+
+        // 펀치 스케일 효과 적용
+        transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 1, 1)
+            .SetEase(Ease.OutQuart);
+
+        // 데미지를 입으면 빨간색으로 깜빡임
+        if (spriteRenderer != null)
+        {
+            // 색상 변경 시퀀스
+            DOTween.Sequence()
+                .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+                .Append(spriteRenderer.DOColor(Color.white, 0.1f));  // 0.1초 동안 원래 색으로
         }
     }
 
