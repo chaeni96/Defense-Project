@@ -8,8 +8,11 @@ using UnityEngine.UI;
 
 // 유닛 타일 UI 요소를 관리하고 드래그 앤 드롭으로 맵에 유닛을 배치하는 클래스
 public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
-{ 
-    //UI요소중 9개의 타일 이미지 저장하는 리스트
+{
+    [SerializeField] private GameObject tileImageLayout; // TileImage_Layout 게임오브젝트
+    [SerializeField] private GameObject tileImagePrefab; // Tile_Image 프리팹
+
+  
     [SerializeField] private List<Image> tileImages = new List<Image>();
     [SerializeField] private TMP_Text cardCostText;
 
@@ -67,7 +70,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             tileOffsets = new List<Vector2>();
             foreach (var tile in tileShapeData.f_unitBuildData)
             {
-                tileOffsets.Add(tile.f_TilePos.f_TilePos);
+                // 원본 좌표
+                Vector2 originalPos = tile.f_TilePos.f_TilePos;
+
+                // Y축 반전 - (0,0)이 기준점일 때 (0,1)은 위쪽에 배치되도록
+                Vector2 correctedPos = new Vector2(originalPos.x, -originalPos.y);
+                tileOffsets.Add(correctedPos);
             }
         }
     }
@@ -77,7 +85,10 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         foreach (int index in activeImageIndices)
         {
-            tileImages[index].gameObject.SetActive(visible);
+            if (index < tileImages.Count && tileImages[index] != null)
+            {
+                tileImages[index].gameObject.SetActive(visible);
+            }
         }
         cardCostText.gameObject.SetActive(visible);
     }
@@ -166,7 +177,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
     private void CreatePreviewInstances(Vector3 tilePos)
     {
-        
+
         //유닛의 worldPos
         Vector3 worldPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
 
@@ -340,51 +351,136 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 카드 UI에 타일 프리뷰 생성
     private void CreateTilePreview(D_TileShpeData tileShapeData)
     {
-        foreach (var image in tileImages)
-        {
-            image.gameObject.SetActive(false);
-        }
+        // 기존 타일 이미지 모두 제거
+        ClearTileImages();
 
-        activeImageIndices.Clear();  // 기존 인덱스 초기화
-
+        // 타일 데이터에서 최소/최대 x, y 좌표 찾기
+        int minX = int.MaxValue, maxX = int.MinValue;
+        int minY = int.MaxValue, maxY = int.MinValue;
 
         foreach (var buildData in tileShapeData.f_unitBuildData)
         {
             Vector2 tilePos = buildData.f_TilePos.f_TilePos;
+            minX = Mathf.Min(minX, (int)tilePos.x);
+            maxX = Mathf.Max(maxX, (int)tilePos.x);
+            minY = Mathf.Min(minY, (int)tilePos.y);
+            maxY = Mathf.Max(maxY, (int)tilePos.y);
+        }
 
+        // 그리드 크기 계산
+        int width = maxX - minX + 1;
+        int height = maxY - minY + 1;
 
+     
+        // tileImageLayout의 RectTransform
+        RectTransform layoutRect = tileImageLayout.GetComponent<RectTransform>();
 
-            // 2x2 그리드에서 좌표를 인덱스로 변환
-            // 인덱스 레이아웃:
-            // [0] [1]
-            // [2] [3]
+        // 전체 레이아웃 크기 설정 (타일 크기 * 그리드 크기 + 간격)
+        float tileSize = 100f;
+        float spacing = 10f; // 0.1 * tileSize
+        layoutRect.sizeDelta = new Vector2(width * (tileSize + spacing) - spacing, height * (tileSize + spacing) - spacing);
 
-            // 좌표 범위를 인덱스로 매핑
-            int gridX = (tilePos.x >= 0) ? 1 : 0;
-            int gridY = (tilePos.y <= 0) ? 1 : 0;  // y 좌표는 반전
+        // 유닛 데이터를 그리드 위치에 매핑
+        Dictionary<Vector2Int, D_unitBuildData> unitPositionMap = new Dictionary<Vector2Int, D_unitBuildData>();
 
-            int index = gridY * 2 + gridX;
+        foreach (var buildData in tileShapeData.f_unitBuildData)
+        {
+            Vector2Int normalizedPos = new Vector2Int(
+                (int)buildData.f_TilePos.f_TilePos.x - minX,
+                (int)buildData.f_TilePos.f_TilePos.y - minY
+            );
+            unitPositionMap[normalizedPos] = buildData;
+        }
 
-            if (index >= 0 && index < tileImages.Count)
+        // 전체 그리드를 순회하며 이미지 생성 (빈 칸 포함)
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
             {
-                GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
+                // Y축 반전 적용 (아래에서 위로 증가하는 좌표계)
+                Vector2Int gridPos = new Vector2Int(x, height - 1 - y);
 
-                UnitController unitController = tempUnit.GetComponent<UnitController>();
+                // 타일 프리팹 생성
+                GameObject tileImageObj = Instantiate(tileImagePrefab, tileImageLayout.transform);
 
-                if (unitController != null && unitController.unitSprite != null)
+                // UnitTileObject 컴포넌트 가져오기
+                UnitTileObject tileObject = tileImageObj.GetComponent<UnitTileObject>();
+
+                if (tileObject != null)
                 {
-                    tileImages[index].gameObject.SetActive(true);
+                    // 위치 설정
+                    float posX = (x - (width - 1) / 2f) * (tileSize + spacing);
+                    float posY = ((height - 1) / 2f - y) * (tileSize + spacing);
+                    tileObject.SetPosition(posX, posY);
 
-                    if (buildData.f_unitData.f_SkillAttackType != SkillAttackType.None)
+                    // 이미지 리스트에 타일 이미지 컴포넌트 추가 (UnitTileObject의 unitImage 참조)
+                    Image tileImage = tileObject.unitImage;
+
+                    if (tileImage != null)
                     {
-                        tileImages[index].sprite = unitController.unitSprite.sprite;
+                        tileImages.Add(tileImage);
+                        activeImageIndices.Add(tileImages.Count - 1);
                     }
 
-                    activeImageIndices.Add(index);  // 활성화된 인덱스 저장
+                    // 해당 위치에 유닛 데이터가 있는지 확인
+                    if (unitPositionMap.TryGetValue(gridPos, out var buildData))
+                    {
+                        // 유닛 스프라이트 가져오기
+                        GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
+                        UnitController unitController = tempUnit.GetComponent<UnitController>();
+
+                        if (unitController != null && unitController.unitSprite != null)
+                        {
+                            // SkillAttackType 체크
+                            bool isBase = (buildData.f_unitData.f_SkillAttackType == SkillAttackType.None);
+
+                            Sprite unitSprite = null;
+
+                            // base가 아닌 경우에만 스프라이트 설정
+                            if (!isBase)
+                            {
+                                unitSprite = unitController.unitSprite.sprite;
+                            }
+                            // 타일 초기화 (base 정보 전달)
+                            tileObject.InitUnitImage(unitSprite, isBase);
+                        }
+
+                        PoolingManager.Instance.ReturnObject(tempUnit);
+                    }
+                    else
+                    {
+                        // 빈 타일 초기화
+                        tileObject.InitUnitImage(null, false);
+                    }
                 }
 
-                PoolingManager.Instance.ReturnObject(tempUnit);
             }
+        }
+
+        Debug.Log($"타일 프리뷰 생성 완료: 총 {tileShapeData.f_unitBuildData.Count}개의 유닛, 그리드 크기 {width}x{height}");
+    }
+
+    // 기존 타일 이미지 모두 제거하는 메서드
+    private void ClearTileImages()
+    {
+        activeImageIndices.Clear();
+
+        // 리스트에 있는 이미지 컴포넌트 삭제
+        foreach (var image in tileImages)
+        {
+            if (image != null && image.gameObject != null)
+            {
+                Destroy(image.gameObject);
+            }
+        }
+
+        // 리스트 초기화
+        tileImages.Clear();
+
+        // 혹시 남아있는 자식 오브젝트도 모두 제거
+        for (int i = tileImageLayout.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(tileImageLayout.transform.GetChild(i).gameObject);
         }
     }
 
@@ -401,6 +497,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     private void CleanUp()
     {
+        ClearTileImages(); // 타일 이미지 제거
+
         originalPreviews.Clear();
         currentPreviews.Clear();
         activeImageIndices.Clear();
