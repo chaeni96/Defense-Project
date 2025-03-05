@@ -332,6 +332,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         newPosition.z = -0.1f;
         transform.position = newPosition;
         SetPreviewMaterial(canPlace);
+
+        // 위치 변경 이벤트 발생
+        OnPositionChanged?.Invoke(newPosition);
     }
 
     // 드래그 종료
@@ -393,6 +396,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 Vector2 pos = originalTilePosition + offset;
                 TileMapManager.Instance.ReleaseTile(pos);
             }
+
+            // 삭제 이벤트 발생
+            OnUnitDeleted?.Invoke();
         }
         else
         {
@@ -752,6 +758,9 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
             // 프리뷰일 때는 Sorting Order를 높게 설정
             unitSprite.sortingOrder = 100;
             unitBaseSprite.sortingOrder = 99;  // base는 한단계 아래로
+
+            // 머테리얼 변경 이벤트 발생
+            OnMaterialChanged?.Invoke(targetMaterial);
         }
     }
 
@@ -761,6 +770,9 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
         {
             unitSprite.material = deleteMaterial;
             unitBaseSprite.material = deleteMaterial;
+
+            // 머테리얼 변경 이벤트 발생
+            OnMaterialChanged?.Invoke(deleteMaterial);
         }
     }
 
@@ -775,7 +787,8 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
         unitSprite.material = originalMaterial;
         unitBaseSprite.material = originalMaterial;
 
-
+        // 머테리얼 변경 이벤트 발생
+        OnMaterialChanged?.Invoke(originalMaterial);
     }
 
 
@@ -794,6 +807,37 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
 
         unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
 
+    }
+
+
+    // 확장 타일과 통신할 이벤트 정의
+    public event System.Action<Vector3> OnPositionChanged;
+    public event System.Action<Material> OnMaterialChanged;
+    public event System.Action OnUnitDeleted;
+
+    // 확장 타일 관리를 위한 딕셔너리 추가
+    private Dictionary<Vector2, TileExtensionObject> extensionTiles = new Dictionary<Vector2, TileExtensionObject>();
+
+    // 확장 타일 추가 메서드
+    public void AddExtensionTile(Vector2 offset, TileExtensionObject extensionTile)
+    {
+        if (!extensionTiles.ContainsKey(offset))
+        {
+            extensionTiles.Add(offset, extensionTile);
+        }
+    }
+
+
+    //풀링으로 돌아갈때 필요
+    private void OnDisable()
+    {
+        // 모든 이벤트 구독자에게 삭제 알림
+        OnUnitDeleted?.Invoke();
+
+        // 이벤트 정리
+        OnPositionChanged = null;
+        OnMaterialChanged = null;
+        OnUnitDeleted = null;
     }
 
 }
