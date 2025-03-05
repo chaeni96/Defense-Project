@@ -26,11 +26,11 @@ public class PreviewUnitObject : BasicObject
  
     public void InitializeObject(string tileShapeName, int tileIndex)
     {
-        var tileShapeData = D_TileShpeData.FindEntity(data => data.f_name == tileShapeName);
+        var tileCardData = D_TileCardData.FindEntity(data => data.f_name == tileShapeName);
 
-        if (tileIndex < tileShapeData.f_unitBuildData.Count)
+        if (tileIndex < tileCardData.f_unitBuildData.Count)
         {
-            var buildData = tileShapeData.f_unitBuildData[tileIndex];
+            var buildData = tileCardData.f_unitBuildData[tileIndex];
             var unitData = buildData.f_unitData;
         }
 

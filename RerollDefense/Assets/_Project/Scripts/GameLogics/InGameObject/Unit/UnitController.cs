@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using System.IO;
 
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -63,6 +64,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     private bool isOverTrashCan = false;
 
+    [HideInInspector]
+    public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
+    [HideInInspector]
+    public List<Vector2> multiTilesOffset = new List<Vector2>(); // 이 유닛이 차지하는 타일 위치들
+
     public override void Initialize()
     {
         base.Initialize();
@@ -105,7 +111,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
     //유닛 정보 초기화
-    public void InitializeUnitInfo(D_UnitData unit)
+    public void InitializeUnitInfo(D_UnitData unit, D_TileCardData tileCard = null)
     {
         if (unit == null) return;
 
@@ -119,10 +125,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         baseStats.Clear();
         currentStats.Clear();
 
-
-        //TODO : enemy도 사용할수있으므로 basicObject로 이동
-        // Subject 등록
-        // 모든 StatSubject에 대해 스탯 가져오기 및 합산
         foreach (var subject in unitData.f_StatSubject)
         {
             var subjectStats = StatManager.Instance.GetAllStatsForSubject(subject);
@@ -169,6 +171,13 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
 
         UpdateStarDisplay();
+
+        if (tileCard != null)
+        {
+
+            isMultiUnit = tileCard.f_isMultiTileUinit;
+        }
+
 
     }
 
@@ -270,29 +279,38 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
 
-        // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
-        bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
-
-        if (canUpdatePreview)
+        // 대형 유닛은 합성 불가능
+        if (!isMultiUnit)
         {
-            // 이전 합성 프리뷰 상태 초기화
-            ResetMergePreview();
+            // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
+            bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
 
-            // 합성 가능 여부 확인 및 프리뷰 표시
-            if (CanMergeWithTarget(tileData))
+            if (canUpdatePreview)
             {
-                ShowMergePreview(tileData);
-            }
-            else
-            {
-                // 일반 이동 - 정확히 마우스 위치에 배치
-                Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
-                newPosition.z = -0.1f;
-                transform.position = newPosition;
-                SetPreviewMaterial(canPlace);
-            }
+                // 이전 합성 프리뷰 상태 초기화
+                ResetMergePreview();
 
-            previousTilePosition = currentTilePos;
+                // 합성 가능 여부 확인 및 프리뷰 표시
+                if (CanMergeWithTarget(tileData))
+                {
+                    ShowMergePreview(tileData);
+                }
+                else
+                {
+                    UpdateNormalDragPosition(currentTilePos);
+                }
+
+                previousTilePosition = currentTilePos;
+            }
+        }
+        else
+        {
+            // 대형 유닛은 항상 일반 이동 모드
+            if (currentTilePos != previousTilePosition)
+            {
+                UpdateNormalDragPosition(currentTilePos);
+                previousTilePosition = currentTilePos;
+            }
         }
 
         // 쓰레기통 위에 있는지 확인
@@ -305,6 +323,15 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         {
             isOverTrashCan = false;
         }
+    }
+
+    private void UpdateNormalDragPosition(Vector2 currentTilePos)
+    {
+        // 일반 이동 - 정확히 마우스 위치에 배치
+        Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
+        newPosition.z = -0.1f;
+        transform.position = newPosition;
+        SetPreviewMaterial(canPlace);
     }
 
     // 드래그 종료
@@ -358,8 +385,20 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     private void DeleteUnit()
     {
-        // 원본 타일에서 유닛 제거
-        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+        if (isMultiUnit)
+        {
+            // 대형 유닛이 점유한 모든 타일 해제
+            foreach (var offset in multiTilesOffset)
+            {
+                Vector2 pos = originalTilePosition + offset;
+                TileMapManager.Instance.ReleaseTile(pos);
+            }
+        }
+        else
+        {
+            // 기존 단일 타일 로직
+            TileMapManager.Instance.ReleaseTile(originalTilePosition);
+        }
 
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
@@ -368,56 +407,116 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         //코스트 정산
         int refundCost = 0;
 
-        if(unitType == UnitType.Base)
+        if (unitType == UnitType.Base)
         {
             refundCost = -1;
         }
         else
         {
             int starLevel = (int)GetStat(StatName.UnitStarLevel);
-
             refundCost = (starLevel == 1) ? 1 : starLevel - 1;
         }
 
-        // costPerTick 값을 바로 넘겨 변경사항 브로드캐스트
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
             statName = StatName.Cost,
-            value = refundCost, 
+            value = refundCost,
             multiply = 1f
         });
-
     }
 
-    // 배치 가능한지 확인
-    private bool CheckPlacementPossibility(Vector2 targetPos)
+// 배치 가능한지 확인
+private bool CheckPlacementPossibility(Vector2 targetPos)
     {
-        // 원래 타일 일시적으로 비우기
-        TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
-        bool originalAvailable = false;
-
-        if (originalTileData != null)
+        if (isMultiUnit)
         {
-            originalAvailable = originalTileData.isAvailable;
-            originalTileData.isAvailable = true;
-            originalTileData.placedUnit = null;
-            TileMapManager.Instance.SetTileData(originalTileData);
+            // 원래 점유하던 모든 타일 일시적으로 비우기
+            List<TileData> originalTiles = new List<TileData>();
+
+            foreach (var offset in multiTilesOffset)
+            {
+                Vector2 originalPos = originalTilePosition + offset;
+                TileData tileData = TileMapManager.Instance.GetTileData(originalPos);
+
+                if (tileData != null)
+                {
+                    bool originalAvailable = tileData.isAvailable;
+                    tileData.isAvailable = true;
+                    tileData.placedUnit = null;
+                    TileMapManager.Instance.SetTileData(tileData);
+                    originalTiles.Add(tileData);
+                }
+            }
+
+            // 새 위치에 배치 가능한지 확인
+            bool canPlace = true;
+
+            foreach (var offset in multiTilesOffset)
+            {
+                Vector2 newPos = targetPos + offset;
+                TileData targetTile = TileMapManager.Instance.GetTileData(newPos);
+
+                if (targetTile == null || !targetTile.isAvailable)
+                {
+                    canPlace = false;
+                    break;
+                }
+            }
+
+            // 원래 타일 상태 복원
+            foreach (var tile in originalTiles)
+            {
+                bool isOriginalPosition = false;
+
+                foreach (var offset in multiTilesOffset)
+                {
+                    Vector2 pos = originalTilePosition + offset;
+                    if (tile.tilePosX == pos.x && tile.tilePosY == pos.y)
+                    {
+                        tile.isAvailable = false;
+                        tile.placedUnit = this;
+                        isOriginalPosition = true;
+                        break;
+                    }
+                }
+
+                if (isOriginalPosition)
+                {
+                    TileMapManager.Instance.SetTileData(tile);
+                }
+            }
+
+            return canPlace;
         }
-
-        // 배치 가능성 확인
-        List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
-        Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-        bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, tileOffsets, units);
-
-        // 원래 타일 상태 복원
-        if (originalTileData != null)
+        else
         {
-            originalTileData.isAvailable = originalAvailable;
-            originalTileData.placedUnit = this;
-            TileMapManager.Instance.SetTileData(originalTileData);
-        }
+            // 기존 단일 타일 로직
+            TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
+            bool originalAvailable = false;
 
-        return canPlace;
+            if (originalTileData != null)
+            {
+                originalAvailable = originalTileData.isAvailable;
+                originalTileData.isAvailable = true;
+                originalTileData.placedUnit = null;
+                TileMapManager.Instance.SetTileData(originalTileData);
+            }
+
+            // 배치 가능성 확인
+            List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
+            Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
+            bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, tileOffsets, units);
+
+            // 원래 타일 상태 복원
+            if (originalTileData != null)
+            {
+                originalTileData.isAvailable = originalAvailable;
+                originalTileData.placedUnit = this;
+                TileMapManager.Instance.SetTileData(originalTileData);
+            }
+
+            return canPlace;
+        }
     }
 
 
@@ -457,6 +556,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             return false;
 
         var targetUnit = tileData.placedUnit;
+
+        // 멀티 유닛은 합성 불가능
+        if (isMultiUnit || targetUnit.isMultiUnit)
+            return false;
 
         return unitType == targetUnit.unitType &&
                originalStarLevel == targetUnit.GetStat(StatName.UnitStarLevel) &&
@@ -499,13 +602,37 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 원래 상태로 복원
         ResetMergePreview();
 
-        // 원본 타일에서 유닛 제거
-        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+        if (isMultiUnit)
+        {
+            // 원래 점유하던 모든 타일에서 유닛 제거
+            foreach (var offset in multiTilesOffset)
+            {
+                Vector2 originalPos = originalTilePosition + offset;
+                TileMapManager.Instance.ReleaseTile(originalPos);
+            }
 
-        // 새 타일 점유
-        List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
-        Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, units);
+            // 새 위치의 모든 타일 점유
+            foreach (var offset in multiTilesOffset)
+            {
+                Vector2 newPos = previousTilePosition + offset;
+                TileData targetTile = TileMapManager.Instance.GetTileData(newPos);
+
+                targetTile.isAvailable = false;
+                targetTile.placedUnit = this; // 모든 타일이 동일한 유닛 참조
+                TileMapManager.Instance.SetTileData(targetTile);
+            }
+        }
+        else
+        {
+            // 기존 단일 타일 로직
+            // 원본 타일에서 유닛 제거
+            TileMapManager.Instance.ReleaseTile(originalTilePosition);
+
+            // 새 타일 점유
+            List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
+            Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
+            TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, units);
+        }
 
         // 유닛 위치 업데이트
         tilePosition = previousTilePosition;

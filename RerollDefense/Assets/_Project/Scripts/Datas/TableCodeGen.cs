@@ -7,6 +7,7 @@ using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_EnemyData = D_EnemyData;
 using Alias_rifegrt_StageData = D_StageData;
 using Alias_rifegrt_enemyGroup = D_enemyGroup;
+using Alias_rifegrt_TileCardData = D_TileCardData;
 using Alias_rifegrt_WildCardData = D_WildCardData;
 
 //=============================================================
@@ -15,22 +16,24 @@ using Alias_rifegrt_WildCardData = D_WildCardData;
 
 #pragma warning disable 414
 
-public partial class D_TileShpeData : BGEntity
+public partial class D_TileCardData : BGEntity
 {
 
 	public class Factory : BGEntity.EntityFactory
 	{
-		public BGEntity NewEntity(BGMetaEntity meta) => new D_TileShpeData(meta);
-		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_TileShpeData(meta, id);
+		public BGEntity NewEntity(BGMetaEntity meta) => new D_TileCardData(meta);
+		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_TileCardData(meta, id);
 	}
 
 	public static class __Names
 	{
-		public const string Meta = "TileShpeData";
+		public const string Meta = "TileCardData";
 		public const string name = "name";
 		public const string unitBuildData = "unitBuildData";
 		public const string grade = "grade";
 		public const string Cost = "Cost";
+		public const string isMultiTileUinit = "isMultiTileUinit";
+		public const string multiTilePositions = "multiTilePositions";
 		public const string TileShpae = "TileShpae";
 		public const string ShopGrade = "ShopGrade";
 	}
@@ -54,6 +57,16 @@ public partial class D_TileShpeData : BGEntity
 		get => _f_Cost[Index];
 		set => _f_Cost[Index] = value;
 	}
+	public System.Boolean f_isMultiTileUinit
+	{
+		get => _f_isMultiTileUinit[Index];
+		set => _f_isMultiTileUinit[Index] = value;
+	}
+	public List<D_TilePosData> f_multiTilePositions
+	{
+		get => BGCodeGenUtils.MultipleRelationGet<D_TilePosData>(_f_multiTilePositions, Index);
+		set => BGCodeGenUtils.MultipleRelationSet<D_TilePosData>(_f_multiTilePositions, Index, value);
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4612699089538755472UL, 15389567449175696803UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_unitBuildData;
@@ -62,11 +75,15 @@ public partial class D_TileShpeData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_grade => _ufle12jhs77_f_grade ?? (_ufle12jhs77_f_grade = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5085254489454765700UL, 2735600988159512248UL), () => _ufle12jhs77_f_grade = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_Cost;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_Cost => _ufle12jhs77_f_Cost ?? (_ufle12jhs77_f_Cost = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5033112527408708228UL, 18365848753655382442UL), () => _ufle12jhs77_f_Cost = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_isMultiTileUinit;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_isMultiTileUinit => _ufle12jhs77_f_isMultiTileUinit ?? (_ufle12jhs77_f_isMultiTileUinit = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5471129788307511410UL, 7282507863895441290UL), () => _ufle12jhs77_f_isMultiTileUinit = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationMultiple _ufle12jhs77_f_multiTilePositions;
+	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_multiTilePositions => _ufle12jhs77_f_multiTilePositions ?? (_ufle12jhs77_f_multiTilePositions = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(5319821696136987407UL, 15811925105260439733UL), () => _ufle12jhs77_f_multiTilePositions = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_TileShpae;
 	public static BansheeGz.BGDatabase.BGKey _TileShpae => _edeht3sdad33_TileShpae ?? (_edeht3sdad33_TileShpae = BGCodeGenUtils.GetKey(MetaDefault, new BGId(4974985753661443278UL, 14549488637077833392UL), () => _edeht3sdad33_TileShpae = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_ShopGrade;
 	public static BansheeGz.BGDatabase.BGKey _ShopGrade => _edeht3sdad33_ShopGrade ?? (_edeht3sdad33_ShopGrade = BGCodeGenUtils.GetKey(MetaDefault, new BGId(5679847359208220457UL, 15582120046338116030UL), () => _edeht3sdad33_ShopGrade = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -87,21 +104,23 @@ public partial class D_TileShpeData : BGEntity
 	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
 	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
 	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
-	private D_TileShpeData() : base(MetaDefault) {}
-	private D_TileShpeData(BGId id) : base(MetaDefault, id) {}
-	private D_TileShpeData(BGMetaEntity meta) : base(meta) {}
-	private D_TileShpeData(BGMetaEntity meta, BGId id) : base(meta, id) {}
-	public static D_TileShpeData FindEntity(Predicate<D_TileShpeData> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
-	public static List<D_TileShpeData> FindEntities(Predicate<D_TileShpeData> filter, List<D_TileShpeData> result=null, Comparison<D_TileShpeData> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
-	public static void ForEachEntity(Action<D_TileShpeData> action, Predicate<D_TileShpeData> filter=null, Comparison<D_TileShpeData> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
-	public static D_TileShpeData GetEntity(BGId entityId) => (D_TileShpeData) MetaDefault.GetEntity(entityId);
-	public static D_TileShpeData GetEntity(int index) => (D_TileShpeData) MetaDefault[index];
-	public static D_TileShpeData GetEntity(string entityName) => (D_TileShpeData) MetaDefault.GetEntity(entityName);
-	public static D_TileShpeData NewEntity() => (D_TileShpeData) MetaDefault.NewEntity();
-	public static D_TileShpeData NewEntity(BGId entityId) => (D_TileShpeData) MetaDefault.NewEntity(entityId);
-	public static D_TileShpeData NewEntity(Action<D_TileShpeData> callback) => (D_TileShpeData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_TileShpeData)entity)));
-	public static D_TileShpeData GetEntityByKeyTileShpae(System.String name) => (D_TileShpeData) _TileShpae.GetEntityByKey<System.String>(name);
-	public static D_TileShpeData GetEntityByKeyShopGrade(BGDatabaseEnum.UnitGrade grade) => (D_TileShpeData) _ShopGrade.GetEntityByKey<BGDatabaseEnum.UnitGrade>(grade);
+	private D_TileCardData() : base(MetaDefault) {}
+	private D_TileCardData(BGId id) : base(MetaDefault, id) {}
+	private D_TileCardData(BGMetaEntity meta) : base(meta) {}
+	private D_TileCardData(BGMetaEntity meta, BGId id) : base(meta, id) {}
+	public static D_TileCardData FindEntity(Predicate<D_TileCardData> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
+	public static List<D_TileCardData> FindEntities(Predicate<D_TileCardData> filter, List<D_TileCardData> result=null, Comparison<D_TileCardData> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
+	public static void ForEachEntity(Action<D_TileCardData> action, Predicate<D_TileCardData> filter=null, Comparison<D_TileCardData> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
+	public static D_TileCardData GetEntity(BGId entityId) => (D_TileCardData) MetaDefault.GetEntity(entityId);
+	public static D_TileCardData GetEntity(int index) => (D_TileCardData) MetaDefault[index];
+	public static D_TileCardData GetEntity(string entityName) => (D_TileCardData) MetaDefault.GetEntity(entityName);
+	public static D_TileCardData NewEntity() => (D_TileCardData) MetaDefault.NewEntity();
+	public static D_TileCardData NewEntity(BGId entityId) => (D_TileCardData) MetaDefault.NewEntity(entityId);
+	public static D_TileCardData NewEntity(Action<D_TileCardData> callback) => (D_TileCardData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_TileCardData)entity)));
+	public void f_multiTilePositions_Add(D_TilePosData related) => BGCodeGenUtils.MultipleRelationAdd(_f_multiTilePositions, Index, related);
+	public void f_multiTilePositions_Remove(D_TilePosData related) => BGCodeGenUtils.MultipleRelationRemove(_f_multiTilePositions, Index, related);
+	public static D_TileCardData GetEntityByKeyTileShpae(System.String name) => (D_TileCardData) _TileShpae.GetEntityByKey<System.String>(name);
+	public static D_TileCardData GetEntityByKeyShopGrade(BGDatabaseEnum.UnitGrade grade) => (D_TileCardData) _ShopGrade.GetEntityByKey<BGDatabaseEnum.UnitGrade>(grade);
 }
 
 public partial class D_LocalUserData : BGEntity
@@ -145,7 +164,7 @@ public partial class D_LocalUserData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_clearEpisodeNumber => _ufle12jhs77_f_clearEpisodeNumber ?? (_ufle12jhs77_f_clearEpisodeNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5371381866835969752UL, 2168720030824874419UL), () => _ufle12jhs77_f_clearEpisodeNumber = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_lastClearedStageNumber;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_lastClearedStageNumber => _ufle12jhs77_f_lastClearedStageNumber ?? (_ufle12jhs77_f_lastClearedStageNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5612662480888816242UL, 14296249210567434408UL), () => _ufle12jhs77_f_lastClearedStageNumber = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -248,7 +267,7 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_SkillPoolingKey => _ufle12jhs77_f_SkillPoolingKey ?? (_ufle12jhs77_f_SkillPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4721613304390874734UL, 7492828072908847792UL), () => _ufle12jhs77_f_SkillPoolingKey = null));
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	public List<Alias_rifegrt_SpecialTile> RelatedSpecialTileListUsingspecialObjectRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpecialTile>(Alias_rifegrt_SpecialTile._f_specialObject, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -297,7 +316,7 @@ public partial class D_unitBuildData : BGEntity
 	{
 		public const string Meta = "unitBuildData";
 		public const string name = "name";
-		public const string TileShpeData = "TileShpeData";
+		public const string TileCardDa = "TileCardDa";
 		public const string unitData = "unitData";
 		public const string TilePos = "TilePos";
 	}
@@ -310,10 +329,10 @@ public partial class D_unitBuildData : BGEntity
 		get => _f_name[Index];
 		set => _f_name[Index] = value;
 	}
-	public D_TileShpeData f_TileShpeData
+	public D_TileCardData f_TileCardDa
 	{
-		get => (D_TileShpeData) _f_TileShpeData[Index];
-		set => _f_TileShpeData[Index] = value;
+		get => (D_TileCardData) _f_TileCardDa[Index];
+		set => _f_TileCardDa[Index] = value;
 	}
 	public D_UnitData f_unitData
 	{
@@ -327,13 +346,13 @@ public partial class D_unitBuildData : BGEntity
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5119949781748048341UL, 1974210095801998015UL), () => _ufle12jhs77_f_name = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_TileShpeData;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_TileShpeData => _ufle12jhs77_f_TileShpeData ?? (_ufle12jhs77_f_TileShpeData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5201128059908877541UL, 10865111936391984023UL), () => _ufle12jhs77_f_TileShpeData = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_TileCardDa;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_TileCardDa => _ufle12jhs77_f_TileCardDa ?? (_ufle12jhs77_f_TileCardDa = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5201128059908877541UL, 10865111936391984023UL), () => _ufle12jhs77_f_TileCardDa = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_unitData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_unitData => _ufle12jhs77_f_unitData ?? (_ufle12jhs77_f_unitData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4832644335004946023UL, 16677909979451640761UL), () => _ufle12jhs77_f_unitData = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_TilePos;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_TilePos => _ufle12jhs77_f_TilePos ?? (_ufle12jhs77_f_TilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5477621657986745158UL, 3293241283015388857UL), () => _ufle12jhs77_f_TilePos = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -367,9 +386,9 @@ public partial class D_unitBuildData : BGEntity
 	public static D_unitBuildData NewEntity() => (D_unitBuildData) MetaDefault.NewEntity();
 	public static D_unitBuildData NewEntity(BGId entityId) => (D_unitBuildData) MetaDefault.NewEntity(entityId);
 	public static D_unitBuildData NewEntity(Action<D_unitBuildData> callback) => (D_unitBuildData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_unitBuildData)entity)));
-	public static D_unitBuildData NewEntity(D_TileShpeData owner) => (D_unitBuildData) MetaDefault.NewEntity(owner);
-	public static D_unitBuildData NewEntity(D_TileShpeData owner, BGId entityId) => (D_unitBuildData) MetaDefault.NewEntity(owner, entityId);
-	public static D_unitBuildData NewEntity(D_TileShpeData owner, Action<D_unitBuildData> callback) => (D_unitBuildData) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_unitBuildData)entity)));
+	public static D_unitBuildData NewEntity(D_TileCardData owner) => (D_unitBuildData) MetaDefault.NewEntity(owner);
+	public static D_unitBuildData NewEntity(D_TileCardData owner, BGId entityId) => (D_unitBuildData) MetaDefault.NewEntity(owner, entityId);
+	public static D_unitBuildData NewEntity(D_TileCardData owner, Action<D_unitBuildData> callback) => (D_unitBuildData) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_unitBuildData)entity)));
 }
 
 public partial class D_UnitShopChanceData : BGEntity
@@ -456,7 +475,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_mythicGradeChance => _ufle12jhs77_f_mythicGradeChance ?? (_ufle12jhs77_f_mythicGradeChance = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5683072619301050186UL, 1397330924013920176UL), () => _ufle12jhs77_f_mythicGradeChance = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_ShopLevel;
 	public static BansheeGz.BGDatabase.BGKey _ShopLevel => _edeht3sdad33_ShopLevel ?? (_edeht3sdad33_ShopLevel = BGCodeGenUtils.GetKey(MetaDefault, new BGId(5047775113214466118UL, 10985792114965795003UL), () => _edeht3sdad33_ShopLevel = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -545,7 +564,7 @@ public partial class D_ObjectPoolData : BGEntity
 	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingUnitPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_UnitPoolingKey, Id);
 	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingSkillPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_SkillPoolingKey, Id);
 	public List<Alias_rifegrt_EnemyData> RelatedEnemyDataListUsingObjectPoolKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EnemyData>(Alias_rifegrt_EnemyData._f_ObjectPoolKey, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -623,7 +642,7 @@ public partial class D_WaveData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_WaveTimeData;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_WaveTimeData => _ufle12jhs77_f_WaveTimeData ?? (_ufle12jhs77_f_WaveTimeData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5680194706508451098UL, 14412226580719047576UL), () => _ufle12jhs77_f_WaveTimeData = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveData, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -740,7 +759,7 @@ public partial class D_StageData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_EndTilePos => _ufle12jhs77_f_EndTilePos ?? (_ufle12jhs77_f_EndTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(4852896796202598556UL, 14737165945497110928UL), () => _ufle12jhs77_f_EndTilePos = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_mapData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_mapData => _ufle12jhs77_f_mapData ?? (_ufle12jhs77_f_mapData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5561569271858242143UL, 14666200413546411709UL), () => _ufle12jhs77_f_mapData = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -829,7 +848,7 @@ public partial class D_EnemyData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_DeathSpawnEnemyData => _ufle12jhs77_f_DeathSpawnEnemyData ?? (_ufle12jhs77_f_DeathSpawnEnemyData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5729361341058934591UL, 7318033267427553926UL), () => _ufle12jhs77_f_DeathSpawnEnemyData = null));
 	public List<Alias_rifegrt_EnemyData> RelatedEnemyDataListUsingDeathSpawnEnemyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EnemyData>(Alias_rifegrt_EnemyData._f_DeathSpawnEnemyData, Id);
 	public List<Alias_rifegrt_enemyGroup> RelatedenemyGroupListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_enemyGroup>(Alias_rifegrt_enemyGroup._f_enemy, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -930,7 +949,7 @@ public partial class D_enemyGroup : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_startDelay => _ufle12jhs77_f_startDelay ?? (_ufle12jhs77_f_startDelay = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4846873840890291861UL, 7938845544472428197UL), () => _ufle12jhs77_f_startDelay = null));
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_spawnInterval;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_spawnInterval => _ufle12jhs77_f_spawnInterval ?? (_ufle12jhs77_f_spawnInterval = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5152737681806592036UL, 4657384968853431938UL), () => _ufle12jhs77_f_spawnInterval = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1002,8 +1021,9 @@ public partial class D_TilePosData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5513647067199918440UL, 3196144259926527926UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_TilePos;
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_TilePos => _ufle12jhs77_f_TilePos ?? (_ufle12jhs77_f_TilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5562668652953843408UL, 2900906368118453686UL), () => _ufle12jhs77_f_TilePos = null));
+	public List<Alias_rifegrt_TileCardData> RelatedTileCardDataListUsingmultiTilePositionsRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_TileCardData>(Alias_rifegrt_TileCardData._f_multiTilePositions, Id);
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingTilePosRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_TilePos, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1091,7 +1111,7 @@ public partial class D_ObstacleTileMapData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_ObstacleTileType => _ufle12jhs77_f_ObstacleTileType ?? (_ufle12jhs77_f_ObstacleTileType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5693260011756325544UL, 12672970599089641917UL), () => _ufle12jhs77_f_ObstacleTileType = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_StageID;
 	public static BansheeGz.BGDatabase.BGKey _StageID => _edeht3sdad33_StageID ?? (_edeht3sdad33_StageID = BGCodeGenUtils.GetKey(MetaDefault, new BGId(4722294791348354641UL, 4966515860168714379UL), () => _edeht3sdad33_StageID = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1158,7 +1178,7 @@ public partial class D_MapData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_specialTiles;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_specialTiles => _ufle12jhs77_f_specialTiles ?? (_ufle12jhs77_f_specialTiles = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5244751714002308515UL, 5836463201650911643UL), () => _ufle12jhs77_f_specialTiles = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingmapDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_mapData, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1243,7 +1263,7 @@ public partial class D_SpecialTile : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_specialObject => _ufle12jhs77_f_specialObject ?? (_ufle12jhs77_f_specialObject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4613129631453140980UL, 5136207368358008742UL), () => _ufle12jhs77_f_specialObject = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_cellPosition;
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_cellPosition => _ufle12jhs77_f_cellPosition ?? (_ufle12jhs77_f_cellPosition = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5511294158484053841UL, 2904814911090748580UL), () => _ufle12jhs77_f_cellPosition = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1342,7 +1362,7 @@ public partial class D_WildCardData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_BuffData => _ufle12jhs77_f_BuffData ?? (_ufle12jhs77_f_BuffData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(5706463212952813793UL, 17658644526782138270UL), () => _ufle12jhs77_f_BuffData = null));
 	private static BansheeGz.BGDatabase.BGKey _edeht3sdad33_KeyGrade;
 	public static BansheeGz.BGDatabase.BGKey _KeyGrade => _edeht3sdad33_KeyGrade ?? (_edeht3sdad33_KeyGrade = BGCodeGenUtils.GetKey(MetaDefault, new BGId(5165735758975412737UL, 2219348547570594239UL), () => _edeht3sdad33_KeyGrade = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1431,7 +1451,7 @@ public partial class D_WaveTimeData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_StatName => _ufle12jhs77_f_StatName ?? (_ufle12jhs77_f_StatName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5658350409613004392UL, 10174500961762633900UL), () => _ufle12jhs77_f_StatName = null));
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_StatValue;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_StatValue => _ufle12jhs77_f_StatValue ?? (_ufle12jhs77_f_StatValue = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5155147655809922890UL, 4214448104098481302UL), () => _ufle12jhs77_f_StatValue = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1540,7 +1560,7 @@ public partial class D_BuffData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_buffEffects;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_buffEffects => _ufle12jhs77_f_buffEffects ?? (_ufle12jhs77_f_buffEffects = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5555988630792564783UL, 7606948226480331923UL), () => _ufle12jhs77_f_buffEffects = null));
 	public List<Alias_rifegrt_WildCardData> RelatedWildCardDataListUsingBuffDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_WildCardData>(Alias_rifegrt_WildCardData._f_BuffData, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1641,7 +1661,7 @@ public partial class D_buffEffects : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_valueMultiply => _ufle12jhs77_f_valueMultiply ?? (_ufle12jhs77_f_valueMultiply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5530346178345344594UL, 4454355475631574712UL), () => _ufle12jhs77_f_valueMultiply = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_buffTickType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_buffTickType => _ufle12jhs77_f_buffTickType ?? (_ufle12jhs77_f_buffTickType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5175313155979603135UL, 10701216334338136488UL), () => _ufle12jhs77_f_buffTickType = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1717,7 +1737,7 @@ public partial class D_StatSubjectData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_subjectType => _ufle12jhs77_f_subjectType ?? (_ufle12jhs77_f_subjectType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4957358118511177372UL, 302977254177934983UL), () => _ufle12jhs77_f_subjectType = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_subjectStats;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_subjectStats => _ufle12jhs77_f_subjectStats ?? (_ufle12jhs77_f_subjectStats = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(4646824329052271832UL, 13834163337199789985UL), () => _ufle12jhs77_f_subjectStats = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1810,7 +1830,7 @@ public partial class D_subjectStats : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_statValue => _ufle12jhs77_f_statValue ?? (_ufle12jhs77_f_statValue = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5281267495795349850UL, 16377994696293795253UL), () => _ufle12jhs77_f_statValue = null));
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_valueMultiply;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_valueMultiply => _ufle12jhs77_f_valueMultiply ?? (_ufle12jhs77_f_valueMultiply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5539391753433803353UL, 11360062638014334634UL), () => _ufle12jhs77_f_valueMultiply = null));
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
@@ -1899,7 +1919,7 @@ public partial class D_EpisodeData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_episodeDescription;
 	public static BansheeGz.BGDatabase.BGFieldString _f_episodeDescription => _ufle12jhs77_f_episodeDescription ?? (_ufle12jhs77_f_episodeDescription = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5596414729176742488UL, 13995345094606251674UL), () => _ufle12jhs77_f_episodeDescription = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingEpisodeDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_EpisodeData, Id);
-	private static readonly D_TileShpeData.Factory _factory0_PFS = new D_TileShpeData.Factory();
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
 	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();

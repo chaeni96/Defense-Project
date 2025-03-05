@@ -197,7 +197,7 @@ public class FullWindowInGameDlg : FullWindowBase
         }
     }
 
-    public D_TileShpeData GetCardKeyBasedOnProbability()
+    public D_TileCardData GetCardKeyBasedOnProbability()
     {
 
         //상점 레벨에 따른 확률 데이터 로드
@@ -238,7 +238,7 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             slotGrade = UnitGrade.Mythic;
         }
-        var possibleUnitList = D_TileShpeData.FindEntities(data => data.f_grade == slotGrade);
+        var possibleUnitList = D_TileCardData.FindEntities(data => data.f_grade == slotGrade);
 
 
         var selectedUnit = possibleUnitList.OrderBy(_ => Guid.NewGuid()).First();

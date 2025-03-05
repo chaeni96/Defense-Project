@@ -119,6 +119,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c95969d6a65dd9a42a3c0651f05edafd
+    m_Address: Tile_Base
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:
