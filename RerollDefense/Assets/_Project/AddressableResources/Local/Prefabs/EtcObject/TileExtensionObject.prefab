@@ -178,9 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd1f3a87521f3443b92e7ef3b616a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentUnit: {fileID: 0}
-  offsetFromParent: {x: 0, y: 0}
-  spriteRenderer: {fileID: 7035174008218721886}
+  tileSprite: {fileID: 7035174008218721886}
 --- !u!1 &5930204433709092492
 GameObject:
   m_ObjectHideFlags: 0

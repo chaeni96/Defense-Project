@@ -42,7 +42,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
     [SerializeField] private Material deleteMaterial;   // 배치 삭제할 때 사용
-    [SerializeField] private Material originalMaterial; //기본 머테리얼
+    [SerializeField] public Material originalMaterial; //기본 머테리얼
     [SerializeField] private LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
 
     private int unitSortingOrder;

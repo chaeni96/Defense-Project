@@ -22,7 +22,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     private Dictionary<int, UnitController> originalPreviews = new Dictionary<int, UnitController>();
 
     //현재 화면에 보여지는 프리뷰 유닛, 합성 여부에 따라 기존 프리뷰 교체, 위치 변경, 머터리얼 업데이트
-    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>(); 
+    private Dictionary<int, UnitController> currentPreviews = new Dictionary<int, UnitController>();
+
+    // 확장 타일 프리뷰를 저장할 Dictionary 추가
+    private Dictionary<Vector2, TileExtensionObject> extensionPreviews = new Dictionary<Vector2, TileExtensionObject>();
+
 
     // 기준점 (0,0)으로부터의 오프셋값들(다중타일을 위함)
     private List<Vector2> tileOffsets;
@@ -289,6 +293,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
                     // 점유 타일 정보 설정
                     previewUnit.multiTilesOffset.Clear();
+
                     foreach (var offset in tileOffsets)
                     {
                         Vector2 gameOffset = new Vector2(offset.x, -offset.y);
@@ -299,6 +304,32 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     originalPreviews[0] = previewUnit;
                     currentPreviews[0] = previewUnit;
                 }
+
+                // 유닛 외 다른 오프셋 위치에 확장 오브젝트 생성
+                foreach (var offset in tileOffsets)
+                {
+                    // 메인 유닛(0,0) 위치가 아닌 경우에만 생성
+                    if (offset != Vector2.zero)
+                    {
+                        Vector2 extTilePos = (Vector2)tilePos + offset;
+                        Vector3 extWorldPos = TileMapManager.Instance.GetTileToWorldPosition(extTilePos);
+
+                        // TileExtensionObject 프리뷰 생성
+                        GameObject extPreview = PoolingManager.Instance.GetObject(
+                            "TileExtensionObject",
+                            extWorldPos,
+                            (int)ObjectLayer.Player
+                        );
+
+                        TileExtensionObject extObject = extPreview.GetComponent<TileExtensionObject>();
+                        // 프리뷰 상태 설정
+                        if (extPreview != null)
+                        {
+                            extensionPreviews[offset] = extObject;
+                        }
+                    }
+                }
+
             }
         }
         else
@@ -354,6 +385,25 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             multiTileUnit.gameObject.SetActive(true);
             multiTileUnit.transform.position = TileMapManager.Instance.GetTileToWorldPosition(basePosition);
             multiTileUnit.SetPreviewMaterial(canPlace);
+
+            // 확장 오브젝트 위치 및 상태 업데이트
+            foreach (var offset in tileOffsets)
+            {
+                if (offset != Vector2.zero && extensionPreviews.ContainsKey(offset))
+                {
+                    TileExtensionObject extObj = extensionPreviews[offset];
+                    if (extObj != null)
+                    {
+                        // 위치 업데이트
+                        Vector2 extTilePos = basePosition + offset;
+                        Vector3 extWorldPos = TileMapManager.Instance.GetTileToWorldPosition(extTilePos);
+                        extObj.transform.position = extWorldPos;
+                        extObj.tileSprite.material = multiTileUnit.unitSprite.material;
+                        extObj.tileSprite.sortingOrder = 100;
+                    }
+                }
+
+            }
         }
         else
         {
@@ -465,6 +515,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             largeUnit.multiTilesOffset.Clear();
             UnitManager.Instance.RegisterUnit(largeUnit);
 
+            // 확장 오브젝트 참조를 저장할 Dictionary 생성
+            Dictionary<Vector2, GameObject> placedExtensions = new Dictionary<Vector2, GameObject>();
+
             // 대형 유닛이 점유하는 모든 타일 설정
             foreach (var offset in tileOffsets)
             {
@@ -476,8 +529,45 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     tileData.isAvailable = false;
                     tileData.placedUnit = largeUnit; // 모든 타일이 같은 유닛 참조
                     TileMapManager.Instance.SetTileData(tileData);
-                }
+                    // 메인 유닛 위치(0,0)가 아닌 경우에만 실제 TileExtensionObject 배치
+                    if (offset != Vector2.zero)
+                    {
+                        // 프리뷰 오브젝트 제거
+                        if (extensionPreviews.ContainsKey(offset))
+                        {
+                            PoolingManager.Instance.ReturnObject(extensionPreviews[offset].gameObject);
+                        }
 
+                        // 실제 확장 오브젝트 생성
+                        Vector3 worldPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+                        GameObject extensionObject = PoolingManager.Instance.GetObject(
+                            "TileExtensionObject",
+                            worldPos,
+                            (int)ObjectLayer.Player
+                        );
+
+                        // Extension 오브젝트 초기화
+                        if (extensionObject != null)
+                        {
+                            // 일반 머테리얼로 변경
+                            var renderer = extensionObject.GetComponent<SpriteRenderer>();
+                            if (renderer != null)
+                            {
+                                renderer.material = largeUnit.originalMaterial;
+                                renderer.sortingOrder = largeUnit.unitSprite.sortingOrder - 1;
+                            }
+
+                            // 확장 오브젝트와 대형 유닛 연결
+                            TileExtensionObject extension = extensionObject.GetComponent<TileExtensionObject>();
+                            if (extension != null)
+                            {
+                                extension.Initialize(largeUnit, offset);
+                            }
+
+                            placedExtensions[offset] = extensionObject;
+                        }
+                    }
+                }
                 largeUnit.multiTilesOffset.Add(offset);
             }
         }
@@ -517,12 +607,24 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 배치 취소시 호출 메서드: 프리뷰 인스턴스 정리
     private void CancelPlacement()
     {
+        // 기존 프리뷰 반환 코드 유지
         foreach (var instance in currentPreviews.Values)
         {
             PoolingManager.Instance.ReturnObject(instance.gameObject);
         }
+
+        // 확장 오브젝트 프리뷰도 반환
+        foreach (var extObj in extensionPreviews.Values)
+        {
+            if (extObj != null)
+            {
+                PoolingManager.Instance.ReturnObject(extObj.gameObject);
+            }
+        }
+
         originalPreviews.Clear();
         currentPreviews.Clear();
+        extensionPreviews.Clear();
 
         GameManager.Instance.OnCostAdd -= OnCostChanged;
     }
@@ -714,6 +816,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         originalPreviews.Clear();
         currentPreviews.Clear();
         activeImageIndices.Clear();
+        extensionPreviews.Clear();
 
         // 이벤트 구독 해제
         GameManager.Instance.OnCostAdd -= OnCostChanged;
