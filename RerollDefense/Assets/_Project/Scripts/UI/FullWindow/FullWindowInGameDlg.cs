@@ -104,7 +104,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     private void UpdateWaveIndex(int currentIndex, int maxIndex)
     {
-        progressWaveIndex.text = $"{currentIndex} / {maxIndex} \n Wave";
+        progressWaveIndex.text = $"{GameManager.Instance.SelectedStageNumber} - {currentIndex}";
     }
     private void UpdateRemainEnemyCount(int count)
     {
