@@ -1,0 +1,8 @@
+Up
+Right
+Down
+Left
+Left and Right
+Up and Down
+Directional Buttons
+Directional Buttons

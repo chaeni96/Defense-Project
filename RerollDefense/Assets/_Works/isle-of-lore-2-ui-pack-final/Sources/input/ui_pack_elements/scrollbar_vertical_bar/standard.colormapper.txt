@@ -1,0 +1,6 @@
+ui_gray_line -> iol2_ui_gray_line
+ui_blue_line -> iol2_ui_blue_line
+ui_blue_medium -> iol2_ui_blue_medium
+ui_blue_dark -> iol2_ui_blue_dark
+white -> iol2_white
+ui_gray_dark -> iol2_ui_gray_dark

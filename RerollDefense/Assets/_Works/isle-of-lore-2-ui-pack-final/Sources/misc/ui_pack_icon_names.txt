@@ -1,0 +1,46 @@
+Cross
+Checkmark
+Circle
+Nope
+Volume Zero
+Volume Min
+Volume Max
+Volume Mute
+Volume Minus
+Volume Plus
+Arrow Right
+Arrow Left
+Arrow Up
+Arrow Down
+Arrow (Double, Horizontal)
+Arrow (Double, Vertical)
+Arrow (All)
+Arrow Up-Right
+Arrow Down-Right
+Arrow Down-Left
+Arrow Up-Left
+Arrow (Double, Up-Right)
+Arrow (Double, Up-Left)
+Arrow (All, Diagonal)
+Play
+Stop
+Forward
+Backward
+Next
+Previous
+Replay
+Plus
+Minus
+Star
+Home
+Dot
+Three Dots
+Four Dots
+Three Lines
+Link
+Exclamation Mark
+Question Mark
+Wrench
+Cogwheel
+Return
+Pencil

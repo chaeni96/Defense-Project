@@ -1,0 +1,3275 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="files\style.css">
+<title>Isle of Lore 2: UI Pack</title>
+</head>
+<body>
+<div id="divNavi">
+	<a class="aNavi" href="#Introduction">Introduction</a>
+	<a class="aNavi" href="#ContentStructure">Content Structure</a>
+	<a class="aNavi" href="#InterfaceElements">Interface Elements</a>
+	<a class="aNavi" href="#KeyboardIcons">Keyboard Icons</a>
+	<a class="aNavi" href="#MouseIcons">Mouse Icons</a>
+	<a class="aNavi" href="#GamepadIcons">Gamepad Icons</a>
+	<a class="aNavi" href="#SymbolIcons">Symbol Icons</a>
+	<a class="aNavi" href="#ColorMapper">Color Mapper</a>
+	<a class="aNavi" href="#Specification">Specification</a>
+	<a class="aNavi" href="#Changelog">Changelog</a>
+</div>
+<div id="divMain">
+
+	<div class="divLogo"><img style="max-width: 700px; padding-top: 50px;" src="files\logo.png"></div>
+	
+	<p></p><a name="Introduction"></a><div class="divBuffer"></div>
+	<h2>Introduction</h2>
+
+	<p><b>Isle of Lore 2: UI Pack</b> is a pack of user interface elements and icons for your video game project. They work great with my other <b>Isle of Lore 2</b> packs, including <a href="https://stevencolling.itch.io/isle-of-lore-2-hex-tiles-regular" target="_blank">Isle of Lore 2: Hex Tiles</a>!</p>
+
+	<p>The images come as png files for direct use, as well as Krita (.kra) and Photoshop (.psd) source files for your personal edits. The pack is compatible with my batch image editing tool <a href="https://stevencolling.itch.io/color-mapper" target="_blank">Color Mapper</a>, which means you can easily change the color palette of the images to your own liking... the required <b>Color Mapper Files</b> are included!</p>
+
+	<p>This documentation will go into more detail on how to find the files you want and how to change and re-export them to fit your needs.</p>
+	
+	<p>Please keep the license in mind, which is available as a <span class="spanCode">License.txt</span>-file in the folder you downloaded. If you have questions or feedback, you can reach me through the following channels. I especially recommend the mailing list and my Discord server to stay up-to-date respectively to chat about your and my projects!</p>
+	
+	<ul>
+		<li>E-Mail: <a href="mailto:info@stevencolling.com">info@stevencolling.com</a></li>
+		<li>Mailing List (get news and exclusive discounts!): <a href="https://mailinglist.stevencolling.com/game_assets/" target="_blank">https://mailinglist.stevencolling.com/game_assets/</a></li>
+		<li>Discord Server (connect with others using my software and assets!): <a href="https://stevencolling.com/discord.php" target="_blank">https://stevencolling.com/discord.php</a></li>
+		<li>Discord Profile: <a href="https://discordapp.com/users/171308170038214656/" target="_blank">https://discordapp.com/users/171308170038214656/</a></li>
+		<li>General Help: <a href="https://stevencolling.com/help.htm" target="_blank">https://stevencolling.com/help.htm</a></li>
+		<li>Website: <a href="https://stevencolling.com" target="_blank">https://stevencolling.com</a></li>
+	</ul>
+	
+	<p></p><a name="ContentStructure"></a><div class="divBuffer"></div>
+	<h2>Content Structure</h2>
+
+	<!-- CONTENT STRUCTURE BEGIN -->
+	
+	<p>The asset pack contains a folder called <span class="spanCode">Sources</span> and in it, you'll find the three folders <span class="spanCode">input</span>, <span class="spanCode">output</span> and <span class="spanCode">misc</span>. While <span class="spanCode">misc</span> contains lists of names of various keyboard keys and gamepad buttons, it also includes a dummy character portrait which you can use as a placeholder. The <span class="spanCode">input</span> and <span class="spanCode">output</span> folders are the ones relevant for a <a href="https://stevencolling.itch.io/color-mapper" target="_blank">Color Mapper</a> setup. If you don't use <b>Color Mapper</b>, you can head straight to the <span class="spanCode">output</span>-folder and use the files there, but if you do, please refer to the section <a href="#ColorMapper">Re-exporting the Images with Color Mapper</a> further down.</p>
+
+	<p>Let's check the <span class="spanCode">output</span>-folder. All icons and control icons (like gamepad buttons) are available in the <span class="spanCode">ui_pack_controls</span>-folder within there, with gamepad-related icons sorted into <span class="spanCode">ui_pack_<b>gamepad</b>_xxx</span>-folders, keyboard-related icons into <span class="spanCode">ui_pack_<b>keyboard</b>_xxx</span>-folders and mouse-related icons into <span class="spanCode">ui_pack_<b>mouse</b>_xxx</span>-folders. There are also symbol icons with and without a dark outline. Both variants have their respective folders <span class="spanCode">ui_pack_icons.<b>standard</b></span> and <span class="spanCode">ui_pack_icons.<b>outline</b></span>.<br>
+	The interface elements on the other hand are available in the <span class="spanCode">ui_pack_elements</span>-folder within the <span class="spanCode">output</span>-folder. The section <a href="#InterfaceElements">Interface Elements</a> will go into more detail on how these files are used.</p>
+
+	<p>After we had a look at the <span class="spanCode">output</span>-folder, let's check the content structure of the <span class="spanCode">input\ui_pack_controls</span> and <span class="spanCode">input\ui_pack_elements</span>-folder, where you'll find all the Krita (.kra) and Photoshop (.psd) files as well as image file exports (.png) of all the single layers of every icon. These files are required if you want to use <b>Color Mapper</b>. The <b>Color Mapper Files</b> <span class="spanCode">*.colormapper.txt</b></span> tell <b>Color Mapper</b> how to assemble the icons.</p>
+
+	<!-- CONTENT STRUCTURE END -->
+	
+	<p></p><a name="InterfaceElements"></a><div class="divBuffer"></div>
+	<h2>Interface Elements</h2>
+
+	<p>The interface elements are available in <span class="spanCode">Sources\output\ui_pack_elements</span>. Some interface elements are tileable, which means they come in a small size with their bounds fitting a 3x3 grid. If so, the documentation gives a declaration like 3x3 16x16px, which means the texture is tileable by 3x3 with every tile being 16x16px in size. This is also called <b>9-slicing</b> and some game engines have the capability out-of-the-box. If not, you have to render the 4 corners separately and repeat the borders and the inner tile accordingly.</p>
+
+	<div class="divNaviInText">
+		<a class="aNavi aNaviSub" href="#Fonts">Fonts</a>
+		<a class="aNavi aNaviSub" href="#Shadows">Shadows</a>
+		<a class="aNavi aNaviSub" href="#Buttons">Buttons</a>
+		<a class="aNavi aNaviSub" href="#DialogBox">Dialog Box</a>
+		<a class="aNavi aNaviSub" href="#Banner">Banner</a>
+		<a class="aNavi aNaviSub" href="#ConversationBox">Conversation Box</a>
+		<a class="aNavi aNaviSub" href="#SpeechBubble">Speech Bubble</a>
+		<a class="aNavi aNaviSub" href="#Tooltip">Tooltip</a>
+		<a class="aNavi aNaviSub" href="#PanelMoneyPanel">Panel &amp; Money Panel</a>
+		<a class="aNavi aNaviSub" href="#CheckboxRadioButton">Checkbox &amp; Radio Button</a>
+		<a class="aNavi aNaviSub" href="#ToggleButton">Toggle Button</a>
+		<a class="aNavi aNaviSub" href="#ScrollbarSlider">Scrollbar &amp; Slider</a>
+		<a class="aNavi aNaviSub" href="#TextInput">Text Input</a>
+		<a class="aNavi aNaviSub" href="#Cursors">Cursors</a>
+		<a class="aNavi aNaviSub" href="#InventorySlots">Inventory Slots</a>
+		<a class="aNavi aNaviSub" href="#SelectionFrames">Selection Frames</a>
+		<a class="aNavi aNaviSub" href="#HeartPieces">Heart Pieces</a>
+		<a class="aNavi aNaviSub" href="#ProgressBar">Progress Bar</a>
+		<a class="aNavi aNaviSub" href="#ProgressCircles">Progress Circles</a>
+	</div>
+
+	<p></p><a name="Fonts"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Fonts</h3>
+
+	<p>This pack doesn't include fonts, but I can obviously recommend the ones I made with the Isle of Lore 2 packs in mind. I've used them whenever text appears on the assets themselves, like buttons or in the example images provided in this documentation. The fonts used are called <a href="https://stevencolling.itch.io/honeyblot-caps-font" target="_blank">Honeyblot Caps</a> and <a href="https://stevencolling.itch.io/honey-pigeon" target="_blank">Honey Pigeon</a>.</p>
+
+	<p></p><a name="Shadows"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Shadows</h3>
+
+	<p>Some elements have a drop shadow around them, which is built in. You can easily remove that shadow with the help of <a href="#ColorMapper">Color Mapper</a>. Just open the Color Mapper files of the elements whose shadow you want to have removed, for example</p>
+	
+	<p><span class="spanCode">.\input\ui_pack_elements\heart_piece\standard.colormapper.txt</span></p>
+	
+	<p>, and remove the line <span class="spanCode">*shadow -> iol2_dark</span> from the file, then re-export the icons with Color Mapper again and the shadow should be gone.</p>
+
+	<p>An exception are box elements like the dialog box or the tooltip, which have a separated shadow, as you have to place tabs or arrows with their own shadows in front of the box' shadow, but behind that box. If you want to use the dialog box without tabs though, there is a version with baked-in shadow for convenience nonetheless.</p>
+
+	<p>Overall, separating overlaying interface elements with some sort of shadow from the game world is strongly recommended, as otherwise, the elements may merge with the game world too much, leading to more effort for the player to identify interface elements on the screen properly.</p>
+
+	<p></p><a name="Buttons"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Buttons</h3>
+
+	<p>Buttons come in the variants big round, small round, square and decorated square, and are available in the folders whose names start with <span class="spanCode">button</span>. Each button has a pressed variant for when the button is clicked or held down. Check the table below the image for more information. When placing icons from this asset pack on the buttons, scaling them to 60% works great.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_buttons.png"><p>A decorated square button with text and its pressed counterpart.</p></div>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>Name</th>
+			<th>Tileable</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\0_button_square_0.png"></td>
+			<td>Square</td>
+			<td>3x3 18x18px</td>
+			<td>button_square_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\1_button_square_pressed_0.png"></td>
+			<td>Square Pressed</td>
+			<td>3x3 18x16px</td>
+			<td>button_square_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\2_button_square_decorated_0.png"></td>
+			<td>Decorated Square</td>
+			<td>3x1 20x54px</td>
+			<td>button_square_decorated_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\3_button_square_decorated_pressed_0.png"></td>
+			<td>Decorated Square Pressed</td>
+			<td>3x1 20x52px</td>
+			<td>button_square_decorated_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\4_button_round_small_0.png"></td>
+			<td>Small Round</td>
+			<td>-</td>
+			<td>button_round_small_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\5_button_round_small_pressed_0.png"></td>
+			<td>Small Round Pressed</td>
+			<td>-</td>
+			<td>button_round_small_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\6_button_round_big_0.png"></td>
+			<td>Big Round</td>
+			<td>-</td>
+			<td>button_round_big_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\buttons\7_button_round_big_pressed_0.png"></td>
+			<td>Big Round Pressed</td>
+			<td>-</td>
+			<td>button_round_big_pressed_0.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="DialogBox"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Dialog Box</h3>
+
+	<p>The dialog box and its parts are available in folders starting with <span class="spanCode">dialog</span>. It comes in two variants: with a shadow already baked in (<span class="spanCode">dialog_box_<b>with</b>_shadow</span>) or the panel without a shadow (<span class="spanCode">dialog_box.standard</span>) and a separate shadow (<span class="spanCode">dialog_box_shadow.standard</span>) to put behind the dialog box. If overlaying the dialog box over the game world, I would strongly recommend to use a shadow, either the one baked in, by placing the separated shadow behind it or by using your game engine's drop shadow capabilities. The shadow's top-left corner can be displaced by (-40, -40) pixels or less from the dialog box' top-left corner. The following image hopefully clarifies how to use the dialog box.</p>
+
+	<p>The dialog box without a shadow is tileable by 3x3 16x16px, while the dialog box shadow and the dialog box <b>with</b> shadow are tileable by 3x3 96x96px.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_dialog_shadow.png"><p>Assembling the dialog and its shadow from scratch vs using the dialog box with its shadow baked in.</p></div>
+
+	<p>A gray square can be found in <span class="spanCode">dialog_box_top_right_bg.standard</span> and it is meant to be placed in the top-right corner of the dialog box in case you want to place a button onto it, like the following image shows. It is tileable by 3x3 16x16px and has to be extended depending on how thick you want the gray area to be around the button.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_dialog_corner.png"><p>Placing a gray box and then a button in the top-right corner of the dialog box.</p></div>
+
+	<p>the gray box at <span class="spanCode">dialog_box_top_right_bg.standard</span> can also be used as an in-dialog inventory slot, like shown below.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_dialog_inventory.png"><p>Placing a gray box as an inventory slot.</p></div>
+
+	<p>Dialog boxes can be extended by tabs, which are available in <span class="spanCode">dialog_box_front_tab.standard</span> and <span class="spanCode">dialog_box_back_tab.standard</span> respectively. Make sure to place them in a way so they connect to the black border line of the dialog box. The front tab has a white area that overlaps the gray decorative border of the dialog box. Use the separate dialog box shadow <span class="spanCode">dialog_box_shadow.standard</span> to generate an additional shadow behind the tabs.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_dialog_tabs.png"><p>Front and back tabs placed next to the dialog box, with an additional shadow behind them.</p></div>
+
+	<p></p><a name="Banner"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Banner</h3>
+
+	<p>The banner image is available in <span class="spanCode">banner.standard</span> and is tileable by 3x1 112x112px. Place the banner in a way that the top part of the flag's jag closes off nicely with the top border of the dialog box. Adding a border around the text on the banner with a thickness of 3px and the color iol2_ui_blue_line (#255080) works great!</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_banner.png"><p>Banner placed on top of a dialog box.</p></div>
+
+	<p></p><a name="ConversationBox"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Conversation Box</h3>
+
+	<p>The conversation box has to be assembled from multiple parts to achieve the effect shown in the image below. The <span class="spanCode">box.standard</span>-folder contains both a white box tileable by 3x3 10x10px and a box outline with transparent content tileable the same way. The box outline can be placed on top of character portraits. The folders <span class="spanCode">box_arrow.standard</span> and <span class="spanCode">box_arrow_shadow.standard</span> contains the big arrow and its shadow, with the latter being placed below both the arrow and the box it is connecting to. In <span class="spanCode">name_plate.standard</span> you'll find a nameplate tileable by 3x3 18x18px. It is best placed behind the box and moved down a bit with the bottom round corners not visible anymore. The shadow in <span class="spanCode">box_shadow.standard</span> can be used as both a generic shadow for rectangular elements as well as for the portrait, the nameplate and the box itself. The usual shadow displacement is (-40, -40) pixels.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_conversation_box.png"><p>A conversation box assembled from different parts. The portrait is of exemplary nature and available in the folder <span class="spanCode">Sources\misc\example_portrait</span>.</p></div>
+
+	<p></p><a name="SpeechBubble"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Speech Bubble</h3>
+
+	<p>Speech bubbles are little text or icon windows placed in the game world, for example above the head of a non-player character. They are available in two variants (with an outline and without) in <span class="spanCode">speech_bubble.standard</span>, with the speech bubble arrows and their shadows in <span class="spanCode">speech_bubble_arrow.standard</span> and <span class="spanCode">speech_bubble_arrow_shadow.standard</span>. When using the speech bubble with a border, make sure that the arrow's white area connects with the white area of the speech bubble, like shown in the image below. Also note that the arrow's shadow has to be placed behind the speech bubble. The shadow displacement is (-8, -8) pixels.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_speech_bubble.png"><p>A speech bubble with a dark outline (left) and one without (right).</p></div>
+
+	<p></p><a name="Tooltip"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Tooltip</h3>
+
+	<p>The tooltip boxes shown in the image below can be used as little hints when placing the mouse on a button and waiting for a second. The tooltip box itself can be found in the folder <span class="spanCode">tooltip.standard</span> and is tileable by 3x3 24x24px, with its shadow from the same folder tileable in the same manner. The shadows are displaced by (-8, -8) pixels relative to the box. There are two types of arrows: an orthogonal version in the folders <span class="spanCode">tooltip_arrow.standard</span> (with its shadow in <span class="spanCode">tooltip_arrow_shadow.standard</span>) as well as a diagonal one in the folder <span class="spanCode">tooltip_arrow_diagonal.standard</span> (with its shadow in <span class="spanCode">tooltip_arrow_diagonal_shadow.standard</span>).</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_tooltip.png"><p>A tooltip with an arrow at the top and a tooltip with a diagonal arrow at the top-left. The shadows of both the box and the arrows have to be placed both behind the box and the arrow.</p></div>
+
+	<p></p><a name="PanelMoneyPanel"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Panel &amp; Money Panel</h3>
+
+	<p>A panel with baked in shadow is available in the folder <span class="spanCode">panel.standard</span>. It is tileable by 3x1 20x48px. There's also an overlay in folder <span class="spanCode">money_panel_overlay.standard</span> which can be placed on the left part of the panel to create a money panel as shown in the image below.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_panel.png"><p>A panel with the money panel overlay placed on top.</p></div>
+
+	<p></p><a name="CheckboxRadioButton"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Checkbox &amp; Radio Button</h3>
+
+	<p>Checkboxes are available in <span class="spanCode">checkbox.standard</span> and radio buttons in <span class="spanCode">radio_button.standard</span>. Checkboxes come in some variants.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_checkbox_radio_button.png"><p>Checkboxes and radio buttons.</p></div>
+
+	<p></p><a name="ToggleButton"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Toggle Button</h3>
+
+	<p>Toggle buttons show two states. The bar, on which to place the buttons is available in the folder <span class="spanCode">toggle_bar.standard</span>. The blue button placed on top is available in <span class="spanCode">toggle_button.standard</span>. Color variations are available at <span class="spanCode">toggle_button.green</span> and <span class="spanCode">toggle_button.red</span>. They are realized with appropriate Color Mapper files and illustrated in the image below.</p>
+	
+	<div class="divImage imgMarginBelow"><img src="files\example_toggle_button.png"><p>Toggle buttons in various colors and states.</p></div>
+
+	<p></p><a name="ScrollbarSlider"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Scrollbar &amp; Slider</h3>
+
+	<p>Scrollbars and sliders can be found in the folders whose names start with <span class="spanCode">scrollbar</span>. There is quite some variation available in the bars and buttons. For the bar, use either a bar (<span class="spanCode">scrollbar_horizontal_bar.standard</span>) or a line (<span class="spanCode">scrollbar_horizontal_line.standard</span>), both of them tileable by 3x1 12x12px respectively 3x1 4x4px. Then place a diamond (<span class="spanCode">scrollbar_diamond.standard</span>), a stick (<span class="spanCode">scrollbar_horizontal_stick.standard</span>) or a button (<span class="spanCode">scrollbar_horizontal_button.standard</span>) on top. All these button types have a pressed variant in the corresponding folder containing the keyword <span class="spanCode">pressed</span>. The bars come in a blue and a white variant, and both filled and unfilled, which can be put together to create a slider. Check the following image for a visualization.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_scrollbar.png"><p>Three different vertical scrollbars and sliders.</p></div>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\0_scrollbar_diamond_0.png"></td>
+			<td>Diamond</td>
+			<td>scrollbar_diamond_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\1_scrollbar_diamond_pressed_0.png"></td>
+			<td>Diamond Pressed</td>
+			<td>scrollbar_diamond_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\2_scrollbar_horizontal_button_0.png"></td>
+			<td>Horizontal Button</td>
+			<td>scrollbar_horizontal_button_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\3_scrollbar_horizontal_button_pressed_0.png"></td>
+			<td>Horizontal Button Pressed</td>
+			<td>scrollbar_horizontal_button_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\4_scrollbar_horizontal_button_1.png"></td>
+			<td>Horizontal Dot Button</td>
+			<td>scrollbar_horizontal_button_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\5_scrollbar_horizontal_button_pressed_1.png"></td>
+			<td>Horizontal Dot Button Pressed</td>
+			<td>scrollbar_horizontal_button_pressed_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\6_scrollbar_horizontal_button_2.png"></td>
+			<td>Horizontal Stripes Button</td>
+			<td>scrollbar_horizontal_button_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\7_scrollbar_horizontal_button_pressed_2.png"></td>
+			<td>Horizontal Stripes Button Pressed</td>
+			<td>scrollbar_horizontal_button_pressed_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\8_scrollbar_horizontal_button_3.png"></td>
+			<td>Horizontal Arrow Button</td>
+			<td>scrollbar_horizontal_button_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\9_scrollbar_horizontal_button_pressed_3.png"></td>
+			<td>Horizontal Arrow Button Pressed</td>
+			<td>scrollbar_horizontal_button_pressed_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\10_scrollbar_horizontal_stick_0.png"></td>
+			<td>Horizontal Stick Button</td>
+			<td>scrollbar_horizontal_stick_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\11_scrollbar_horizontal_stick_pressed_0.png"></td>
+			<td>Horizontal Stick Button Pressed</td>
+			<td>scrollbar_horizontal_stick_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\12_scrollbar_vertical_button_0.png"></td>
+			<td>Vertical Button</td>
+			<td>scrollbar_vertical_button_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\13_scrollbar_vertical_button_pressed_0.png"></td>
+			<td>Vertical Button Pressed</td>
+			<td>scrollbar_vertical_button_pressed_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\14_scrollbar_vertical_button_1.png"></td>
+			<td>Vertical Dot Button</td>
+			<td>scrollbar_vertical_button_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\15_scrollbar_vertical_button_pressed_1.png"></td>
+			<td>Vertical Dot Button Pressed</td>
+			<td>scrollbar_vertical_button_pressed_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\16_scrollbar_vertical_button_2.png"></td>
+			<td>Vertical Stripes Button</td>
+			<td>scrollbar_vertical_button_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\17_scrollbar_vertical_button_pressed_2.png"></td>
+			<td>Vertical Stripes Button Pressed</td>
+			<td>scrollbar_vertical_button_pressed_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\18_scrollbar_vertical_button_3.png"></td>
+			<td>Vertical Arrow Button</td>
+			<td>scrollbar_vertical_button_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\19_scrollbar_vertical_button_pressed_3.png"></td>
+			<td>Vertical Arrow Button Pressed</td>
+			<td>scrollbar_vertical_button_pressed_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\20_scrollbar_vertical_stick_0.png"></td>
+			<td>Vertical Stick Button</td>
+			<td>scrollbar_vertical_stick_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\scrollbar\21_scrollbar_vertical_stick_pressed_0.png"></td>
+			<td>Vertical Stick Button Pressed</td>
+			<td>scrollbar_vertical_stick_pressed_0.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="TextInput"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Text Input</h3>
+
+	<p>A text input field (to let players type text into it) is available in <span class="spanCode">text_input.standard</span>, with a text cursor in <span class="spanCode">text_input_cursor.standard</span>. The text input is tileable by 3x3 18x18px.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_text_input.png"><p>A text input field with a text cursor placed onto it.</p></div>
+
+	<p></p><a name="Cursors"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Cursors</h3>
+
+	<p>Cursors can be found in <span class="spanCode">Sources\output\ui_pack_elements\cursors</span>. Cursors have their own sub-folder given how Color Mapper works, therefore they all share the same id.</p>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\0_cursor_arrow_0.png"></td>
+			<td>0</td>
+			<td>Arrow</td>
+			<td>cursor_arrow_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\1_cursor_sharp_0.png"></td>
+			<td>0</td>
+			<td>Sharp</td>
+			<td>cursor_sharp_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\2_cursor_triangle_0.png"></td>
+			<td>0</td>
+			<td>Triangle</td>
+			<td>cursor_triangle_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\3_cursor_pointing_hand_0.png"></td>
+			<td>0</td>
+			<td>Pointing Hand</td>
+			<td>cursor_pointing_hand_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\4_cursor_closed_hand_0.png"></td>
+			<td>0</td>
+			<td>Closed Hand</td>
+			<td>cursor_closed_hand_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\5_cursor_cross_0.png"></td>
+			<td>0</td>
+			<td>Cross</td>
+			<td>cursor_cross_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\cursors\6_cursor_text_0.png"></td>
+			<td>0</td>
+			<td>Text</td>
+			<td>cursor_text_0.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="InventorySlots"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Inventory Slots</h3>
+
+	<p>Inventory slots, meant to be shown at the bottom of the screen to display the player's toolbar or inventory, are available in <span class="spanCode">inventory_slot.standard</span> and come in two variants: one with a gray background and one with a white background. The latter is meant to be used as a selected or highlighted inventory slot. They are tileable by 3x3 28x28px, but if you use them as panels, I would recommend to edit out the little decorational stripes at their center.</p>
+
+	<div class="divImage imgMarginBelow"><img src="files\example_inventory_slots.png"><p>Normal and highlighted inventory slot.</p></div>
+
+	<p></p><a name="SelectionFrames"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Selection Frames</h3>
+
+	<p>When selecting an object, character or tile in the game world, selection frames indicate what is selected. They can be found in <span class="spanCode">Sources\output\ui_pack_elements</span> in the folders <span class="spanCode">selection_frame_dot.standard</span> (little dot), <span class="spanCode">selection_frame_hex.standard</span> (single corner of a selected hex tile) and <span class="spanCode">selection_frame_square.standard</span> (single corner of a selected square tile). The following image presents an example on how they can be used.</p>
+
+	<div class="divImage imgMarginBelow"><img src=".\files\example_selection_frames.png"><p>Different selection frames and how hex frames have to be rotated to fit a hex tile.</p></div>
+
+	<p></p><a name="HeartPieces"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Heart Pieces</h3>
+
+	<p>Heart pieces can be found in <span class="spanCode">Sources\output\ui_pack_elements</span> in folders whose names start with <span class="spanCode">heart_piece</span>.</p>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\0_heart_piece_empty_0.png"></td>
+			<td>0</td>
+			<td>Empty Heart Piece</td>
+			<td>heart_piece_empty_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\1_heart_piece_small_1.png"></td>
+			<td>1</td>
+			<td>Small Heart Piece</td>
+			<td>heart_piece_small_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\2_heart_piece_quarter_2.png"></td>
+			<td>2</td>
+			<td>1/4 Heart Piece</td>
+			<td>heart_piece_quarter_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\3_heart_piece_half_3.png"></td>
+			<td>3</td>
+			<td>1/2 Heart Piece</td>
+			<td>heart_piece_half_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\4_heart_piece_three_quarter_4.png"></td>
+			<td>4</td>
+			<td>3/4 Heart Piece</td>
+			<td>heart_piece_three_quarter_4.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\heart_pieces\5_heart_piece_full_5.png"></td>
+			<td>5</td>
+			<td>Full Heart Piece</td>
+			<td>heart_piece_full_5.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="ProgressBar"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Progress Bar</h3>
+
+	<p>The progress bar is available in <span class="spanCode">progress_bar.standard</span> and is tileable by 3x3 22x22px. Indicate different states by drawing the left part of the colored bar and the right part of the dark part. Do not draw them on top of each other directly, as their shadows may overlap awkwardly.</p>
+
+	<div class="divImage imgMarginBelow"><img src=".\files\example_progress_bar.png"><p>Different states of a progress bar.</p></div>
+
+	<p></p><a name="ProgressCircles"></a><div class="divBuffer"></div><a class="aTop" href="#InterfaceElements"><div class="divTop">🡑</div></a>
+	<h3>Progress Circles</h3>
+
+	<p>Progress circles are meant to be placed into the game world. They can be found in <span class="spanCode">Sources\output\ui_pack_elements\progress_circle.standard</span>.</p>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_0.png"></td>
+			<td>0</td>
+			<td>0%</td>
+			<td>progress_circle_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_1.png"></td>
+			<td>1</td>
+			<td>1%</td>
+			<td>progress_circle_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_2.png"></td>
+			<td>2</td>
+			<td>6%</td>
+			<td>progress_circle_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_3.png"></td>
+			<td>3</td>
+			<td>12%</td>
+			<td>progress_circle_3.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_4.png"></td>
+			<td>4</td>
+			<td>18%</td>
+			<td>progress_circle_4.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_5.png"></td>
+			<td>5</td>
+			<td>25%</td>
+			<td>progress_circle_5.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_6.png"></td>
+			<td>6</td>
+			<td>31%</td>
+			<td>progress_circle_6.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_7.png"></td>
+			<td>7</td>
+			<td>37%</td>
+			<td>progress_circle_7.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_8.png"></td>
+			<td>8</td>
+			<td>43%</td>
+			<td>progress_circle_8.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_9.png"></td>
+			<td>9</td>
+			<td>50%</td>
+			<td>progress_circle_9.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_10.png"></td>
+			<td>10</td>
+			<td>56%</td>
+			<td>progress_circle_10.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_11.png"></td>
+			<td>11</td>
+			<td>62%</td>
+			<td>progress_circle_11.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_12.png"></td>
+			<td>12</td>
+			<td>68%</td>
+			<td>progress_circle_12.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_13.png"></td>
+			<td>13</td>
+			<td>75%</td>
+			<td>progress_circle_13.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_14.png"></td>
+			<td>14</td>
+			<td>81%</td>
+			<td>progress_circle_14.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_15.png"></td>
+			<td>15</td>
+			<td>87%</td>
+			<td>progress_circle_15.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_16.png"></td>
+			<td>16</td>
+			<td>93%</td>
+			<td>progress_circle_16.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_17.png"></td>
+			<td>17</td>
+			<td>99%</td>
+			<td>progress_circle_17.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\progress_circles\progress_circle_18.png"></td>
+			<td>18</td>
+			<td>100%</td>
+			<td>progress_circle_18.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="KeyboardIcons"></a><div class="divBuffer"></div>
+	<h2>Keyboard Icons</h2>
+	
+	<p>The keyboard icons can be found in <span class="spanCode">Sources\output\ui_pack_controls</span> within the folders <span class="spanCode">ui_pack_keyboard</span> (normal keys), <span class="spanCode">ui_pack_keyboard_big</span> (sightly longer keys, usually for those with text), <span class="spanCode">ui_pack_keyboard_enter</span> (big keys in the shape of the enter-key) and <span class="spanCode">ui_pack_keyboard_huge</span> (very long keys, like the space-key). Every single one of these folders has the three folders <span class="spanCode">key_up.standard</span>, <span class="spanCode">key_down.standard</span> and <span class="spanCode">key_pressed.standard</span>, containing keys which look normal, pressed down or pressed down with a white border, all to denote different states a key can be in.</p>
+
+	<div class="divNaviInText">
+		<a class="aNavi aNaviSub" href="#KeyboardIconsNormal">Normal</a>
+		<a class="aNavi aNaviSub" href="#KeyboardIconsBig">Big</a>
+		<a class="aNavi aNaviSub" href="#KeyboardIconsHuge">Huge</a>
+		<a class="aNavi aNaviSub" href="#KeyboardIconsEnter">Enter</a>
+	</div>
+
+	<p></p><a name="KeyboardIconsNormal"></a><div class="divBuffer"></div><a class="aTop" href="#KeyboardIcons"><div class="divTop">🡑</div></a>
+	<h3>Normal</h3>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Up</th>
+			<th style="text-align: center">Down</th>
+			<th style="text-align: center">Pressed</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_a_0.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_a_0.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_a_0.png"></td>
+			<td>0</td>
+			<td>A</td>
+			<td>ui_pack_keyboard_<br>a_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_z_25.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_z_25.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_z_25.png"></td>
+			<td>25</td>
+			<td>Z</td>
+			<td>ui_pack_keyboard_<br>z_25.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_zero_26.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_zero_26.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_zero_26.png"></td>
+			<td>26</td>
+			<td>0</td>
+			<td>ui_pack_keyboard_<br>zero_26.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_nine_35.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_nine_35.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_nine_35.png"></td>
+			<td>35</td>
+			<td>9</td>
+			<td>ui_pack_keyboard_<br>nine_35.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_f_one_36.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_f_one_36.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_f_one_36.png"></td>
+			<td>36</td>
+			<td>F1</td>
+			<td>ui_pack_keyboard_<br>f_one_36.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="text-align: center; background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+			<td style="background-color: #efefef">&#8942;</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_f_twelve_47.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_f_twelve_47.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_f_twelve_47.png"></td>
+			<td>47</td>
+			<td>F12</td>
+			<td>ui_pack_keyboard_<br>f_twelve_47.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_arrow_up_48.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_arrow_up_48.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_arrow_up_48.png"></td>
+			<td>48</td>
+			<td>Arrow Up</td>
+			<td>ui_pack_keyboard_<br>arrow_up_48.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_arrow_right_49.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_arrow_right_49.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_arrow_right_49.png"></td>
+			<td>49</td>
+			<td>Arrow Right</td>
+			<td>ui_pack_keyboard_<br>arrow_right_49.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_arrow_down_50.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_arrow_down_50.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_arrow_down_50.png"></td>
+			<td>50</td>
+			<td>Arrow Down</td>
+			<td>ui_pack_keyboard_<br>arrow_down_50.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_arrow_left_51.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_arrow_left_51.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_arrow_left_51.png"></td>
+			<td>51</td>
+			<td>Arrow Left</td>
+			<td>ui_pack_keyboard_<br>arrow_left_51.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_esc_52.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_esc_52.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_esc_52.png"></td>
+			<td>52</td>
+			<td>Esc</td>
+			<td>ui_pack_keyboard_<br>esc_52.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_shift_53.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_shift_53.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_shift_53.png"></td>
+			<td>53</td>
+			<td>Shift</td>
+			<td>ui_pack_keyboard_<br>shift_53.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_shift_text_54.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_shift_text_54.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_shift_text_54.png"></td>
+			<td>54</td>
+			<td>Shift (Text)</td>
+			<td>ui_pack_keyboard_<br>shift_text_54.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_caps_55.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_caps_55.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_caps_55.png"></td>
+			<td>55</td>
+			<td>Caps</td>
+			<td>ui_pack_keyboard_<br>caps_55.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_caps_text_56.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_caps_text_56.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_caps_text_56.png"></td>
+			<td>56</td>
+			<td>Caps (Text)</td>
+			<td>ui_pack_keyboard_<br>caps_text_56.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_tab_57.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_tab_57.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_tab_57.png"></td>
+			<td>57</td>
+			<td>Tab</td>
+			<td>ui_pack_keyboard_<br>tab_57.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_tab_text_58.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_tab_text_58.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_tab_text_58.png"></td>
+			<td>58</td>
+			<td>Tab (Text)</td>
+			<td>ui_pack_keyboard_<br>tab_text_58.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_backspace_59.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_backspace_59.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_backspace_59.png"></td>
+			<td>59</td>
+			<td>Backspace</td>
+			<td>ui_pack_keyboard_<br>backspace_59.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_backspace_text_60.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_backspace_text_60.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_backspace_text_60.png"></td>
+			<td>60</td>
+			<td>Backspace (Text)</td>
+			<td>ui_pack_keyboard_<br>backspace_text_60.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_enter_61.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_enter_61.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_enter_61.png"></td>
+			<td>61</td>
+			<td>Enter</td>
+			<td>ui_pack_keyboard_<br>enter_61.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_enter_text_62.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_enter_text_62.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_enter_text_62.png"></td>
+			<td>62</td>
+			<td>Enter (Text)</td>
+			<td>ui_pack_keyboard_<br>enter_text_62.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_ctrl_63.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_ctrl_63.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_ctrl_63.png"></td>
+			<td>63</td>
+			<td>Ctrl</td>
+			<td>ui_pack_keyboard_<br>ctrl_63.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_alt_64.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_alt_64.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_alt_64.png"></td>
+			<td>64</td>
+			<td>Alt</td>
+			<td>ui_pack_keyboard_<br>alt_64.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_del_65.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_del_65.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_del_65.png"></td>
+			<td>65</td>
+			<td>Del</td>
+			<td>ui_pack_keyboard_<br>del_65.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_ins_66.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_ins_66.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_ins_66.png"></td>
+			<td>66</td>
+			<td>Ins</td>
+			<td>ui_pack_keyboard_<br>ins_66.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_end_67.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_end_67.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_end_67.png"></td>
+			<td>67</td>
+			<td>End</td>
+			<td>ui_pack_keyboard_<br>end_67.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_print_68.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_print_68.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_print_68.png"></td>
+			<td>68</td>
+			<td>Print</td>
+			<td>ui_pack_keyboard_<br>print_68.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_pipe_69.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_pipe_69.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_pipe_69.png"></td>
+			<td>69</td>
+			<td>Pipe</td>
+			<td>ui_pack_keyboard_<br>pipe_69.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_space_70.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_space_70.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_space_70.png"></td>
+			<td>70</td>
+			<td>Space</td>
+			<td>ui_pack_keyboard_<br>space_70.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_space_alternative_71.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_space_alternative_71.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_space_alternative_71.png"></td>
+			<td>71</td>
+			<td>Space (Alternative)</td>
+			<td>ui_pack_keyboard_<br>space_alternative_71.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_space_text_72.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_space_text_72.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_space_text_72.png"></td>
+			<td>72</td>
+			<td>Space (Text)</td>
+			<td>ui_pack_keyboard_<br>space_text_72.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_underscore_73.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_underscore_73.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_underscore_73.png"></td>
+			<td>73</td>
+			<td>Underscore</td>
+			<td>ui_pack_keyboard_<br>underscore_73.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_pause_74.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_pause_74.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_pause_74.png"></td>
+			<td>74</td>
+			<td>Pause</td>
+			<td>ui_pack_keyboard_<br>pause_74.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_home_75.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_home_75.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_home_75.png"></td>
+			<td>75</td>
+			<td>Home</td>
+			<td>ui_pack_keyboard_<br>home_75.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_caret_76.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_caret_76.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_caret_76.png"></td>
+			<td>76</td>
+			<td>Caret</td>
+			<td>ui_pack_keyboard_<br>caret_76.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_plus_77.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_plus_77.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_plus_77.png"></td>
+			<td>77</td>
+			<td>Plus</td>
+			<td>ui_pack_keyboard_<br>plus_77.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_minus_78.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_minus_78.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_minus_78.png"></td>
+			<td>78</td>
+			<td>Minus</td>
+			<td>ui_pack_keyboard_<br>minus_78.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_slash_79.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_slash_79.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_slash_79.png"></td>
+			<td>79</td>
+			<td>Slash</td>
+			<td>ui_pack_keyboard_<br>slash_79.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_backslash_80.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_backslash_80.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_backslash_80.png"></td>
+			<td>80</td>
+			<td>Backslash</td>
+			<td>ui_pack_keyboard_<br>backslash_80.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_asterisk_81.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_asterisk_81.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_asterisk_81.png"></td>
+			<td>81</td>
+			<td>Asterisk</td>
+			<td>ui_pack_keyboard_<br>asterisk_81.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_period_82.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_period_82.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_period_82.png"></td>
+			<td>82</td>
+			<td>Period</td>
+			<td>ui_pack_keyboard_<br>period_82.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_comma_83.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_comma_83.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_comma_83.png"></td>
+			<td>83</td>
+			<td>Comma</td>
+			<td>ui_pack_keyboard_<br>comma_83.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_semicolon_84.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_semicolon_84.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_semicolon_84.png"></td>
+			<td>84</td>
+			<td>Semicolon</td>
+			<td>ui_pack_keyboard_<br>semicolon_84.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_question_mark_85.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_question_mark_85.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_question_mark_85.png"></td>
+			<td>85</td>
+			<td>Question Mark</td>
+			<td>ui_pack_keyboard_<br>question_mark_85.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_tilde_86.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_tilde_86.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_tilde_86.png"></td>
+			<td>86</td>
+			<td>Tilde</td>
+			<td>ui_pack_keyboard_<br>tilde_86.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_plus_equal_87.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_plus_equal_87.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_plus_equal_87.png"></td>
+			<td>87</td>
+			<td>Plus Equal</td>
+			<td>ui_pack_keyboard_<br>plus_equal_87.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_os_88.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_os_88.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_os_88.png"></td>
+			<td>88</td>
+			<td>Os</td>
+			<td>ui_pack_keyboard_<br>os_88.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_greater_than_89.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_greater_than_89.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_greater_than_89.png"></td>
+			<td>89</td>
+			<td>Greater Than</td>
+			<td>ui_pack_keyboard_<br>greater_than_89.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_lesser_than_90.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_lesser_than_90.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_lesser_than_90.png"></td>
+			<td>90</td>
+			<td>Lesser Than</td>
+			<td>ui_pack_keyboard_<br>lesser_than_90.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_quotation_marks_91.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_quotation_marks_91.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_quotation_marks_91.png"></td>
+			<td>91</td>
+			<td>Quotation Marks</td>
+			<td>ui_pack_keyboard_<br>quotation_marks_91.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_square_bracket_closed_92.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_square_bracket_closed_92.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_square_bracket_closed_92.png"></td>
+			<td>92</td>
+			<td>Square Bracket Closed</td>
+			<td>ui_pack_keyboard_<br>square_bracket_<br>closed_92.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_square_bracket_open_93.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_square_bracket_open_93.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_square_bracket_open_93.png"></td>
+			<td>93</td>
+			<td>Square Bracket Open</td>
+			<td>ui_pack_keyboard_<br>square_bracket_<br>open_93.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_up\ui_pack_keyboard_empty_94.png"></td>
+			<td><img src=".\files\examples\key_down\ui_pack_keyboard_empty_94.png"></td>
+			<td><img src=".\files\examples\key_pressed\ui_pack_keyboard_empty_94.png"></td>
+			<td>94</td>
+			<td>Empty</td>
+			<td>ui_pack_keyboard_<br>empty_94.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="KeyboardIconsBig"></a><div class="divBuffer"></div><a class="aTop" href="#KeyboardIcons"><div class="divTop">🡑</div></a>
+	<h3>Big</h3>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Up</th>
+			<th style="text-align: center">Down</th>
+			<th style="text-align: center">Pressed</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_empty_0.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_empty_0.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_empty_0.png"></td>
+			<td>0</td>
+			<td>Empty</td>
+			<td>ui_pack_keyboard_big_<br>empty_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_shift_1.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_shift_1.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_shift_1.png"></td>
+			<td>1</td>
+			<td>Shift</td>
+			<td>ui_pack_keyboard_big_<br>shift_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_shift_text_2.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_shift_text_2.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_shift_text_2.png"></td>
+			<td>2</td>
+			<td>Shift (Text)</td>
+			<td>ui_pack_keyboard_big_<br>shift_text_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_shift_with_text_3.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_shift_with_text_3.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_shift_with_text_3.png"></td>
+			<td>3</td>
+			<td>Shift (Symbol with Text)</td>
+			<td>ui_pack_keyboard_big_<br>shift_with_text_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_caps_4.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_caps_4.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_caps_4.png"></td>
+			<td>4</td>
+			<td>Caps</td>
+			<td>ui_pack_keyboard_big_<br>caps_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_caps_text_5.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_caps_text_5.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_caps_text_5.png"></td>
+			<td>5</td>
+			<td>Caps (Text)</td>
+			<td>ui_pack_keyboard_big_<br>caps_text_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_caps_with_text_6.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_caps_with_text_6.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_caps_with_text_6.png"></td>
+			<td>6</td>
+			<td>Caps (Symbol with Text)</td>
+			<td>ui_pack_keyboard_big_<br>caps_with_text_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_tab_7.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_tab_7.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_tab_7.png"></td>
+			<td>7</td>
+			<td>Tab</td>
+			<td>ui_pack_keyboard_big_<br>tab_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_tab_text_8.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_tab_text_8.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_tab_text_8.png"></td>
+			<td>8</td>
+			<td>Tab (Text)</td>
+			<td>ui_pack_keyboard_big_<br>tab_text_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_tab_with_text_9.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_tab_with_text_9.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_tab_with_text_9.png"></td>
+			<td>9</td>
+			<td>Tab (Symbol with Text)</td>
+			<td>ui_pack_keyboard_big_<br>tab_with_text_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_backspace_10.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_backspace_10.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_backspace_10.png"></td>
+			<td>10</td>
+			<td>Backspace</td>
+			<td>ui_pack_keyboard_big_<br>backspace_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_backspace_text_11.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_backspace_text_11.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_backspace_text_11.png"></td>
+			<td>11</td>
+			<td>Backspace (Text)</td>
+			<td>ui_pack_keyboard_big_<br>backspace_text_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_backspace_with_text_12.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_backspace_with_text_12.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_backspace_with_text_12.png"></td>
+			<td>12</td>
+			<td>Backspace (Symbol with Text)</td>
+			<td>ui_pack_keyboard_big_<br>backspace_with_text_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_enter_13.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_enter_13.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_enter_13.png"></td>
+			<td>13</td>
+			<td>Enter</td>
+			<td>ui_pack_keyboard_big_<br>enter_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_enter_text_14.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_enter_text_14.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_enter_text_14.png"></td>
+			<td>14</td>
+			<td>Enter (Text)</td>
+			<td>ui_pack_keyboard_big_<br>enter_text_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_enter_with_text_15.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_enter_with_text_15.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_enter_with_text_15.png"></td>
+			<td>15</td>
+			<td>Enter (Symbol with Text)</td>
+			<td>ui_pack_keyboard_big_<br>enter_with_text_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_ctrl_16.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_ctrl_16.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_ctrl_16.png"></td>
+			<td>16</td>
+			<td>Ctrl</td>
+			<td>ui_pack_keyboard_big_<br>ctrl_16.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_alt_17.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_alt_17.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_alt_17.png"></td>
+			<td>17</td>
+			<td>Alt</td>
+			<td>ui_pack_keyboard_big_<br>alt_17.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_space_18.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_space_18.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_space_18.png"></td>
+			<td>18</td>
+			<td>Space</td>
+			<td>ui_pack_keyboard_big_<br>space_18.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_space_alternative_19.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_space_alternative_19.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_space_alternative_19.png"></td>
+			<td>19</td>
+			<td>Space (Alternative)</td>
+			<td>ui_pack_keyboard_big_<br>space_alternative_19.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_big_up\ui_pack_keyboard_big_space_text_20.png"></td>
+			<td><img src=".\files\examples\key_big_down\ui_pack_keyboard_big_space_text_20.png"></td>
+			<td><img src=".\files\examples\key_big_pressed\ui_pack_keyboard_big_space_text_20.png"></td>
+			<td>20</td>
+			<td>Space (Text)</td>
+			<td>ui_pack_keyboard_big_<br>space_text_20.png</td>
+		</tr>
+	</table>
+	
+	<p></p><a name="KeyboardIconsHuge"></a><div class="divBuffer"></div><a class="aTop" href="#KeyboardIcons"><div class="divTop">🡑</div></a>
+	<h3>Huge</h3>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Up/Down/Pressed</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\key_huge_up\ui_pack_keyboard_huge_empty_0.png">
+				<img src=".\files\examples\key_huge_down\ui_pack_keyboard_huge_empty_0.png">
+				<img src=".\files\examples\key_huge_pressed\ui_pack_keyboard_huge_empty_0.png"></td>
+			<td>0</td>
+			<td>Empty</td>
+			<td>ui_pack_keyboard_huge_<br>empty_0.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\key_huge_up\ui_pack_keyboard_huge_space_1.png">
+				<img src=".\files\examples\key_huge_down\ui_pack_keyboard_huge_space_1.png">
+				<img src=".\files\examples\key_huge_pressed\ui_pack_keyboard_huge_space_1.png"></td>
+			<td>1</td>
+			<td>Space</td>
+			<td>ui_pack_keyboard_huge_<br>space_1.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\key_huge_up\ui_pack_keyboard_huge_space_alternative_2.png">
+				<img src=".\files\examples\key_huge_down\ui_pack_keyboard_huge_space_alternative_2.png">
+				<img src=".\files\examples\key_huge_pressed\ui_pack_keyboard_huge_space_alternative_2.png"></td>
+			<td>2</td>
+			<td>Space (Alternative)</td>
+			<td>ui_pack_keyboard_huge_<br>space_alternative_2.png</td>
+		</tr>
+		<tr>
+			<td style="text-align: center"><img src=".\files\examples\key_huge_up\ui_pack_keyboard_huge_space_text_3.png">
+				<img src=".\files\examples\key_huge_down\ui_pack_keyboard_huge_space_text_3.png">
+				<img src=".\files\examples\key_huge_pressed\ui_pack_keyboard_huge_space_text_3.png"></td>
+			<td>3</td>
+			<td>Space (Text)</td>
+			<td>ui_pack_keyboard_huge_<br>space_text_3.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="KeyboardIconsEnter"></a><div class="divBuffer"></div><a class="aTop" href="#KeyboardIcons"><div class="divTop">🡑</div></a>
+	<h3>Enter</h3>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Up</th>
+			<th style="text-align: center">Down</th>
+			<th style="text-align: center">Pressed</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_enter_up\ui_pack_keyboard_enter_empty_0.png"></td>
+			<td><img src=".\files\examples\key_enter_down\ui_pack_keyboard_enter_empty_0.png"></td>
+			<td><img src=".\files\examples\key_enter_pressed\ui_pack_keyboard_enter_empty_0.png"></td>
+			<td>0</td>
+			<td>Empty</td>
+			<td>ui_pack_keyboard_enter_<br>empty_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_enter_up\ui_pack_keyboard_enter_enter_1.png"></td>
+			<td><img src=".\files\examples\key_enter_down\ui_pack_keyboard_enter_enter_1.png"></td>
+			<td><img src=".\files\examples\key_enter_pressed\ui_pack_keyboard_enter_enter_1.png"></td>
+			<td>1</td>
+			<td>Enter</td>
+			<td>ui_pack_keyboard_enter_<br>enter_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\key_enter_up\ui_pack_keyboard_enter_enter_text_2.png"></td>
+			<td><img src=".\files\examples\key_enter_down\ui_pack_keyboard_enter_enter_text_2.png"></td>
+			<td><img src=".\files\examples\key_enter_pressed\ui_pack_keyboard_enter_enter_text_2.png"></td>
+			<td>2</td>
+			<td>Enter (Text)</td>
+			<td>ui_pack_keyboard_enter_<br>enter_text_2.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="MouseIcons"></a><div class="divBuffer"></div>
+	<h2>Mouse Icons</h2>
+	
+	<p>The mouse icons can be found in <span class="spanCode">Sources\output\ui_pack_controls</span> within the folders <span class="spanCode">ui_pack_mouse.standard</span> (mouse buttons) and <span class="spanCode">ui_pack_mouse_move.standard</span> (mouse movement).</p>
+
+	<h3>Mouse</h3>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_left_click_0.png"></td>
+			<td>0</td>
+			<td>Left Click</td>
+			<td>ui_pack_mouse_left_click_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_right_click_1.png"></td>
+			<td>1</td>
+			<td>Right Click</td>
+			<td>ui_pack_mouse_right_click_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_mouse_wheel_2.png"></td>
+			<td>2</td>
+			<td>Mouse Wheel</td>
+			<td>ui_pack_mouse_mouse_wheel_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_mouse_wheel_up_3.png"></td>
+			<td>3</td>
+			<td>Mouse Wheel Up</td>
+			<td>ui_pack_mouse_mouse_wheel_up_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_mouse_wheel_down_4.png"></td>
+			<td>4</td>
+			<td>Mouse Wheel Down</td>
+			<td>ui_pack_mouse_mouse_wheel_down_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_mouse_wheel_both_5.png"></td>
+			<td>5</td>
+			<td>Mouse Wheel Both</td>
+			<td>ui_pack_mouse_mouse_wheel_both_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_empty_6.png"></td>
+			<td>6</td>
+			<td>Empty</td>
+			<td>ui_pack_mouse_empty_6.png</td>
+		</tr>
+	</table>
+
+	<h3>Mouse Move</h3>
+	
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_move_horizontal_0.png"></td>
+			<td>0</td>
+			<td>Mouse Move Horizontal</td>
+			<td>ui_pack_mouse_move_horizontal_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_move_vertical_1.png"></td>
+			<td>1</td>
+			<td>Mouse Move Vertical</td>
+			<td>ui_pack_mouse_move_vertical_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\mouse\ui_pack_mouse_move_all_2.png"></td>
+			<td>2</td>
+			<td>Mouse Move All</td>
+			<td>ui_pack_mouse_move_all_2.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadIcons"></a><div class="divBuffer"></div>
+	<h2>Gamepad Icons</h2>
+	
+	<p>The gamepad icons can be found in <span class="spanCode">Sources\output\ui_pack_controls</span> in folders whose names start with <span class="spanCode">ui_pack_gamepad</span>. Across the file names and the descriptions here, you will probably encounter the abbreviations PS, XB and SW, which stand for the big three gaming consoles.</p>
+
+	<div class="divNaviInText">
+		<a class="aNavi aNaviSub" href="#GamepadButtons">Gamepad Buttons</a>
+		<a class="aNavi aNaviSub" href="#GamepadShoulderButtons">Shoulder Buttons</a>
+		<a class="aNavi aNaviSub" href="#GamepadTriggers">Triggers</a>
+		<a class="aNavi aNaviSub" href="#GamepadDPad">D-Pad</a>
+		<a class="aNavi aNaviSub" href="#GamepadThumbstick">Thumbstick</a>
+		<a class="aNavi aNaviSub" href="#GamepadThumbstickPressed">Thumbstick Pressed</a>
+		<a class="aNavi aNaviSub" href="#GamepadXBShare">XB Share</a>
+		<a class="aNavi aNaviSub" href="#GamepadPSSpecial">PS Special</a>
+		<a class="aNavi aNaviSub" href="#GamepadPSTouchpad">PS Touchpad</a>
+		<a class="aNavi aNaviSub" href="#GamepadSWFour">SW Four</a>
+		<a class="aNavi aNaviSub" href="#GamepadSquareButtons">Square Buttons</a>
+	</div>
+
+	<p></p><a name="GamepadButtons"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Gamepad Buttons</h3>
+
+	<p>Round buttons found on all the common gamepads. They are available in the folder <span class="spanCode">ui_pack_gamepad_buttons.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_a_0.png"></td>
+			<td>0</td>
+			<td>XB A</td>
+			<td>ui_pack_gamepad_buttons_xb_a_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_b_1.png"></td>
+			<td>1</td>
+			<td>XB B</td>
+			<td>ui_pack_gamepad_buttons_xb_b_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_x_2.png"></td>
+			<td>2</td>
+			<td>XB X</td>
+			<td>ui_pack_gamepad_buttons_xb_x_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_y_3.png"></td>
+			<td>3</td>
+			<td>XB Y</td>
+			<td>ui_pack_gamepad_buttons_xb_y_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_menu_4.png"></td>
+			<td>4</td>
+			<td>XB Menu</td>
+			<td>ui_pack_gamepad_buttons_xb_menu_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_xb_view_5.png"></td>
+			<td>5</td>
+			<td>XB View</td>
+			<td>ui_pack_gamepad_buttons_xb_view_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_ps_cross_6.png"></td>
+			<td>6</td>
+			<td>PS Cross</td>
+			<td>ui_pack_gamepad_buttons_ps_cross_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_ps_circle_7.png"></td>
+			<td>7</td>
+			<td>PS Circle</td>
+			<td>ui_pack_gamepad_buttons_ps_circle_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_ps_square_8.png"></td>
+			<td>8</td>
+			<td>PS Square</td>
+			<td>ui_pack_gamepad_buttons_ps_square_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_ps_triangle_9.png"></td>
+			<td>9</td>
+			<td>PS Triangle</td>
+			<td>ui_pack_gamepad_buttons_ps_triangle_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_button_left_10.png"></td>
+			<td>10</td>
+			<td>SW Button Left</td>
+			<td>ui_pack_gamepad_buttons_sw_button_left_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_button_down_11.png"></td>
+			<td>11</td>
+			<td>SW Button Down</td>
+			<td>ui_pack_gamepad_buttons_sw_button_down_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_button_right_12.png"></td>
+			<td>12</td>
+			<td>SW Button Right</td>
+			<td>ui_pack_gamepad_buttons_sw_button_right_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_button_up_13.png"></td>
+			<td>13</td>
+			<td>SW Button Up</td>
+			<td>ui_pack_gamepad_buttons_sw_button_up_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_b_14.png"></td>
+			<td>14</td>
+			<td>SW B</td>
+			<td>ui_pack_gamepad_buttons_sw_b_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_a_15.png"></td>
+			<td>15</td>
+			<td>SW A</td>
+			<td>ui_pack_gamepad_buttons_sw_a_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_y_16.png"></td>
+			<td>16</td>
+			<td>SW Y</td>
+			<td>ui_pack_gamepad_buttons_sw_y_16.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_x_17.png"></td>
+			<td>17</td>
+			<td>SW X</td>
+			<td>ui_pack_gamepad_buttons_sw_x_17.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_minus_18.png"></td>
+			<td>18</td>
+			<td>SW Minus</td>
+			<td>ui_pack_gamepad_buttons_sw_minus_18.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_plus_19.png"></td>
+			<td>19</td>
+			<td>SW Plus</td>
+			<td>ui_pack_gamepad_buttons_sw_plus_19.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_sw_home_20.png"></td>
+			<td>20</td>
+			<td>SW Home</td>
+			<td>ui_pack_gamepad_buttons_sw_home_20.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_buttons\ui_pack_gamepad_buttons_empty_21.png"></td>
+			<td>21</td>
+			<td>Empty</td>
+			<td>ui_pack_gamepad_buttons_empty_21.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadShoulderButtons"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Shoulder Buttons</h3>
+
+	<p>Smaller shoulder buttons for the common gamepads. They are available in the folder <span class="spanCode">ui_pack_gamepad_shoulder_buttons.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_xb_rb_0.png"></td>
+			<td>0</td>
+			<td>XB RB</td>
+			<td>ui_pack_gamepad_shoulder_buttons_xb_rb_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_xb_lb_1.png"></td>
+			<td>1</td>
+			<td>XB LB</td>
+			<td>ui_pack_gamepad_shoulder_buttons_xb_lb_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_ps_r1_2.png"></td>
+			<td>2</td>
+			<td>PS R1</td>
+			<td>ui_pack_gamepad_shoulder_buttons_ps_r1_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_ps_l1_3.png"></td>
+			<td>3</td>
+			<td>PS L1</td>
+			<td>ui_pack_gamepad_shoulder_buttons_ps_l1_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_r_4.png"></td>
+			<td>4</td>
+			<td>SW R</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_r_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_l_5.png"></td>
+			<td>5</td>
+			<td>SW L</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_l_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_sr_6.png"></td>
+			<td>6</td>
+			<td>SW SR</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_sr_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_sl_7.png"></td>
+			<td>7</td>
+			<td>SW SL</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_sl_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_zr_8.png"></td>
+			<td>8</td>
+			<td>SW ZR</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_zr_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_zl_9.png"></td>
+			<td>9</td>
+			<td>SW ZL</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_zl_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_xb_empty_r_10.png"></td>
+			<td>10</td>
+			<td>XB Empty R</td>
+			<td>ui_pack_gamepad_shoulder_buttons_xb_empty_r_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_xb_empty_l_11.png"></td>
+			<td>11</td>
+			<td>XB Empty L</td>
+			<td>ui_pack_gamepad_shoulder_buttons_xb_empty_l_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_ps_empty_12.png"></td>
+			<td>12</td>
+			<td>Ps Empty</td>
+			<td>ui_pack_gamepad_shoulder_buttons_ps_empty_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_empty_r_13.png"></td>
+			<td>13</td>
+			<td>SW Empty R</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_empty_r_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_empty_l_14.png"></td>
+			<td>14</td>
+			<td>SW Empty L</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_empty_l_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_empty_zr_15.png"></td>
+			<td>15</td>
+			<td>SW Empty ZR</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_empty_zr_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_shoulder_buttons\ui_pack_gamepad_shoulder_buttons_sw_empty_zl_16.png"></td>
+			<td>16</td>
+			<td>SW Empty ZL</td>
+			<td>ui_pack_gamepad_shoulder_buttons_sw_empty_zl_16.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadTriggers"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Triggers</h3>
+
+	<p>Big shoulder buttons or triggers. They are available in the folder <span class="spanCode">ui_pack_gamepad_triggers.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_xb_rt_0.png"></td>
+			<td>0</td>
+			<td>XB RT</td>
+			<td>ui_pack_gamepad_triggers_xb_rt_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_xb_lt_1.png"></td>
+			<td>1</td>
+			<td>XB LT</td>
+			<td>ui_pack_gamepad_triggers_xb_lt_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_ps_r2_2.png"></td>
+			<td>2</td>
+			<td>PS R2</td>
+			<td>ui_pack_gamepad_triggers_ps_r2_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_ps_l2_3.png"></td>
+			<td>3</td>
+			<td>PS L2</td>
+			<td>ui_pack_gamepad_triggers_ps_l2_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_sw_zr_4.png"></td>
+			<td>4</td>
+			<td>SW ZR</td>
+			<td>ui_pack_gamepad_triggers_sw_zr_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_sw_zl_5.png"></td>
+			<td>5</td>
+			<td>SW ZL</td>
+			<td>ui_pack_gamepad_triggers_sw_zl_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_right_6.png"></td>
+			<td>6</td>
+			<td>Right</td>
+			<td>ui_pack_gamepad_triggers_right_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_triggers\ui_pack_gamepad_triggers_left_7.png"></td>
+			<td>7</td>
+			<td>Left</td>
+			<td>ui_pack_gamepad_triggers_left_7.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadDPad"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>D-Pad</h3>
+
+	<p>D-pad input icons in different variants. They are available in the folder <span class="spanCode">ui_pack_gamepad_dpad.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_up_0.png"></td>
+			<td>0</td>
+			<td>PS Up</td>
+			<td>ui_pack_gamepad_dpad_ps_up_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_right_1.png"></td>
+			<td>1</td>
+			<td>PS Right</td>
+			<td>ui_pack_gamepad_dpad_ps_right_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_down_2.png"></td>
+			<td>2</td>
+			<td>PS Down</td>
+			<td>ui_pack_gamepad_dpad_ps_down_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_left_3.png"></td>
+			<td>3</td>
+			<td>PS Left</td>
+			<td>ui_pack_gamepad_dpad_ps_left_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_horizontal_4.png"></td>
+			<td>4</td>
+			<td>PS Horizontal</td>
+			<td>ui_pack_gamepad_dpad_ps_horizontal_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_vertical_5.png"></td>
+			<td>5</td>
+			<td>PS Vertical</td>
+			<td>ui_pack_gamepad_dpad_ps_vertical_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_ps_all_6.png"></td>
+			<td>6</td>
+			<td>PS All</td>
+			<td>ui_pack_gamepad_dpad_ps_all_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_up_7.png"></td>
+			<td>7</td>
+			<td>SW Up</td>
+			<td>ui_pack_gamepad_dpad_sw_up_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_right_8.png"></td>
+			<td>8</td>
+			<td>SW Right</td>
+			<td>ui_pack_gamepad_dpad_sw_right_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_down_9.png"></td>
+			<td>9</td>
+			<td>SW Down</td>
+			<td>ui_pack_gamepad_dpad_sw_down_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_left_10.png"></td>
+			<td>10</td>
+			<td>SW Left</td>
+			<td>ui_pack_gamepad_dpad_sw_left_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_horizontal_11.png"></td>
+			<td>11</td>
+			<td>SW Horizontal</td>
+			<td>ui_pack_gamepad_dpad_sw_horizontal_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_vertical_12.png"></td>
+			<td>12</td>
+			<td>SW Vertical</td>
+			<td>ui_pack_gamepad_dpad_sw_vertical_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_sw_all_13.png"></td>
+			<td>13</td>
+			<td>SW All</td>
+			<td>ui_pack_gamepad_dpad_sw_all_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_up_14.png"></td>
+			<td>14</td>
+			<td>XB Up</td>
+			<td>ui_pack_gamepad_dpad_xb_up_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_right_15.png"></td>
+			<td>15</td>
+			<td>XB Right</td>
+			<td>ui_pack_gamepad_dpad_xb_right_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_down_16.png"></td>
+			<td>16</td>
+			<td>XB Down</td>
+			<td>ui_pack_gamepad_dpad_xb_down_16.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_left_17.png"></td>
+			<td>17</td>
+			<td>XB Left</td>
+			<td>ui_pack_gamepad_dpad_xb_left_17.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_horizontal_18.png"></td>
+			<td>18</td>
+			<td>XB Horizontal</td>
+			<td>ui_pack_gamepad_dpad_xb_horizontal_18.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_vertical_19.png"></td>
+			<td>19</td>
+			<td>XB Vertical</td>
+			<td>ui_pack_gamepad_dpad_xb_vertical_19.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_xb_all_20.png"></td>
+			<td>20</td>
+			<td>XB All</td>
+			<td>ui_pack_gamepad_dpad_xb_all_20.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_dpad\ui_pack_gamepad_dpad_empty_21.png"></td>
+			<td>21</td>
+			<td>Empty</td>
+			<td>ui_pack_gamepad_dpad_empty_21.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadThumbstick"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Thumbstick</h3>
+
+	<p>Left and right thumbsticks indicating movement in various directions. They are available in the folder <span class="spanCode">ui_pack_gamepad_thumbstick.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_0.png"></td>
+			<td>0</td>
+			<td>L</td>
+			<td>ui_pack_gamepad_thumbstick_l_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_up_1.png"></td>
+			<td>1</td>
+			<td>L Up</td>
+			<td>ui_pack_gamepad_thumbstick_l_up_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_right_2.png"></td>
+			<td>2</td>
+			<td>L Right</td>
+			<td>ui_pack_gamepad_thumbstick_l_right_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_down_3.png"></td>
+			<td>3</td>
+			<td>L Down</td>
+			<td>ui_pack_gamepad_thumbstick_l_down_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_left_4.png"></td>
+			<td>4</td>
+			<td>L Left</td>
+			<td>ui_pack_gamepad_thumbstick_l_left_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_horizontal_5.png"></td>
+			<td>5</td>
+			<td>L Horizontal</td>
+			<td>ui_pack_gamepad_thumbstick_l_horizontal_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_vertical_6.png"></td>
+			<td>6</td>
+			<td>L Vertical</td>
+			<td>ui_pack_gamepad_thumbstick_l_vertical_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l_all_7.png"></td>
+			<td>7</td>
+			<td>L All</td>
+			<td>ui_pack_gamepad_thumbstick_l_all_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_8.png"></td>
+			<td>8</td>
+			<td>R</td>
+			<td>ui_pack_gamepad_thumbstick_r_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_up_9.png"></td>
+			<td>9</td>
+			<td>R Up</td>
+			<td>ui_pack_gamepad_thumbstick_r_up_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_right_10.png"></td>
+			<td>10</td>
+			<td>R Right</td>
+			<td>ui_pack_gamepad_thumbstick_r_right_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_down_11.png"></td>
+			<td>11</td>
+			<td>R Down</td>
+			<td>ui_pack_gamepad_thumbstick_r_down_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_left_12.png"></td>
+			<td>12</td>
+			<td>R Left</td>
+			<td>ui_pack_gamepad_thumbstick_r_left_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_horizontal_13.png"></td>
+			<td>13</td>
+			<td>R Horizontal</td>
+			<td>ui_pack_gamepad_thumbstick_r_horizontal_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_vertical_14.png"></td>
+			<td>14</td>
+			<td>R Vertical</td>
+			<td>ui_pack_gamepad_thumbstick_r_vertical_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r_all_15.png"></td>
+			<td>15</td>
+			<td>R All</td>
+			<td>ui_pack_gamepad_thumbstick_r_all_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_16.png"></td>
+			<td>16</td>
+			<td>L3</td>
+			<td>ui_pack_gamepad_thumbstick_l3_16.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_up_17.png"></td>
+			<td>17</td>
+			<td>L3 Up</td>
+			<td>ui_pack_gamepad_thumbstick_l3_up_17.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_right_18.png"></td>
+			<td>18</td>
+			<td>L3 Right</td>
+			<td>ui_pack_gamepad_thumbstick_l3_right_18.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_down_19.png"></td>
+			<td>19</td>
+			<td>L3 Down</td>
+			<td>ui_pack_gamepad_thumbstick_l3_down_19.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_left_20.png"></td>
+			<td>20</td>
+			<td>L3 Left</td>
+			<td>ui_pack_gamepad_thumbstick_l3_left_20.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_horizontal_21.png"></td>
+			<td>21</td>
+			<td>L3 Horizontal</td>
+			<td>ui_pack_gamepad_thumbstick_l3_horizontal_21.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_vertical_22.png"></td>
+			<td>22</td>
+			<td>L3 Vertical</td>
+			<td>ui_pack_gamepad_thumbstick_l3_vertical_22.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_l3_all_23.png"></td>
+			<td>23</td>
+			<td>L3 All</td>
+			<td>ui_pack_gamepad_thumbstick_l3_all_23.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_24.png"></td>
+			<td>24</td>
+			<td>R3</td>
+			<td>ui_pack_gamepad_thumbstick_r3_24.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_up_25.png"></td>
+			<td>25</td>
+			<td>R3 Up</td>
+			<td>ui_pack_gamepad_thumbstick_r3_up_25.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_right_26.png"></td>
+			<td>26</td>
+			<td>R3 Right</td>
+			<td>ui_pack_gamepad_thumbstick_r3_right_26.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_down_27.png"></td>
+			<td>27</td>
+			<td>R3 Down</td>
+			<td>ui_pack_gamepad_thumbstick_r3_down_27.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_left_28.png"></td>
+			<td>28</td>
+			<td>R3 Left</td>
+			<td>ui_pack_gamepad_thumbstick_r3_left_28.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_horizontal_29.png"></td>
+			<td>29</td>
+			<td>R3 Horizontal</td>
+			<td>ui_pack_gamepad_thumbstick_r3_horizontal_29.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_vertical_30.png"></td>
+			<td>30</td>
+			<td>R3 Vertical</td>
+			<td>ui_pack_gamepad_thumbstick_r3_vertical_30.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_r3_all_31.png"></td>
+			<td>31</td>
+			<td>R3 All</td>
+			<td>ui_pack_gamepad_thumbstick_r3_all_31.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick\ui_pack_gamepad_thumbstick_empty_32.png"></td>
+			<td>32</td>
+			<td>Empty</td>
+			<td>ui_pack_gamepad_thumbstick_empty_32.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadThumbstickPressed"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Thumbstick Pressed</h3>
+
+	<p>These icons show thumbsticks pressed down (into the thumbstick itself). They are available in the folder <span class="spanCode">ui_pack_gamepad_thumbstick_pressed.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick_pressed\ui_pack_gamepad_thumbstick_pressed_empty_0.png"></td>
+			<td>0</td>
+			<td>Empty</td>
+			<td>ui_pack_gamepad_thumbstick_pressed_empty_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick_pressed\ui_pack_gamepad_thumbstick_pressed_r3_1.png"></td>
+			<td>1</td>
+			<td>R3</td>
+			<td>ui_pack_gamepad_thumbstick_pressed_r3_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick_pressed\ui_pack_gamepad_thumbstick_pressed_l3_2.png"></td>
+			<td>2</td>
+			<td>L3</td>
+			<td>ui_pack_gamepad_thumbstick_pressed_l3_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick_pressed\ui_pack_gamepad_thumbstick_pressed_r_3.png"></td>
+			<td>3</td>
+			<td>R</td>
+			<td>ui_pack_gamepad_thumbstick_pressed_r_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_thumbstick_pressed\ui_pack_gamepad_thumbstick_pressed_l_4.png"></td>
+			<td>4</td>
+			<td>L</td>
+			<td>ui_pack_gamepad_thumbstick_pressed_l_4.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadXBShare"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>XB Share</h3>
+
+	<p>Special option icon for the share functionality of the XB console's gamepad. They are available in the folder <span class="spanCode">ui_pack_gamepad_xb_share.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_xb_share\ui_pack_gamepad_xb_share_share_0.png"></td>
+			<td>0</td>
+			<td>Share</td>
+			<td>ui_pack_gamepad_xb_share_share_0.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadPSSpecial"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>PS Special</h3>
+
+	<p>Special option icons for the PS console's gamepad. They are available in the folder <span class="spanCode">ui_pack_gamepad_ps_special.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_ps_special\ui_pack_gamepad_ps_special_share_0.png"></td>
+			<td>0</td>
+			<td>Share</td>
+			<td>ui_pack_gamepad_ps_special_share_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_ps_special\ui_pack_gamepad_ps_special_options_1.png"></td>
+			<td>1</td>
+			<td>Options</td>
+			<td>ui_pack_gamepad_ps_special_options_1.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadPSTouchpad"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>PS Touchpad</h3>
+
+	<p>An icon for gamepads with a touchpad. They are available in the folder <span class="spanCode">ui_pack_gamepad_ps_touchpad.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_ps_touchpad\ui_pack_gamepad_ps_touchpad_touchpad_0.png"></td>
+			<td>0</td>
+			<td>Touchpad</td>
+			<td>ui_pack_gamepad_ps_touchpad_touchpad_0.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadSWFour"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>SW Four</h3>
+
+	<p>Round, directional buttons of the SW console's gamepad. They are available in the folder <span class="spanCode">ui_pack_gamepad_sw_four.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_up_0.png"></td>
+			<td>0</td>
+			<td>Up</td>
+			<td>ui_pack_gamepad_sw_four_up_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_right_1.png"></td>
+			<td>1</td>
+			<td>Right</td>
+			<td>ui_pack_gamepad_sw_four_right_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_down_2.png"></td>
+			<td>2</td>
+			<td>Down</td>
+			<td>ui_pack_gamepad_sw_four_down_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_left_3.png"></td>
+			<td>3</td>
+			<td>Left</td>
+			<td>ui_pack_gamepad_sw_four_left_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_horizontal_4.png"></td>
+			<td>4</td>
+			<td>Horizontal</td>
+			<td>ui_pack_gamepad_sw_four_horizontal_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_vertical_5.png"></td>
+			<td>5</td>
+			<td>Vertical</td>
+			<td>ui_pack_gamepad_sw_four_vertical_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_all_6.png"></td>
+			<td>6</td>
+			<td>All</td>
+			<td>ui_pack_gamepad_sw_four_all_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_sw_four\ui_pack_gamepad_sw_four_empty_7.png"></td>
+			<td>7</td>
+			<td>Empty</td>
+			<td>ui_pack_gamepad_sw_four_empty_7.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="GamepadSquareButtons"></a><div class="divBuffer"></div><a class="aTop" href="#GamepadIcons"><div class="divTop">🡑</div></a>
+	<h3>Square Buttons</h3>
+
+	<p>Special recording button of the SW console's gamepad. They are available in the folder <span class="spanCode">ui_pack_gamepad_square_buttons.standard</span>.</p>
+
+	<table class="tableIcons tableIconsSmall">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_square_buttons\ui_pack_gamepad_square_buttons_sw_capture_0.png"></td>
+			<td>0</td>
+			<td>SW Capture</td>
+			<td>ui_pack_gamepad_square_buttons_sw_capture_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\gamepad_square_buttons\ui_pack_gamepad_square_buttons_sw_capture_alternative_1.png"></td>
+			<td>1</td>
+			<td>SW Capture Alternative</td>
+			<td>ui_pack_gamepad_square_buttons_sw_capture_alternative_1.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="SymbolIcons"></a><div class="divBuffer"></div>
+	<h2>Symbol Icons</h2>
+
+	<p>The icons are available in <span class="spanCode">Sources\output\ui_pack_controls</span>, in the folders <span class="spanCode">ui_pack_icons.standard</span> (without any outline) and <span class="spanCode">ui_pack_icons.outline</span> (with a dark outline). The icons without an outline are meant to be put on buttons, but if you put them on a somewhat noisy background, please make sure to use them with an outline instead, so a proper contrast is given. When placing them on a button, scale them down to 60% of their size.</p>
+
+	<table class="tableIcons">
+		<tr>
+			<th style="text-align: center">Icon</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>File</th>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_cross_0.png"></td>
+			<td>0</td>
+			<td>Cross</td>
+			<td>ui_pack_icon_cross_0.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_checkmark_1.png"></td>
+			<td>1</td>
+			<td>Checkmark</td>
+			<td>ui_pack_icon_checkmark_1.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_circle_2.png"></td>
+			<td>2</td>
+			<td>Circle</td>
+			<td>ui_pack_icon_circle_2.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_nope_3.png"></td>
+			<td>3</td>
+			<td>Nope</td>
+			<td>ui_pack_icon_nope_3.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_zero_4.png"></td>
+			<td>4</td>
+			<td>Volume Zero</td>
+			<td>ui_pack_icon_volume_zero_4.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_min_5.png"></td>
+			<td>5</td>
+			<td>Volume Min</td>
+			<td>ui_pack_icon_volume_min_5.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_max_6.png"></td>
+			<td>6</td>
+			<td>Volume Max</td>
+			<td>ui_pack_icon_volume_max_6.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_mute_7.png"></td>
+			<td>7</td>
+			<td>Volume Mute</td>
+			<td>ui_pack_icon_volume_mute_7.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_minus_8.png"></td>
+			<td>8</td>
+			<td>Volume Minus</td>
+			<td>ui_pack_icon_volume_minus_8.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_volume_plus_9.png"></td>
+			<td>9</td>
+			<td>Volume Plus</td>
+			<td>ui_pack_icon_volume_plus_9.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_right_10.png"></td>
+			<td>10</td>
+			<td>Arrow Right</td>
+			<td>ui_pack_icon_arrow_right_10.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_left_11.png"></td>
+			<td>11</td>
+			<td>Arrow Left</td>
+			<td>ui_pack_icon_arrow_left_11.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_up_12.png"></td>
+			<td>12</td>
+			<td>Arrow Up</td>
+			<td>ui_pack_icon_arrow_up_12.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_down_13.png"></td>
+			<td>13</td>
+			<td>Arrow Down</td>
+			<td>ui_pack_icon_arrow_down_13.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_double_horizontal_14.png"></td>
+			<td>14</td>
+			<td>Arrow Double Horizontal</td>
+			<td>ui_pack_icon_arrow_double_horizontal_14.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_double_vertical_15.png"></td>
+			<td>15</td>
+			<td>Arrow Double Vertical</td>
+			<td>ui_pack_icon_arrow_double_vertical_15.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_all_16.png"></td>
+			<td>16</td>
+			<td>Arrow All</td>
+			<td>ui_pack_icon_arrow_all_16.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_up_right_17.png"></td>
+			<td>17</td>
+			<td>Arrow Up Right</td>
+			<td>ui_pack_icon_arrow_up_right_17.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_down_right_18.png"></td>
+			<td>18</td>
+			<td>Arrow Down Right</td>
+			<td>ui_pack_icon_arrow_down_right_18.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_down_left_19.png"></td>
+			<td>19</td>
+			<td>Arrow Down Left</td>
+			<td>ui_pack_icon_arrow_down_left_19.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_up_left_20.png"></td>
+			<td>20</td>
+			<td>Arrow Up Left</td>
+			<td>ui_pack_icon_arrow_up_left_20.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_double_up_right_21.png"></td>
+			<td>21</td>
+			<td>Arrow Double Up Right</td>
+			<td>ui_pack_icon_arrow_double_up_right_21.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_double_up_left_22.png"></td>
+			<td>22</td>
+			<td>Arrow Double Up Left</td>
+			<td>ui_pack_icon_arrow_double_up_left_22.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_arrow_all_diagonal_23.png"></td>
+			<td>23</td>
+			<td>Arrow All Diagonal</td>
+			<td>ui_pack_icon_arrow_all_diagonal_23.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_play_24.png"></td>
+			<td>24</td>
+			<td>Play</td>
+			<td>ui_pack_icon_play_24.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_stop_25.png"></td>
+			<td>25</td>
+			<td>Stop</td>
+			<td>ui_pack_icon_stop_25.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_forward_26.png"></td>
+			<td>26</td>
+			<td>Forward</td>
+			<td>ui_pack_icon_forward_26.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_backward_27.png"></td>
+			<td>27</td>
+			<td>Backward</td>
+			<td>ui_pack_icon_backward_27.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_next_28.png"></td>
+			<td>28</td>
+			<td>Next</td>
+			<td>ui_pack_icon_next_28.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_previous_29.png"></td>
+			<td>29</td>
+			<td>Previous</td>
+			<td>ui_pack_icon_previous_29.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_replay_30.png"></td>
+			<td>30</td>
+			<td>Replay</td>
+			<td>ui_pack_icon_replay_30.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_plus_31.png"></td>
+			<td>31</td>
+			<td>Plus</td>
+			<td>ui_pack_icon_plus_31.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_minus_32.png"></td>
+			<td>32</td>
+			<td>Minus</td>
+			<td>ui_pack_icon_minus_32.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_star_33.png"></td>
+			<td>33</td>
+			<td>Star</td>
+			<td>ui_pack_icon_star_33.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_home_34.png"></td>
+			<td>34</td>
+			<td>Home</td>
+			<td>ui_pack_icon_home_34.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_dot_35.png"></td>
+			<td>35</td>
+			<td>Dot</td>
+			<td>ui_pack_icon_dot_35.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_three_dots_36.png"></td>
+			<td>36</td>
+			<td>Three Dots</td>
+			<td>ui_pack_icon_three_dots_36.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_four_dots_37.png"></td>
+			<td>37</td>
+			<td>Four Dots</td>
+			<td>ui_pack_icon_four_dots_37.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_three_lines_38.png"></td>
+			<td>38</td>
+			<td>Three Lines</td>
+			<td>ui_pack_icon_three_lines_38.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_link_39.png"></td>
+			<td>39</td>
+			<td>Link</td>
+			<td>ui_pack_icon_link_39.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_exclamation_mark_40.png"></td>
+			<td>40</td>
+			<td>Exclamation Mark</td>
+			<td>ui_pack_icon_exclamation_mark_40.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_question_mark_41.png"></td>
+			<td>41</td>
+			<td>Question Mark</td>
+			<td>ui_pack_icon_question_mark_41.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_wrench_42.png"></td>
+			<td>42</td>
+			<td>Wrench</td>
+			<td>ui_pack_icon_wrench_42.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_cogwheel_43.png"></td>
+			<td>43</td>
+			<td>Cogwheel</td>
+			<td>ui_pack_icon_cogwheel_43.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_return_44.png"></td>
+			<td>44</td>
+			<td>Return</td>
+			<td>ui_pack_icon_return_44.png</td>
+		</tr>
+		<tr>
+			<td><img src=".\files\examples\icons\ui_pack_icon_pencil_45.png"></td>
+			<td>45</td>
+			<td>Pencil</td>
+			<td>ui_pack_icon_pencil_45.png</td>
+		</tr>
+	</table>
+
+	<p></p><a name="ColorMapper"></a><div class="divBuffer"></div>
+	<h2>Re-exporting the Images with Color Mapper</h2>
+	
+	<p>Please make sure to use the most up-to-date version of <b>Color Mapper</b>, as this asset pack requires new colors added to the config.</p>
+
+	<p>If you want to use the images the way they are, refer to the <span class="spanCode">Sources\output</span>-folders. But if you want to change the images, for example replace some or all of the colors, you can use my batch image editing tool <a href="https://stevencolling.itch.io/color-mapper" target="_blank">Color Mapper</a>. It can also re-size, re-scale and re-position icons, all in one go.</p>
+
+	<div class="divImage"><img src="files\colormapper_0.png"><p><b>Color Mapper</b> assembling a button from its single parts.</p></div>
+	
+	<div class="divImage"><img src="files\colormapper_1.png"><p><b>Color Mapper</b> assembling a button, but also switching out some of the colors.</p></div>
+	
+	<p>To make <b>Color Mapper</b> work, the <b>Isle of Lore 2: UI Pack</b> download includes the folders <span class="spanCode">Sources\input\ui_pack_controls</span> and <span class="spanCode">Sources\input\ui_pack_elements</span>, containing the <a href="https://krita.org" target="_blank">Krita</a> (.kra) and Photoshop (.psd) source files as well as png exports of the single layers and <b>Color Mapper Files</b> (.colormapper.txt) containing information on how <b>Color Mapper</b> is going to assemble the files.</p>
+	
+	<p><b>Color Mapper</b> isn't part of this asset pack and instead has to be downloaded <a href="https://stevencolling.itch.io/color-mapper" target="_blank">here</a>, which allows me to release updates for <b>Color Mapper</b> independently of the projects it is used in. The download includes a <span class="spanCode">Documentation</span>-folder with exact instructions on how to use <b>Color Mapper</b>, but the workflow in general is at follows:</p>
+	
+	<ol>
+		<li>Setup <b>Color Mapper's</b> configuration file so it knows where to find the <span class="spanCode">Sources\input</span> and <span class="spanCode">Sources\output</span> folders.</li>
+		<li>Running <b>Color Mapper</b>, which will gather all the <span class="spanCode">*.colormapper.txt</span>-files in the input folder and assemble the png files from the single layer files with colors referenced in the <span class="spanCode">*.colormapper.txt</span>-file and defined in <b>Color Mapper's</b> configuration file. The assembled png files will be put in the <span class="spanCode">output</span>-folder.</li>
+		<li>After checking the results, the files from the <span class="spanCode">output</span>-folder are ready to use.</li>
+	</ol>
+	
+	<p><b>Color Mapper</b> already comes with a configuration file <span class="spanCode">config.txt</span> properly setup with the colors from my <b>Isle of Lore 2</b> asset packs, but for the sake of completeness, here are the proper color entries for a <b>Color Mapper</b> configuration file.</p>
+	
+	<p class="pCode">
+		color: iol2_white -> #ffffff<br>
+		color: iol2_cloud_light -> #dadada<br>
+		color: iol2_cloud_dark -> #797979<br>
+		color: iol2_dark -> #161616<br>
+		color: iol2_gray_light -> #262626<br>
+		color: iol2_gray_dark -> #1f1f1f<br>
+		color: iol2_blue_light -> #56837f<br>
+		color: iol2_blue_medium -> #3c5858<br>
+		color: iol2_blue_dark -> #263236<br>
+		color: iol2_brown_light -> #92744d<br>
+		color: iol2_brown_dark -> #644939<br>
+		color: iol2_green_light -> #e8df63<br>
+		color: iol2_green_medium -> #889954<br>
+		color: iol2_green_dark -> #3a5241<br>
+		color: iol2_red_dark -> #662c2d<br>
+		color: iol2_red -> #9c4741<br>
+		color: iol2_orange -> #d09a54<br>
+		color: iol2_yellow -> #edc95e<br>
+		color: iol2_water_light -> #51c4b9<br>
+		color: iol2_water_medium -> #35a1a0<br>
+		color: iol2_water_dark -> #37838b<br>
+		color: iol2_stone -> #a78979<br>
+		color: iol2_fire -> #ba433a<br>
+		color: iol2_fire_yellow -> #fbd050<br>
+		color: iol2_fire_orange -> #df9c45<br>
+		color: iol2_sand_light -> #ffd66c<br>
+		color: iol2_sand_medium -> #dcb95f<br>
+		color: iol2_sand_dark -> #a37f49<br>
+		color: iol2_snow_light -> #a2e9de<br>
+		color: iol2_snow_medium -> #4b8588<br>
+		color: iol2_snow_dark -> #28434b<br>
+		color: iol2_skin -> #a78979<br>
+		color: iol2_smoke -> #4a4a4a<br>
+		color: iol2_skyblue_light -> #50b1d8<br>
+		color: iol2_skyblue_medium -> #3979bc<br>
+		color: iol2_purple -> #5e40a3<br>
+		color: iol2_wood -> #e6c488<br>
+		color: iol2_wood_dark -> #c5996c<br>
+		<b>color: iol2_ui_background_medium -> #343434</b><br>
+		<b>color: iol2_ui_background_dark -> #2a2a2a</b><br>
+		<b>color: iol2_ui_gray_line -> #595959</b><br>
+		<b>color: iol2_ui_gray_dark -> #636363</b><br>
+		<b>color: iol2_ui_gray_medium -> #707070</b><br>
+		<b>color: iol2_ui_purple_pale -> #6d8eec</b><br>
+		<b>color: iol2_ui_rose_medium -> #ff70b5</b><br>
+		<b>color: iol2_ui_green_highlight -> #bfff82</b><br>
+		<b>color: iol2_ui_green_light -> #14de78</b><br>
+		<b>color: iol2_ui_green_medium -> #009b85</b><br>
+		<b>color: iol2_ui_green_dark -> #27392d</b><br>
+		<b>color: iol2_ui_red_light -> #e5514b</b><br>
+		<b>color: iol2_ui_pink_highlight -> #ff9d7c</b><br>
+		<b>color: iol2_ui_pink_light -> #e7596e</b><br>
+		<b>color: iol2_ui_pink_medium -> #9d3d56</b><br>
+		<b>color: iol2_ui_blue_line -> #255080</b><br>
+		<b>color: iol2_ui_blue_highlight -> #6ef7ff</b><br>
+		<b>color: iol2_ui_blue_light -> #26c5ff</b><br>
+		<b>color: iol2_ui_blue_medium -> #289be3</b><br>
+		<b>color: iol2_ui_blue_dark -> #265d96</b><br>
+		<b>color: iol2_ui_yellow_light -> #ffcb2e</b><br>
+		<b>color: iol2_ui_orange_light -> #ff7d3d</b><br>
+		<b>color: iol2_ui_brown_dark -> #331f1c</b>
+	</p>
+	
+	<p>If you want to make changes to the images themselves, you can open the <a href="https://krita.org" target="_blank">Krita</a> or Photoshop files, edit them and export the single layers accordingly. Make sure to keep the naming scheme <span class="spanCode">(group)_(name)_(id)_(layer).png</span> intact, for example <span class="spanCode">ui_pack_gamepad_buttons_xb_x_2_ui_blue_medium.png</span> for the <span class="spanCode">ui_blue_medium</span>-layer of the Gamepad XB Button X icon <span class="spanCode">xb_x</span> (which has the id <span class="spanCode">2</span>) from the <span class="spanCode">ui_pack_controls\ui_pack_gamepad_buttons</span>-folder.</p>
+
+	<p></p><a name="Specification"></a><div class="divBuffer"></div>
+	<h2>Specification</h2>
+	
+	<p></p><a name="SpecificationColors"></a><div class="divBuffer"></div>
+	<h3>Colors</h3>
+
+	<p>The following colors are used across all of my <b>Isle of Lore 2</b> packs. Every color except the ones grayed out are used in <b>Isle of Lore 2: UI Pack</b>.</p>
+	
+	<table>
+		<tr>
+			<th>Color Name</th>
+			<th>Color Mapper Code</th>
+			<th>Hex Color Code</th>
+			<th style="padding: 0px; width: 10px"></th>
+		</tr>
+		<tr class="trDisabled">
+			<td>Blue Light</td>
+			<td>iol2_blue_light</td>
+			<td>56837f</td>
+			<td style="padding: 0px; width: 10px; background-color: #56837f"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Blue Medium</td>
+			<td>iol2_blue_medium</td>
+			<td>3c5858</td>
+			<td style="padding: 0px; width: 10px; background-color: #3c5858"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Blue Dark</td>
+			<td>iol2_blue_dark</td>
+			<td>263236</td>
+			<td style="padding: 0px; width: 10px; background-color: #263236"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Brown Light</td>
+			<td>iol2_brown_light</td>
+			<td>92744d</td>
+			<td style="padding: 0px; width: 10px; background-color: #92744d"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Brown Dark</td>
+			<td>iol2_brown_dark</td>
+			<td>644939</td>
+			<td style="padding: 0px; width: 10px; background-color: #644939"></td>
+		</tr>
+		<tr>
+			<td>Cloud Light</td>
+			<td>iol2_cloud_light</td>
+			<td>dadada</td>
+			<td style="padding: 0px; width: 10px; background-color: #dadada"></td>
+		</tr>
+		<tr>
+			<td>Cloud Dark</td>
+			<td>iol2_cloud_dark</td>
+			<td>797979</td>
+			<td style="padding: 0px; width: 10px; background-color: #797979"></td>
+		</tr>
+		<tr>
+			<td>Dark</td>
+			<td>iol2_dark</td>
+			<td>161616</td>
+			<td style="padding: 0px; width: 10px; background-color: #161616"></td>
+		</tr>
+		<tr>
+			<td>Fire</td>
+			<td>iol2_fire</td>
+			<td>ba433a</td>
+			<td style="padding: 0px; width: 10px; background-color: #ba433a"></td>
+		</tr>
+		<tr>
+			<td>Fire Orange</td>
+			<td>iol2_fire_orange</td>
+			<td>df9c45</td>
+			<td style="padding: 0px; width: 10px; background-color: #df9c45"></td>
+		</tr>
+		<tr>
+			<td>Fire Yellow</td>
+			<td>iol2_fire_yellow</td>
+			<td>fbd050</td>
+			<td style="padding: 0px; width: 10px; background-color: #fbd050"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Gray Light</td>
+			<td>iol2_gray_light</td>
+			<td>262626</td>
+			<td style="padding: 0px; width: 10px; background-color: #262626"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Gray Dark</td>
+			<td>iol2_gray_dark</td>
+			<td>1f1f1f</td>
+			<td style="padding: 0px; width: 10px; background-color: #1f1f1f"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Green Light</td>
+			<td>iol2_green_light</td>
+			<td>e8df63</td>
+			<td style="padding: 0px; width: 10px; background-color: #e8df63"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Green Medium</td>
+			<td>iol2_green_medium</td>
+			<td>889954</td>
+			<td style="padding: 0px; width: 10px; background-color: #889954"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Green Dark</td>
+			<td>iol2_green_dark</td>
+			<td>3a5241</td>
+			<td style="padding: 0px; width: 10px; background-color: #3a5241"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Orange</td>
+			<td>iol2_orange</td>
+			<td>d09a54</td>
+			<td style="padding: 0px; width: 10px; background-color: #d09a54"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Purple</td>
+			<td>iol2_purple</td>
+			<td>5e40a3</td>
+			<td style="padding: 0px; width: 10px; background-color: #5e40a3"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Red</td>
+			<td>iol2_red</td>
+			<td>9c4741</td>
+			<td style="padding: 0px; width: 10px; background-color: #9c4741"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Red Dark</td>
+			<td>iol2_red_dark</td>
+			<td>662c2d</td>
+			<td style="padding: 0px; width: 10px; background-color: #662c2d"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Sand Light</td>
+			<td>iol2_sand_light</td>
+			<td>ffd66c</td>
+			<td style="padding: 0px; width: 10px; background-color: #ffd66c"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Sand Medium</td>
+			<td>iol2_sand_medium</td>
+			<td>dcb95f</td>
+			<td style="padding: 0px; width: 10px; background-color: #dcb95f"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Sand Dark</td>
+			<td>iol2_sand_dark</td>
+			<td>a37f49</td>
+			<td style="padding: 0px; width: 10px; background-color: #a37f49"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Skin</td>
+			<td>iol2_skin</td>
+			<td>a78979</td>
+			<td style="padding: 0px; width: 10px; background-color: #a78979"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Skyblue Light</td>
+			<td>iol2_skyblue_light</td>
+			<td>50b1d8</td>
+			<td style="padding: 0px; width: 10px; background-color: #50b1d8"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Skyblue Medium</td>
+			<td>iol2_skyblue_medium</td>
+			<td>3979bc</td>
+			<td style="padding: 0px; width: 10px; background-color: #3979bc"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Smoke</td>
+			<td>iol2_smoke</td>
+			<td>4a4a4a</td>
+			<td style="padding: 0px; width: 10px; background-color: #4a4a4a"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Snow Light</td>
+			<td>iol2_snow_light</td>
+			<td>a2e9de</td>
+			<td style="padding: 0px; width: 10px; background-color: #a2e9de"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Snow Medium</td>
+			<td>iol2_snow_medium</td>
+			<td>4b8588</td>
+			<td style="padding: 0px; width: 10px; background-color: #4b8588"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Snow Dark</td>
+			<td>iol2_snow_dark</td>
+			<td>28434b</td>
+			<td style="padding: 0px; width: 10px; background-color: #28434b"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Stone</td>
+			<td>iol2_stone</td>
+			<td>a78979</td>
+			<td style="padding: 0px; width: 10px; background-color: #a78979"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Water Light</td>
+			<td>iol2_water_light</td>
+			<td>51c4b9</td>
+			<td style="padding: 0px; width: 10px; background-color: #51c4b9"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Water Medium</td>
+			<td>iol2_water_medium</td>
+			<td>35a1a0</td>
+			<td style="padding: 0px; width: 10px; background-color: #35a1a0"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Water Dark</td>
+			<td>iol2_water_dark</td>
+			<td>37838b</td>
+			<td style="padding: 0px; width: 10px; background-color: #37838b"></td>
+		</tr>
+		<tr>
+			<td>White</td>
+			<td>iol2_white</td>
+			<td>ffffff</td>
+			<td style="padding: 0px; width: 10px; background-color: #ffffff"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Yellow</td>
+			<td>iol2_yellow</td>
+			<td>edc95e</td>
+			<td style="padding: 0px; width: 10px; background-color: #edc95e"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Wood</td>
+			<td>iol2_wood</td>
+			<td>e6c488</td>
+			<td style="padding: 0px; width: 10px; background-color: #e6c488"></td>
+		</tr>
+		<tr class="trDisabled">
+			<td>Wood Dark</td>
+			<td>iol2_wood_dark</td>
+			<td>c5996c</td>
+			<td style="padding: 0px; width: 10px; background-color: #c5996c"></td>
+		</tr>
+		<tr>
+			<td>UI Background Medium</td>
+			<td>iol2_ui_background_medium</td>
+			<td>343434</td>
+			<td style="padding: 0px; width: 10px; background-color: #343434"></td>
+		</tr>
+		<tr>
+			<td>UI Background Dark</td>
+			<td>iol2_ui_background_dark</td>
+			<td>2a2a2a</td>
+			<td style="padding: 0px; width: 10px; background-color: #2a2a2a"></td>
+		</tr>
+		<tr>
+			<td>UI Gray Line</td>
+			<td>iol2_ui_gray_line</td>
+			<td>595959</td>
+			<td style="padding: 0px; width: 10px; background-color: #595959"></td>
+		</tr>
+		<tr>
+			<td>UI Gray Dark</td>
+			<td>iol2_ui_gray_dark</td>
+			<td>636363</td>
+			<td style="padding: 0px; width: 10px; background-color: #636363"></td>
+		</tr>
+		<tr>
+			<td>UI Gray Medium</td>
+			<td>iol2_ui_gray_medium</td>
+			<td>707070</td>
+			<td style="padding: 0px; width: 10px; background-color: #707070"></td>
+		</tr>
+		<tr>
+			<td>UI Purple Pale</td>
+			<td>iol2_ui_purple_pale</td>
+			<td>6d8eec</td>
+			<td style="padding: 0px; width: 10px; background-color: #6d8eec"></td>
+		</tr>
+		<tr>
+			<td>UI Rose Medium</td>
+			<td>iol2_ui_rose_medium</td>
+			<td>ff70b5</td>
+			<td style="padding: 0px; width: 10px; background-color: #ff70b5"></td>
+		</tr>
+		<tr>
+			<td>UI Green Highlight</td>
+			<td>iol2_ui_green_highlight</td>
+			<td>bfff82</td>
+			<td style="padding: 0px; width: 10px; background-color: #bfff82"></td>
+		</tr>
+		<tr>
+			<td>UI Green Light</td>
+			<td>iol2_ui_green_light</td>
+			<td>14de78</td>
+			<td style="padding: 0px; width: 10px; background-color: #14de78"></td>
+		</tr>
+		<tr>
+			<td>UI Green Medium</td>
+			<td>iol2_ui_green_medium</td>
+			<td>009b85</td>
+			<td style="padding: 0px; width: 10px; background-color: #009b85"></td>
+		</tr>
+		<tr>
+			<td>UI Green Dark</td>
+			<td>iol2_ui_green_dark</td>
+			<td>27392d</td>
+			<td style="padding: 0px; width: 10px; background-color: #27392d"></td>
+		</tr>
+		<tr>
+			<td>UI Red Light</td>
+			<td>iol2_ui_red_light</td>
+			<td>e5514b</td>
+			<td style="padding: 0px; width: 10px; background-color: #e5514b"></td>
+		</tr>
+		<tr>
+			<td>UI Pink Highlight</td>
+			<td>iol2_ui_pink_highlight</td>
+			<td>ff9d7c</td>
+			<td style="padding: 0px; width: 10px; background-color: #ff9d7c"></td>
+		</tr>
+		<tr>
+			<td>UI Pink Light</td>
+			<td>iol2_ui_pink_light</td>
+			<td>e7596e</td>
+			<td style="padding: 0px; width: 10px; background-color: #e7596e"></td>
+		</tr>
+		<tr>
+			<td>UI Pink Medium</td>
+			<td>iol2_ui_pink_medium</td>
+			<td>9d3d56</td>
+			<td style="padding: 0px; width: 10px; background-color: #9d3d56"></td>
+		</tr>
+		<tr>
+			<td>UI Blue Line</td>
+			<td>iol2_ui_blue_line</td>
+			<td>255080</td>
+			<td style="padding: 0px; width: 10px; background-color: #255080"></td>
+		</tr>
+		<tr>
+			<td>UI Blue Highlight</td>
+			<td>iol2_ui_blue_highlight</td>
+			<td>6ef7ff</td>
+			<td style="padding: 0px; width: 10px; background-color: #6ef7ff"></td>
+		</tr>
+		<tr>
+			<td>UI Blue Light</td>
+			<td>iol2_ui_blue_light</td>
+			<td>26c5ff</td>
+			<td style="padding: 0px; width: 10px; background-color: #26c5ff"></td>
+		</tr>
+		<tr>
+			<td>UI Blue Medium</td>
+			<td>iol2_ui_blue_medium</td>
+			<td>289be3</td>
+			<td style="padding: 0px; width: 10px; background-color: #289be3"></td>
+		</tr>
+		<tr>
+			<td>UI Blue Dark</td>
+			<td>iol2_ui_blue_dark</td>
+			<td>265d96</td>
+			<td style="padding: 0px; width: 10px; background-color: #265d96"></td>
+		</tr>
+		<tr>
+			<td>UI Yellow Light</td>
+			<td>iol2_ui_yellow_light</td>
+			<td>ffcb2e</td>
+			<td style="padding: 0px; width: 10px; background-color: #ffcb2e"></td>
+		</tr>
+		<tr>
+			<td>UI Orange Light</td>
+			<td>iol2_ui_orange_light</td>
+			<td>ff7d3d</td>
+			<td style="padding: 0px; width: 10px; background-color: #ff7d3d"></td>
+		</tr>
+		<tr>
+			<td>UI Brown Dark</td>
+			<td>iol2_ui_brown_dark</td>
+			<td>331f1c</td>
+			<td style="padding: 0px; width: 10px; background-color: #331f1c"></td>
+		</tr>
+	</table>
+	
+	<p></p><a name="SpecificationSizes"></a><div class="divBuffer"></div>
+	<h3>Sizes</h3>
+
+	<p>Only the sizes for control images are listed here, as the sizes for the individual interface elements vary from element to element.</p>
+	
+	<table>
+		<tr>
+			<th>Entity</th>
+			<th>Size (px)</th>
+		</tr>
+		<tr>
+			<td>Icons (Symbols)</td>
+			<td>96x96</td>
+		</tr>
+		<tr>
+			<td>Keyboard Keys, Gamepad Buttons, Gamepad Square Buttons,<br>Gamepad SW Four, Gamepad Thumbstick Pressed, Gamepad Triggers</td>
+			<td>128x128</td>
+		</tr>
+		<tr>
+			<td>Gamepad D-Pad</td>
+			<td>128x142</td>
+		</tr>
+		<tr>
+			<td>Gamepad Shoulder Buttons, PS Special, PS Touchpad</td>
+			<td>192x128</td>
+		</tr>
+		<tr>
+			<td>Gamepad Thumbstick</td>
+			<td>160x160</td>
+		</tr>
+		<tr>
+			<td>Gamepad XB Share</td>
+			<td>128x70</td>
+		</tr>
+		<tr>
+			<td>Keyboard Big Keys</td>
+			<td>256x128</td>
+		</tr>
+		<tr>
+			<td>Keyboard Enter Keys</td>
+			<td>256x256</td>
+		</tr>
+		<tr>
+			<td>Keyboard Huge Keys</td>
+			<td>384x128</td>
+		</tr>
+		<tr>
+			<td>Mouse</td>
+			<td>96x128</td>
+		</tr>
+		<tr>
+			<td>Mouse Move</td>
+			<td>192x232</td>
+		</tr>
+	</table>
+	
+	<p></p><a name="SpecificationDesignNotes"></a><div class="divBuffer"></div>
+	<h3>Design Notes</h3>
+	
+	<ul>
+		<li>The icons were drawn in <a href="https://krita.org/" target="_blank">Krita</a> with the Ink-2 Fineliner.</li>
+		<li>The border size for big interface elements is 12px, for smaller elements 6px.</li>
+		<li>The size of text written on the control images like keyboard keys is 21px.</li>
+		<li>Symbol icons were drawn with a 10px thick line.</li>
+		<li>Lines for symbols on keyboard controls are either 17px or 13px thick.</li>
+		<li>Lines for symbols on gamepad controls are either 16px or 10px thick.</li>
+		<li>A lot of elements have rounded borders. The roundness is usually 12px, 24px or 64px. Special cases are the creation of the mouse image, which has a roundness of 50px and keyboard keys, which have a roundness of 32px. The dialog box uses a radius of 12px for the outer line and 9px for the decorative line inside.</li>
+	</ul>
+
+	<p>Shadows were created by selecting the opaque of the whole image and filling it with the dark color #161616 in a new layer (basically creating a silhouette). Then, the "Blur" filter (horizontal and vertical radius see below, strength 0) was applied. In some cases, the shadow was duplicated and merged to create a stronger shadow, and sometimes the layer itself got a reduced opacity for making it less pronounced overall.</p>
+
+	<table>
+		<tr>
+			<th>Entity</th>
+			<th>Blur Radius</th>
+			<th>Duplication</th>
+			<th>Opacity</th>
+		</tr>
+		<tr>
+			<td>Panel</td>
+			<td>9px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Heart Pieces</td>
+			<td>9px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Progress Circle</td>
+			<td>9px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Tooltip Box</td>
+			<td>9px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Tooltip Arrow</td>
+			<td>5px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Selection Elements</td>
+			<td>6px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Banner</td>
+			<td>9px</td>
+			<td>No</td>
+			<td>50%</td>
+		</tr>
+		<tr>
+			<td>Inventory Slot</td>
+			<td>6px</td>
+			<td>No</td>
+			<td>100%</td>
+		</tr>
+		<tr>
+			<td>Box, Dialog Box</td>
+			<td>40px</td>
+			<td>Yes</td>
+			<td>100%</td>
+		</tr>
+	</table>
+	
+	<p></p><a name="Changelog"></a><div class="divBuffer"></div>
+	<h2>Changelog</h2>
+	
+	<p><span class="spanChangelogVersion">1.0</span> <span class="spanCode">17. Apr 2024</span> Release.</p>
+	
+</div>
+</body>
+</html>

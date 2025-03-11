@@ -1,0 +1,7 @@
+icon_line -> iol2_dark
+icon_fire_yellow -> iol2_fire_yellow
+icon_fire_orange -> iol2_fire_orange
+icon_fire -> iol2_fire
+line -> iol2_dark
+fire_orange -> iol2_fire_orange
+fire_yellow -> iol2_fire_yellow

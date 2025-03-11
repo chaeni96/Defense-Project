@@ -1,0 +1,9 @@
+white -> iol2_white
+ui_purple_pale -> iol2_ui_purple_pale
+ui_rose_medium -> iol2_ui_rose_medium
+ui_green_light -> iol2_ui_green_light
+ui_red_light -> iol2_ui_red_light
+ui_blue_medium -> iol2_ui_blue_medium
+ui_yellow_light -> iol2_ui_yellow_light
+*button_medium -> iol2_ui_background_medium
+*button_dark -> iol2_ui_background_dark

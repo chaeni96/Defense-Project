@@ -1,0 +1,17 @@
+RB
+LB
+R1
+L1
+R
+L
+SR
+SL
+ZR
+ZL
+R
+L
+Shoulder Button
+R
+L
+ZR
+ZL

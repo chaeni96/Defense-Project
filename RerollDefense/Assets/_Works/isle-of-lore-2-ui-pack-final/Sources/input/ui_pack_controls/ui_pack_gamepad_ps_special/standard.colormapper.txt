@@ -1,0 +1,4 @@
+white -> iol2_white
+ui_background_dark_overlay -> iol2_ui_background_dark
+*button_medium -> iol2_ui_background_medium
+*button_dark -> iol2_ui_background_dark

@@ -1,0 +1,4 @@
+white -> iol2_white
+*key_highlight -> iol2_white
+*key_medium -> iol2_ui_background_medium
+*key_dark -> iol2_ui_background_dark

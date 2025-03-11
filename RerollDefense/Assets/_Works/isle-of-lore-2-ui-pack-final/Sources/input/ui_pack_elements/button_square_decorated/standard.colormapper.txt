@@ -1,0 +1,6 @@
+line_deco -> iol2_ui_blue_line
+line -> iol2_ui_blue_line
+ui_blue_medium_deco -> iol2_ui_blue_medium
+ui_blue_highlight -> iol2_ui_blue_highlight
+ui_blue_light -> iol2_ui_blue_light
+ui_blue_medium -> iol2_ui_blue_medium

@@ -1,0 +1,4 @@
+line -> iol2_dark
+line_white -> iol2_white
+white -> iol2_white
+shadow -> iol2_dark

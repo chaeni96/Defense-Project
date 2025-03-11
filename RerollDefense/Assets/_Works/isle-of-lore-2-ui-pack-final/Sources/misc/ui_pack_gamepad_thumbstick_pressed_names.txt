@@ -1,0 +1,5 @@
+Thumbstick Press
+R3-Stick Press
+L3-Stick Press
+R-Stick Press
+L-Stick Press

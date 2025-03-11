@@ -1,0 +1,10 @@
+*white -> iol2_white
+*line -> iol2_dark
+ui_green_light -> iol2_ui_green_light
+ui_yellow_light -> iol2_ui_yellow_light
+ui_orange_light -> iol2_ui_orange_light
+ui_red_light -> iol2_ui_red_light
+ui_green_dark -> iol2_ui_green_dark
+ui_brown_dark -> iol2_ui_brown_dark
+*dark -> iol2_dark
+*shadow -> iol2_dark

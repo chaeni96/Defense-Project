@@ -1,0 +1,3 @@
+line -> iol2_dark
+cloud_light -> iol2_cloud_light
+white -> iol2_white

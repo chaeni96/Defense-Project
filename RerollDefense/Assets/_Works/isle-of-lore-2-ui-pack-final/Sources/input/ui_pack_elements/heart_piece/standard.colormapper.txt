@@ -1,0 +1,5 @@
+*white -> iol2_white
+fire -> iol2_fire
+ui_red_light -> iol2_ui_red_light
+*dark -> iol2_dark
+*shadow -> iol2_dark

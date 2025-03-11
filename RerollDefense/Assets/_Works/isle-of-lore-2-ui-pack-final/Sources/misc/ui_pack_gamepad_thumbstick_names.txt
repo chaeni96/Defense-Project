@@ -1,0 +1,33 @@
+L-Stick
+L-Stick Up
+L-Stick Right
+L-Stick Down
+L-Stick Left
+L-Stick Left and Right
+L-Stick Up and Down
+L-Stick
+R-Stick
+R-Stick Up
+R-Stick Right
+R-Stick Down
+R-Stick Left
+R-Stick Left and Right
+R-Stick Up and Down
+R-Stick
+L3-Stick
+L3-Stick Up
+L3-Stick Right
+L3-Stick Down
+L3-Stick Left
+L3-Stick Left and Right
+L3-Stick Up and Down
+L3-Stick
+R3-Stick
+R3-Stick Up
+R3-Stick Right
+R3-Stick Down
+R3-Stick Left
+R3-Stick Left and Right
+R3-Stick Up and Down
+R3-Stick
+Thumbstick

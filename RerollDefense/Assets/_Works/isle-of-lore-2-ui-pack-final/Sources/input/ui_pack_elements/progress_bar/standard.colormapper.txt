@@ -1,0 +1,7 @@
+line -> iol2_dark
+ui_blue_highlight -> iol2_ui_blue_highlight
+ui_blue_medium -> iol2_ui_blue_medium
+ui_blue_light -> iol2_ui_blue_light
+ui_background_dark -> iol2_ui_background_dark
+ui_background_medium -> iol2_ui_background_medium
+shadow -> iol2_dark

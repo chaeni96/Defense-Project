@@ -1,0 +1,7 @@
+ui_pink_highlight -> iol2_ui_pink_highlight
+ui_pink_medium -> iol2_ui_pink_medium
+ui_green_highlight -> iol2_ui_green_highlight
+ui_green_light -> iol2_ui_green_light
+line_symbol -> iol2_dark
+line -> iol2_dark
+white -> iol2_white
