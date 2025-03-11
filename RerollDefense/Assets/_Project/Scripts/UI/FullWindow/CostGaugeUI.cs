@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class CostGaugeUI : MonoBehaviour
 {
@@ -13,13 +14,18 @@ public class CostGaugeUI : MonoBehaviour
     [SerializeField] private RectTransform barContainer;
     [SerializeField] private Image barFillPrefab;
     [SerializeField] private TMP_Text maxCostText;
-    [SerializeField] private TMP_Text currentCostText;
+    //[SerializeField] private TMP_Text currentCostText;
 
     private List<Image> barFills = new List<Image>();
     private int currentFilledIndex = 0;
     private int costPerTick; //한번의 틱마다 증가하는 코스트 양
+    private Color originFillColor;
+    private int maxCost;
 
     private bool canAddCost;
+
+    //살아있는 트윈
+    private Dictionary<Image, Tween> activeTweens = new Dictionary<Image, Tween>();
 
     public void Initialize(int storeLevel)
     {
@@ -33,12 +39,22 @@ public class CostGaugeUI : MonoBehaviour
 
         costPerTick = 1;
         currentFilledIndex = initialCost;
+        maxCost = GameManager.Instance.GetSystemStat(StatName.MaxCost);
 
         canAddCost = true;
 
-        for (int i = 0; i < currentFilledIndex; i++)
+        originFillColor = barFillPrefab.color;
+
+        for (int i = 0; i < maxCost; i++)
         {
-            barFills[i].fillAmount = 1f;
+            if(i < currentFilledIndex)
+            {
+                barFills[i].color = originFillColor;
+            }
+            else
+            {
+                barFills[i].color = Color.clear;
+            }
         }
         circleProgress.fillAmount = 0;
 
@@ -51,11 +67,9 @@ public class CostGaugeUI : MonoBehaviour
     public void UpdateText()
     {
 
-        int maxCost = GameManager.Instance.GetSystemStat(StatName.MaxCost);
-        maxCostText.text = $"Max : {maxCost.ToString()}";
+        maxCost = GameManager.Instance.GetSystemStat(StatName.MaxCost);
         int currentCost = GameManager.Instance.GetSystemStat(StatName.Cost);
-        currentCostText.text = currentCost.ToString();
-
+        maxCostText.text = $"{currentCost.ToString()}/{maxCost.ToString()}";
     }
 
     private void ClearBarFills()
@@ -89,9 +103,10 @@ public class CostGaugeUI : MonoBehaviour
         }
 
         // MaxCost보다 작을 때만 자동 증가 처리
-        if (canAddCost && GameManager.Instance.GetSystemStat(StatName.Cost) < GameManager.Instance.GetSystemStat(StatName.MaxCost))
+        if (canAddCost && currentFilledIndex < maxCost)
         {
             circleProgress.fillAmount += Time.deltaTime / GameManager.Instance.GetSystemStat(StatName.CostChargingSpeed);
+
             if (circleProgress.fillAmount >= 1f)
             {
                 circleProgress.fillAmount = 0;
@@ -117,12 +132,34 @@ public class CostGaugeUI : MonoBehaviour
 
     private void UpdateBars()
     {
-        // 현재 코스트에 따라 바 업데이트
         for (int i = 0; i < barFills.Count; i++)
         {
-            barFills[i].fillAmount = i < currentFilledIndex ? 1f : 0f;
+            if (i < currentFilledIndex)
+            {
+                if (barFills[i].color == Color.clear) // 처음 등장할때 반짝스
+                {
+                    AnimateFillAppearance(barFills[i]);
+                }
+            }
+            else
+            {
+                barFills[i].color = Color.clear;
+            }
         }
         UpdateText();
+    }
+
+    private void AnimateFillAppearance(Image fill)
+    {
+        if (activeTweens.TryGetValue(fill, out Tween existingTween))
+        {
+            existingTween.Kill(); // 진행 중이던 트윈을 종료
+            activeTweens.Remove(fill);
+        }
+
+        fill.color = Color.white; // 처음에는 완전 흰색
+        Tween tween = fill.DOColor(originFillColor, 0.14f).SetEase(Ease.OutQuad);
+        activeTweens[fill] = tween;
     }
 
     private void CreateBarFills(int storeLevel)
@@ -137,6 +174,7 @@ public class CostGaugeUI : MonoBehaviour
 
             fillRect.sizeDelta = new Vector2(segmentWidth - 2f, barContainer.rect.height);
             fill.fillAmount = 0;
+            fill.gameObject.SetActive(true);
             barFills.Add(fill);
         }
     }
@@ -153,7 +191,13 @@ public class CostGaugeUI : MonoBehaviour
                 currentFilledIndex--;
                 if (currentFilledIndex < barFills.Count)  
                 {
-                    barFills[currentFilledIndex].fillAmount = 0f;
+                    if (activeTweens.TryGetValue(barFills[currentFilledIndex], out Tween existingTween))
+                    {
+                        existingTween.Kill(); // 진행 중이던 트윈을 중단
+                        activeTweens.Remove(barFills[currentFilledIndex]);
+                    }
+
+                    barFills[currentFilledIndex].color = Color.clear;
                 }
             }
         }
