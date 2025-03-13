@@ -111,3 +111,14 @@ public enum ObjectLayer
     Enemy = 7,
     Player = 8,
 }
+
+
+public enum WaveType
+{
+    NormalBattle,
+    BossBattle,
+    EventEnemy,
+    HuntingSelectTime,
+    PrizeHunting,
+    WildCardSelect,
+}
