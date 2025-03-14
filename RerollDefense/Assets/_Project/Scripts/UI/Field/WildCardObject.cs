@@ -33,8 +33,8 @@ public class WildCardObject : MonoBehaviour
 
     public  void OnClickSelectCard()
     {
-        // 와일드카드 선택 후 StageManager에 알림
-        StageManager.Instance.OnWildCardSelected();
+        // TODO : 와일드카드 선택 후 StageManager에 알림
+        //StageManager.Instance.OnWildCardSelected();
 
         UIManager.Instance.CloseUI<WildCardSelectUI>();
 

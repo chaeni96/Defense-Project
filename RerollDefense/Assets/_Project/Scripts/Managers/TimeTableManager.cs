@@ -76,9 +76,11 @@ public class TimeTableManager : MonoBehaviour
         // 1초 -> 100단위로 변환해주기 위해 *100
         double deltaTimeInHundred = Time.deltaTime * 100.0;
 
-        for (int i = registeredSchedules.Count - 1; i >= 0; i--)
+        // 제거할 스케줄을 별도의 리스트에 저장
+        List<TimeSchedule> schedulesToRemove = new List<TimeSchedule>();
+
+        foreach (var schedule in registeredSchedules)
         {
-            var schedule = registeredSchedules[i];
             schedule.currentTime += deltaTimeInHundred;
 
             if (schedule.currentTime < schedule.endTime)
@@ -94,10 +96,16 @@ public class TimeTableManager : MonoBehaviour
             }
             else
             {
-                // 스케줄 완료
+                // 완료된 스케줄 표시
+                schedulesToRemove.Add(schedule);
                 NotifyScheduleComplete(schedule.UID);
-                registeredSchedules.RemoveAt(i);
             }
+        }
+
+        // 완료된 스케줄들 제거
+        foreach (var scheduleToRemove in schedulesToRemove)
+        {
+            registeredSchedules.Remove(scheduleToRemove);
         }
     }
 
