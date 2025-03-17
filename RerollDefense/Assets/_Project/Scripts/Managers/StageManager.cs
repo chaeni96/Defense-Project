@@ -90,6 +90,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void StartStage(int stageNumber)
     {
+        Debug.Log("[StageManager] StartStage 시작: waveInfoUI=" + (waveInfoUI != null) + ", countdownUI=" + (countdownUI != null));
+
         // episodeNumber도 함께 고려하여 스테이지 찾기
         D_StageData stageData = D_StageData.FindEntity(data => data.f_EpisodeData.f_episodeNumber == GameManager.Instance.SelectedEpisodeNumber && data.f_StageNumber == stageNumber);
 
@@ -171,6 +173,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         string waveText = $"Wave {currentWaveIndex + 1} Start!";
         string enemyInfo = currentWave.GetWaveInfoText(); // 웨이브 클래스에서 적 정보 가져오기
         waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);
+        Debug.Log("[StageManager] waveInfoUI 생성 완료: " + (waveInfoUI != null));
+        Debug.Log("[StageManager] countdownUI 생성 완료: " + (countdownUI != null));
 
         // 웨이브 정보 표시 스케줄 등록
         currentWaveInfoScheduleUID = TimeTableManager.Instance.RegisterSchedule(waveInfoDuration);
@@ -344,6 +348,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
   
     public void OnCompleteSchedule(int scheduleUID)
     {
+        Debug.Log("[StageManager] OnCompleteSchedule 시작 (scheduleUID=" + scheduleUID + "): waveInfoUI=" + (waveInfoUI != null) + ", countdownUI=" + (countdownUI != null));
+
         // 웨이브 소개 UI 표시 스케줄 완료
         if (scheduleUID == currentWaveInfoScheduleUID)
         {
