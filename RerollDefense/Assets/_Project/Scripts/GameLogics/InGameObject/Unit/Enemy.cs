@@ -210,6 +210,7 @@ public class Enemy : BasicObject
             {
                 hpStat.value -= (int)damage;
                 UpdateHpBar();
+                HitEffect();
             }
         }
 
@@ -229,7 +230,7 @@ public class Enemy : BasicObject
         transform.localScale = originalScale;
 
         // 펀치 스케일 효과 적용
-        transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 1, 1)
+        transform.DOPunchScale(Vector3.one * 0.1f, 0.2f, 1, 1)
             .SetEase(Ease.OutQuart);
 
         // 데미지를 입으면 빨간색으로 깜빡임

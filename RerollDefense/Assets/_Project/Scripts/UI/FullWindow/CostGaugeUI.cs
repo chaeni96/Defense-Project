@@ -84,7 +84,10 @@ public class CostGaugeUI : MonoBehaviour
     private void StopCostAdd()
     {
         canAddCost = false;
-        circleProgress.fillAmount = 0f;  // 프로그레스 바도 초기화
+        if(circleProgress!= null)
+        {
+            circleProgress.fillAmount = 0f;  // 프로그레스 바도 초기화
+        }
     }
 
     private void StartCostAdd()
