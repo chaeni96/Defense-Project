@@ -138,6 +138,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         {
             return new BossBattleWave(bossData);
         }
+        else if( waveData is D_EventEnemyWaveData eventData)
+        {
+            return new EventEnemyWave(eventData);
+        }
         // 다른 웨이브 타입들도 필요에 따라 추가...
 
         Debug.LogError($"알 수 없는 웨이브 타입: {waveData.GetType().Name}");
@@ -332,7 +336,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public bool IsLastWave()
     {
-        return currentWaveIndex + 1 >= currentStage.f_WaveData.Count;  // 다음 웨이브가 마지막인지 미리 체크
+        return currentWaveIndex + 1 >= currentStage.f_WaveDummyData.Count;  // 다음 웨이브가 마지막인지 미리 체크
     }
    
     public void OnChangeTime(int scheduleUID, float remainTime)

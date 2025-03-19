@@ -5,7 +5,6 @@ using Alias_rifegrt_unitBuildData = D_unitBuildData;
 using Alias_rifegrt_SpecialTile = D_SpecialTile;
 using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_EnemyData = D_EnemyData;
-using Alias_rifegrt_StageData = D_StageData;
 using Alias_rifegrt_enemyGroup = D_enemyGroup;
 using Alias_rifegrt_BossBattleWaveData = D_BossBattleWaveData;
 using Alias_rifegrt_enemyGroups = D_enemyGroups;
@@ -14,6 +13,7 @@ using Alias_rifegrt_HuntingOptionData = D_HuntingOptionData;
 using Alias_rifegrt_supportEnemys = D_supportEnemys;
 using Alias_rifegrt_supportEnemyGroups = D_supportEnemyGroups;
 using Alias_rifegrt_TileCardData = D_TileCardData;
+using Alias_rifegrt_StageData = D_StageData;
 using Alias_rifegrt_WildCardWaveData = D_WildCardWaveData;
 using Alias_rifegrt_WildCardData = D_WildCardData;
 using Alias_rifegrt_HuntingSelectTimeWaveData = D_HuntingSelectTimeWaveData;
@@ -733,7 +733,6 @@ public partial class D_WaveData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldNested _f_enemyGroup => _ufle12jhs77_f_enemyGroup ?? (_ufle12jhs77_f_enemyGroup = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(4964147500182563407UL, 2594969801821498292UL), () => _ufle12jhs77_f_enemyGroup = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_WaveTimeData;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_WaveTimeData => _ufle12jhs77_f_WaveTimeData ?? (_ufle12jhs77_f_WaveTimeData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5680194706508451098UL, 14412226580719047576UL), () => _ufle12jhs77_f_WaveTimeData = null));
-	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -800,11 +799,10 @@ public partial class D_StageData : BGEntity
 		public const string EpisodeData = "EpisodeData";
 		public const string StageNumber = "StageNumber";
 		public const string StageDescription = "StageDescription";
-		public const string WaveData = "WaveData";
+		public const string WaveDummyData = "WaveDummyData";
 		public const string StartTilePos = "StartTilePos";
 		public const string EndTilePos = "EndTilePos";
 		public const string mapData = "mapData";
-		public const string WaveDummyData = "WaveDummyData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4767129084614671086UL,3391790421238320565UL), () => _metaDefault = null));
@@ -830,10 +828,10 @@ public partial class D_StageData : BGEntity
 		get => _f_StageDescription[Index];
 		set => _f_StageDescription[Index] = value;
 	}
-	public List<D_WaveData> f_WaveData
+	public List<D_WaveDummyData> f_WaveDummyData
 	{
-		get => BGCodeGenUtils.MultipleRelationGet<D_WaveData>(_f_WaveData, Index);
-		set => BGCodeGenUtils.MultipleRelationSet<D_WaveData>(_f_WaveData, Index, value);
+		get => BGCodeGenUtils.MultipleViewRelationGet<D_WaveDummyData>(_f_WaveDummyData, Index);
+		set => BGCodeGenUtils.MultipleViewRelationSet<D_WaveDummyData>(_f_WaveDummyData, Index, value);
 	}
 	public UnityEngine.Vector2 f_StartTilePos
 	{
@@ -850,11 +848,6 @@ public partial class D_StageData : BGEntity
 		get => (D_MapData) _f_mapData[Index];
 		set => _f_mapData[Index] = value;
 	}
-	public List<D_WaveDummyData> f_WaveDummyData
-	{
-		get => BGCodeGenUtils.MultipleViewRelationGet<D_WaveDummyData>(_f_WaveDummyData, Index);
-		set => BGCodeGenUtils.MultipleViewRelationSet<D_WaveDummyData>(_f_WaveDummyData, Index, value);
-	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5107560990730887598UL, 14806839362490910632UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_EpisodeData;
@@ -863,16 +856,14 @@ public partial class D_StageData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_StageNumber => _ufle12jhs77_f_StageNumber ?? (_ufle12jhs77_f_StageNumber = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5727885512308789180UL, 5793001234893590713UL), () => _ufle12jhs77_f_StageNumber = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_StageDescription;
 	public static BansheeGz.BGDatabase.BGFieldString _f_StageDescription => _ufle12jhs77_f_StageDescription ?? (_ufle12jhs77_f_StageDescription = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4735349357882227549UL, 15837191542169728688UL), () => _ufle12jhs77_f_StageDescription = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationMultiple _ufle12jhs77_f_WaveData;
-	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_WaveData => _ufle12jhs77_f_WaveData ?? (_ufle12jhs77_f_WaveData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(5213647395619301713UL, 7900555549665711264UL), () => _ufle12jhs77_f_WaveData = null));
+	private static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _ufle12jhs77_f_WaveDummyData;
+	public static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _f_WaveDummyData => _ufle12jhs77_f_WaveDummyData ?? (_ufle12jhs77_f_WaveDummyData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldViewRelationMultiple>(MetaDefault, new BGId(5062158878899521107UL, 8254206695046802093UL), () => _ufle12jhs77_f_WaveDummyData = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_StartTilePos;
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_StartTilePos => _ufle12jhs77_f_StartTilePos ?? (_ufle12jhs77_f_StartTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5046214170933828315UL, 3336255239437776575UL), () => _ufle12jhs77_f_StartTilePos = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_EndTilePos;
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_EndTilePos => _ufle12jhs77_f_EndTilePos ?? (_ufle12jhs77_f_EndTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(4852896796202598556UL, 14737165945497110928UL), () => _ufle12jhs77_f_EndTilePos = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_mapData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_mapData => _ufle12jhs77_f_mapData ?? (_ufle12jhs77_f_mapData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5561569271858242143UL, 14666200413546411709UL), () => _ufle12jhs77_f_mapData = null));
-	private static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _ufle12jhs77_f_WaveDummyData;
-	public static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _f_WaveDummyData => _ufle12jhs77_f_WaveDummyData ?? (_ufle12jhs77_f_WaveDummyData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldViewRelationMultiple>(MetaDefault, new BGId(5062158878899521107UL, 8254206695046802093UL), () => _ufle12jhs77_f_WaveDummyData = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -921,8 +912,6 @@ public partial class D_StageData : BGEntity
 	public static D_StageData NewEntity() => (D_StageData) MetaDefault.NewEntity();
 	public static D_StageData NewEntity(BGId entityId) => (D_StageData) MetaDefault.NewEntity(entityId);
 	public static D_StageData NewEntity(Action<D_StageData> callback) => (D_StageData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_StageData)entity)));
-	public void f_WaveData_Add(D_WaveData related) => BGCodeGenUtils.MultipleRelationAdd(_f_WaveData, Index, related);
-	public void f_WaveData_Remove(D_WaveData related) => BGCodeGenUtils.MultipleRelationRemove(_f_WaveData, Index, related);
 }
 
 public partial class D_EnemyData : BGEntity
