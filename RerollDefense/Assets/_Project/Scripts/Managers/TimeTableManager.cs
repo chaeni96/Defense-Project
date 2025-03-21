@@ -76,10 +76,11 @@ public class TimeTableManager : MonoBehaviour
         // 1초 -> 100단위로 변환해주기 위해 *100
         double deltaTimeInHundred = Time.deltaTime * 100.0;
 
-        // 제거할 스케줄을 별도의 리스트에 저장
+        // 모든 스케줄을 처리하기 전에 복사본을 만들어 사용
+        List<TimeSchedule> currentSchedules = new List<TimeSchedule>(registeredSchedules);
         List<TimeSchedule> schedulesToRemove = new List<TimeSchedule>();
 
-        foreach (var schedule in registeredSchedules)
+        foreach (var schedule in currentSchedules)
         {
             schedule.currentTime += deltaTimeInHundred;
 

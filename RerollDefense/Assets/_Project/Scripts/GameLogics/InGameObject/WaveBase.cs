@@ -448,3 +448,151 @@ public class EventEnemyWave : WaveBase
         completedGroupCount = 0;
     }
 }
+
+
+public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSubscriber
+{
+    private D_WildCardWaveData wildCardWaveData;
+    private float selectionTime;
+    private float minSelectionTime;
+    private bool hasSelectedCard = false; // tilecard 선택 못하게끔
+    private int timeScheduleUID = -1;
+    private WildCardSelectUI selectUI;
+    private InGameCountdownUI countdownUI;
+
+    //TODO : 카드 선택 장수도 스탯으로 빼기
+    public WildcardWave(D_WildCardWaveData data) : base(data)
+    {
+        wildCardWaveData = data;
+        selectionTime = wildCardWaveData.f_selectionTime;
+        minSelectionTime = wildCardWaveData.f_minSelectionTime;
+
+        WildCardManager.Instance.OnWildCardSelected += OnCardSelected;
+    }
+
+    public override void StartWave()
+    {
+        isWaveCompleted = false;
+        hasSelectedCard = false;
+        ShowWildCardSelection();
+    }
+
+    public override string GetWaveInfoText()
+    {
+        return "와일드카드 선택 웨이브\n"
+           + "카드를 선택하여 능력을 강화하세요!";
+    }
+
+    private async void ShowWildCardSelection()
+    {
+        // 타이머 등록
+        timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(selectionTime);
+        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
+        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
+
+        // 와일드카드 선택 UI 표시
+        selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
+
+        // 와일드카드 덱 설정, TODO :  인자값으로 나중에 와일드카드 개수 넘거야됨
+        selectUI.SetWildCardDeck();
+
+    }
+
+    // WildCardSelectUI에서 카드 선택 시 호출할 메서드
+    public void OnCardSelected()
+    {
+        hasSelectedCard = true;
+
+        float remainingTime = GetTimeScheduleRemainingTime();
+
+        // 남은 시간이 최소 시간보다 많으면 스케줄 변경
+        if (remainingTime > minSelectionTime)
+        {
+            // 현재 스케줄 취소하고 새로운 최소 시간 스케줄 시작
+            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(timeScheduleUID);
+            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(timeScheduleUID);
+
+            timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(minSelectionTime);
+            TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
+            TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
+        }
+    }
+    private float GetTimeScheduleRemainingTime()
+    {
+        var schedule = TimeTableManager.Instance.GetSchedule(timeScheduleUID);
+        if (schedule != null)
+        {
+            return (float)((schedule.endTime - schedule.currentTime) / 100.0);
+        }
+        return 0f;
+    }
+
+    public void OnChangeTime(int scheduleUID, float remainTime)
+    {
+        if (scheduleUID == timeScheduleUID)
+        {
+            // 와일드카드 선택 시간 업데이트
+            if (selectUI != null)
+            {
+                selectUI.UpdateSelectTime(Mathf.CeilToInt(remainTime));
+            }
+
+            // 카운트다운 UI가 있는 경우 업데이트
+            if (countdownUI != null)
+            {
+                countdownUI.UpdateCountdown(remainTime);
+            }
+        }
+    }
+
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        if (scheduleUID == timeScheduleUID)
+        {
+            // 와일드카드 선택 시간 완료
+            if (selectUI != null)
+            {
+                UIManager.Instance.CloseUI<WildCardSelectUI>();
+            }
+
+            if (countdownUI != null)
+            {
+                UIManager.Instance.CloseUI<InGameCountdownUI>();
+            }
+
+            timeScheduleUID = -1;
+
+            // 웨이브 완료 처리
+            isWaveCompleted = true;
+            StageManager.Instance.OnWaveComplete();
+        }
+    }
+
+    public override void EndWave()
+    {
+        // 리소스 정리
+        if (selectUI != null)
+        {
+            UIManager.Instance.CloseUI<WildCardSelectUI>();
+            selectUI = null;
+        }
+
+        if (countdownUI != null)
+        {
+            UIManager.Instance.CloseUI<InGameCountdownUI>();
+            countdownUI = null;
+        }
+
+        if (timeScheduleUID != -1)
+        {
+            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(timeScheduleUID);
+            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(timeScheduleUID);
+            timeScheduleUID = -1;
+        }
+
+        hasSelectedCard = false;
+
+        WildCardManager.Instance.OnWildCardSelected -= OnCardSelected;
+
+    }
+}

@@ -2478,7 +2478,6 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 		public const string selectionTime = "selectionTime";
 		public const string minSelectionTime = "minSelectionTime";
 		public const string wildCardPool = "wildCardPool";
-		public const string cardCount = "cardCount";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5146719602937660752UL,17503680545558939813UL), () => _metaDefault = null));
@@ -2509,11 +2508,6 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 		get => BGCodeGenUtils.MultipleRelationGet<D_WildCardData>(_f_wildCardPool, Index);
 		set => BGCodeGenUtils.MultipleRelationSet<D_WildCardData>(_f_wildCardPool, Index, value);
 	}
-	public System.Int32 f_cardCount
-	{
-		get => _f_cardCount[Index];
-		set => _f_cardCount[Index] = value;
-	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4723267896339647800UL, 14378766748157478560UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_waveType;
@@ -2524,8 +2518,6 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_minSelectionTime => _ufle12jhs77_f_minSelectionTime ?? (_ufle12jhs77_f_minSelectionTime = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4745070809095324590UL, 13515748607729780378UL), () => _ufle12jhs77_f_minSelectionTime = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationMultiple _ufle12jhs77_f_wildCardPool;
 	public static BansheeGz.BGDatabase.BGFieldRelationMultiple _f_wildCardPool => _ufle12jhs77_f_wildCardPool ?? (_ufle12jhs77_f_wildCardPool = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationMultiple>(MetaDefault, new BGId(4936371166208896379UL, 11880145986698001842UL), () => _ufle12jhs77_f_wildCardPool = null));
-	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_cardCount;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_cardCount => _ufle12jhs77_f_cardCount ?? (_ufle12jhs77_f_cardCount = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5278043886265063505UL, 4694063194585877678UL), () => _ufle12jhs77_f_cardCount = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveDummyData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();

@@ -71,6 +71,7 @@ public enum StatName
     UnitStarLevel,
     StoreLevel,
     CostChargingSpeed,
+    WildCardCount,
 
 }
 

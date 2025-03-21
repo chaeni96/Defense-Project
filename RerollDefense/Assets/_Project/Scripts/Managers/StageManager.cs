@@ -18,13 +18,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private D_StageData currentStage;
     private int currentWaveIndex = 0;
 
-
-    //와일드 카드 관련 : restTime = 와일드카드 선택시간 - 웨이브 클래스로 빼기
-    //private bool hasSelectedWildCard = false;
-    //private float restTime;
-    //private float minRestTime;
-    //private int currentRestScheduleUID = -1;
-
     //웨이브 관련 설명창
     private int currentWaveInfoScheduleUID = -1;
     private const float waveInfoDuration = 5f;
@@ -90,7 +83,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void StartStage(int stageNumber)
     {
-        Debug.Log("[StageManager] StartStage 시작: waveInfoUI=" + (waveInfoUI != null) + ", countdownUI=" + (countdownUI != null));
 
         // episodeNumber도 함께 고려하여 스테이지 찾기
         D_StageData stageData = D_StageData.FindEntity(data => data.f_EpisodeData.f_episodeNumber == GameManager.Instance.SelectedEpisodeNumber && data.f_StageNumber == stageNumber);
@@ -142,6 +134,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         {
             return new EventEnemyWave(eventData);
         }
+        else if( waveData is D_WildCardWaveData wildCardData)
+        {
+            return new WildcardWave(wildCardData);
+        }
         // 다른 웨이브 타입들도 필요에 따라 추가...
 
         Debug.LogError($"알 수 없는 웨이브 타입: {waveData.GetType().Name}");
@@ -177,8 +173,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         string waveText = $"Wave {currentWaveIndex + 1} Start!";
         string enemyInfo = currentWave.GetWaveInfoText(); // 웨이브 클래스에서 적 정보 가져오기
         waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);
-        Debug.Log("[StageManager] waveInfoUI 생성 완료: " + (waveInfoUI != null));
-        Debug.Log("[StageManager] countdownUI 생성 완료: " + (countdownUI != null));
 
         // 웨이브 정보 표시 스케줄 등록
         currentWaveInfoScheduleUID = TimeTableManager.Instance.RegisterSchedule(waveInfoDuration);
@@ -230,76 +224,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         // FadeOut 완료 대기
         await waveFinishUI.WaitForFadeOut();
-
+        UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+        waveFinishUI = null;
         currentWaveIndex++;
         StartNextWave();
     }
-
-    //TODO : 와일드 카드 웨이브 클래스로 옮겨야됨
-    //private async void StartRestPhase()
-    //{
-    //    isSpawnDone = false;
-    //    hasSelectedWildCard = false;
-    //    // 웨이브 종료 이벤트 발생
-    //    OnWaveFinish?.Invoke();
-
-    //    D_WaveData currentWaveData = currentStage.f_WaveData[currentWaveIndex];
-
-    //    foreach (var timeData in currentWaveData.f_WaveTimeData)
-    //    {
-    //        if (timeData.f_StatName == StatName.WaveRestTime)
-    //        {
-    //            restTime = timeData.f_StatValue;
-    //            break;
-    //        }
-    //    }
-
-    //    currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(restTime);
-    //    TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
-    //    TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
-
-    //    selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
-    //    selectUI.SetWildCardDeck();
-    //}
-
-    //public void OnWildCardSelected()
-    //{
-    //    hasSelectedWildCard = true;
-
-    //    float remainingTime = GetCurrentRestScheduleRemainingTime();
-
-    //    D_WaveData currentWaveData = currentStage.f_WaveData[currentWaveIndex];
-
-    //    foreach (var timeData in currentWaveData.f_WaveTimeData)
-    //    {
-    //        if (timeData.f_StatName == StatName.WaveMinRestTime)
-    //        {
-    //            minRestTime = timeData.f_StatValue;
-    //            break;
-    //        }
-    //    }
-
-    //    if (remainingTime > minRestTime)
-    //    {
-    //        // 현재 rest 스케줄 취소하고 새로운 최소 시간 스케줄 시작
-    //        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentRestScheduleUID);
-    //        TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentRestScheduleUID);
-
-    //        currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(minRestTime);
-    //        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
-    //        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
-    //    }
-    //}
-
-    //private float GetCurrentRestScheduleRemainingTime()
-    //{
-    //    var schedule = TimeTableManager.Instance.GetSchedule(currentRestScheduleUID);
-    //    if (schedule != null)
-    //    {
-    //        return (float)((schedule.endTime - schedule.currentTime) / 100.0);
-    //    }
-    //    return 0f;
-    //}
 
     public void SetTotalEnemyCount(int count)
     {
@@ -352,8 +281,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
   
     public void OnCompleteSchedule(int scheduleUID)
     {
-        Debug.Log("[StageManager] OnCompleteSchedule 시작 (scheduleUID=" + scheduleUID + "): waveInfoUI=" + (waveInfoUI != null) + ", countdownUI=" + (countdownUI != null));
-
         // 웨이브 소개 UI 표시 스케줄 완료
         if (scheduleUID == currentWaveInfoScheduleUID)
         {
@@ -370,30 +297,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             }
             return;
         }
-
-      
-        //else if (scheduleUID == currentRestScheduleUID)
-        //{
-        //    UIManager.Instance.CloseUI<InGameCountdownUI>();
-
-        //    // 와일드카드를 선택하지 않았다면 자동으로 처리
-        //    if (!hasSelectedWildCard)
-        //    {
-        //        UIManager.Instance.CloseUI<WildCardSelectUI>();
-
-        //        // 와일드카드 선택 없이 다음 웨이브 진행을 원한다면
-        //        currentRestScheduleUID = -1;
-        //        currentWaveIndex++;
-        //        StartNextWave();
-        //    }
-        //    else
-        //    {
-        //        // 와일드카드를 선택한 경우
-        //        currentRestScheduleUID = -1;
-        //        currentWaveIndex++;
-        //        StartNextWave();
-        //    }
-        //}
     }
 
     private void OnGameClear()
