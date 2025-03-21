@@ -12,6 +12,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 {
     public static StageManager _instance;
 
+    public WaveBase nextAssignWave = null;
+
     private Tilemap placedMap;
     private Transform tileMapGrid;
 
@@ -33,6 +35,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private int totalRemainingEnemies = 0;
 
+    private bool isAssignWave = false;
 
     // 웨이브 시작/종료 관련 이벤트
     public event Action OnWaveStart;  // 웨이브 종료시 발생하는 이벤트
@@ -138,14 +141,37 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         {
             return new WildcardWave(wildCardData);
         }
+        else if( waveData is D_HuntingSelectTimeWaveData huntingSelectData)
+        {
+            return new HuntingSelectTimeWave(huntingSelectData);
+        }
         // 다른 웨이브 타입들도 필요에 따라 추가...
 
         Debug.LogError($"알 수 없는 웨이브 타입: {waveData.GetType().Name}");
         return null;
     }
-
-    private void StartNextWave()
+    public void SetNextWave(WaveBase nextWave)
     {
+        nextAssignWave = nextWave;
+        isAssignWave = true;
+    }
+
+    public void StartNextWave()
+    {
+
+        // StageData에 들어가진 않고 앞의 웨이브에 영향받는 웨이브만
+        if (nextAssignWave != null)
+        {
+            currentWave = nextAssignWave;
+            nextAssignWave = null;
+            isAssignWave = false;
+            // 나머지 코드는 동일하게 실행
+            OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, waveList.Count);
+            OnWaveStart?.Invoke();
+            ShowWaveInfo();
+            return;
+        }
+
         if (currentWaveIndex >= waveList.Count)
         {
             Debug.Log("모든 웨이브 완료!");
@@ -226,7 +252,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         await waveFinishUI.WaitForFadeOut();
         UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
         waveFinishUI = null;
-        currentWaveIndex++;
+
+        if(!isAssignWave)
+        {
+            currentWaveIndex++;
+        }
         StartNextWave();
     }
 

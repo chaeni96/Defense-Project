@@ -2719,6 +2719,7 @@ public partial class D_PrizeHuntingWaveData : BGEntity, D_WaveDummyData
 	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_rewardMuliply;
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_rewardMuliply => _ufle12jhs77_f_rewardMuliply ?? (_ufle12jhs77_f_rewardMuliply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5133528091699256518UL, 12472597788064952464UL), () => _ufle12jhs77_f_rewardMuliply = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveDummyData, Id);
+	public List<Alias_rifegrt_HuntingOptionData> RelatedHuntingOptionDataListUsingprizeHuntingDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingOptionData>(Alias_rifegrt_HuntingOptionData._f_prizeHuntingData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -3195,6 +3196,7 @@ public partial class D_HuntingOptionData : BGEntity
 		public const string spawnEnemy = "spawnEnemy";
 		public const string huntingReward = "huntingReward";
 		public const string huntingRisk = "huntingRisk";
+		public const string prizeHuntingData = "prizeHuntingData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5381664928725939677UL,3173302106784987041UL), () => _metaDefault = null));
@@ -3222,6 +3224,11 @@ public partial class D_HuntingOptionData : BGEntity
 	}
 	public List<D_huntingReward> f_huntingReward => BGCodeGenUtils.GetNested<D_huntingReward>(_f_huntingReward, Index);
 	public List<D_huntingRisk> f_huntingRisk => BGCodeGenUtils.GetNested<D_huntingRisk>(_f_huntingRisk, Index);
+	public D_PrizeHuntingWaveData f_prizeHuntingData
+	{
+		get => (D_PrizeHuntingWaveData) _f_prizeHuntingData[Index];
+		set => _f_prizeHuntingData[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5632793469073674763UL, 15312157263250495362UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_title;
@@ -3234,6 +3241,8 @@ public partial class D_HuntingOptionData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldNested _f_huntingReward => _ufle12jhs77_f_huntingReward ?? (_ufle12jhs77_f_huntingReward = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5278750313338539653UL, 116098376903985325UL), () => _ufle12jhs77_f_huntingReward = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_huntingRisk;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_huntingRisk => _ufle12jhs77_f_huntingRisk ?? (_ufle12jhs77_f_huntingRisk = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5347818645389763292UL, 4413640911447275672UL), () => _ufle12jhs77_f_huntingRisk = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_prizeHuntingData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_prizeHuntingData => _ufle12jhs77_f_prizeHuntingData ?? (_ufle12jhs77_f_prizeHuntingData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5691757458297165726UL, 10460524771639610559UL), () => _ufle12jhs77_f_prizeHuntingData = null));
 	public List<Alias_rifegrt_HuntingSelectTimeWaveData> RelatedHuntingSelectTimeWaveDataListUsinghuntingOptionsRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingSelectTimeWaveData>(Alias_rifegrt_HuntingSelectTimeWaveData._f_huntingOptions, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();

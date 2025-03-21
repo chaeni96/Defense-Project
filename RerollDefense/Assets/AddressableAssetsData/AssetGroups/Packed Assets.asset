@@ -56,7 +56,8 @@ MonoBehaviour:
   - m_GUID: e55a82bc3c7f3b4419e971337a3db18e
     m_Address: FullWindowLobbyDlg
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 12d58817267d2254abb4701ac32d8ec1
     m_Address: FieldGameSettingPopup
@@ -90,6 +91,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bf42267ba6071d40834e841e43a6220
     m_Address: SelectStagePopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b97185210fa8ee745b413d1434ae822c
+    m_Address: PrizeHuntingSelectUI
     m_ReadOnly: 0
     m_SerializedLabels:
     - UI
