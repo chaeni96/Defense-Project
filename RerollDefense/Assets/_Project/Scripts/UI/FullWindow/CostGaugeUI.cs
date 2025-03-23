@@ -23,6 +23,10 @@ public class CostGaugeUI : MonoBehaviour
     private int maxCost;
 
     private bool canAddCost;
+    private List<Image> preparingFills = new List<Image>();
+
+    private bool isPreparingUse = false;
+    private int currentPrepareCardCost;
 
     //살아있는 트윈
     private Dictionary<Image, Tween> activeTweens = new Dictionary<Image, Tween>();
@@ -36,7 +40,7 @@ public class CostGaugeUI : MonoBehaviour
 
         // 초기 코스트만큼 바로 채우기
         int initialCost = GameManager.Instance.GetSystemStat(StatName.Cost);
-
+        currentPrepareCardCost = 0;
         costPerTick = 1;
         currentFilledIndex = initialCost;
         maxCost = GameManager.Instance.GetSystemStat(StatName.MaxCost);
@@ -47,18 +51,13 @@ public class CostGaugeUI : MonoBehaviour
 
         for (int i = 0; i < maxCost; i++)
         {
-            if(i < currentFilledIndex)
-            {
-                barFills[i].color = originFillColor;
-            }
-            else
-            {
-                barFills[i].color = Color.clear;
-            }
+            barFills[i].color = (i < currentFilledIndex) ? originFillColor : Color.clear;
         }
         circleProgress.fillAmount = 0;
 
         GameManager.Instance.OnCostUsed += UpdateBarFillsOnCostUsed;
+        GameManager.Instance.OnCostUsePrePare += PrepareUse;
+        GameManager.Instance.OnCostUsePrePareCancle += CancelUse;
         // 와일드카드 선택 시작/종료 이벤트 구독
         StageManager.Instance.OnWaveFinish += StopCostAdd;
         StageManager.Instance.OnWaveStart += StartCostAdd;
@@ -143,12 +142,36 @@ public class CostGaugeUI : MonoBehaviour
             }
             else
             {
+                //AnimateFillDisappear(barFills[i]);
                 barFills[i].color = Color.clear;
             }
         }
+        if (isPreparingUse)
+        {
+            PrepareUse(currentPrepareCardCost);
+        }
         UpdateText();
     }
+    private void AnimateFillDisappear(Image fill)
+    {
+        if (activeTweens.TryGetValue(fill, out Tween existingTween))
+        {
+            existingTween.Kill(); // 기존 트윈 중단
+            activeTweens.Remove(fill);
+        }
+        fill.color = originFillColor;
 
+        Sequence disappearSequence = DOTween.Sequence();
+        disappearSequence.Append(fill.DOFade(0, 0.3f)) // 점점 투명해짐
+                         .Join(fill.rectTransform.DOScale(Vector3.one * 1.5f, 0.3f)) // 커짐
+                         .OnComplete(() =>
+                         {
+                             fill.color = Color.clear;
+                             fill.rectTransform.localScale = Vector3.one; // 크기 원래대로 복구
+                     });
+
+        activeTweens[fill] = disappearSequence;
+    }
     private void AnimateFillAppearance(Image fill)
     {
         if (activeTweens.TryGetValue(fill, out Tween existingTween))
@@ -157,10 +180,77 @@ public class CostGaugeUI : MonoBehaviour
             activeTweens.Remove(fill);
         }
 
+
         fill.color = Color.white; // 처음에는 완전 흰색
-        Tween tween = fill.DOColor(originFillColor, 0.14f).SetEase(Ease.OutQuad);
+        Tween tween = fill.DOColor(originFillColor, 0.3f).SetEase(Ease.OutQuad);
         activeTweens[fill] = tween;
     }
+
+    public void PrepareUse(int amount)
+    {
+        CancelUse();
+        currentPrepareCardCost = amount;
+        isPreparingUse = true;
+        preparingFills.Clear();
+
+        int startIndex = Mathf.Max(0, currentFilledIndex - amount);
+        for (int i = startIndex; i < currentFilledIndex; i++)
+        {
+            if (barFills[i] != null)
+            {
+                preparingFills.Add(barFills[i]);
+                StartBlinkAnimation(barFills[i]);
+            }
+        }
+    }
+    private void StartBlinkAnimation(Image fill)
+    {
+        if (activeTweens.TryGetValue(fill, out Tween existingTween))
+        {
+            existingTween.Kill();
+            activeTweens.Remove(fill);
+        }
+
+        fill.color = originFillColor;
+        Tween blinkTween = fill.DOColor(Color.gray, 0.2f)
+    .SetEase(Ease.InOutSine);
+
+        /*Tween blinkTween = fill.DOFade(0.2f, 0.5f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);*/
+       /* Tween blinkTween = fill.DOColor(originFillColor, 0.5f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);*/
+
+        activeTweens[fill] = blinkTween;
+    }
+    //사용하려다가 실패 혹은 사용 중지
+    public void CancelUse()
+    {
+        isPreparingUse = false;
+        currentPrepareCardCost = 0;
+
+        for (int i = 0; i < preparingFills.Count; i++)
+        {
+            Image fill = preparingFills[i];
+
+            if (activeTweens.TryGetValue(fill, out Tween existingTween))
+            {
+                existingTween.Kill();
+                activeTweens.Remove(fill);
+            }
+
+            // 이미 사용된 fill은 원래 색으로 되돌리지 않음
+            int fillIndex = barFills.IndexOf(fill);
+            if (fillIndex < currentFilledIndex) // 사용되지 않은 fill만 원래 색으로 복귀
+            {
+                fill.DOColor(originFillColor, 0.2f).SetEase(Ease.OutQuad);
+            }
+        }
+
+        preparingFills.Clear();
+    }
+
 
     private void CreateBarFills(int storeLevel)
     {
@@ -197,6 +287,8 @@ public class CostGaugeUI : MonoBehaviour
                         activeTweens.Remove(barFills[currentFilledIndex]);
                     }
 
+                    //AnimateFillDisappear(barFills[currentFilledIndex]);
+
                     barFills[currentFilledIndex].color = Color.clear;
                 }
             }
@@ -212,6 +304,8 @@ public class CostGaugeUI : MonoBehaviour
     {
         // 이벤트 구독 해제
         GameManager.Instance.OnCostUsed -= UpdateBarFillsOnCostUsed;
+        StageManager.Instance.OnWaveFinish -= StopCostAdd;
+        StageManager.Instance.OnWaveStart -= StartCostAdd;
         StageManager.Instance.OnWaveFinish -= StopCostAdd;
         StageManager.Instance.OnWaveStart -= StartCostAdd;
         ClearBarFills();

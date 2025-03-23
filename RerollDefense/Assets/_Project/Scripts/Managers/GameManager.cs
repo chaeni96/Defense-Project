@@ -179,6 +179,8 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
     public event System.Action OnCostAdd; // 코스트 추가 이벤트
     public event System.Action<int> OnCostUsed; // 코스트 사용 이벤트
+    public event System.Action<int> OnCostUsePrePare; // 코스트 사용 이벤트
+    public event System.Action OnCostUsePrePareCancle; // 코스트 사용 이벤트
 
     //인게임 내 오브젝트 삭제(쓰레기통) 관련 코드 
     private string trashCanAddressableKey = "TrashCanObject";
@@ -392,7 +394,15 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         }
     }
 
+    public void PrepareUseCost(int value)
+    {
+        OnCostUsePrePare?.Invoke(value);
+    }
 
+    public void CanclePrepareUseCost()
+    {
+        OnCostUsePrePareCancle?.Invoke();
+    }
     private void ChangeStatStoreLevel(StatStorage statChange)
     {
         // StoreLevel 업데이트

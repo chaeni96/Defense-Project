@@ -133,6 +133,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         isDragging = true;
         canPlace = false;
         hasDragged = false;  // 드래그 시작 시 false로 초기화
+
+        GameManager.Instance.PrepareUseCost(cardCost);
+
         SetUIVisibility(false);  // UI 숨기기
 
         // 마우스 커서의 월드 좌표 계산
@@ -248,6 +251,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
 
         isDragging = false;
+
+        GameManager.Instance.CanclePrepareUseCost();
     }
 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
@@ -806,6 +811,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             SetUIVisibility(true);
             CancelPlacement();
             isDragging = false;
+
+            GameManager.Instance.CanclePrepareUseCost();
         }
     }
 
