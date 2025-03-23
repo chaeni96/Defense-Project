@@ -10,7 +10,7 @@ public class WaveFinishFloatingUI : FloatingPopupBase
 {
     [SerializeField] private TMP_Text waveFinishText;
     [SerializeField] private float fadeInDuration = 0.05f;
-    [SerializeField] private float fadeOutDuration = 0.5f;
+    [SerializeField] private float fadeOutDuration = 0.2f;
     [SerializeField] private CanvasGroup canvasGroup;
 
     private TaskCompletionSource<bool> fadeOutComplete;
@@ -36,7 +36,7 @@ public class WaveFinishFloatingUI : FloatingPopupBase
             .OnComplete(() => {
                 // FadeIn 완료 후 2초 대기했다가 FadeOut 시작
                 canvasGroup.DOFade(0, fadeOutDuration)
-                    .SetDelay(2f)  // 여기에 원하는 지연 시간(초) 설정
+                    .SetDelay(0.8f)  // 여기에 원하는 지연 시간(초) 설정
                     .OnComplete(() => {
                         fadeOutComplete.SetResult(true);
                     });

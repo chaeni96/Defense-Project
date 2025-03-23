@@ -450,28 +450,27 @@ public class EventEnemyWave : WaveBase
 }
 
 
-public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSubscriber
+public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleCompleteSubscriber
 {
     private D_WildCardWaveData wildCardWaveData;
-    private float selectionTime;
-    private float minSelectionTime;
-    private int timeScheduleUID = -1;
+    //private float selectionTime;
+    //private float minSelectionTime;
+    //private int timeScheduleUID = -1;
     private WildCardSelectUI selectUI;
-    private InGameCountdownUI countdownUI;
+    //private InGameCountdownUI countdownUI;
 
     //TODO : 카드 선택 장수도 스탯으로 빼기
     public WildcardWave(D_WildCardWaveData data) : base(data)
     {
         wildCardWaveData = data;
-        selectionTime = wildCardWaveData.f_selectionTime;
-        minSelectionTime = wildCardWaveData.f_minSelectionTime;
-
-        WildCardManager.Instance.OnWildCardSelected += OnCardSelected;
+        //selectionTime = wildCardWaveData.f_selectionTime;
+        //minSelectionTime = wildCardWaveData.f_minSelectionTime;
     }
 
     public override void StartWave()
     {
         isWaveCompleted = false;
+        WildCardManager.Instance.OnWildCardSelected += OnCardSelected;
         ShowWildCardSelection();
     }
 
@@ -484,9 +483,9 @@ public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSu
     private async void ShowWildCardSelection()
     {
         // 타이머 등록
-        timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(selectionTime);
-        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
-        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
+        //timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(selectionTime);
+        //TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
+        //TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
 
         // 와일드카드 선택 UI 표시
         selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
@@ -499,21 +498,13 @@ public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSu
     // WildCardSelectUI에서 카드 선택 시 호출할 메서드
     public void OnCardSelected()
     {
-        float remainingTime = GetTimeScheduleRemainingTime();
+        // 웨이브 완료 처리
+        isWaveCompleted = true;
 
-        // 남은 시간이 최소 시간보다 많으면 스케줄 변경
-        if (remainingTime > minSelectionTime)
-        {
-            // 현재 스케줄 취소하고 새로운 최소 시간 스케줄 시작
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(timeScheduleUID);
-            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(timeScheduleUID);
-
-            timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(minSelectionTime);
-            TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
-            TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
-        }
+        StageManager.Instance.OnWaveComplete();
     }
-    private float GetTimeScheduleRemainingTime()
+
+   /* private float GetTimeScheduleRemainingTime()
     {
         var schedule = TimeTableManager.Instance.GetSchedule(timeScheduleUID);
         if (schedule != null)
@@ -562,7 +553,7 @@ public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSu
             isWaveCompleted = true;
             StageManager.Instance.OnWaveComplete();
         }
-    }
+    }*/
 
     public override void EndWave()
     {
@@ -573,18 +564,18 @@ public class WildcardWave : WaveBase, ITimeChangeSubscriber, IScheduleCompleteSu
             selectUI = null;
         }
 
-        if (countdownUI != null)
+/*        if (countdownUI != null)
         {
             UIManager.Instance.CloseUI<InGameCountdownUI>();
             countdownUI = null;
         }
-
-        if (timeScheduleUID != -1)
+*/
+/*        if (timeScheduleUID != -1)
         {
             TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(timeScheduleUID);
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(timeScheduleUID);
             timeScheduleUID = -1;
-        }
+        }*/
 
         WildCardManager.Instance.OnWildCardSelected -= OnCardSelected;
 

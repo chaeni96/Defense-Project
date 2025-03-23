@@ -22,7 +22,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     //웨이브 관련 설명창
     private int currentWaveInfoScheduleUID = -1;
-    private const float waveInfoDuration = 5f;
+    private const float waveInfoDuration = 1.6f;
 
     //private WildCardSelectUI selectUI;
     private WaveInfoFloatingUI waveInfoUI;
