@@ -29,13 +29,14 @@ public class SceneStarter : MonoBehaviour
         ResourceManager.Instance.InitializeManager();
         GameManager.Instance.InitializeManager();
 
-
         StartCoroutine(InitializeScene());
 
     }
 
     private IEnumerator InitializeScene()
     {
+        UIManager.Instance.InitializeManager();
+
         if (scenekind == SceneKind.Lobby)
         {
             // 로비 초기화 작업이 있다면 여기서 수행
@@ -46,7 +47,8 @@ public class SceneStarter : MonoBehaviour
         }
 
         // 모든 초기화가 끝난 후 UI 초기화
-        UIManager.Instance.InitializeManager(scenekind);
+
+        UIManager.Instance.InitUIForScene(scenekind);
     }
 
     private IEnumerator InitializeGameScene()

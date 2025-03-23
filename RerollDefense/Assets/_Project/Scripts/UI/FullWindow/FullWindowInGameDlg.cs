@@ -102,8 +102,9 @@ public class FullWindowInGameDlg : FullWindowBase
         StartCoroutine(CheckAndFillCardDecks());
     }
 
-    private void UpdateWaveIndex(int currentIndex, int maxIndex)
+    private void UpdateWaveIndex(int currentIndex, int subIndex = 0)
     {
+
         progressWaveIndex.text = $"{GameManager.Instance.SelectedStageNumber} - {currentIndex}";
     }
     private void UpdateRemainEnemyCount(int count)

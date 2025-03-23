@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 
-[UIInfo("WaveInfoFloatingUI", "WaveInfoFloatingUI", false)]
+[UIInfo("WaveInfoFloatingUI", "WaveInfoFloatingUI", true)]
 public class WaveInfoFloatingUI : FloatingPopupBase
 {
 
@@ -31,7 +31,7 @@ public class WaveInfoFloatingUI : FloatingPopupBase
 
     private void FadeIn()
     {
-        canvasGroup.DOFade(1, fadeInDuration);
+        canvasGroup.DOFade(1, fadeInDuration).SetLink(gameObject);  // 이 Tween을 현재 MonoBehaviour의 게임 오브젝트와 연결
     }
 
     public override void HideUI()

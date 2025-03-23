@@ -50,12 +50,10 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// UI 매니저 초기화. 각 씬에 따라 UI를 초기화하고 필요한 캔버스를 설정.
     /// </summary>
-    public void InitializeManager(SceneKind scene)
+    public void InitializeManager()
     {
         CleanUp();
-
         uiCache = new Dictionary<Type, UIBase>();
-        InitUIForScene(scene);
     }
 
 
@@ -146,30 +144,14 @@ public class UIManager : MonoBehaviour
             if (ui.DestroyOnHide)
             {
                 uiCache.Remove(uiType);
-                Destroy(ui.gameObject);
             }
         }
     }
 
 
-    public void CloseAllUI()
-    {
-        foreach (var ui in uiCache.Values)
-        {
-            if (ui != null)
-            {
-                ui.HideUI();
-                Destroy(ui.gameObject);
-            }
-        }
-        uiCache.Clear();
-    }
 
     public async void InitUIForScene(SceneKind nextSceneKind)
     {
-
-        // 기존 UI들을 모두 닫고 비활성화
-        CloseAllUI();
 
         // 각 씬별, 조건별 UI 띄우기
         switch (nextSceneKind)
@@ -183,7 +165,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void CleanUp()
+    public void CleanUp()
     {
         // 캐시된 UI들 정리
         foreach (var ui in uiCache.Values)
@@ -191,7 +173,6 @@ public class UIManager : MonoBehaviour
             if (ui != null)
             {
                 ui.HideUI();
-                Destroy(ui.gameObject);
             }
         }
         uiCache.Clear();

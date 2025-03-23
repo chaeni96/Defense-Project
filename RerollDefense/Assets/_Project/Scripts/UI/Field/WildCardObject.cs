@@ -16,6 +16,7 @@ public class WildCardObject : MonoBehaviour
 
     private D_WildCardData wildCardData;
 
+
     public void Initialize(D_WildCardData cardData)
     {
         wildCardData = cardData;
@@ -32,10 +33,7 @@ public class WildCardObject : MonoBehaviour
 
 
     public  void OnClickSelectCard()
-    {
-        // 와일드카드 선택 후 StageManager에 알림
-        StageManager.Instance.OnWildCardSelected();
-
+    { 
         UIManager.Instance.CloseUI<WildCardSelectUI>();
 
         //버프아이콘 생성

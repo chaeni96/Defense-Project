@@ -82,14 +82,8 @@ public class BuffRangeObject : MonoBehaviour, IScheduleCompleteSubscriber, ITime
             }
         }
 
-        // 범위를 벗어난 오브젝트 처리
-        foreach (var obj in affectedObjects.ToList())
-        {
-            if (!overlappedColliders.Any(c => c.GetComponent<BasicObject>() == obj))
-            {
-                RemoveObject(obj);
-            }
-        }
+        // TODO : 범위를 벗어난 오브젝트 처리
+      
     }
 
     // 새로운 오브젝트에 버프 적용

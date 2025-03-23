@@ -1,4 +1,5 @@
 using BGDatabaseEnum;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,8 @@ public class ScheduleBuffApplier : IScheduleCompleteSubscriber
 public class WildCardManager : MonoBehaviour
 {
     private static WildCardManager _instance;
+
+    public event Action OnWildCardSelected;  //와일드카드 선택 이벤트
 
     public static WildCardManager Instance
     {
@@ -53,8 +56,6 @@ public class WildCardManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // 와일드 카드내의 모든 효과 적용
-  
     // 스탯 부스터 적용
     public void ApplyWildCardEffect(D_WildCardData cardData)
     {
@@ -75,6 +76,8 @@ public class WildCardManager : MonoBehaviour
                 TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(new ScheduleBuffApplier(buffData), scheduleUID);
             }      
         }
+
+        OnWildCardSelected?.Invoke();
     }
 
 

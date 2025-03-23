@@ -12,33 +12,30 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 {
     public static StageManager _instance;
 
+    public WaveBase nextAssignWave = null;
+
     private Tilemap placedMap;
     private Transform tileMapGrid;
 
     private D_StageData currentStage;
     private int currentWaveIndex = 0;
-    private bool hasSelectedWildCard = false;
-
-    private bool isSpawnDone = false; //현재 웨이브의 모든적이 스폰완료됐는지
-    private int totalGroupCount = 0; // 현재 스폰 중인 에너미 그룹 수
-    private int completedGroupCount = 0; // 스폰 완료된 에너미 그룹 수
-    private int remainEnemies = 0; //현재 웨이브에서 살아있는 에너미 수
-
-    //와일드 카드 관련 : restTime = 와일드카드 선택시간 -
-    private float restTime;
-    private float minRestTime;
-    private int currentRestScheduleUID = -1;
 
     //웨이브 관련 설명창
     private int currentWaveInfoScheduleUID = -1;
     private const float waveInfoDuration = 5f;
 
-    private WildCardSelectUI selectUI;
+    //private WildCardSelectUI selectUI;
     private WaveInfoFloatingUI waveInfoUI;
     private InGameCountdownUI countdownUI;
-
-
     private WaveFinishFloatingUI waveFinishUI;
+
+    //웨이브 목록 관리
+    private List<WaveBase> waveList = new List<WaveBase>();
+    private WaveBase currentWave = null;
+
+    private int totalRemainingEnemies = 0;
+
+    private bool isAssignWave = false;
 
     // 웨이브 시작/종료 관련 이벤트
     public event Action OnWaveStart;  // 웨이브 종료시 발생하는 이벤트
@@ -89,6 +86,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void StartStage(int stageNumber)
     {
+
         // episodeNumber도 함께 고려하여 스테이지 찾기
         D_StageData stageData = D_StageData.FindEntity(data => data.f_EpisodeData.f_episodeNumber == GameManager.Instance.SelectedEpisodeNumber && data.f_StageNumber == stageNumber);
 
@@ -103,129 +101,231 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         GameManager.Instance.InitializePlayerCamp(stageData.f_EndTilePos);
 
+        // 웨이브 데이터 초기화
+        InitializeWaves();
+
+        // 첫 번째 웨이브 시작
         StartNextWave();
     }
 
-    private void StartNextWave()
+    private void InitializeWaves()
     {
-        if (currentWaveIndex >= currentStage.f_WaveData.Count)
+        waveList.Clear();
+
+        // WaveDummyData 데이터로부터 웨이브 객체 생성
+        foreach (D_WaveDummyData waveData in currentStage.f_WaveDummyData)
         {
-            Debug.Log("모든 웨이브 완료!");
-            return;
+            WaveBase wave = CreateWaveFromData(waveData);
+            if (wave != null)
+            {
+                waveList.Add(wave);
+            }
         }
-        isSpawnDone = false;
+    }
+    private WaveBase CreateWaveFromData(D_WaveDummyData waveData)
+    {
+        //웨이브 Data 타입에 따라서 각각의 클래스 생성하기
+        if (waveData is D_NormalBattleWaveData normalData)
+        {
+            return new NormalBattleWave(normalData);
+        }
+        else if (waveData is D_BossBattleWaveData bossData)
+        {
+            return new BossBattleWave(bossData);
+        }
+        else if( waveData is D_EventEnemyWaveData eventData)
+        {
+            return new EventEnemyWave(eventData);
+        }
+        else if( waveData is D_WildCardWaveData wildCardData)
+        {
+            return new WildcardWave(wildCardData);
+        }
+        else if( waveData is D_HuntingSelectTimeWaveData huntingSelectData)
+        {
+            return new HuntingSelectTimeWave(huntingSelectData);
+        }
+        // 다른 웨이브 타입들도 필요에 따라 추가...
 
-        // 현재 웨이브의 총 적 수 계산
-        D_WaveData waveData = currentStage.f_WaveData[currentWaveIndex];
-        remainEnemies = waveData.f_enemyGroup.Sum(group => group.f_amount);
-
-   
-        OnWaveStart?.Invoke();
-
-        ShowWaveInfo(waveData);
+        Debug.LogError($"알 수 없는 웨이브 타입: {waveData.GetType().Name}");
+        return null;
+    }
+    public void SetNextWave(WaveBase nextWave)
+    {
+        nextAssignWave = nextWave;
+        isAssignWave = true;
     }
 
-    private async void ShowWaveInfo(D_WaveData waveData)
+    public void StartNextWave()
+    {
+
+        // StageData에 들어가진 않고 앞의 웨이브에 영향받는 웨이브만
+        if (nextAssignWave != null)
+        {
+            currentWave = nextAssignWave;
+            nextAssignWave = null;
+            isAssignWave = false;
+            // 나머지 코드는 동일하게 실행
+            OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, waveList.Count);
+            OnWaveStart?.Invoke();
+            ShowWaveInfo();
+            return;
+        }
+
+        if (currentWaveIndex >= waveList.Count)
+        {
+            Debug.Log("모든 웨이브 완료!");
+            OnGameClear();
+            return;
+        }
+
+        currentWave = waveList[currentWaveIndex];
+
+        // 웨이브 인덱스 변경 알림
+        OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, waveList.Count);
+
+        // 웨이브 시작 이벤트 발생
+        OnWaveStart?.Invoke();
+
+        // 웨이브 정보 표시
+        ShowWaveInfo();
+    }
+
+    private async void ShowWaveInfo()
     {
         waveInfoUI = await UIManager.Instance.ShowUI<WaveInfoFloatingUI>();
         countdownUI = await UIManager.Instance.ShowUI<InGameCountdownUI>(); // 웨이브 시작 전 남은시간 보여주는 ui
 
         string waveText = $"Wave {currentWaveIndex + 1} Start!";
-        string enemyInfo = "";
-
-        //LINQ -> GroupBy 사용해서 같은 적 타입끼리 그룹화해서 보여주기
-        var groupedEnemies = waveData.f_enemyGroup
-                            .GroupBy(g => g.f_enemy.f_name)
-                            .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
-
-        foreach (var group in groupedEnemies)
-        {
-            enemyInfo += $"{group.Name} x{group.TotalAmount}\n";
-        }
-
-        // 웨이브 인덱스 변경 알림
-        OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, currentStage.f_WaveData.Count);
-        OnEnemyCountChanged?.Invoke(remainEnemies);
-
+        string enemyInfo = currentWave.GetWaveInfoText(); // 웨이브 클래스에서 적 정보 가져오기
         waveInfoUI.UpdateWaveInfo(waveText, enemyInfo);
 
+        // 웨이브 정보 표시 스케줄 등록
         currentWaveInfoScheduleUID = TimeTableManager.Instance.RegisterSchedule(waveInfoDuration);
         TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentWaveInfoScheduleUID);
         TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentWaveInfoScheduleUID); 
     }
 
-    private void SpawnWaveEnemies(D_WaveData waveData)
+    // 웨이브 완료 처리 - 웨이브에서 호출됨
+    public void OnWaveComplete()
     {
+        // 현재 웨이브 종료 처리
+        currentWave.EndWave();
 
-        totalGroupCount = waveData.f_enemyGroup.Count; //총 생성되어야하는 에너미 그룹 수
+        // 웨이브 종료 이벤트 발생
+        OnWaveFinish?.Invoke();
 
-        completedGroupCount = 0;
-
-        foreach (D_enemyGroup groupData in waveData.f_enemyGroup)
+        // 마지막 웨이브였는지 확인
+        if (IsLastWave())
         {
-            StartCoroutine(CoSpawnEnemyGroup(groupData));
+            OnGameClear();
+        }
+        else
+        {
+            // 웨이브 완료 UI 표시
+            ShowWaveFinishUI();
         }
     }
 
-    private IEnumerator CoSpawnEnemyGroup(D_enemyGroup enemyGroupData)
+    // 적 수 변경 처리 - UI 업데이트와 이벤트 발생만 담당
+    public void UpdateEnemyCount(int change)
     {
-        if (enemyGroupData == null || enemyGroupData.f_enemy == null)
-        {
-            Debug.LogError("적 그룹 데이터가 유효하지 않습니다.");
-            yield break;
-        }
+        // 총 남은 적 수 업데이트
+        totalRemainingEnemies += change;
 
-        yield return new WaitForSeconds(enemyGroupData.f_startDelay);
+        // 음수가 되지 않도록 보정
+        totalRemainingEnemies = Mathf.Max(0, totalRemainingEnemies);
 
-        for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
-        {
-            if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
-            {
-                EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy);
-            }
-            else
-            {
-                Debug.LogError("오브젝트 풀 키가 null입니다.");
-                break;
-            }
-
-            yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
-        }
-
-        ++completedGroupCount;
-
-        // 모든 그룹의 스폰이 완료되었는지 체크
-        if (completedGroupCount >= totalGroupCount)
-        {
-            isSpawnDone = true;
-            CheckWaveCompletion();
-        }
-    }
-    public void AddRemainingEnemies(int count)
-    {
-        remainEnemies += count;
-        OnEnemyCountChanged?.Invoke(remainEnemies);
+        // UI 업데이트를 위한 이벤트 발생 - 총 남은 적 수 전달
+        OnEnemyCountChanged?.Invoke(totalRemainingEnemies);
     }
 
-    public void DecreaseEnemyCount()
+
+    private async void ShowWaveFinishUI()
     {
-        --remainEnemies;
-        OnEnemyCountChanged?.Invoke(remainEnemies);  // 이벤트 발생
-        CheckWaveCompletion();
+        // 웨이브 완료 UI 표시
+        waveFinishUI = await UIManager.Instance.ShowUI<WaveFinishFloatingUI>();
+        string waveFinishText = $"Wave {currentWaveIndex + 1} Finish!";
+        waveFinishUI.UpdateWaveInfo(waveFinishText);
+
+        // FadeOut 완료 대기
+        await waveFinishUI.WaitForFadeOut();
+        UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+        waveFinishUI = null;
+
+        if(!isAssignWave)
+        {
+            currentWaveIndex++;
+        }
+        StartNextWave();
     }
 
-    private void CheckWaveCompletion()
+    public void SetTotalEnemyCount(int count)
     {
-        if (isSpawnDone && remainEnemies <= 0)
+        // 총 남은 적 수 직접 설정
+        totalRemainingEnemies = count;
+
+        // UI 업데이트를 위한 이벤트 발생
+        OnEnemyCountChanged?.Invoke(totalRemainingEnemies);
+    }
+
+    public void NotifyEnemyDecrease()
+    {
+        // UI 업데이트
+        UpdateEnemyCount(-1);
+
+        // 현재 웨이브에 적 감소 알림
+        if (currentWave != null)
         {
-            if (IsLastWave())
+            currentWave.DecreaseEnemyCount();
+        }
+    }
+
+    public void NotifyEnemyIncrease(int count)
+    {
+        // UI 업데이트
+        UpdateEnemyCount(count);
+
+        // 현재 웨이브에 적 추가 알림
+        if (currentWave != null)
+        {
+            currentWave.AddEnemies(count);
+        }
+    }
+
+    public bool IsLastWave()
+    {
+        return currentWaveIndex + 1 >= currentStage.f_WaveDummyData.Count;  // 다음 웨이브가 마지막인지 미리 체크
+    }
+   
+    public void OnChangeTime(int scheduleUID, float remainTime)
+    {
+        if (scheduleUID == currentWaveInfoScheduleUID)
+        {
+            if (countdownUI != null)
             {
-                OnGameClear();
+                countdownUI.UpdateCountdown(remainTime);
             }
-            else
+        }
+    }
+  
+    public void OnCompleteSchedule(int scheduleUID)
+    {
+        // 웨이브 소개 UI 표시 스케줄 완료
+        if (scheduleUID == currentWaveInfoScheduleUID)
+        {
+            // 웨이브 정보 표시 시간 종료
+            UIManager.Instance.CloseUI<WaveInfoFloatingUI>();
+
+            UIManager.Instance.CloseUI<InGameCountdownUI>();
+            currentWaveInfoScheduleUID = -1;
+
+            // 실제 웨이브 시작
+            if (currentWave != null)
             {
-                ShowWaveFinishUI();
+                currentWave.StartWave();
             }
+            return;
         }
     }
 
@@ -238,185 +338,50 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
     }
 
-    private async void ShowWaveFinishUI()
-    {
-        isSpawnDone = false;
-
-        // 웨이브 완료 UI 표시
-        waveFinishUI = await UIManager.Instance.ShowUI<WaveFinishFloatingUI>();
-        string waveFinishText = $"Wave {currentWaveIndex + 1} Finish!";
-        waveFinishUI.UpdateWaveInfo(waveFinishText);
-
-        // FadeOut 완료 대기
-        await waveFinishUI.WaitForFadeOut();
-
-        // UI 닫고 와일드 카드 선택타임으로
-        UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
-
-        StartRestPhase();
-    }
-
-    private async void StartRestPhase()
-    {
-        isSpawnDone = false;
-        hasSelectedWildCard = false;
-        // 웨이브 종료 이벤트 발생
-        OnWaveFinish?.Invoke();
-
-        D_WaveData currentWaveData = currentStage.f_WaveData[currentWaveIndex];
-
-        foreach (var timeData in currentWaveData.f_WaveTimeData)
-        {
-            if (timeData.f_StatName == StatName.WaveRestTime)
-            {
-                restTime = timeData.f_StatValue;
-                break;
-            }
-        }
-
-        currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(restTime);
-        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
-        TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
-
-        selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
-        selectUI.SetWildCardDeck();
-    }
-
-    public void OnWildCardSelected()
-    {
-        hasSelectedWildCard = true;
-
-        float remainingTime = GetCurrentRestScheduleRemainingTime();
-
-        D_WaveData currentWaveData = currentStage.f_WaveData[currentWaveIndex];
-
-        foreach (var timeData in currentWaveData.f_WaveTimeData)
-        {
-            if (timeData.f_StatName == StatName.WaveMinRestTime)
-            {
-                minRestTime = timeData.f_StatValue;
-                break;
-            }
-        }
-
-        if (remainingTime > minRestTime)
-        {
-            // 현재 rest 스케줄 취소하고 새로운 최소 시간 스케줄 시작
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentRestScheduleUID);
-            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentRestScheduleUID);
-
-            currentRestScheduleUID = TimeTableManager.Instance.RegisterSchedule(minRestTime);
-            TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentRestScheduleUID);
-            TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, currentRestScheduleUID);
-        }
-    }
-
-    private float GetCurrentRestScheduleRemainingTime()
-    {
-        var schedule = TimeTableManager.Instance.GetSchedule(currentRestScheduleUID);
-        if (schedule != null)
-        {
-            return (float)((schedule.endTime - schedule.currentTime) / 100.0);
-        }
-        return 0f;
-    }
-
-    public bool IsLastWave()
-    {
-        return currentWaveIndex + 1 >= currentStage.f_WaveData.Count;  // 다음 웨이브가 마지막인지 미리 체크
-    }
-
-    public void OnChangeTime(int scheduleUID, float remainTime)
-    {
-        if (scheduleUID == currentRestScheduleUID)
-        {
-            // 휴식 시간 변경 시 필요한 처리
-            if(selectUI != null)
-            {
-                selectUI.UpdateSelectTime(Mathf.CeilToInt(remainTime));
-            }
-
-            if (countdownUI != null)
-            {
-                countdownUI.UpdateCountdown(remainTime);
-            }
-        }
-        else if (scheduleUID == currentWaveInfoScheduleUID)
-        {
-            if (countdownUI != null)
-            {
-                countdownUI.UpdateCountdown(remainTime);
-            }
-        }
-    }
-
-    public void OnCompleteSchedule(int scheduleUID)
-    {
-        if (scheduleUID == currentWaveInfoScheduleUID)
-        {
-            UIManager.Instance.CloseUI<WaveInfoFloatingUI>();
-            UIManager.Instance.CloseUI<InGameCountdownUI>();
-            currentWaveInfoScheduleUID = -1;
-            SpawnWaveEnemies(currentStage.f_WaveData[currentWaveIndex]);
-        }
-        else if (scheduleUID == currentRestScheduleUID)
-        {
-            UIManager.Instance.CloseUI<InGameCountdownUI>();
-
-            // 와일드카드를 선택하지 않았다면 자동으로 처리
-            if (!hasSelectedWildCard)
-            {
-                UIManager.Instance.CloseUI<WildCardSelectUI>();
-
-                // 와일드카드 선택 없이 다음 웨이브 진행을 원한다면
-                currentRestScheduleUID = -1;
-                currentWaveIndex++;
-                StartNextWave();
-            }
-            else
-            {
-                // 와일드카드를 선택한 경우
-                currentRestScheduleUID = -1;
-                currentWaveIndex++;
-                StartNextWave();
-            }
-        }
-    }
-
     public void CleanUp()
     {
 
         if (currentWaveInfoScheduleUID != -1)
         {
             TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentWaveInfoScheduleUID);
+            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentWaveInfoScheduleUID);
         }
-
-        if (currentRestScheduleUID != -1)
-        {
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentRestScheduleUID);
-            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentRestScheduleUID);
-        }
-
 
         if (countdownUI != null)
         {
             UIManager.Instance.CloseUI<InGameCountdownUI>();
+            countdownUI = null;
         }
 
         if (waveFinishUI != null)
         {
             UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+            waveFinishUI = null;
+        }
+
+        if (waveInfoUI != null)
+        {
+            UIManager.Instance.CloseUI<WaveInfoFloatingUI>();
+            waveInfoUI = null; // 참조 초기화
         }
 
         StopAllCoroutines();
+
+
+        // 현재 웨이브 정리
+        if (currentWave != null)
+        {
+            currentWave.EndWave();
+            currentWave = null;
+        }
+
+        // 웨이브 리스트 정리
+        waveList.Clear();
+
         currentStage = null;
         currentWaveIndex = 0;
-        currentRestScheduleUID = -1;
-        hasSelectedWildCard = false;
+        currentWaveInfoScheduleUID = -1;
         placedMap = null;
         tileMapGrid = null;
-
-        isSpawnDone = false;
-        remainEnemies = 0;
     }
 }

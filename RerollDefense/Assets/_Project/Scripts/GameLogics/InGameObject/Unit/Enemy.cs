@@ -210,6 +210,7 @@ public class Enemy : BasicObject
             {
                 hpStat.value -= (int)damage;
                 UpdateHpBar();
+                HitEffect();
             }
         }
 
@@ -229,7 +230,7 @@ public class Enemy : BasicObject
         transform.localScale = originalScale;
 
         // 펀치 스케일 효과 적용
-        transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 1, 1)
+        transform.DOPunchScale(Vector3.one * 0.1f, 0.2f, 1, 1)
             .SetEase(Ease.OutQuart);
 
         // 데미지를 입으면 빨간색으로 깜빡임
@@ -259,7 +260,9 @@ public class Enemy : BasicObject
         currentStats.Clear();
         EnemyManager.Instance.UnregisterEnemy(enemyCollider);
         PoolingManager.Instance.ReturnObject(gameObject);
-        StageManager.Instance.DecreaseEnemyCount();
+
+        // 현재 웨이브에 적 감소 알림
+        StageManager.Instance.NotifyEnemyDecrease();
     }
 
 
@@ -267,7 +270,8 @@ public class Enemy : BasicObject
     private void SpawnMinions(int spawnEnemyCount)
     {
         // 실제 스폰된 enemy 수만큼 remainEnemies 증가
-        StageManager.Instance.AddRemainingEnemies(spawnEnemyCount);
+        // 현재 웨이브에 적 추가 알림
+        StageManager.Instance.NotifyEnemyIncrease(spawnEnemyCount);
 
         Vector2 centerPos = TileMapManager.Instance.GetWorldToTilePosition(transform.position);
 
