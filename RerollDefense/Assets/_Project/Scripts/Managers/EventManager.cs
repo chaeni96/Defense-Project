@@ -23,12 +23,11 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    // 이벤트 ID와 실제 이벤트 객체를 매핑하는 Dictionary
+    // 이벤트 고유ID랑 실제 이벤트 객체 매핑
     private Dictionary<string, IEvent> registeredEvents = new Dictionary<string, IEvent>();
 
-    // 대상 객체별 등록된 이벤트 목록
-    private Dictionary<GameObject, List<KeyValuePair<EventTriggerType, string>>> objectEvents =
-        new Dictionary<GameObject, List<KeyValuePair<EventTriggerType, string>>>();
+    // 특정 오브젝트에 발생하는 이벤트들 관리, 트리거로 넣어두기
+    private Dictionary<GameObject, List<KeyValuePair<EventTriggerType, string>>> objectEvents = new Dictionary<GameObject, List<KeyValuePair<EventTriggerType, string>>>();
 
     // 이벤트 등록
     public void RegisterEvent(string eventId, IEvent gameEvent)
@@ -79,19 +78,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    // 이벤트 데이터로부터 이벤트 객체 생성
+    // 이벤트 데이터로부터 이벤트 클래스 생성
     public IEvent CreateEventFromData(D_EventDummyData eventData)
     {
-        switch (eventData.f_eventType)
+        if (eventData is D_SpawnEnemyEventData spawnData)
         {
-            case EventType.SpawnEnemy:
-                if (eventData is D_SpawnEnemyEventData spawnData)
-                {
-                    return new SpawnEnemyEvent(spawnData);
-                }
-                break;
-
-                // 추가 이벤트 타입에 대한 처리...
+            return new SpawnEnemyEvent(spawnData);
         }
 
         return null;

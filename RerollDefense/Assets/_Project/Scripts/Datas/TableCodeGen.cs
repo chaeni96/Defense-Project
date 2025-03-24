@@ -3810,7 +3810,6 @@ public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
 		public const string name = "name";
 		public const string enemy = "enemy";
 		public const string spawnCount = "spawnCount";
-		public const string eventType = "eventType";
 		public const string eventTriggerType = "eventTriggerType";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
@@ -3832,11 +3831,6 @@ public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
 		get => _f_spawnCount[Index];
 		set => _f_spawnCount[Index] = value;
 	}
-	public EventType f_eventType
-	{
-		get => (EventType) _f_eventType.GetStoredValue(Index);
-		set => _f_eventType.SetStoredValue(Index, (System.Int32) value);
-	}
 	public EventTriggerType f_eventTriggerType
 	{
 		get => (EventTriggerType) _f_eventTriggerType.GetStoredValue(Index);
@@ -3848,8 +3842,6 @@ public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_enemy => _ufle12jhs77_f_enemy ?? (_ufle12jhs77_f_enemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4636383276932165652UL, 10203178261217221005UL), () => _ufle12jhs77_f_enemy = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_spawnCount;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_spawnCount => _ufle12jhs77_f_spawnCount ?? (_ufle12jhs77_f_spawnCount = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5455191030196266291UL, 12450593194824238257UL), () => _ufle12jhs77_f_spawnCount = null));
-	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_eventType;
-	public static BansheeGz.BGDatabase.BGFieldEnum _f_eventType => _ufle12jhs77_f_eventType ?? (_ufle12jhs77_f_eventType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5239150175621791311UL, 11585871460436554638UL), () => _ufle12jhs77_f_eventType = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_eventTriggerType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_eventTriggerType => _ufle12jhs77_f_eventTriggerType ?? (_ufle12jhs77_f_eventTriggerType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5373829086129235479UL, 13599538728769204103UL), () => _ufle12jhs77_f_eventTriggerType = null));
 	public List<Alias_rifegrt_eventEnemyGroups> RelatedeventEnemyGroupsListUsingEventDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_eventEnemyGroups>(Alias_rifegrt_eventEnemyGroups._f_EventDummyData, Id);
@@ -3912,7 +3904,6 @@ public partial interface D_WaveDummyData  : BGAbstractEntityI
 public partial interface D_EventDummyData  : BGAbstractEntityI
 {
 	System.String f_name {get; set;}
-	EventType f_eventType {get; set;}
 	EventTriggerType f_eventTriggerType {get; set;}
 }
 #pragma warning restore 414
