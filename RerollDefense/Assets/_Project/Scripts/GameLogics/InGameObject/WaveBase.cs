@@ -398,7 +398,9 @@ public class EventEnemyWave : WaveBase
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
                 // 이벤트 적 스폰 (드롭 아이템 정보 포함)
-                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
+                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, groupData.f_EventDummyData);
+
+                //가지고 있는 이벤트 등록
                 // TODO: 드롭 아이템 정보 설정
             }
             else

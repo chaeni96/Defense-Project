@@ -283,9 +283,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void NotifyEnemyIncrease(int count)
     {
-        // UI 업데이트
-        UpdateEnemyCount(count);
-
         // 현재 웨이브에 적 추가 알림
         if (currentWave != null)
         {

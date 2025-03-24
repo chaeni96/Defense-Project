@@ -138,6 +138,29 @@ public class Enemy : BasicObject
 
         UpdateHpBar();
     }
+    //이벤트 등록
+    public void InitializeEvents(List<D_EventDummyData> events)
+    {
+        if (events == null || events.Count == 0) return;
+
+        foreach (D_EventDummyData eventData in events)
+        {
+            // 이벤트 ID
+            string eventId = eventData.Id.ToString();
+
+            // 이벤트 객체 생성
+            IEvent gameEvent = EventManager.Instance.CreateEventFromData(eventData);
+
+            if (gameEvent != null)
+            {
+                // 이벤트 매니저에 이벤트 등록
+                EventManager.Instance.RegisterEvent(eventId, gameEvent);
+
+                // 적 객체에 이벤트 연결
+                EventManager.Instance.AssignEventToObject(gameObject, eventData.f_eventTriggerType, eventId);
+            }
+        }
+    }
 
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
@@ -245,15 +268,15 @@ public class Enemy : BasicObject
 
     public void OnDead()
     {
+        //TODO : 나중에 수정 boss가 집에 안도착했을때 예외처리 필요함
         if (enemyType == EnemyType.Boss && !isReach)
         {
-            //effect 발생, enemy spawn
-            SpawnMinions(5);
-
-
             GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
             explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
         }
+
+        // 이벤트 매니저를 통해 OnDeath 이벤트 트리거
+        EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
 
         isActive = false;
         baseStats.Clear();
@@ -263,60 +286,6 @@ public class Enemy : BasicObject
 
         // 현재 웨이브에 적 감소 알림
         StageManager.Instance.NotifyEnemyDecrease();
-    }
-
-
-
-    private void SpawnMinions(int spawnEnemyCount)
-    {
-        // 실제 스폰된 enemy 수만큼 remainEnemies 증가
-        // 현재 웨이브에 적 추가 알림
-        StageManager.Instance.NotifyEnemyIncrease(spawnEnemyCount);
-
-        Vector2 centerPos = TileMapManager.Instance.GetWorldToTilePosition(transform.position);
-
-        List<Vector2> directions = new List<Vector2>
-        {
-            Vector2.zero,  // 보스 현재 위치
-            Vector2.up,
-            Vector2.right,
-            Vector2.down,
-            Vector2.left
-        };
-
-        List<Vector3> validPositions = new List<Vector3>();
-
-        foreach (var dir in directions)
-        {
-            Vector2 checkPos = centerPos + dir;
-            TileData tileData = TileMapManager.Instance.GetTileData(checkPos);
-
-            if (tileData != null && tileData.isAvailable)
-            {
-                validPositions.Add(TileMapManager.Instance.GetTileToWorldPosition(checkPos));
-            }
-        }
-
-        if (validPositions.Count > 0)
-        {
-            int enemiesPerPosition = spawnEnemyCount / validPositions.Count;
-            int remainingEnemies = spawnEnemyCount % validPositions.Count;
-
-            for (int i = 0; i < validPositions.Count; i++)
-            {
-                int spawnCount = enemiesPerPosition;
-                if (remainingEnemies > 0)
-                {
-                    spawnCount++;
-                    remainingEnemies--;
-                }
-
-                for (int j = 0; j < spawnCount; j++)
-                {
-                   EnemyManager.Instance.SpawnEnemy(enemyData.f_DeathSpawnEnemyData, validPositions[i]);
-                }
-            }
-        }
     }
 
 }

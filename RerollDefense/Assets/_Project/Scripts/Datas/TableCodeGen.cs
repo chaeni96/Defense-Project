@@ -12,6 +12,7 @@ using Alias_rifegrt_eventEnemyGroups = D_eventEnemyGroups;
 using Alias_rifegrt_HuntingOptionData = D_HuntingOptionData;
 using Alias_rifegrt_supportEnemys = D_supportEnemys;
 using Alias_rifegrt_supportEnemyGroups = D_supportEnemyGroups;
+using Alias_rifegrt_SpawnEnemyEventData = D_SpawnEnemyEventData;
 using Alias_rifegrt_TileCardData = D_TileCardData;
 using Alias_rifegrt_StageData = D_StageData;
 using Alias_rifegrt_WildCardWaveData = D_WildCardWaveData;
@@ -126,6 +127,7 @@ public partial class D_TileCardData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_TileCardData() : base(MetaDefault) {}
 	private D_TileCardData(BGId id) : base(MetaDefault, id) {}
 	private D_TileCardData(BGMetaEntity meta) : base(meta) {}
@@ -221,6 +223,7 @@ public partial class D_LocalUserData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_LocalUserData() : base(MetaDefault) {}
 	private D_LocalUserData(BGId id) : base(MetaDefault, id) {}
 	private D_LocalUserData(BGMetaEntity meta) : base(meta) {}
@@ -338,6 +341,7 @@ public partial class D_UnitData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_UnitData() : base(MetaDefault) {}
 	private D_UnitData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitData(BGMetaEntity meta) : base(meta) {}
@@ -437,6 +441,7 @@ public partial class D_unitBuildData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_unitBuildData() : base(MetaDefault) {}
 	private D_unitBuildData(BGId id) : base(MetaDefault, id) {}
 	private D_unitBuildData(BGMetaEntity meta) : base(meta) {}
@@ -574,6 +579,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_UnitShopChanceData() : base(MetaDefault) {}
 	private D_UnitShopChanceData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitShopChanceData(BGMetaEntity meta) : base(meta) {}
@@ -677,6 +683,7 @@ public partial class D_ObjectPoolData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_ObjectPoolData() : base(MetaDefault) {}
 	private D_ObjectPoolData(BGId id) : base(MetaDefault, id) {}
 	private D_ObjectPoolData(BGMetaEntity meta) : base(meta) {}
@@ -768,6 +775,7 @@ public partial class D_WaveData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_WaveData() : base(MetaDefault) {}
 	private D_WaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveData(BGMetaEntity meta) : base(meta) {}
@@ -899,6 +907,7 @@ public partial class D_StageData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_StageData() : base(MetaDefault) {}
 	private D_StageData(BGId id) : base(MetaDefault, id) {}
 	private D_StageData(BGMetaEntity meta) : base(meta) {}
@@ -971,6 +980,7 @@ public partial class D_EnemyData : BGEntity
 	public List<Alias_rifegrt_HuntingOptionData> RelatedHuntingOptionDataListUsingspawnEnemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingOptionData>(Alias_rifegrt_HuntingOptionData._f_spawnEnemy, Id);
 	public List<Alias_rifegrt_supportEnemys> RelatedsupportEnemysListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_supportEnemys>(Alias_rifegrt_supportEnemys._f_enemy, Id);
 	public List<Alias_rifegrt_supportEnemyGroups> RelatedsupportEnemyGroupsListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_supportEnemyGroups>(Alias_rifegrt_supportEnemyGroups._f_enemy, Id);
+	public List<Alias_rifegrt_SpawnEnemyEventData> RelatedSpawnEnemyEventDataListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpawnEnemyEventData>(Alias_rifegrt_SpawnEnemyEventData._f_enemy, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -1006,6 +1016,7 @@ public partial class D_EnemyData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_EnemyData() : base(MetaDefault) {}
 	private D_EnemyData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyData(BGMetaEntity meta) : base(meta) {}
@@ -1121,6 +1132,7 @@ public partial class D_enemyGroup : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_enemyGroup() : base(MetaDefault) {}
 	private D_enemyGroup(BGId id) : base(MetaDefault, id) {}
 	private D_enemyGroup(BGMetaEntity meta) : base(meta) {}
@@ -1209,6 +1221,7 @@ public partial class D_TilePosData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_TilePosData() : base(MetaDefault) {}
 	private D_TilePosData(BGId id) : base(MetaDefault, id) {}
 	private D_TilePosData(BGMetaEntity meta) : base(meta) {}
@@ -1311,6 +1324,7 @@ public partial class D_ObstacleTileMapData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_ObstacleTileMapData() : base(MetaDefault) {}
 	private D_ObstacleTileMapData(BGId id) : base(MetaDefault, id) {}
 	private D_ObstacleTileMapData(BGMetaEntity meta) : base(meta) {}
@@ -1392,6 +1406,7 @@ public partial class D_MapData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_MapData() : base(MetaDefault) {}
 	private D_MapData(BGId id) : base(MetaDefault, id) {}
 	private D_MapData(BGMetaEntity meta) : base(meta) {}
@@ -1491,6 +1506,7 @@ public partial class D_SpecialTile : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_SpecialTile() : base(MetaDefault) {}
 	private D_SpecialTile(BGId id) : base(MetaDefault, id) {}
 	private D_SpecialTile(BGMetaEntity meta) : base(meta) {}
@@ -1605,6 +1621,7 @@ public partial class D_WildCardData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_WildCardData() : base(MetaDefault) {}
 	private D_WildCardData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardData(BGMetaEntity meta) : base(meta) {}
@@ -1708,6 +1725,7 @@ public partial class D_WaveTimeData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_WaveTimeData() : base(MetaDefault) {}
 	private D_WaveTimeData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveTimeData(BGMetaEntity meta) : base(meta) {}
@@ -1831,6 +1849,7 @@ public partial class D_BuffData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_BuffData() : base(MetaDefault) {}
 	private D_BuffData(BGId id) : base(MetaDefault, id) {}
 	private D_BuffData(BGMetaEntity meta) : base(meta) {}
@@ -1946,6 +1965,7 @@ public partial class D_buffEffects : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_buffEffects() : base(MetaDefault) {}
 	private D_buffEffects(BGId id) : base(MetaDefault, id) {}
 	private D_buffEffects(BGMetaEntity meta) : base(meta) {}
@@ -2036,6 +2056,7 @@ public partial class D_StatSubjectData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_StatSubjectData() : base(MetaDefault) {}
 	private D_StatSubjectData(BGId id) : base(MetaDefault, id) {}
 	private D_StatSubjectData(BGMetaEntity meta) : base(meta) {}
@@ -2143,6 +2164,7 @@ public partial class D_subjectStats : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_subjectStats() : base(MetaDefault) {}
 	private D_subjectStats(BGId id) : base(MetaDefault, id) {}
 	private D_subjectStats(BGMetaEntity meta) : base(meta) {}
@@ -2246,6 +2268,7 @@ public partial class D_EpisodeData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_EpisodeData() : base(MetaDefault) {}
 	private D_EpisodeData(BGId id) : base(MetaDefault, id) {}
 	private D_EpisodeData(BGMetaEntity meta) : base(meta) {}
@@ -2334,6 +2357,7 @@ public partial class D_NormalBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_NormalBattleWaveData() : base(MetaDefault) {}
 	private D_NormalBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_NormalBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2446,6 +2470,7 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_BossBattleWaveData() : base(MetaDefault) {}
 	private D_BossBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_BossBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2554,6 +2579,7 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_WildCardWaveData() : base(MetaDefault) {}
 	private D_WildCardWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2656,6 +2682,7 @@ public partial class D_HuntingSelectTimeWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_HuntingSelectTimeWaveData() : base(MetaDefault) {}
 	private D_HuntingSelectTimeWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingSelectTimeWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2755,6 +2782,7 @@ public partial class D_PrizeHuntingWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_PrizeHuntingWaveData() : base(MetaDefault) {}
 	private D_PrizeHuntingWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_PrizeHuntingWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2843,6 +2871,7 @@ public partial class D_EventEnemyWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_EventEnemyWaveData() : base(MetaDefault) {}
 	private D_EventEnemyWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_EventEnemyWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2958,6 +2987,7 @@ public partial class D_enemyGroups : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_enemyGroups() : base(MetaDefault) {}
 	private D_enemyGroups(BGId id) : base(MetaDefault, id) {}
 	private D_enemyGroups(BGMetaEntity meta) : base(meta) {}
@@ -2995,6 +3025,7 @@ public partial class D_eventEnemyGroups : BGEntity
 		public const string startDelay = "startDelay";
 		public const string spawnInterval = "spawnInterval";
 		public const string DropItem = "DropItem";
+		public const string EventDummyData = "EventDummyData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaNested _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaNested MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaNested>(new BGId(4895298204942174592UL,6438946908012187048UL), () => _metaDefault = null));
@@ -3035,6 +3066,11 @@ public partial class D_eventEnemyGroups : BGEntity
 		get => (D_ItemData) _f_DropItem[Index];
 		set => _f_DropItem[Index] = value;
 	}
+	public List<D_EventDummyData> f_EventDummyData
+	{
+		get => BGCodeGenUtils.MultipleViewRelationGet<D_EventDummyData>(_f_EventDummyData, Index);
+		set => BGCodeGenUtils.MultipleViewRelationSet<D_EventDummyData>(_f_EventDummyData, Index, value);
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5668417547983427612UL, 9095147252298308249UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_EventEnemyWaveData;
@@ -3049,6 +3085,8 @@ public partial class D_eventEnemyGroups : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldFloat _f_spawnInterval => _ufle12jhs77_f_spawnInterval ?? (_ufle12jhs77_f_spawnInterval = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4618735360583894413UL, 4074289431108769941UL), () => _ufle12jhs77_f_spawnInterval = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_DropItem;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_DropItem => _ufle12jhs77_f_DropItem ?? (_ufle12jhs77_f_DropItem = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5655781804240440156UL, 12235158152955609221UL), () => _ufle12jhs77_f_DropItem = null));
+	private static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _ufle12jhs77_f_EventDummyData;
+	public static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _f_EventDummyData => _ufle12jhs77_f_EventDummyData ?? (_ufle12jhs77_f_EventDummyData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldViewRelationMultiple>(MetaDefault, new BGId(5211798456232690438UL, 15425316674252655019UL), () => _ufle12jhs77_f_EventDummyData = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -3084,6 +3122,7 @@ public partial class D_eventEnemyGroups : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_eventEnemyGroups() : base(MetaDefault) {}
 	private D_eventEnemyGroups(BGId id) : base(MetaDefault, id) {}
 	private D_eventEnemyGroups(BGMetaEntity meta) : base(meta) {}
@@ -3163,6 +3202,7 @@ public partial class D_ItemData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_ItemData() : base(MetaDefault) {}
 	private D_ItemData(BGId id) : base(MetaDefault, id) {}
 	private D_ItemData(BGMetaEntity meta) : base(meta) {}
@@ -3279,6 +3319,7 @@ public partial class D_HuntingOptionData : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_HuntingOptionData() : base(MetaDefault) {}
 	private D_HuntingOptionData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingOptionData(BGMetaEntity meta) : base(meta) {}
@@ -3386,6 +3427,7 @@ public partial class D_huntingReward : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_huntingReward() : base(MetaDefault) {}
 	private D_huntingReward(BGId id) : base(MetaDefault, id) {}
 	private D_huntingReward(BGMetaEntity meta) : base(meta) {}
@@ -3496,6 +3538,7 @@ public partial class D_huntingRisk : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_huntingRisk() : base(MetaDefault) {}
 	private D_huntingRisk(BGId id) : base(MetaDefault, id) {}
 	private D_huntingRisk(BGMetaEntity meta) : base(meta) {}
@@ -3614,6 +3657,7 @@ public partial class D_supportEnemys : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_supportEnemys() : base(MetaDefault) {}
 	private D_supportEnemys(BGId id) : base(MetaDefault, id) {}
 	private D_supportEnemys(BGMetaEntity meta) : base(meta) {}
@@ -3732,6 +3776,7 @@ public partial class D_supportEnemyGroups : BGEntity
 	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
 	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
 	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
 	private D_supportEnemyGroups() : base(MetaDefault) {}
 	private D_supportEnemyGroups(BGId id) : base(MetaDefault, id) {}
 	private D_supportEnemyGroups(BGMetaEntity meta) : base(meta) {}
@@ -3750,8 +3795,124 @@ public partial class D_supportEnemyGroups : BGEntity
 	public static D_supportEnemyGroups NewEntity(D_BossBattleWaveData owner, Action<D_supportEnemyGroups> callback) => (D_supportEnemyGroups) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_supportEnemyGroups)entity)));
 }
 
+public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
+{
+
+	public class Factory : BGEntity.EntityFactory
+	{
+		public BGEntity NewEntity(BGMetaEntity meta) => new D_SpawnEnemyEventData(meta);
+		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_SpawnEnemyEventData(meta, id);
+	}
+
+	public static class __Names
+	{
+		public const string Meta = "SpawnEnemyEventData";
+		public const string name = "name";
+		public const string enemy = "enemy";
+		public const string spawnCount = "spawnCount";
+		public const string eventType = "eventType";
+		public const string eventTriggerType = "eventTriggerType";
+	}
+	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
+	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5218388514063466660UL,741042039748759204UL), () => _metaDefault = null));
+	public static BansheeGz.BGDatabase.BGRepoEvents Events => BGRepo.I.Events;
+	public static int CountEntities => MetaDefault.CountEntities;
+	public System.String f_name
+	{
+		get => _f_name[Index];
+		set => _f_name[Index] = value;
+	}
+	public D_EnemyData f_enemy
+	{
+		get => (D_EnemyData) _f_enemy[Index];
+		set => _f_enemy[Index] = value;
+	}
+	public System.Int32 f_spawnCount
+	{
+		get => _f_spawnCount[Index];
+		set => _f_spawnCount[Index] = value;
+	}
+	public EventType f_eventType
+	{
+		get => (EventType) _f_eventType.GetStoredValue(Index);
+		set => _f_eventType.SetStoredValue(Index, (System.Int32) value);
+	}
+	public EventTriggerType f_eventTriggerType
+	{
+		get => (EventTriggerType) _f_eventTriggerType.GetStoredValue(Index);
+		set => _f_eventTriggerType.SetStoredValue(Index, (System.Int32) value);
+	}
+	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
+	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4681781495519159271UL, 10544228177681240984UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_enemy;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_enemy => _ufle12jhs77_f_enemy ?? (_ufle12jhs77_f_enemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4636383276932165652UL, 10203178261217221005UL), () => _ufle12jhs77_f_enemy = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_spawnCount;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_spawnCount => _ufle12jhs77_f_spawnCount ?? (_ufle12jhs77_f_spawnCount = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5455191030196266291UL, 12450593194824238257UL), () => _ufle12jhs77_f_spawnCount = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_eventType;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_eventType => _ufle12jhs77_f_eventType ?? (_ufle12jhs77_f_eventType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5239150175621791311UL, 11585871460436554638UL), () => _ufle12jhs77_f_eventType = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_eventTriggerType;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_eventTriggerType => _ufle12jhs77_f_eventTriggerType ?? (_ufle12jhs77_f_eventTriggerType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5373829086129235479UL, 13599538728769204103UL), () => _ufle12jhs77_f_eventTriggerType = null));
+	public List<Alias_rifegrt_eventEnemyGroups> RelatedeventEnemyGroupsListUsingEventDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_eventEnemyGroups>(Alias_rifegrt_eventEnemyGroups._f_EventDummyData, Id);
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
+	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
+	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
+	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
+	private static readonly D_UnitShopChanceData.Factory _factory4_PFS = new D_UnitShopChanceData.Factory();
+	private static readonly D_ObjectPoolData.Factory _factory5_PFS = new D_ObjectPoolData.Factory();
+	private static readonly D_WaveData.Factory _factory6_PFS = new D_WaveData.Factory();
+	private static readonly D_StageData.Factory _factory7_PFS = new D_StageData.Factory();
+	private static readonly D_EnemyData.Factory _factory8_PFS = new D_EnemyData.Factory();
+	private static readonly D_enemyGroup.Factory _factory9_PFS = new D_enemyGroup.Factory();
+	private static readonly D_TilePosData.Factory _factory10_PFS = new D_TilePosData.Factory();
+	private static readonly D_ObstacleTileMapData.Factory _factory11_PFS = new D_ObstacleTileMapData.Factory();
+	private static readonly D_MapData.Factory _factory12_PFS = new D_MapData.Factory();
+	private static readonly D_SpecialTile.Factory _factory13_PFS = new D_SpecialTile.Factory();
+	private static readonly D_WildCardData.Factory _factory14_PFS = new D_WildCardData.Factory();
+	private static readonly D_WaveTimeData.Factory _factory15_PFS = new D_WaveTimeData.Factory();
+	private static readonly D_BuffData.Factory _factory16_PFS = new D_BuffData.Factory();
+	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
+	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
+	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
+	private static readonly D_NormalBattleWaveData.Factory _factory21_PFS = new D_NormalBattleWaveData.Factory();
+	private static readonly D_BossBattleWaveData.Factory _factory22_PFS = new D_BossBattleWaveData.Factory();
+	private static readonly D_WildCardWaveData.Factory _factory23_PFS = new D_WildCardWaveData.Factory();
+	private static readonly D_HuntingSelectTimeWaveData.Factory _factory24_PFS = new D_HuntingSelectTimeWaveData.Factory();
+	private static readonly D_PrizeHuntingWaveData.Factory _factory25_PFS = new D_PrizeHuntingWaveData.Factory();
+	private static readonly D_EventEnemyWaveData.Factory _factory26_PFS = new D_EventEnemyWaveData.Factory();
+	private static readonly D_enemyGroups.Factory _factory27_PFS = new D_enemyGroups.Factory();
+	private static readonly D_eventEnemyGroups.Factory _factory28_PFS = new D_eventEnemyGroups.Factory();
+	private static readonly D_ItemData.Factory _factory29_PFS = new D_ItemData.Factory();
+	private static readonly D_HuntingOptionData.Factory _factory30_PFS = new D_HuntingOptionData.Factory();
+	private static readonly D_huntingReward.Factory _factory31_PFS = new D_huntingReward.Factory();
+	private static readonly D_huntingRisk.Factory _factory32_PFS = new D_huntingRisk.Factory();
+	private static readonly D_supportEnemys.Factory _factory33_PFS = new D_supportEnemys.Factory();
+	private static readonly D_supportEnemyGroups.Factory _factory34_PFS = new D_supportEnemyGroups.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory35_PFS = new D_SpawnEnemyEventData.Factory();
+	private D_SpawnEnemyEventData() : base(MetaDefault) {}
+	private D_SpawnEnemyEventData(BGId id) : base(MetaDefault, id) {}
+	private D_SpawnEnemyEventData(BGMetaEntity meta) : base(meta) {}
+	private D_SpawnEnemyEventData(BGMetaEntity meta, BGId id) : base(meta, id) {}
+	public static D_SpawnEnemyEventData FindEntity(Predicate<D_SpawnEnemyEventData> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
+	public static List<D_SpawnEnemyEventData> FindEntities(Predicate<D_SpawnEnemyEventData> filter, List<D_SpawnEnemyEventData> result=null, Comparison<D_SpawnEnemyEventData> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
+	public static void ForEachEntity(Action<D_SpawnEnemyEventData> action, Predicate<D_SpawnEnemyEventData> filter=null, Comparison<D_SpawnEnemyEventData> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
+	public static D_SpawnEnemyEventData GetEntity(BGId entityId) => (D_SpawnEnemyEventData) MetaDefault.GetEntity(entityId);
+	public static D_SpawnEnemyEventData GetEntity(int index) => (D_SpawnEnemyEventData) MetaDefault[index];
+	public static D_SpawnEnemyEventData GetEntity(string entityName) => (D_SpawnEnemyEventData) MetaDefault.GetEntity(entityName);
+	public static D_SpawnEnemyEventData NewEntity() => (D_SpawnEnemyEventData) MetaDefault.NewEntity();
+	public static D_SpawnEnemyEventData NewEntity(BGId entityId) => (D_SpawnEnemyEventData) MetaDefault.NewEntity(entityId);
+	public static D_SpawnEnemyEventData NewEntity(Action<D_SpawnEnemyEventData> callback) => (D_SpawnEnemyEventData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_SpawnEnemyEventData)entity)));
+}
+
 public partial interface D_WaveDummyData  : BGAbstractEntityI
 {
 	System.String f_name {get; set;}
+}
+
+public partial interface D_EventDummyData  : BGAbstractEntityI
+{
+	System.String f_name {get; set;}
+	EventType f_eventType {get; set;}
+	EventTriggerType f_eventTriggerType {get; set;}
 }
 #pragma warning restore 414

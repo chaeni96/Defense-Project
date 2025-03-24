@@ -107,7 +107,7 @@ public class EnemyManager : MonoBehaviour
         moveSpeeds = new NativeArray<float>(enemyCount, Allocator.TempJob);
     }
 
-    public void SpawnEnemy(D_EnemyData enemyData, Vector3? initPos = null)
+    public void SpawnEnemy(D_EnemyData enemyData, Vector3? initPos = null, List<D_EventDummyData> events = null)
     {
 
         var startTilePos = TileMapManager.Instance.GetStartPosition();
@@ -121,6 +121,11 @@ public class EnemyManager : MonoBehaviour
             enemy.transform.position = startPos;
             enemy.Initialize();
             enemy.InitializeEnemyInfo(enemyData);
+
+            if(events != null && events.Count() > 0)
+            {
+                enemy.InitializeEvents(events);
+            }
 
             // 초기 경로 설정
             List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);

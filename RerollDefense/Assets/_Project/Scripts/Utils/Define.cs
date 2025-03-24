@@ -123,3 +123,23 @@ public enum WaveType
     PrizeHunting,
     WildCardSelect,
 }
+
+//이벤트 타입
+public enum EventType
+{
+    None,
+    SpawnEnemy,
+    DropItem,
+    DropGold,
+}
+
+// 이벤트 발동 트리거 
+public enum EventTriggerType
+{
+    None,
+    OnSpawn,
+    OnDeath,
+    OnDamaged,
+
+
+}
