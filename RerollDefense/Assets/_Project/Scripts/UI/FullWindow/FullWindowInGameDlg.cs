@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using TMPro;
+using DG.Tweening;
 
 
 [UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
@@ -15,6 +16,7 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
     public GameObject forthCardDeck;
+    public GameObject fifthCardDeck;
 
 
     [SerializeField] private GameObject CostGauge;  
@@ -89,7 +91,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     private void InitializeCardDecks()
     {
-        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, forthCardDeck };
+        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, forthCardDeck, fifthCardDeck };
 
       
         currentCards = new List<UnitCardObject>();
@@ -113,32 +115,125 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
-    // 덱 상태를 주기적으로 체크하고 비어 있으면 UnitCardObject 생성
     private IEnumerator CheckAndFillCardDecks()
     {
-        isChecking = true;
+        var cardDatas = new List<D_TileCardData>();
 
-        while (isChecking)
+        // 카드 데이터 미리 준비
+        for (int i = 0; i < cardDecks.Count; i++)
         {
-            foreach (var cardDeck in cardDecks)
+            if (emptyCardObjects[i].activeSelf && currentCards[i] == null)
             {
-                // UnitCard_Empty가 활성화된 경우 처리
-                for (int i = 0; i < cardDecks.Count; i++)
-                {
-                    if (emptyCardObjects[i].activeSelf && currentCards[i] == null)
-                    {
-                        // 덱에 UnitCardObject가 비어 있으면 생성
+                cardDatas.Add(GetCardKeyBasedOnProbability());
+            }
+            else
+            {
+                cardDatas.Add(null);
+            }
+        }
 
-                        CreateUnitCard(cardDecks[i], i);
-                    }
-                }
-                yield return new WaitForSeconds(checkCooldown);
+        // 각 카드에 대해 0.1초 간격으로 코루틴 실행
+        for (int i = 0; i < cardDecks.Count; i++)
+        {
+            if (cardDatas[i] != null)
+            {
+                emptyCardObjects[i].SetActive(false);
+                StartCoroutine(PlayEffectAndSpawnCard(i, cardDatas[i]));
+                yield return new WaitForSeconds(0.06f); // 다음 카드 이펙트 간격
+            }
+        }
+    }
+    private IEnumerator PlayEffectAndSpawnCard(int index, D_TileCardData cardData)
+    {
+        var grade = cardData.f_grade;
+
+        // 등급 색상 적용
+        Color gradeColor = GetGradeColor(grade);
+        cardGradeImages[index].color = gradeColor;
+
+        // 이펙트 실행
+        PlayCardEnterEffect(cardGradeImages[index]);
+
+        // 이펙트 실행 시간만큼 대기
+        yield return new WaitForSeconds(0.24f);
+
+        // 카드 생성
+        CreateUnitCardWithData(cardDecks[index], index, cardData);
+    }
+
+    private void PlayCardEnterEffect(Image unitCard)
+    {
+        if (unitCard == null) return;
+
+        //트위스트, zoom
+        if (unitCard.material != null && unitCard.material.HasProperty("_TwistUvAmount") && unitCard.material.HasProperty("_ZoomUvAmount"))
+        {
+            if (!unitCard.material.name.EndsWith("(Instance)"))
+            {
+                unitCard.material = Instantiate(unitCard.material);
+            }
+
+            Material mat = unitCard.material;
+
+            DOTween.To(() => 4f, v => mat.SetFloat("_ZoomUvAmount", v), 1f, 0.16f);
+
+            DOTween.To(() => 1f, v => mat.SetFloat("_TwistUvAmount", v), 0f, 0.16f);
+        }
+    }
+    // 이펙트도 있다면..
+    private void PlayCardEffect(Transform parent, UnitGrade grade)
+    {
+        string effectName = grade switch
+        {
+            UnitGrade.Normal => "Effect_Normal",
+            UnitGrade.Rare => "Effect_Rare",
+            UnitGrade.Epic => "Effect_Epic",
+            UnitGrade.Legendary => "Effect_Legendary",
+            UnitGrade.Mythic => "Effect_Mythic",
+            _ => "Effect_Default"
+        };
+
+        var effect = PoolingManager.Instance.GetObject(effectName);
+        effect.transform.SetParent(parent);
+        effect.transform.localPosition = Vector3.zero;
+    }
+    private void CreateUnitCardWithData(GameObject cardDeck, int deckIndex, D_TileCardData cardData)
+    {
+        GameObject unitCard = PoolingManager.Instance.GetObject("UnitCardObject");
+
+        if (unitCard != null)
+        {
+            unitCard.transform.SetParent(cardDeck.transform);
+            unitCard.transform.localPosition = Vector3.zero;
+
+            UnitCardObject cardObject = unitCard.GetComponent<UnitCardObject>();
+
+            if (cardObject != null)
+            {
+                cardObject.InitializeCardInform(cardData);
+                currentCards[deckIndex] = cardObject;
+
+                var dragHandler = cardDeck.GetComponent<CardDeckDragHandler>();
+                if (dragHandler != null)
+                    dragHandler.SetUnitCard(cardObject);
             }
         }
     }
 
+    private Color GetGradeColor(UnitGrade grade)
+    {
+        return grade switch
+        {
+            UnitGrade.Normal => normalColorGradient.topLeft,
+            UnitGrade.Rare => rareColorGradient.topLeft,
+            UnitGrade.Epic => epicColorGradient.topLeft,
+            UnitGrade.Legendary => legendaryColorGradient.topLeft,
+            UnitGrade.Mythic => mythicColorGradient.topLeft,
+            _ => Color.white
+        };
+    }
     // UnitCardObject 생성 및 덱에 추가
-    private void CreateUnitCard(GameObject cardDeck, int deckIndex)
+    /*private void CreateUnitCard(GameObject cardDeck, int deckIndex)
     {
 
         GameObject unitCard = PoolingManager.Instance.GetObject("UnitCardObject");
@@ -196,7 +291,7 @@ public class FullWindowInGameDlg : FullWindowBase
                 cardGradeImages[deckIndex].color = gradeColor;
             }
         }
-    }
+    }*/
 
     public D_TileCardData GetCardKeyBasedOnProbability()
     {
@@ -383,7 +478,7 @@ public class FullWindowInGameDlg : FullWindowBase
     private void CleanUp()
     {
         // 카드 관련 정리
-        isChecking = false;
+        //isChecking = false;
         if (currentCards != null)
         {
             foreach (var card in currentCards.Where(c => c != null))
