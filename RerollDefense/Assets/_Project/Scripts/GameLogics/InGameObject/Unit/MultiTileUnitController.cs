@@ -63,8 +63,22 @@ public class MultiTileUnitController : UnitController
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
 
+        // 합성 가능 여부 확인
+        bool canMerge = CanMergeWithTarget(tileData);
+
+        // 합성이 가능하면 canPlace를 true로 설정, 아니면 일반 배치 가능성 확인
+        if (canMerge)
+        {
+            canPlace = true;
+        }
+        else
+        {
+            // 배치 가능 여부 확인 (합성이 아닌 경우)
+            canPlace = CheckPlacementPossibility(currentTilePos);
+        }
+
         // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
-        bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
+        bool canUpdatePreview = currentTilePos != previousTilePosition || (canMerge != isShowingMergePreview);
 
         if (canUpdatePreview)
         {
@@ -72,7 +86,7 @@ public class MultiTileUnitController : UnitController
             ResetMergePreview();
 
             // 합성 가능 여부 확인 및 프리뷰 표시
-            if (CanMergeWithTarget(tileData))
+            if (canMerge)
             {
                 ShowMergePreview(tileData);
             }
@@ -114,7 +128,7 @@ public class MultiTileUnitController : UnitController
 
         // 내 유닛을 업그레이드된 레벨로 표시
         int newStarLevel = originalStarLevel + 1;
-        UpGradeUnitLevel(newStarLevel);
+        UpdateStarDisplay(newStarLevel);
 
         // 중요: 드래그 중인 유닛을 정확히 합성 대상 유닛 위에 배치
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
@@ -357,26 +371,6 @@ public class MultiTileUnitController : UnitController
         if (extensionObjects.Count > 0)
         {
             Vector3 basePos = transform.position;
-
-            Debug.Log($"[MultiTileUnitController] Base Position: {basePos}");
-
-            // 확장 객체들의 상세 정보 로깅
-            foreach (var extObj in extensionObjects)
-            {
-                if (extObj != null)
-                {
-                    Vector2 offset = extObj.offsetFromParent;
-                    Debug.Log($"Extension Object Offset: {offset}");
-
-                    // 해당 위치의 타일 좌표 확인
-                    Vector2 baseTilePos = TileMapManager.Instance.GetWorldToTilePosition(basePos);
-                    Vector2 extensionTilePos = baseTilePos + offset;
-
-                    Debug.Log($"Base Tile Position: {baseTilePos}");
-                    Debug.Log($"Extension Tile Position: {extensionTilePos}");
-                }
-            }
-
 
             // OnPositionChanged 이벤트를 사용하여 모든 확장 타일에 알림
             OnPositionChanged?.Invoke(basePos);
