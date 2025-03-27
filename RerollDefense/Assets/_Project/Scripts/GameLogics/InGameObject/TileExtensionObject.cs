@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,9 +22,7 @@ public class TileExtensionObject : MonoBehaviour
             parentUnit.OnPositionChanged += HandlePositionChanged;
             parentUnit.OnMaterialChanged += HandleMaterialChanged;
             parentUnit.OnUnitDeleted += HandleUnitDeleted;
-
-            // 부모 유닛에 자신을 등록
-            parentUnit.AddExtensionTile(offset, this);
+            parentUnit.OnMovingPositionChanged += HandleMovingPositionChanged;
         }
     }
 
@@ -53,6 +52,19 @@ public class TileExtensionObject : MonoBehaviour
         }
     }
 
+    //무빙 주는 움직임
+    private void HandleMovingPositionChanged(Vector3 parentPosition, float duration)
+    {
+        Vector2 baseTilePos = TileMapManager.Instance.GetWorldToTilePosition(parentPosition);
+        Vector2 myTilePos = baseTilePos + offsetFromParent;
+        Vector3 myWorldPos = TileMapManager.Instance.GetTileToWorldPosition(myTilePos);
+        myWorldPos.z = parentPosition.z; // 같은 z 위치 유지
+
+        // DOTween을 사용하여 부드러운 이동
+        transform.DOMove(myWorldPos, duration).SetEase(Ease.OutBack);
+    }
+
+
     // 유닛 삭제 처리
     private void HandleUnitDeleted()
     {
@@ -62,6 +74,8 @@ public class TileExtensionObject : MonoBehaviour
             parentUnit.OnPositionChanged -= HandlePositionChanged;
             parentUnit.OnMaterialChanged -= HandleMaterialChanged;
             parentUnit.OnUnitDeleted -= HandleUnitDeleted;
+            parentUnit.OnMovingPositionChanged -= HandleMovingPositionChanged;
+
         }
 
         // 풀링 시스템에 반환
@@ -76,6 +90,7 @@ public class TileExtensionObject : MonoBehaviour
             parentUnit.OnPositionChanged -= HandlePositionChanged;
             parentUnit.OnMaterialChanged -= HandleMaterialChanged;
             parentUnit.OnUnitDeleted -= HandleUnitDeleted;
+            parentUnit.OnMovingPositionChanged -= HandleMovingPositionChanged;
         }
     }
 }

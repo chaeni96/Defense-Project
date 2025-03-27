@@ -51,7 +51,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
-    private Vector3 originalPosition;
+    protected Vector3 originalPosition;
     protected Vector2 originalTilePosition;
     protected Vector2 previousTilePosition; // 이전 타일 위치 추적용
     protected bool hasDragged = false;
@@ -211,7 +211,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void CheckAttackAvailability()
     {
         // y가 9보다 크면 공격 불가
-        canAttack = tilePosition.y <= 9;
+        canAttack = tilePosition.y < 10;
     }
 
     public void SetActive(bool active)
@@ -520,18 +520,16 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         // 원래 상태로 복원
         ResetMergePreview();
-
        
-        {
-            // 기존 단일 타일 로직
-            // 원본 타일에서 유닛 제거
-            TileMapManager.Instance.ReleaseTile(originalTilePosition);
+        // 기존 단일 타일 로직
+        // 원본 타일에서 유닛 제거
+        TileMapManager.Instance.ReleaseTile(originalTilePosition);
 
-            // 새 타일 점유
-            List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
-            Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-            TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, units);
-        }
+        // 새 타일 점유
+        List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
+        Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
+        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, units);
+       
 
         // 유닛 위치 업데이트
         tilePosition = previousTilePosition;
@@ -578,7 +576,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
     // 원래 위치로 돌아가기
-    protected void ReturnToOriginalPosition()
+    protected virtual void ReturnToOriginalPosition()
     {
         transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
     }

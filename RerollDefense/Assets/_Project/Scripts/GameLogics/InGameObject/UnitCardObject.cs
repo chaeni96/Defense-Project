@@ -276,6 +276,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             if (oldController != null && !(oldController is MultiTileUnitController))
             {
+                // TODO : 멀티타일용 유닛오브젝트 만들면 이부분 꼭 빼기!!!!!!! 지금은 유닛 프리팹에 UnitController만 들어있어서 이렇게 한거임
                 // 기존 컴포넌트의 중요 데이터 보존
                 SpriteRenderer unitSprite = oldController.unitSprite;
                 SpriteRenderer unitBaseSprite = oldController.unitBaseSprite;
@@ -310,8 +311,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 multiController.multiTilesOffset.Clear();
                 foreach (var offset in tileOffsets)
                 {
-                    Vector2 gameOffset = new Vector2(offset.x, -offset.y);
-                    multiController.multiTilesOffset.Add(gameOffset);
+                    multiController.multiTilesOffset.Add(offset);
                 }
 
                 originalPreviews[0] = multiController;

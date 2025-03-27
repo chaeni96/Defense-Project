@@ -20,12 +20,9 @@ public class MultiTileUnitController : UnitController
 
     // 확장 타일과 통신할 이벤트 정의
     public event System.Action<Vector3> OnPositionChanged;
+    public event System.Action<Vector3, float> OnMovingPositionChanged;
     public event System.Action<Material> OnMaterialChanged;
     public event System.Action OnUnitDeleted;
-
-    // 확장 타일 관리를 위한 딕셔너리 추가
-    private Dictionary<Vector2, TileExtensionObject> extensionTiles = new Dictionary<Vector2, TileExtensionObject>();
-
 
     // UnitController에서 오버라이딩할 메서드들
     public override void Initialize()
@@ -117,18 +114,9 @@ public class MultiTileUnitController : UnitController
         // 실패한 경우 원래 상태로 복원
         if (!isSuccess)
         {
+            DestroyPreviewUnit();
             ReturnToOriginalPosition();
             CheckAttackAvailability();
-        }
-    }
-
-
-    // 확장 타일 추가 메서드
-    public void AddExtensionTile(Vector2 offset, TileExtensionObject extensionTile)
-    {
-        if (!extensionTiles.ContainsKey(offset))
-        {
-            extensionTiles.Add(offset, extensionTile);
         }
     }
 
@@ -208,11 +196,18 @@ public class MultiTileUnitController : UnitController
 
             if (tileData != null)
             {
-                bool originalAvailable = tileData.isAvailable;
+                // 기존에 점유된 타일이라면 일시적으로 사용 가능하게 만들기
+                bool wasOccupied = !tileData.isAvailable;
                 tileData.isAvailable = true;
                 tileData.placedUnit = null;
                 TileMapManager.Instance.SetTileData(tileData);
-                originalTiles.Add(tileData);
+
+                // 원래 점유 상태를 기록
+                originalTiles.Add(new TileData(originalPos)
+                {
+                    isAvailable = !wasOccupied,
+                    placedUnit = wasOccupied ? this : null
+                });
             }
         }
 
@@ -234,23 +229,12 @@ public class MultiTileUnitController : UnitController
         // 원래 타일 상태 복원
         foreach (var tile in originalTiles)
         {
-            bool isOriginalPosition = false;
-
-            foreach (var offset in multiTilesOffset)
+            TileData existingTile = TileMapManager.Instance.GetTileData(new Vector2(tile.tilePosX, tile.tilePosY));
+            if (existingTile != null)
             {
-                Vector2 pos = originalTilePosition + offset;
-                if (tile.tilePosX == pos.x && tile.tilePosY == pos.y)
-                {
-                    tile.isAvailable = false;
-                    tile.placedUnit = this;
-                    isOriginalPosition = true;
-                    break;
-                }
-            }
-
-            if (isOriginalPosition)
-            {
-                TileMapManager.Instance.SetTileData(tile);
+                existingTile.isAvailable = tile.isAvailable;
+                existingTile.placedUnit = tile.placedUnit;
+                TileMapManager.Instance.SetTileData(existingTile);
             }
         }
 
@@ -304,6 +288,26 @@ public class MultiTileUnitController : UnitController
         {
             Vector3 basePos = transform.position;
 
+            Debug.Log($"[MultiTileUnitController] Base Position: {basePos}");
+
+            // 확장 객체들의 상세 정보 로깅
+            foreach (var extObj in extensionObjects)
+            {
+                if (extObj != null)
+                {
+                    Vector2 offset = extObj.offsetFromParent;
+                    Debug.Log($"Extension Object Offset: {offset}");
+
+                    // 해당 위치의 타일 좌표 확인
+                    Vector2 baseTilePos = TileMapManager.Instance.GetWorldToTilePosition(basePos);
+                    Vector2 extensionTilePos = baseTilePos + offset;
+
+                    Debug.Log($"Base Tile Position: {baseTilePos}");
+                    Debug.Log($"Extension Tile Position: {extensionTilePos}");
+                }
+            }
+
+
             // OnPositionChanged 이벤트를 사용하여 모든 확장 타일에 알림
             OnPositionChanged?.Invoke(basePos);
         }
@@ -329,6 +333,13 @@ public class MultiTileUnitController : UnitController
 
     }
 
+    //원래 위치로 돌아가기
+    protected override void ReturnToOriginalPosition()
+    {
+        transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
+        OnMovingPositionChanged?.Invoke(originalPosition, 0.3f);
+    }
+
     // 프리뷰 삭제 (오버라이드)
     public override void DestroyPreviewUnit()
     {
@@ -352,6 +363,7 @@ public class MultiTileUnitController : UnitController
 
         // 이벤트 정리
         OnPositionChanged = null;
+        OnMovingPositionChanged = null;
         OnMaterialChanged = null;
         OnUnitDeleted = null;
     }
