@@ -73,29 +73,15 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         {
             tileOffsets = new List<Vector2>();
 
-            // 멀티 타일 유닛인 경우
-            if (tileCardData.f_isMultiTileUinit && tileCardData.f_multiTilePositions != null)
+            foreach(var tile in tileCardData.f_unitBuildData)
             {
-                // multiTilePositions에서 오프셋 가져오기
-                foreach (var posTile in tileCardData.f_multiTilePositions)
-                {
-                    Vector2 originalPos = posTile.f_TilePos;
-                    // Y축 반전
-                    Vector2 correctedPos = new Vector2(originalPos.x, -originalPos.y);
-                    tileOffsets.Add(correctedPos);
-                }
-            }
-            // 일반 유닛인 경우
-            else
-            {
-                foreach (var tile in tileCardData.f_unitBuildData)
-                {
-                    // 원본 좌표
-                    Vector2 originalPos = tile.f_TilePos.f_TilePos;
-                    // Y축 반전
-                    Vector2 correctedPos = new Vector2(originalPos.x, -originalPos.y);
-                    tileOffsets.Add(correctedPos);
-                }
+                //원본 좌표
+                Vector2 originalPos = tile.f_TilePosData.f_TilePos;
+
+                //2D 좌표계는 아래쪽으로 갈수록 Y값 증가하므로 Y축 반전
+                Vector2 correctedPos = new Vector2(originalPos.x, -originalPos.y);
+
+                tileOffsets.Add(correctedPos);
             }
         }
     }
@@ -258,68 +244,97 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
     private void CreatePreviewInstances(Vector3 tilePos)
     {
-
         var tileCardData = D_TileCardData.GetEntity(tileCardName);
         bool isMultiUnit = tileCardData.f_isMultiTileUinit;
 
-        // 멀티 유닛인 경우 (하나의 유닛이 여러 타일 차지)
-        if (isMultiUnit)
+        // 기준 유닛 찾기 (TilePos 0,0)
+        D_unitBuildData baseUnitBuildData = null;
+        foreach (var buildData in tileCardData.f_unitBuildData)
         {
-            // (0,0) 위치를 가진 UnitBuildData 찾기
-            D_unitBuildData zeroPositionBuildData = null;
-            foreach (var buildData in tileCardData.f_unitBuildData)
+            if (buildData.f_TilePosData.f_TilePos == Vector2.zero)
             {
-                if (buildData.f_TilePos.f_TilePos == Vector2.zero)
-                {
-                    zeroPositionBuildData = buildData;
-                    break;
-                }
+                baseUnitBuildData = buildData;
+                break;
             }
+        }
 
-            // (0,0) 위치에 있는 BuildData로 유닛 생성
-            if (zeroPositionBuildData != null)
+        if (isMultiUnit && baseUnitBuildData != null)
+        {
+            // 멀티 유닛 생성 (기준 유닛)
+            var unitPoolingKey = baseUnitBuildData.f_unitData.f_UnitPoolingKey;
+            Vector3 worldPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+
+            GameObject previewInstance = PoolingManager.Instance.GetObject(
+                unitPoolingKey.f_PoolObjectAddressableKey,
+                worldPos,
+                (int)ObjectLayer.Player
+            );
+
+            // UnitController를 MultiTileUnitController로 교체
+            UnitController oldController = previewInstance.GetComponent<UnitController>();
+            MultiTileUnitController multiController = null;
+
+            if (oldController != null && !(oldController is MultiTileUnitController))
             {
-                var unitPoolingKey = zeroPositionBuildData.f_unitData.f_UnitPoolingKey;
+                // 기존 컴포넌트의 중요 데이터 보존
+                SpriteRenderer unitSprite = oldController.unitSprite;
+                SpriteRenderer unitBaseSprite = oldController.unitBaseSprite;
+                GameObject unitStarObject = oldController.unitStarObject;
+                Material enabledMaterial = oldController.enabledMaterial;
+                Material disabledMaterial = oldController.disabledMaterial;
+                Material deleteMaterial = oldController.deleteMaterial;
+                Material originalMaterial = oldController.originalMaterial;
+                LayerMask unitLayer = oldController.unitLayer;
 
-                // 유닛 위치는 tilePos (0,0 기준점)
-                Vector3 worldPos = TileMapManager.Instance.GetTileToWorldPosition(tilePos);
+                // 새 MultiTileUnitController 추가
+                multiController = previewInstance.AddComponent<MultiTileUnitController>();
 
-                GameObject previewInstance = PoolingManager.Instance.GetObject(
-                    unitPoolingKey.f_PoolObjectAddressableKey,
-                    worldPos,
-                    (int)ObjectLayer.Player
-                );
+                // 기존 데이터 복사
+                multiController.unitSprite = unitSprite;
+                multiController.unitBaseSprite = unitBaseSprite;
+                multiController.unitStarObject = unitStarObject;
+                multiController.enabledMaterial = enabledMaterial;
+                multiController.disabledMaterial = disabledMaterial;
+                multiController.deleteMaterial = deleteMaterial;
+                multiController.originalMaterial = originalMaterial;
+                multiController.unitLayer = unitLayer;
 
-                UnitController previewUnit = previewInstance.GetComponent<UnitController>();
-                if (previewUnit != null)
-                {
-                    previewUnit.Initialize();
-                    previewUnit.InitializeUnitInfo(zeroPositionBuildData.f_unitData, tileCardData);
+                // 기존 컴포넌트 제거 (Initialize 전에 해야 함)
+                Destroy(oldController);
 
-                    // 점유 타일 정보 설정
-                    previewUnit.multiTilesOffset.Clear();
+                // 초기화 및 UnitData 설정
+                multiController.Initialize();
+                multiController.InitializeUnitInfo(baseUnitBuildData.f_unitData, tileCardData);
 
-                    foreach (var offset in tileOffsets)
-                    {
-                        Vector2 gameOffset = new Vector2(offset.x, -offset.y);
-                        previewUnit.multiTilesOffset.Add(gameOffset);
-                    }
-
-                    // 단일 인덱스에만 저장 (대형 유닛은 하나의 인스턴스만 사용)
-                    originalPreviews[0] = previewUnit;
-                    currentPreviews[0] = previewUnit;
-                }
-
-                // 유닛 외 다른 오프셋 위치에 확장 오브젝트 생성
+                // 점유 타일 정보 설정
+                multiController.multiTilesOffset.Clear();
                 foreach (var offset in tileOffsets)
                 {
-                    // 메인 유닛(0,0) 위치가 아닌 경우에만 생성
+                    Vector2 gameOffset = new Vector2(offset.x, -offset.y);
+                    multiController.multiTilesOffset.Add(gameOffset);
+                }
+
+                originalPreviews[0] = multiController;
+                currentPreviews[0] = multiController;
+            }
+            else if (oldController is MultiTileUnitController)
+            {
+                // 이미 MultiTileUnitController인 경우
+                multiController = (MultiTileUnitController)oldController;
+                originalPreviews[0] = multiController;
+                currentPreviews[0] = multiController;
+            }
+
+            // 다른 타일 위치에 확장 오브젝트 생성
+            if (multiController != null)
+            {
+                foreach (var offset in tileOffsets)
+                {
                     if (offset != Vector2.zero)
                     {
                         Vector2 extTilePos = (Vector2)tilePos + offset;
                         Vector3 extWorldPos = TileMapManager.Instance.GetTileToWorldPosition(extTilePos);
 
-                        // TileExtensionObject 프리뷰 생성
                         GameObject extPreview = PoolingManager.Instance.GetObject(
                             "TileExtensionObject",
                             extWorldPos,
@@ -327,14 +342,17 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         );
 
                         TileExtensionObject extObject = extPreview.GetComponent<TileExtensionObject>();
-                        // 프리뷰 상태 설정
-                        if (extPreview != null)
+                        if (extObject != null)
                         {
+                            // 변경된 Initialize 메서드 호출
+                            extObject.Initialize(multiController, offset);
                             extensionPreviews[offset] = extObject;
+
+                            // 멀티타일 컨트롤러에 확장 오브젝트 추가
+                            multiController.extensionObjects.Add(extObject);
                         }
                     }
                 }
-
             }
         }
         else
@@ -367,8 +385,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
     }
-
-
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
     private void UpdatePreviewInstancesPosition(Vector2 basePosition)
@@ -481,16 +497,16 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
-        // 대형 유닛 확인
+        // 멀티타일 유닛 확인
         bool isMultiUnit = false;
-        UnitController largeUnit = null;
+        MultiTileUnitController multiTileUnit = null;
 
         foreach (var pair in currentPreviews)
         {
-            if (pair.Value.isMultiUnit)
+            multiTileUnit = pair.Value as MultiTileUnitController;
+            if (multiTileUnit != null)
             {
                 isMultiUnit = true;
-                largeUnit = pair.Value;
                 break;
             }
         }
@@ -512,16 +528,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
 
-        // 대형 유닛 배치
-        if (isMultiUnit && largeUnit != null)
+        // 멀티타일 유닛 배치
+        if (isMultiUnit && multiTileUnit != null)
         {
-            largeUnit.DestroyPreviewUnit();
-            largeUnit.tilePosition = previousTilePosition;
-            largeUnit.multiTilesOffset.Clear();
-            UnitManager.Instance.RegisterUnit(largeUnit);
-
-            // 확장 오브젝트 참조를 저장할 Dictionary 생성
-            Dictionary<Vector2, GameObject> placedExtensions = new Dictionary<Vector2, GameObject>();
+            multiTileUnit.DestroyPreviewUnit();
+            multiTileUnit.tilePosition = previousTilePosition;
+            UnitManager.Instance.RegisterUnit(multiTileUnit);
 
             // 대형 유닛이 점유하는 모든 타일 설정
             foreach (var offset in tileOffsets)
@@ -532,8 +544,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 if (tileData != null)
                 {
                     tileData.isAvailable = false;
-                    tileData.placedUnit = largeUnit; // 모든 타일이 같은 유닛 참조
+                    tileData.placedUnit = multiTileUnit; // 모든 타일이 같은 유닛 참조
                     TileMapManager.Instance.SetTileData(tileData);
+
                     // 메인 유닛 위치(0,0)가 아닌 경우에만 실제 TileExtensionObject 배치
                     if (offset != Vector2.zero)
                     {
@@ -552,28 +565,17 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         );
 
                         // Extension 오브젝트 초기화
-                        if (extensionObject != null)
+                        TileExtensionObject extension = extensionObject.GetComponent<TileExtensionObject>();
+                        if (extension != null)
                         {
-                            // 일반 머테리얼로 변경
-                            var renderer = extensionObject.GetComponent<SpriteRenderer>();
-                            if (renderer != null)
-                            {
-                                renderer.material = largeUnit.originalMaterial;
-                                renderer.sortingOrder = largeUnit.unitSprite.sortingOrder - 1;
-                            }
-
                             // 확장 오브젝트와 대형 유닛 연결
-                            TileExtensionObject extension = extensionObject.GetComponent<TileExtensionObject>();
-                            if (extension != null)
-                            {
-                                extension.Initialize(largeUnit, offset);
-                            }
+                            extension.Initialize(multiTileUnit, offset);
 
-                            placedExtensions[offset] = extensionObject;
+                            // MultiTileUnitController에도 확장 오브젝트 추가
+                            multiTileUnit.extensionObjects.Add(extension);
                         }
                     }
                 }
-                largeUnit.multiTilesOffset.Add(offset);
             }
         }
         else
@@ -597,7 +599,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             multiply = 1f
         });
 
-        //enemy path 업데이트
+        // enemy path 업데이트
         EnemyManager.Instance.UpdateEnemiesPath();
 
         // 사용된 카드 제거 -> 이벤트 통해서
@@ -605,6 +607,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         originalPreviews.Clear();
         currentPreviews.Clear();
+        extensionPreviews.Clear();
         Destroy(gameObject);
     }
 
@@ -647,24 +650,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 유닛 빌드 데이터에서 좌표 범위 찾기
         foreach (var buildData in tileCardData.f_unitBuildData)
         {
-            Vector2 tilePos = buildData.f_TilePos.f_TilePos;
+            Vector2 tilePos = buildData.f_TilePosData.f_TilePos;
             minX = Mathf.Min(minX, (int)tilePos.x);
             maxX = Mathf.Max(maxX, (int)tilePos.x);
             minY = Mathf.Min(minY, (int)tilePos.y);
             maxY = Mathf.Max(maxY, (int)tilePos.y);
-        }
-
-        // 멀티 타일 유닛인 경우 멀티 타일 포지션도 고려
-        if (tileCardData.f_isMultiTileUinit && tileCardData.f_multiTilePositions != null)
-        {
-            foreach (var posTile in tileCardData.f_multiTilePositions)
-            {
-                Vector2 tilePos = posTile.f_TilePos;
-                minX = Mathf.Min(minX, (int)tilePos.x);
-                maxX = Mathf.Max(maxX, (int)tilePos.x);
-                minY = Mathf.Min(minY, (int)tilePos.y);
-                maxY = Mathf.Max(maxY, (int)tilePos.y);
-            }
         }
 
         // 그리드 크기 계산
@@ -685,28 +675,10 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         foreach (var buildData in tileCardData.f_unitBuildData)
         {
             Vector2Int normalizedPos = new Vector2Int(
-                (int)buildData.f_TilePos.f_TilePos.x - minX,
-                (int)buildData.f_TilePos.f_TilePos.y - minY
+                (int)buildData.f_TilePosData.f_TilePos.x - minX,
+                (int)buildData.f_TilePosData.f_TilePos.y - minY
             );
             unitPositionMap[normalizedPos] = buildData;
-        }
-
-        // 멀티 타일 포지션 매핑 (Base로 표시할 위치)
-        HashSet<Vector2Int> multiTilePositions = new HashSet<Vector2Int>();
-        if (tileCardData.f_isMultiTileUinit && tileCardData.f_multiTilePositions != null)
-        {
-            foreach (var posTile in tileCardData.f_multiTilePositions)
-            {
-                // (0,0)이 아닌 위치만 추가 (유닛 데이터가 없는 위치)
-                if (posTile.f_TilePos != Vector2.zero)
-                {
-                    Vector2Int normalizedPos = new Vector2Int(
-                        (int)posTile.f_TilePos.x - minX,
-                        (int)posTile.f_TilePos.y - minY
-                    );
-                    multiTilePositions.Add(normalizedPos);
-                }
-            }
         }
 
         // 전체 그리드를 순회하며 이미지 생성 (빈 칸 포함)
@@ -742,32 +714,28 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     // 해당 위치에 유닛 데이터가 있는지 확인
                     if (unitPositionMap.TryGetValue(gridPos, out var buildData))
                     {
-                        // 유닛 스프라이트 가져오기
-                        GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
-                        UnitController unitController = tempUnit.GetComponent<UnitController>();
+                        // 유닛이 null이거나 SkillAttackType이 None이면 Base로 처리
+                        bool isBase = (buildData.f_unitData == null || buildData.f_unitData.f_SkillAttackType == SkillAttackType.None);
 
-                        if (unitController != null && unitController.unitSprite != null)
+                        if (!isBase)
                         {
-                            // SkillAttackType 체크
-                            bool isBase = (buildData.f_unitData.f_SkillAttackType == SkillAttackType.None);
+                            // 유닛 스프라이트 가져오기
+                            GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
+                            UnitController unitController = tempUnit.GetComponent<UnitController>();
 
-                            Sprite unitSprite = null;
-
-                            // base가 아닌 경우에만 스프라이트 설정
-                            if (!isBase)
+                            if (unitController != null && unitController.unitSprite != null)
                             {
-                                unitSprite = unitController.unitSprite.sprite;
+                                Sprite unitSprite = unitController.unitSprite.sprite;
+                                tileObject.InitUnitImage(unitSprite, false);
                             }
-                            // 타일 초기화 (base 정보 전달)
-                            tileObject.InitUnitImage(unitSprite, isBase);
-                        }
 
-                        PoolingManager.Instance.ReturnObject(tempUnit);
-                    }
-                    // 멀티 타일 위치에 있는 경우 Base로 표시
-                    else if (multiTilePositions.Contains(gridPos))
-                    {
-                        tileObject.InitUnitImage(null, true); // Base로 표시
+                            PoolingManager.Instance.ReturnObject(tempUnit);
+                        }
+                        else
+                        {
+                            // Base로 표시
+                            tileObject.InitUnitImage(null, true);
+                        }
                     }
                     else
                     {

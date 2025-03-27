@@ -32,18 +32,18 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public GameObject unitStarObject;
 
-    public SpriteRenderer unitSprite;
-
-
-    [SerializeField] private SpriteRenderer unitBaseSprite;
-
 
     //inspector에 할당
-    [SerializeField] private Material enabledMaterial;   // 배치 가능할 때 사용
-    [SerializeField] private Material disabledMaterial; // 배치 불가능할 때 사용
-    [SerializeField] private Material deleteMaterial;   // 배치 삭제할 때 사용
+
+    public SpriteRenderer unitSprite;
+
+    //TODO : Multitile용 유닛 만들면 다시 private
+    [SerializeField] public SpriteRenderer unitBaseSprite;
+    [SerializeField] public Material enabledMaterial;   // 배치 가능할 때 사용
+    [SerializeField] public Material disabledMaterial; // 배치 불가능할 때 사용
+    [SerializeField] public Material deleteMaterial;   // 배치 삭제할 때 사용
     [SerializeField] public Material originalMaterial; //기본 머테리얼
-    [SerializeField] private LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
+    [SerializeField] public LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
 
     private int unitSortingOrder;
     private int baseSortingOrder;
@@ -52,22 +52,21 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
     private Vector3 originalPosition;
-    private Vector2 originalTilePosition;
-    private Vector2 previousTilePosition; // 이전 타일 위치 추적용
-    private bool hasDragged = false;
-    private bool canPlace = false;
+    protected Vector2 originalTilePosition;
+    protected Vector2 previousTilePosition; // 이전 타일 위치 추적용
+    protected bool hasDragged = false;
+    protected bool canPlace = false;
     // 합성 관련 변수
     private TileData mergeTargetTile = null;
     private int originalStarLevel = 0;
     private bool isShowingMergePreview = false;
 
 
-    private bool isOverTrashCan = false;
+    protected bool isOverTrashCan = false;
 
     [HideInInspector]
     public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
-    [HideInInspector]
-    public List<Vector2> multiTilesOffset = new List<Vector2>(); // 이 유닛이 차지하는 타일 위치들
+
 
     public override void Initialize()
     {
@@ -258,7 +257,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
     // 드래그 중 호출
-    public void OnDrag(PointerEventData eventData)
+    public virtual void OnDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
 
@@ -279,39 +278,29 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
 
-        // 대형 유닛은 합성 불가능
-        if (!isMultiUnit)
+      
+        // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
+        bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
+
+        if (canUpdatePreview)
         {
-            // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
-            bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
+            // 이전 합성 프리뷰 상태 초기화
+            ResetMergePreview();
 
-            if (canUpdatePreview)
+            // 합성 가능 여부 확인 및 프리뷰 표시
+            if (CanMergeWithTarget(tileData))
             {
-                // 이전 합성 프리뷰 상태 초기화
-                ResetMergePreview();
-
-                // 합성 가능 여부 확인 및 프리뷰 표시
-                if (CanMergeWithTarget(tileData))
-                {
-                    ShowMergePreview(tileData);
-                }
-                else
-                {
-                    UpdateNormalDragPosition(currentTilePos);
-                }
-
-                previousTilePosition = currentTilePos;
+                ShowMergePreview(tileData);
             }
-        }
-        else
-        {
-            // 대형 유닛은 항상 일반 이동 모드
-            if (currentTilePos != previousTilePosition)
+            else
             {
-                UpdateNormalDragPosition(currentTilePos);
-                previousTilePosition = currentTilePos;
+                UpdateDragPosition(currentTilePos);
             }
+
+            previousTilePosition = currentTilePos;
         }
+        
+       
 
         // 쓰레기통 위에 있는지 확인
         if (GameManager.Instance.IsOverTrashCan(worldPos))
@@ -325,7 +314,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-    private void UpdateNormalDragPosition(Vector2 currentTilePos)
+    private void UpdateDragPosition(Vector2 currentTilePos)
     {
         // 일반 이동 - 정확히 마우스 위치에 배치
         Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
@@ -333,12 +322,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         transform.position = newPosition;
         SetPreviewMaterial(canPlace);
 
-        // 위치 변경 이벤트 발생
-        OnPositionChanged?.Invoke(newPosition);
     }
 
     // 드래그 종료
-    public void OnPointerUp(PointerEventData eventData)
+    public virtual void OnPointerUp(PointerEventData eventData)
     {
         if (!isDragging) return;
 
@@ -386,25 +373,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-    private void DeleteUnit()
+    public virtual void DeleteUnit()
     {
-        if (isMultiUnit)
-        {
-            // 대형 유닛이 점유한 모든 타일 해제
-            foreach (var offset in multiTilesOffset)
-            {
-                Vector2 pos = originalTilePosition + offset;
-                TileMapManager.Instance.ReleaseTile(pos);
-            }
-
-            // 삭제 이벤트 발생
-            OnUnitDeleted?.Invoke();
-        }
-        else
-        {
-            // 기존 단일 타일 로직
-            TileMapManager.Instance.ReleaseTile(originalTilePosition);
-        }
+     
+        // 기존 단일 타일 로직
+        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+     
 
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
@@ -432,69 +406,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
 // 배치 가능한지 확인
-private bool CheckPlacementPossibility(Vector2 targetPos)
+ protected virtual bool CheckPlacementPossibility(Vector2 targetPos)
     {
-        if (isMultiUnit)
-        {
-            // 원래 점유하던 모든 타일 일시적으로 비우기
-            List<TileData> originalTiles = new List<TileData>();
-
-            foreach (var offset in multiTilesOffset)
-            {
-                Vector2 originalPos = originalTilePosition + offset;
-                TileData tileData = TileMapManager.Instance.GetTileData(originalPos);
-
-                if (tileData != null)
-                {
-                    bool originalAvailable = tileData.isAvailable;
-                    tileData.isAvailable = true;
-                    tileData.placedUnit = null;
-                    TileMapManager.Instance.SetTileData(tileData);
-                    originalTiles.Add(tileData);
-                }
-            }
-
-            // 새 위치에 배치 가능한지 확인
-            bool canPlace = true;
-
-            foreach (var offset in multiTilesOffset)
-            {
-                Vector2 newPos = targetPos + offset;
-                TileData targetTile = TileMapManager.Instance.GetTileData(newPos);
-
-                if (targetTile == null || !targetTile.isAvailable)
-                {
-                    canPlace = false;
-                    break;
-                }
-            }
-
-            // 원래 타일 상태 복원
-            foreach (var tile in originalTiles)
-            {
-                bool isOriginalPosition = false;
-
-                foreach (var offset in multiTilesOffset)
-                {
-                    Vector2 pos = originalTilePosition + offset;
-                    if (tile.tilePosX == pos.x && tile.tilePosY == pos.y)
-                    {
-                        tile.isAvailable = false;
-                        tile.placedUnit = this;
-                        isOriginalPosition = true;
-                        break;
-                    }
-                }
-
-                if (isOriginalPosition)
-                {
-                    TileMapManager.Instance.SetTileData(tile);
-                }
-            }
-
-            return canPlace;
-        }
-        else
         {
             // 기존 단일 타일 로직
             TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
@@ -556,7 +469,7 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
     }
 
     // 합성 가능 여부 확인
-    private bool CanMergeWithTarget(TileData tileData)
+    protected virtual bool CanMergeWithTarget(TileData tileData)
     {
         if (tileData?.placedUnit == null || tileData.placedUnit == this)
             return false;
@@ -603,32 +516,12 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
     }
 
     // 유닛 이동
-    private void MoveUnit()
+    protected virtual void MoveUnit()
     {
         // 원래 상태로 복원
         ResetMergePreview();
 
-        if (isMultiUnit)
-        {
-            // 원래 점유하던 모든 타일에서 유닛 제거
-            foreach (var offset in multiTilesOffset)
-            {
-                Vector2 originalPos = originalTilePosition + offset;
-                TileMapManager.Instance.ReleaseTile(originalPos);
-            }
-
-            // 새 위치의 모든 타일 점유
-            foreach (var offset in multiTilesOffset)
-            {
-                Vector2 newPos = previousTilePosition + offset;
-                TileData targetTile = TileMapManager.Instance.GetTileData(newPos);
-
-                targetTile.isAvailable = false;
-                targetTile.placedUnit = this; // 모든 타일이 동일한 유닛 참조
-                TileMapManager.Instance.SetTileData(targetTile);
-            }
-        }
-        else
+       
         {
             // 기존 단일 타일 로직
             // 원본 타일에서 유닛 제거
@@ -685,7 +578,7 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
     }
 
     // 원래 위치로 돌아가기
-    private void ReturnToOriginalPosition()
+    protected void ReturnToOriginalPosition()
     {
         transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
     }
@@ -745,7 +638,7 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
 
 
 
-    public void SetPreviewMaterial(bool canPlace)
+    public virtual void SetPreviewMaterial(bool canPlace)
     {
         // 배치 가능할 때와 불가능할 때의 머테리얼 설정
         Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
@@ -758,26 +651,20 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
             // 프리뷰일 때는 Sorting Order를 높게 설정
             unitSprite.sortingOrder = 100;
             unitBaseSprite.sortingOrder = 99;  // base는 한단계 아래로
-
-            // 머테리얼 변경 이벤트 발생
-            OnMaterialChanged?.Invoke(targetMaterial);
         }
     }
 
-    private void SetDeleteMat()
+    protected virtual void SetDeleteMat()
     {
         if (unitSprite != null)
         {
             unitSprite.material = deleteMaterial;
             unitBaseSprite.material = deleteMaterial;
-
-            // 머테리얼 변경 이벤트 발생
-            OnMaterialChanged?.Invoke(deleteMaterial);
         }
     }
 
     // 프리뷰 종료 시 원본 머테리얼로 복원
-    public void DestroyPreviewUnit()
+    public virtual void DestroyPreviewUnit()
     {
 
         // 실제 유닛으로 전환 시 원래 sorting order로 복구
@@ -786,9 +673,6 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
 
         unitSprite.material = originalMaterial;
         unitBaseSprite.material = originalMaterial;
-
-        // 머테리얼 변경 이벤트 발생
-        OnMaterialChanged?.Invoke(originalMaterial);
     }
 
 
@@ -810,34 +694,8 @@ private bool CheckPlacementPossibility(Vector2 targetPos)
     }
 
 
-    // 확장 타일과 통신할 이벤트 정의
-    public event System.Action<Vector3> OnPositionChanged;
-    public event System.Action<Material> OnMaterialChanged;
-    public event System.Action OnUnitDeleted;
-
-    // 확장 타일 관리를 위한 딕셔너리 추가
-    private Dictionary<Vector2, TileExtensionObject> extensionTiles = new Dictionary<Vector2, TileExtensionObject>();
-
-    // 확장 타일 추가 메서드
-    public void AddExtensionTile(Vector2 offset, TileExtensionObject extensionTile)
-    {
-        if (!extensionTiles.ContainsKey(offset))
-        {
-            extensionTiles.Add(offset, extensionTile);
-        }
-    }
 
 
-    //풀링으로 돌아갈때 필요
-    private void OnDisable()
-    {
-        // 모든 이벤트 구독자에게 삭제 알림
-        OnUnitDeleted?.Invoke();
 
-        // 이벤트 정리
-        OnPositionChanged = null;
-        OnMaterialChanged = null;
-        OnUnitDeleted = null;
-    }
 
 }

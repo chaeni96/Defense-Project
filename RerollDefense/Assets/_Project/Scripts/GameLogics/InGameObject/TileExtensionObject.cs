@@ -6,11 +6,11 @@ public class TileExtensionObject : MonoBehaviour
 {
     public SpriteRenderer tileSprite;
 
-    private UnitController parentUnit;
-    private Vector2 offsetFromParent;
+    private MultiTileUnitController parentUnit;
+    public Vector2 offsetFromParent;
 
 
-    public void Initialize(UnitController parent, Vector2 offset)
+    public void Initialize(MultiTileUnitController parent, Vector2 offset)
     {
         parentUnit = parent;
         offsetFromParent = offset;
