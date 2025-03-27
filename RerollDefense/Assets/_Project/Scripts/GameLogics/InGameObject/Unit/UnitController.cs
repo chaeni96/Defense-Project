@@ -58,7 +58,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     protected bool canPlace = false;
     // 합성 관련 변수
     private TileData mergeTargetTile = null;
-    private int originalStarLevel = 0;
+    protected int originalStarLevel = 0;
     private bool isShowingMergePreview = false;
 
 
@@ -224,7 +224,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
     // 드래그 시작 
-    public void OnPointerDown(PointerEventData eventData)
+    public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (!isActive) return;
 
@@ -548,7 +548,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
     // 합성 수행
-    private void PerformMerge()
+    protected virtual void PerformMerge()
     {
         if (mergeTargetTile == null || mergeTargetTile.placedUnit == null)
         {

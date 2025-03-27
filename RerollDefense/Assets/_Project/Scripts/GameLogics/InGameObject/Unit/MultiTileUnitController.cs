@@ -17,6 +17,8 @@ public class MultiTileUnitController : UnitController
     [HideInInspector]
     public List<Vector2> multiTilesOffset = new List<Vector2>(); // 이 유닛이 차지하는 타일 위치들
 
+    private TileData mergeTargetTile = null;
+    private bool isShowingMergePreview = false;
 
     // 확장 타일과 통신할 이벤트 정의
     public event System.Action<Vector3> OnPositionChanged;
@@ -29,6 +31,14 @@ public class MultiTileUnitController : UnitController
     {
         base.Initialize();
         // 추가 초기화
+    }
+
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        base.OnPointerDown(eventData); // 부모 메서드 호출
+
+        // 필요한 경우 추가 초기화
+        originalStarLevel = (int)GetStat(StatName.UnitStarLevel);
     }
 
     // 드래그 관련 오버라이딩
@@ -50,10 +60,27 @@ public class MultiTileUnitController : UnitController
         // 배치 가능 여부 확인
         canPlace = CheckPlacementPossibility(currentTilePos);
 
-        // 위치 변경
-        if (currentTilePos != previousTilePosition)
+        // 현재 타일 정보 가져오기
+        TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
+
+        // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
+        bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
+
+        if (canUpdatePreview)
         {
-            UpdateDragPosition(currentTilePos);
+            // 이전 합성 프리뷰 상태 초기화
+            ResetMergePreview();
+
+            // 합성 가능 여부 확인 및 프리뷰 표시
+            if (CanMergeWithTarget(tileData))
+            {
+                ShowMergePreview(tileData);
+            }
+            else
+            {
+                UpdateDragPosition(currentTilePos);
+            }
+
             previousTilePosition = currentTilePos;
         }
 
@@ -67,6 +94,42 @@ public class MultiTileUnitController : UnitController
         {
             isOverTrashCan = false;
         }
+    }
+
+    // 합성 프리뷰 표시 메서드 추가
+    private void ShowMergePreview(TileData tileData)
+    {
+        mergeTargetTile = tileData;
+        isShowingMergePreview = true;
+
+        // 타겟 유닛의 별 비활성화
+        MultiTileUnitController targetMultiUnit = tileData.placedUnit as MultiTileUnitController;
+        if (targetMultiUnit != null)
+        {
+            foreach (var star in targetMultiUnit.starObjects)
+            {
+                star.SetActive(false);
+            }
+        }
+
+        // 내 유닛을 업그레이드된 레벨로 표시
+        int newStarLevel = originalStarLevel + 1;
+        UpGradeUnitLevel(newStarLevel);
+
+        // 중요: 드래그 중인 유닛을 정확히 합성 대상 유닛 위에 배치
+        Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
+        targetPosition.z = -0.1f;
+        transform.position = targetPosition;
+
+        // 확장 타일 위치도 업데이트
+        OnPositionChanged?.Invoke(targetPosition);
+
+        // 프리뷰 머테리얼 설정
+        SetPreviewMaterial(canPlace);
+
+        // 시각적 효과 (한 번만 실행)
+        unitSprite.transform.DOKill();
+        unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
     }
 
     // 드래그 위치 업데이트
@@ -103,8 +166,14 @@ public class MultiTileUnitController : UnitController
         }
         else if (hasDragged && previousTilePosition != originalTilePosition)
         {
-            // 이동 처리 (멀티타일은 합성 불가)
-            if (canPlace)
+            // 합성 처리
+            if (isShowingMergePreview && mergeTargetTile != null && CanMergeWithTarget(mergeTargetTile))
+            {
+                PerformMerge();
+                isSuccess = true;
+            }
+            // 이동 처리
+            else if (canPlace)
             {
                 MoveUnit();
                 isSuccess = true;
@@ -114,6 +183,7 @@ public class MultiTileUnitController : UnitController
         // 실패한 경우 원래 상태로 복원
         if (!isSuccess)
         {
+            ResetMergePreview();
             DestroyPreviewUnit();
             ReturnToOriginalPosition();
             CheckAttackAvailability();
@@ -351,9 +421,133 @@ public class MultiTileUnitController : UnitController
     // 합성 관련 메서드 비활성화 (멀티타일은 합성 불가)
     protected override bool CanMergeWithTarget(TileData tileData)
     {
-        return false; // 멀티타일은 항상 합성 불가
+        // 기본 검사: 타일 데이터가 있고, 유닛이 있으며, 자기 자신이 아닌지
+        if (tileData?.placedUnit == null || tileData.placedUnit == this)
+            return false;
+
+        var targetUnit = tileData.placedUnit;
+
+        // 타겟 유닛이 멀티타일 유닛인지 확인
+        MultiTileUnitController targetMultiUnit = targetUnit as MultiTileUnitController;
+        if (targetMultiUnit == null)
+            return false;
+
+        // 유닛 타입과 레벨 확인
+        if (unitType != targetUnit.unitType ||
+         originalStarLevel != targetUnit.GetStat(StatName.UnitStarLevel) ||
+         targetUnit.GetStat(StatName.UnitStarLevel) >= 5)
+            return false;
+
+
+        // 모든 타일이 겹치는지 확인
+        bool allTilesOverlap = CheckAllTilesOverlap(targetMultiUnit);
+
+        return allTilesOverlap;
     }
 
+    // 모든 타일이 겹치는지 확인 메서드
+    private bool CheckAllTilesOverlap(MultiTileUnitController targetUnit)
+    {
+        // 두 유닛의 기준 좌표 (0,0) 위치 가져오기
+        Vector2 myBasePos = previousTilePosition;
+        Vector2 targetBasePos = targetUnit.tilePosition;
+
+        // 확장 타일 오프셋 리스트 크기가 같은지 확인
+        if (multiTilesOffset.Count != targetUnit.multiTilesOffset.Count)
+            return false;
+
+        // 모든 타일이 겹치는지 확인
+        HashSet<Vector2> myTilePositions = new HashSet<Vector2>();
+        HashSet<Vector2> targetTilePositions = new HashSet<Vector2>();
+
+        // 내 유닛이 차지하는 모든 타일 위치 추가
+        foreach (var offset in multiTilesOffset)
+        {
+            myTilePositions.Add(myBasePos + offset);
+        }
+
+        // 타겟 유닛이 차지하는 모든 타일 위치 추가
+        foreach (var offset in targetUnit.multiTilesOffset)
+        {
+            targetTilePositions.Add(targetBasePos + offset);
+        }
+
+        // 두 집합이 완전히 같은지 확인 (모든 타일이 겹치는지)
+        return myTilePositions.SetEquals(targetTilePositions);
+    }
+
+    protected override void PerformMerge()
+    {
+        if (mergeTargetTile == null || mergeTargetTile.placedUnit == null)
+        {
+            ResetMergePreview();
+            return;
+        }
+
+        // 타겟 유닛을 MultiTileUnitController로 캐스팅
+        MultiTileUnitController targetMultiUnit = mergeTargetTile.placedUnit as MultiTileUnitController;
+        if (targetMultiUnit == null)
+            return;
+
+        // 원래 점유하던 모든 타일 해제
+        foreach (var offset in multiTilesOffset)
+        {
+            Vector2 originalPos = originalTilePosition + offset;
+            TileMapManager.Instance.ReleaseTile(originalPos);
+        }
+
+        // 타겟 유닛 업그레이드
+        int newStarLevel = (int)GetStat(StatName.UnitStarLevel) + 1;
+        targetMultiUnit.UpGradeUnitLevel(newStarLevel);
+
+        // 효과 적용
+        targetMultiUnit.ApplyEffect(1.0f);
+
+        // 원본 유닛 제거
+        UnitManager.Instance.UnregisterUnit(this);
+
+        // 원본 유닛과 연결된 확장 타일 객체들 제거
+        foreach (var extObj in extensionObjects)
+        {
+            if (extObj != null)
+            {
+                PoolingManager.Instance.ReturnObject(extObj.gameObject);
+            }
+        }
+        extensionObjects.Clear();
+
+        // 유닛 풀링 시스템으로 반환
+        PoolingManager.Instance.ReturnObject(gameObject);
+
+        // 적 경로 업데이트
+        EnemyManager.Instance.UpdateEnemiesPath();
+    }
+
+    private void ResetMergePreview()
+    {
+        // 이전 타겟이 있고, 현재 합성 프리뷰를 보여주고 있다면
+        if (mergeTargetTile != null && isShowingMergePreview)
+        {
+            // 타겟 유닛의 별 복원
+            MultiTileUnitController targetMultiUnit = mergeTargetTile.placedUnit as MultiTileUnitController;
+            if (targetMultiUnit != null)
+            {
+                foreach (var star in targetMultiUnit.starObjects)
+                {
+                    star.SetActive(true);
+                }
+            }
+
+            // 내 유닛을 원래 레벨로 복원 (스탯 변경 없이 별만 표시)
+            UpdateStarDisplay(originalStarLevel);
+
+            // 애니메이션 리셋
+            unitSprite.transform.DORewind();
+
+            isShowingMergePreview = false;
+            mergeTargetTile = null;
+        }
+    }
 
     //풀링으로 돌아갈때 필요
     private void OnDisable()

@@ -139,7 +139,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         if (!isDragging) return;
 
-        hasDragged = true;  // 드래그가 발생했음을 표시
+        hasDragged = true;
 
         Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
         worldPos.z = 0;
@@ -150,7 +150,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         {
             TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
 
-            // 대형 유닛인 경우와 일반 유닛인 경우를 구분하여 처리
+            // 멀티타일 유닛 확인
             UnitController multiTileUnit = null;
             foreach (var pair in originalPreviews)
             {
@@ -161,14 +161,38 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 }
             }
 
-            // 대형 유닛인 경우 모든 점유 타일을 확인
+            // 멀티타일 유닛인 경우
             if (multiTileUnit != null)
             {
+                MultiTileUnitController multiController = multiTileUnit as MultiTileUnitController;
+                if (multiController != null)
+                {
+                    // 멀티타일 유닛 합성 가능 여부 확인
+                    TileData tileData = TileMapManager.Instance.GetTileData(tilePos);
+                    if (tileData?.placedUnit != null && tileData.placedUnit is MultiTileUnitController)
+                    {
+                        MultiTileUnitController targetMultiUnit = tileData.placedUnit as MultiTileUnitController;
+
+                        // 합성 가능 여부 확인 로직
+                        bool canMerge = CheckMultiTileMergePossibility(multiController, targetMultiUnit, tilePos);
+
+                        if (canMerge)
+                        {
+                            // 합성 프리뷰 표시
+                            ShowMultiTileMergePreview(multiController, targetMultiUnit);
+                            canPlace = true;
+                            previousTilePosition = tilePos;
+                            return;
+                        }
+                    }
+                }
+
+                // 합성이 불가능한 경우 일반 배치 가능 여부 확인
                 canPlace = CheckMultiTilePlacement(tilePos, multiTileUnit);
             }
             else
             {
-                // 일반 유닛들은 기존 로직으로 처리
+                // 일반 유닛 처리 (기존 코드)
                 canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, originalPreviews);
             }
 
@@ -176,6 +200,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             previousTilePosition = tilePos;
         }
     }
+
+
     // 대형 유닛의 배치 가능 여부 확인 메서드 추가
     private bool CheckMultiTilePlacement(Vector2 basePosition, UnitController multiTileUnit)
     {
@@ -198,6 +224,107 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         return true;
     }
 
+    private bool CheckMultiTileMergePossibility(MultiTileUnitController previewUnit, MultiTileUnitController targetUnit, Vector2 basePosition)
+    {
+        // 유닛 타입 및 레벨 확인
+        if (previewUnit.unitType != targetUnit.unitType ||
+            previewUnit.GetStat(StatName.UnitStarLevel) != targetUnit.GetStat(StatName.UnitStarLevel) ||
+            targetUnit.GetStat(StatName.UnitStarLevel) >= 5)
+        {
+            return false;
+        }
+
+        // 모든 타일이 겹치는지 확인
+        HashSet<Vector2> previewTilePositions = new HashSet<Vector2>();
+        HashSet<Vector2> targetTilePositions = new HashSet<Vector2>();
+
+        // 프리뷰 유닛의 모든 타일 위치 계산
+        foreach (var offset in previewUnit.multiTilesOffset)
+        {
+            previewTilePositions.Add(basePosition + offset);
+        }
+
+        // 타겟 유닛의 모든 타일 위치 계산
+        foreach (var offset in targetUnit.multiTilesOffset)
+        {
+            targetTilePositions.Add(targetUnit.tilePosition + offset);
+        }
+
+        // 두 집합이 완전히 같은지 확인
+        return previewTilePositions.SetEquals(targetTilePositions);
+    }
+
+    private void ShowMultiTileMergePreview(MultiTileUnitController previewUnit, MultiTileUnitController targetUnit)
+    {
+        // 타겟 유닛의 별 비활성화
+        foreach (var star in targetUnit.starObjects)
+        {
+            star.SetActive(false);
+        }
+
+        // 프리뷰 유닛 레벨 업그레이드
+        int currentLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
+        int newLevel = currentLevel + 1;
+        previewUnit.UpdateStarDisplay(newLevel);
+
+        // 프리뷰 유닛 위치 조정
+        Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(targetUnit.tilePosition);
+        targetPosition.z = -0.1f;
+        previewUnit.transform.position = targetPosition;
+
+        // 확장 타일 위치 업데이트 - 이벤트 직접 호출 대신 UpdateExtensionObjects 메서드 사용
+        // 기존: previewUnit.OnPositionChanged?.Invoke(targetPosition);
+        previewUnit.UpdateExtensionObjects();
+
+        // 프리뷰 머테리얼 설정
+        previewUnit.SetPreviewMaterial(true);
+
+        // 시각적 효과
+        previewUnit.unitSprite.transform.DOKill();
+        previewUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+    }
+
+    private void PerformMultiTileMerge(MultiTileUnitController previewUnit, MultiTileUnitController targetUnit)
+    {
+        // 타겟 유닛 업그레이드
+        int newStarLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel) + 1;
+        targetUnit.UpGradeUnitLevel(newStarLevel);
+
+        // 효과 적용
+        targetUnit.ApplyEffect(1.0f);
+
+        // 코스트 사용
+        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+        {
+            statName = StatName.Cost,
+            value = cardCost * -1,
+            multiply = 1f
+        });
+
+        // 사용된 카드 제거
+        OnCardUsed?.Invoke(transform.parent.gameObject);
+
+        // 프리뷰 객체 정리
+        foreach (var instance in currentPreviews.Values)
+        {
+            PoolingManager.Instance.ReturnObject(instance.gameObject);
+        }
+
+        foreach (var extObj in extensionPreviews.Values)
+        {
+            if (extObj != null)
+            {
+                PoolingManager.Instance.ReturnObject(extObj.gameObject);
+            }
+        }
+
+        originalPreviews.Clear();
+        currentPreviews.Clear();
+        extensionPreviews.Clear();
+
+        Destroy(gameObject);
+    }
+
     // 드래그 종료: 배치 가능 여부 확인 후 유닛 배치 또는 취소
     public void OnPointerUp(PointerEventData eventData)
     {
@@ -206,7 +333,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         //배치 타일 투명화
         TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
 
-        // 대형 유닛과 일반 유닛 구분하여 배치 가능 여부 확인
+        // 멀티타일 유닛 확인
         UnitController multiTileUnit = null;
         foreach (var pair in originalPreviews)
         {
@@ -219,6 +346,26 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         if (multiTileUnit != null)
         {
+            MultiTileUnitController multiController = multiTileUnit as MultiTileUnitController;
+            if (multiController != null)
+            {
+                // 합성 가능 여부 확인
+                TileData tileData = TileMapManager.Instance.GetTileData(previousTilePosition);
+                if (tileData?.placedUnit != null && tileData.placedUnit is MultiTileUnitController)
+                {
+                    MultiTileUnitController targetMultiUnit = tileData.placedUnit as MultiTileUnitController;
+
+                    if (CheckMultiTileMergePossibility(multiController, targetMultiUnit, previousTilePosition))
+                    {
+                        // 합성 수행
+                        PerformMultiTileMerge(multiController, targetMultiUnit);
+                        isDragging = false;
+                        return;
+                    }
+                }
+            }
+
+            // 일반 배치 처리
             canPlace = CheckMultiTilePlacement(previousTilePosition, multiTileUnit);
         }
         else
@@ -402,6 +549,29 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         if (multiTileUnit != null)
         {
+            // 여기에 복원 로직 추가
+            MultiTileUnitController multiController = multiTileUnit as MultiTileUnitController;
+
+            // 이전에 합성 프리뷰가 활성화되었던 경우 별 표시 원래대로 복원
+            if (previousTilePosition != basePosition)
+            {
+                TileData previousTileData = TileMapManager.Instance.GetTileData(previousTilePosition);
+                if (previousTileData?.placedUnit != null && previousTileData.placedUnit is MultiTileUnitController)
+                {
+                    MultiTileUnitController previousTarget = previousTileData.placedUnit as MultiTileUnitController;
+
+                    // 타겟 유닛의 별 다시 활성화
+                    foreach (var star in previousTarget.starObjects)
+                    {
+                        star.SetActive(true);
+                    }
+
+                    // 현재 프리뷰 유닛의 별 수준 원래대로 복원
+                    int originalLevel = (int)multiController.GetStat(StatName.UnitStarLevel);
+                    multiController.UpdateStarDisplay(originalLevel);
+                }
+            }
+
             // 대형 유닛 처리
             multiTileUnit.gameObject.SetActive(true);
             multiTileUnit.transform.position = TileMapManager.Instance.GetTileToWorldPosition(basePosition);
@@ -423,23 +593,29 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         extObj.tileSprite.sortingOrder = 100;
                     }
                 }
-
             }
         }
         else
         {
+            // 일반 유닛 처리 - 기존 코드
+            // 여기서 Dictionary 키 확인 로직 추가 필요
             // 합성된 유닛이 있다면 원래 상태로 복원
             for (int i = 0; i < tileOffsets.Count; i++)
             {
-                if (currentPreviews[i] != originalPreviews[i])
+                // 키 존재 여부 확인 추가
+                if (currentPreviews.ContainsKey(i) && originalPreviews.ContainsKey(i) &&
+                    currentPreviews[i] != originalPreviews[i])
                 {
                     // 해당 위치의 기존 배치된 유닛의 별 다시 활성화
                     Vector2 position = previousTilePosition + tileOffsets[i];
                     var tileData = TileMapManager.Instance.GetTileData(position);
 
-                    foreach (var star in tileData.placedUnit.starObjects)
+                    if (tileData?.placedUnit != null)
                     {
-                        star.SetActive(true);
+                        foreach (var star in tileData.placedUnit.starObjects)
+                        {
+                            star.SetActive(true);
+                        }
                     }
 
                     PoolingManager.Instance.ReturnObject(currentPreviews[i].gameObject);
@@ -448,9 +624,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 }
             }
 
-            // 일반 유닛 처리 - 기존 로직
+            // 나머지 일반 유닛 처리 코드 - 여기도 키 확인 로직 추가
             for (int i = 0; i < tileOffsets.Count; i++)
             {
+                // 키 존재 여부 확인 추가
+                if (!currentPreviews.ContainsKey(i) || !originalPreviews.ContainsKey(i))
+                    continue;
+
                 Vector2 previewPosition = basePosition + tileOffsets[i];
                 var tileData = TileMapManager.Instance.GetTileData(previewPosition);
                 var currentPreview = currentPreviews[i];
@@ -476,7 +656,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     mergedUnit.InitializeUnitInfo(currentPreview.unitData);
 
                     int newStarLevel = (int)tileData.placedUnit.GetStat(StatName.UnitStarLevel) + 1;
-                    mergedUnit.UpGradeUnitLevel(newStarLevel);
+                    mergedUnit.UpdateStarDisplay(newStarLevel);  // 여기에서 UpGradeUnitLevel 대신 UpdateStarDisplay 사용
 
                     mergedUnit.SetPreviewMaterial(canPlace);
                     mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
@@ -492,8 +672,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
     }
-
-
     // 유닛 배치: 프리뷰를 실제 유닛으로 전환하고 게임 상태 업데이트
     private void PlaceUnits()
     {
