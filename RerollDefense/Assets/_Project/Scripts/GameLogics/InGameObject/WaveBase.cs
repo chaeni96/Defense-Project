@@ -38,32 +38,97 @@ public abstract class WaveBase
 
     public virtual void DecreaseEnemyCount() { }
 
+    //보상, 추가 연출 등 효과를 위한 시간 제공 코루틴임
+    public virtual IEnumerator EndWaveRoutine()
+    {
+        yield break;
+    }
+}
+
+public abstract class BattleWaveBase : WaveBase
+{
+    protected bool isSpawnDone = false;
+    protected int totalGroupCount = 0;
+    protected int completedGroupCount = 0;
+    protected int remainEnemies = 0;
+
+
+    //떨어진 아이템 회수, 저금통 이자 지급, 전투 종료 연출 출력 시간
+    protected float interestDelay = 0.6f; //일단 0.6초
+    public BattleWaveBase(D_WaveDummyData data) : base(data)
+    {
+    }
+    public override void StartWave()
+    {
+        isWaveCompleted = false;
+        isSpawnDone = false;
+
+        // 자식 클래스에서 총 적 수 계산
+        remainEnemies = CalculateTotalEnemies();
+        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
+
+        // TODO:김기린
+        // 여기서 "StartWave 버튼"을 활성화하는 UI를 활성화 하도록 해야함.OnStartWaveButtonClicked연결할것.
+        // 혹은 이벤트 연결 필요
+
+        Debug.Log("전투 웨이브 시작 준비 완료! 사용자 입력을 대기합니다.");
+    }
+    public virtual void OnStartWaveButtonClicked()
+    {
+        SpawnWaveEnemies();
+    }
+    protected abstract void SpawnWaveEnemies();
+
+    protected abstract int CalculateTotalEnemies();
+    public override void AddEnemies(int count)
+    {
+        remainEnemies += count;
+        StageManager.Instance.UpdateEnemyCount(count);
+    }
+
+    public override void DecreaseEnemyCount()
+    {
+        remainEnemies--;
+        CheckWaveCompletion();
+    }
+    public override void CheckWaveCompletion()
+    {
+        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
+        {
+            isWaveCompleted = true;
+            StageManager.Instance.OnWaveComplete();
+        }
+    }
+    public override void EndWave()
+    {
+        isSpawnDone = false;
+        remainEnemies = 0;
+        completedGroupCount = 0;
+    }
 }
 
 /// <summary>
 /// 일반 전투 웨이브 클래스
 /// </summary>
-public class NormalBattleWave : WaveBase
+public class NormalBattleWave : BattleWaveBase
 {
     private D_NormalBattleWaveData normalWaveData;
-    private int totalGroupCount = 0;
-    private int completedGroupCount = 0;
-    private int remainEnemies = 0;
-    private bool isSpawnDone = false;
 
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {
         normalWaveData = data;
     }
 
+    /// <summary>
+    /// 웨이브 설명 텍스트
+    /// </summary>
     public override string GetWaveInfoText()
     {
         string waveInfo = "일반 전투 웨이브\n";
 
-        // 같은 적 타입끼리 그룹화해서 표시
         var groupedEnemies = normalWaveData.f_enemyGroups
-                            .GroupBy(g => g.f_enemy.f_name)
-                            .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
+                                .GroupBy(g => g.f_enemy.f_name)
+                                .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
 
         foreach (var group in groupedEnemies)
         {
@@ -73,24 +138,25 @@ public class NormalBattleWave : WaveBase
         return waveInfo;
     }
 
-    public override void StartWave()
+    /// <summary>
+    /// 자식 클래스에서 구현하는 총 적 수 계산 로직
+    /// </summary>
+    protected override int CalculateTotalEnemies()
     {
-        isWaveCompleted = false;
-        isSpawnDone = false;
-
-        // 총 적 수 계산
-        remainEnemies = normalWaveData.f_enemyGroups.Sum(group => group.f_amount);
-        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
-
-        // 적 스폰 시작
-        SpawnWaveEnemies();
+        return normalWaveData.f_enemyGroups.Sum(group => group.f_amount);
     }
 
-    private void SpawnWaveEnemies()
+    /// <summary>
+    /// 자식 클래스에서 구현하는 스폰 로직
+    /// (실제 코루틴 호출 등)
+    /// </summary>
+    protected override void SpawnWaveEnemies()
     {
+        // 그룹 스폰
         totalGroupCount = normalWaveData.f_enemyGroups.Count;
         completedGroupCount = 0;
 
+        // 코루틴을 통해 실제 스폰
         foreach (D_enemyGroups groupData in normalWaveData.f_enemyGroups)
         {
             StageManager.Instance.StartCoroutine(CoSpawnEnemyGroup(groupData));
@@ -131,47 +197,14 @@ public class NormalBattleWave : WaveBase
             CheckWaveCompletion();
         }
     }
-
-    public override void AddEnemies(int count)
-    {
-        remainEnemies += count;
-        StageManager.Instance.UpdateEnemyCount(count);
-    }
-
-    public override void DecreaseEnemyCount()
-    {
-        --remainEnemies;
-        CheckWaveCompletion();
-    }
-
-    public override void CheckWaveCompletion()
-    {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
-        {
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-        }
-    }
-
-    public override void EndWave()
-    {
-        // 필요한 리소스 정리
-        isSpawnDone = false;
-        remainEnemies = 0;
-        completedGroupCount = 0;
-    }
 }
 
 /// <summary>
 /// 보스 전투 웨이브 클래스
 /// </summary>
-public class BossBattleWave : WaveBase
+public class BossBattleWave : BattleWaveBase
 {
     private D_BossBattleWaveData bossWaveData;
-    private int totalGroupCount = 0;
-    private int completedGroupCount = 0;
-    private int remainEnemies = 0;
-    private bool isSpawnDone = false;
 
     public BossBattleWave(D_BossBattleWaveData data) : base(data)
     {
@@ -183,14 +216,13 @@ public class BossBattleWave : WaveBase
         string waveInfo = "보스 전투 웨이브\n";
         waveInfo += $"보스: {bossWaveData.f_bossEnemy.f_name}\n";
 
-        // 서포트 적이 있다면 표시
         if (bossWaveData.f_supportEnemyGroups != null && bossWaveData.f_supportEnemyGroups.Count > 0)
         {
             var groupedEnemies = bossWaveData.f_supportEnemyGroups
-                                .GroupBy(g => g.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
+                                    .GroupBy(g => g.f_enemy.f_name)
+                                    .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
 
-            waveInfo += "서포터:";
+            waveInfo += "서포터:\n";
             foreach (var group in groupedEnemies)
             {
                 waveInfo += $"{group.Name} x{group.TotalAmount}\n";
@@ -200,27 +232,18 @@ public class BossBattleWave : WaveBase
         return waveInfo;
     }
 
-    public override void StartWave()
+    protected override int CalculateTotalEnemies()
     {
-        isWaveCompleted = false;
-        isSpawnDone = false;
-
-        // 보스 + 서포트 적 총 수 계산
-        remainEnemies = 1; // 보스
+        int total = 1; // 보스 1마리
         if (bossWaveData.f_supportEnemyGroups != null)
         {
-            remainEnemies += bossWaveData.f_supportEnemyGroups.Sum(group => group.f_amount);
+            total += bossWaveData.f_supportEnemyGroups.Sum(group => group.f_amount);
         }
-
-        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
-
-        // 보스와 서포트 적 스폰
-        SpawnBossAndSupportEnemies();
+        return total;
     }
 
-    private void SpawnBossAndSupportEnemies()
+    protected override void SpawnWaveEnemies()
     {
-        // 총 스폰할 그룹 수 계산 (보스 + 서포트 그룹)
         totalGroupCount = 1; // 보스 그룹
         if (bossWaveData.f_supportEnemyGroups != null)
         {
@@ -250,10 +273,6 @@ public class BossBattleWave : WaveBase
         {
             EnemyManager.Instance.SpawnEnemy(bossWaveData.f_bossEnemy);
         }
-        else
-        {
-            Debug.LogError("보스 오브젝트 풀 키가 없음");
-        }
 
         ++completedGroupCount;
         CheckSpawnCompletion();
@@ -263,7 +282,6 @@ public class BossBattleWave : WaveBase
     {
         if (groupData == null || groupData.f_enemy == null)
         {
-            Debug.LogError("서포트 그룹 데이터 오류");
             yield break;
         }
 
@@ -274,11 +292,6 @@ public class BossBattleWave : WaveBase
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
                 EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
-            }
-            else
-            {
-                Debug.LogError("서포트 적 오브젝트 풀 키가 없음");
-                break;
             }
 
             yield return new WaitForSeconds(groupData.f_spawnInterval);
@@ -296,47 +309,14 @@ public class BossBattleWave : WaveBase
             CheckWaveCompletion();
         }
     }
-
-    public override void AddEnemies(int count)
-    {
-        remainEnemies += count;
-        StageManager.Instance.UpdateEnemyCount(count);
-    }
-
-    public override void DecreaseEnemyCount()
-    {
-        --remainEnemies;
-        CheckWaveCompletion();
-    }
-
-    public override void CheckWaveCompletion()
-    {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
-        {
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-        }
-    }
-
-    public override void EndWave()
-    {
-        // 필요한 리소스 정리
-        isSpawnDone = false;
-        remainEnemies = 0;
-        completedGroupCount = 0;
-    }
 }
 
 /// <summary>
 /// 이벤트 에너미 웨이브 클래스
 /// </summary>
-public class EventEnemyWave : WaveBase
+public class EventEnemyWave : BattleWaveBase
 {
     private D_EventEnemyWaveData eventWaveData;
-    private int totalGroupCount = 0;
-    private int completedGroupCount = 0;
-    private int remainEnemies = 0;
-    private bool isSpawnDone = false;
 
     public EventEnemyWave(D_EventEnemyWaveData data) : base(data)
     {
@@ -345,8 +325,7 @@ public class EventEnemyWave : WaveBase
 
     public override string GetWaveInfoText()
     {
-        string waveInfo = "이벤트 에너미 웨이브\n";
-
+        string waveInfo = "보물 고블린 웨이브\n";
         var groupedEnemies = eventWaveData.f_eventEnemyGroups
                             .GroupBy(g => g.f_enemy.f_name)
                             .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
@@ -359,20 +338,12 @@ public class EventEnemyWave : WaveBase
         return waveInfo;
     }
 
-    public override void StartWave()
+    protected override int CalculateTotalEnemies()
     {
-        isWaveCompleted = false;
-        isSpawnDone = false;
-
-        // 총 적 수 계산
-        remainEnemies = eventWaveData.f_eventEnemyGroups.Sum(group => group.f_amount);
-        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
-
-        // 이벤트 적 스폰
-        SpawnEventEnemies();
+        return eventWaveData.f_eventEnemyGroups.Sum(group => group.f_amount);
     }
 
-    private void SpawnEventEnemies()
+    protected override void SpawnWaveEnemies()
     {
         totalGroupCount = eventWaveData.f_eventEnemyGroups.Count;
         completedGroupCount = 0;
@@ -387,7 +358,6 @@ public class EventEnemyWave : WaveBase
     {
         if (groupData == null || groupData.f_enemy == null)
         {
-            Debug.LogError("이벤트 에너미 그룹 데이터 없음");
             yield break;
         }
 
@@ -397,57 +367,19 @@ public class EventEnemyWave : WaveBase
         {
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
-                // 이벤트 적 스폰 (드롭 아이템 정보 포함)
+                // 이벤트 적 스폰 (드롭 아이템 정보 포함 가능)
                 EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, groupData.f_EventDummyData);
-
-                //가지고 있는 이벤트 등록
-                // TODO: 드롭 아이템 정보 설정
-            }
-            else
-            {
-                Debug.LogError("이벤트 적 오브젝트 풀 키가 없음");
-                break;
             }
 
             yield return new WaitForSeconds(groupData.f_spawnInterval);
         }
 
         ++completedGroupCount;
-
         if (completedGroupCount >= totalGroupCount)
         {
             isSpawnDone = true;
             CheckWaveCompletion();
         }
-    }
-
-    public override void AddEnemies(int count)
-    {
-        remainEnemies += count;
-        StageManager.Instance.UpdateEnemyCount(count);
-    }
-
-    public override void DecreaseEnemyCount()
-    {
-        --remainEnemies;
-        CheckWaveCompletion();
-    }
-
-    public override void CheckWaveCompletion()
-    {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
-        {
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-        }
-    }
-
-    public override void EndWave()
-    {
-        // 필요한 리소스 정리
-        isSpawnDone = false;
-        remainEnemies = 0;
-        completedGroupCount = 0;
     }
 }
 
@@ -485,9 +417,6 @@ public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleComplete
     private async void ShowWildCardSelection()
     {
         // 타이머 등록
-        //timeScheduleUID = TimeTableManager.Instance.RegisterSchedule(selectionTime);
-        //TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, timeScheduleUID);
-        //TimeTableManager.Instance.AddTimeChangeTargetSubscriber(this, timeScheduleUID);
 
         // 와일드카드 선택 UI 표시
         selectUI = await UIManager.Instance.ShowUI<WildCardSelectUI>();
@@ -506,56 +435,6 @@ public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleComplete
         StageManager.Instance.OnWaveComplete();
     }
 
-   /* private float GetTimeScheduleRemainingTime()
-    {
-        var schedule = TimeTableManager.Instance.GetSchedule(timeScheduleUID);
-        if (schedule != null)
-        {
-            return (float)((schedule.endTime - schedule.currentTime) / 100.0);
-        }
-        return 0f;
-    }
-
-    public void OnChangeTime(int scheduleUID, float remainTime)
-    {
-        if (scheduleUID == timeScheduleUID)
-        {
-            // 와일드카드 선택 시간 업데이트
-            if (selectUI != null)
-            {
-                selectUI.UpdateSelectTime(Mathf.CeilToInt(remainTime));
-            }
-
-            // 카운트다운 UI가 있는 경우 업데이트
-            if (countdownUI != null)
-            {
-                countdownUI.UpdateCountdown(remainTime);
-            }
-        }
-    }
-
-    public void OnCompleteSchedule(int scheduleUID)
-    {
-        if (scheduleUID == timeScheduleUID)
-        {
-            // 와일드카드 선택 시간 완료
-            if (selectUI != null)
-            {
-                UIManager.Instance.CloseUI<WildCardSelectUI>();
-            }
-
-            if (countdownUI != null)
-            {
-                UIManager.Instance.CloseUI<InGameCountdownUI>();
-            }
-
-            timeScheduleUID = -1;
-
-            // 웨이브 완료 처리
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-        }
-    }*/
 
     public override void EndWave()
     {
@@ -565,19 +444,6 @@ public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleComplete
             UIManager.Instance.CloseUI<WildCardSelectUI>();
             selectUI = null;
         }
-
-/*        if (countdownUI != null)
-        {
-            UIManager.Instance.CloseUI<InGameCountdownUI>();
-            countdownUI = null;
-        }
-*/
-/*        if (timeScheduleUID != -1)
-        {
-            TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(timeScheduleUID);
-            TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(timeScheduleUID);
-            timeScheduleUID = -1;
-        }*/
 
         WildCardManager.Instance.OnWildCardSelected -= OnCardSelected;
 

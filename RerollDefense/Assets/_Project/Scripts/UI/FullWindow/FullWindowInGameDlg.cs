@@ -19,7 +19,7 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject fifthCardDeck;
 
 
-    [SerializeField] private GameObject CostGauge;  
+    //[SerializeField] private GameObject CostGauge;  
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
 
@@ -78,8 +78,8 @@ public class FullWindowInGameDlg : FullWindowBase
     {
 
         //cost 초기화
-        CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-        costUI.Initialize(GameManager.Instance.GetSystemStat(StatName.StoreLevel));
+        //CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
+        //costUI.Initialize(GameManager.Instance.GetSystemStat(StatName.StoreLevel));
 
         //shopLevel 초기화
         shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
@@ -431,8 +431,8 @@ public class FullWindowInGameDlg : FullWindowBase
             UpdateShopLevelUI();
 
             // CostGauge UI 갱신
-            CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-            costUI.Initialize(newShopLevel);
+            //CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
+            //costUI.Initialize(newShopLevel);
         }
     }
 
