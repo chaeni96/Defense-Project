@@ -61,6 +61,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     protected int originalStarLevel = 0;
     private bool isShowingMergePreview = false;
 
+    //합성 불가할대 위치 변환 
+    private UnitController swapTargetUnit = null;
+    private bool isSwapping = false;
 
     protected bool isOverTrashCan = false;
 
@@ -278,9 +281,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
 
-      
+
         // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
-        bool canUpdatePreview = currentTilePos != previousTilePosition || (CanMergeWithTarget(tileData) != isShowingMergePreview);
+        bool canUpdatePreview = currentTilePos != previousTilePosition ||
+                           (tileData != null && CanMergeWithTarget(tileData) != isShowingMergePreview) ||
+                           (tileData != null && CanSwapWithTarget(tileData) != isSwapping);
 
         if (canUpdatePreview)
         {
@@ -292,6 +297,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             {
                 ShowMergePreview(tileData);
             }
+            // 합성이 불가능하지만 교환은 가능한 경우
+            else if (CanSwapWithTarget(tileData))
+            {
+                ShowSwapPreview(tileData);
+            }
             else
             {
                 UpdateDragPosition(currentTilePos);
@@ -299,8 +309,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             previousTilePosition = currentTilePos;
         }
-        
-       
 
         // 쓰레기통 위에 있는지 확인
         if (GameManager.Instance.IsOverTrashCan(worldPos))
@@ -343,15 +351,20 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         if (isOverTrashCan)
         {
             DeleteUnit();
-            
             isSuccess = true;
         }
-        else if(hasDragged && previousTilePosition != originalTilePosition)
+        else if (hasDragged && previousTilePosition != originalTilePosition)
         {
             // 합성 처리
             if (isShowingMergePreview && mergeTargetTile != null && CanMergeWithTarget(mergeTargetTile))
             {
                 PerformMerge();
+                isSuccess = true;
+            }
+            // 교환 처리
+            else if (isSwapping && swapTargetUnit != null && CanSwapWithTarget(TileMapManager.Instance.GetTileData(previousTilePosition)))
+            {
+                PerformSwap();
                 isSuccess = true;
             }
             // 이동 처리
@@ -365,13 +378,98 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 실패한 경우 원래 상태로 복원
         if (!isSuccess)
         {
-            ResetMergePreview();
+            ResetPreviewStates();
             DestroyPreviewUnit();
             ReturnToOriginalPosition();
 
             CheckAttackAvailability();
         }
     }
+
+    protected virtual void PerformSwap()
+    {
+        if (swapTargetUnit == null) return;
+
+        TileData targetTileData = TileMapManager.Instance.GetTileData(previousTilePosition);
+        if (targetTileData == null) return;
+
+        // 원래 위치와 타겟 위치 저장
+        Vector2 myOriginalPos = originalTilePosition;
+        Vector2 targetOriginalPos = swapTargetUnit.tilePosition;
+
+        Vector3 myWorldPos = TileMapManager.Instance.GetTileToWorldPosition(myOriginalPos);
+        Vector3 targetWorldPos = TileMapManager.Instance.GetTileToWorldPosition(targetOriginalPos);
+
+        // 타일 데이터 업데이트
+        TileMapManager.Instance.ReleaseTile(myOriginalPos);
+        TileMapManager.Instance.ReleaseTile(targetOriginalPos);
+
+        // 타겟 유닛의 위치 업데이트
+        swapTargetUnit.tilePosition = myOriginalPos;
+        List<Vector2> targetTileOffsets = new List<Vector2>() { Vector2.zero };
+        Dictionary<int, UnitController> targetUnits = new Dictionary<int, UnitController>() { { 0, swapTargetUnit } };
+        TileMapManager.Instance.OccupyTiles(myOriginalPos, targetTileOffsets, targetUnits);
+
+        // 현재 유닛의 위치 업데이트
+        tilePosition = targetOriginalPos;
+        List<Vector2> myTileOffsets = new List<Vector2>() { Vector2.zero };
+        Dictionary<int, UnitController> myUnits = new Dictionary<int, UnitController>() { { 0, this } };
+        TileMapManager.Instance.OccupyTiles(targetOriginalPos, myTileOffsets, myUnits);
+
+        // 애니메이션 적용
+        transform.DOMove(targetWorldPos, 0.3f).SetEase(Ease.OutBack);
+        swapTargetUnit.transform.DOMove(myWorldPos, 0.3f).SetEase(Ease.OutBack);
+
+        // 정리
+        DestroyPreviewUnit();
+        swapTargetUnit.DestroyPreviewUnit();
+
+        // 공격 가능 상태 업데이트
+        CheckAttackAvailability();
+        swapTargetUnit.CheckAttackAvailability();
+
+
+        ResetPreviewStates();
+
+        // 적 경로 업데이트
+        EnemyManager.Instance.UpdateEnemiesPath();
+    }
+
+    private void ResetPreviewStates()
+    {
+        // 합성 프리뷰 초기화
+        if (mergeTargetTile != null && isShowingMergePreview)
+        {
+            // 타겟 유닛의 별 복원
+            if (mergeTargetTile.placedUnit != null)
+            {
+                foreach (var star in mergeTargetTile.placedUnit.starObjects)
+                {
+                    star.SetActive(true);
+                }
+            }
+
+            // 내 유닛을 원래 레벨로 복원
+            if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
+            {
+                UpGradeUnitLevel(originalStarLevel);
+                unitSprite.transform.DORewind(); // 애니메이션 리셋
+            }
+
+            isShowingMergePreview = false;
+            mergeTargetTile = null;
+        }
+
+        // 위치 교환 프리뷰 초기화
+        if (swapTargetUnit != null && isSwapping)
+        {
+            swapTargetUnit.unitSprite.DORewind();
+            swapTargetUnit.unitBaseSprite.DORewind();
+            isSwapping = false;
+            swapTargetUnit = null;
+        }
+    }
+
 
     public virtual void DeleteUnit()
     {
@@ -466,6 +564,15 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             isShowingMergePreview = false;
             mergeTargetTile = null;
         }
+
+        // 위치 교환 프리뷰 초기화
+        if (swapTargetUnit != null && isSwapping)
+        {
+            swapTargetUnit.unitSprite.DORewind();
+            swapTargetUnit.unitBaseSprite.DORewind();
+            isSwapping = false;
+            swapTargetUnit = null;
+        }
     }
 
     // 합성 가능 여부 확인
@@ -513,6 +620,50 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 시각적 효과 (한 번만 실행)
         unitSprite.transform.DOKill();
         unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+    }
+
+    // 위치 교환 가능 여부 확인
+    public bool CanSwapWithTarget(TileData tileData)
+    {
+        if (tileData?.placedUnit == null || tileData.placedUnit == this)
+            return false;
+
+        var targetUnit = tileData.placedUnit;
+
+        // 멀티 유닛은 교환 불가능
+        if (isMultiUnit || targetUnit.isMultiUnit)
+            return false;
+
+        // 합성이 가능한 경우는 교환 대신 합성 처리
+        if (CanMergeWithTarget(tileData))
+            return false;
+
+        // 위의 조건을 모두 통과했으면 교환 가능
+        return true;
+    }
+
+    private void ShowSwapPreview(TileData tileData)
+    {
+        if (tileData?.placedUnit == null) return;
+
+        TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
+        if (originalTileData == null) return;
+
+        swapTargetUnit = tileData.placedUnit;
+        isSwapping = true;
+
+        // 교환 대상 유닛에 시각적 효과 적용
+        swapTargetUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.5f, 0.3f, 3, 0.7f);
+        swapTargetUnit.unitBaseSprite.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 3, 0.7f);
+
+        // 현재 드래그 중인 유닛의 위치를 교환 대상 유닛 위치로 설정
+        Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
+        targetPosition.z = -0.1f;
+        transform.position = targetPosition;
+
+        //합성 가능한지 아닌지로 적용
+        SetPreviewMaterial(canPlace);
+
     }
 
     // 유닛 이동
@@ -664,7 +815,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 프리뷰 종료 시 원본 머테리얼로 복원
     public virtual void DestroyPreviewUnit()
     {
-
         // 실제 유닛으로 전환 시 원래 sorting order로 복구
         unitSprite.sortingOrder = unitSortingOrder;
         unitBaseSprite.sortingOrder = unitSprite.sortingOrder - 1;
@@ -690,10 +840,5 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
 
     }
-
-
-
-
-
 
 }
