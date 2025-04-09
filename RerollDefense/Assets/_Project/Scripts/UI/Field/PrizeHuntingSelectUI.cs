@@ -159,7 +159,7 @@ public class PrizeHuntingSelectUI : FloatingPopupBase
         cardsRevealed++;
 
         // 모든 카드가 뒤집히면 선택 가능하게 설정
-        if (cardsRevealed >= 3)
+        if (cardsRevealed >= 2)
         {
             foreach (var spawnedOption in spawnedOptions)
             {

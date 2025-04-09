@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7167682324667891046}
   - component: {fileID: 1786426850973518376}
   m_Layer: 5
-  m_Name: ImageCircle
+  m_Name: PageNavi_Off
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,8 +66,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 921fc582a90394e848a83da40043f251, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 1b77d3f351fa24dbd931e728028c4241, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -329,7 +329,7 @@ MonoBehaviour:
   circlePanel: {fileID: 4592797951509863506}
   circleTemplate: {fileID: 1648068221915758423}
   activeCircleScale: 1.4
-  activeCircleColor: {r: 0, g: 0, b: 0, a: 1}
+  activeCircleColor: {r: 0.8980393, g: 0.60784316, b: 0.23137257, a: 1}
   inactiveCircleColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5502489677096992295
 GameObject:
@@ -460,8 +460,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 250}
-  m_SizeDelta: {x: 0, y: -500}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5502489677616648103
 CanvasRenderer:

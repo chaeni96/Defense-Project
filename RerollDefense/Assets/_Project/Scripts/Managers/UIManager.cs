@@ -132,6 +132,61 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //특정 GameObject를 부모로 지정해서 생성하는 메서드
+    public async Task<T> ShowUI<T>(Transform customParent) where T : UIBase
+    {
+        Type uiType = typeof(T);
+
+        // 캐시된 UI가 있는 경우
+        if (uiCache.TryGetValue(uiType, out UIBase cachedUI))
+        {
+            T uiInstance = (T)cachedUI;
+            uiInstance.gameObject.SetActive(true);
+
+            // 부모 변경
+            uiInstance.transform.SetParent(customParent, false);
+
+            return uiInstance;
+        }
+
+        // UIInfoAttribute에서 AddressableKey 가져오기
+        var uiInfoAttribute = (UIInfoAttribute)Attribute.GetCustomAttribute(uiType, typeof(UIInfoAttribute));
+        if (uiInfoAttribute == null)
+        {
+            Debug.LogError($"{uiType.Name} 클래스에 UIInfoAttribute가 없습니다.");
+            return null;
+        }
+
+        // Addressables를 사용하여 프리팹 비동기 로드
+        var handle = Addressables.LoadAssetAsync<GameObject>(uiInfoAttribute.AddressableKey);
+        await handle.Task;
+
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            // 직접 지정한 부모 사용
+            GameObject uiObject = Instantiate(handle.Result, customParent);
+            uiObject.name = uiInfoAttribute.ObjectName;
+
+            T ui = uiObject.GetComponent<T>();
+            if (ui != null)
+            {
+                ui.InitializeUI();
+                uiCache[uiType] = ui;
+                return ui;
+            }
+            else
+            {
+                Debug.LogError($"프리팹에 {uiType.Name} 컴포넌트가 없습니다.");
+                Addressables.Release(handle);
+                return null;
+            }
+        }
+        else
+        {
+            Debug.LogError($"Addressables 로드 실패: {uiInfoAttribute.AddressableKey}");
+            return null;
+        }
+    }
 
     public void CloseUI<T>() where T : UIBase
     {

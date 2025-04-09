@@ -14,7 +14,6 @@ public class StageSelectUI : FloatingPopupBase
     {
         base.InitializeUI();
         CreateEpisodeInfo();
-        swipeUI.InitializeSwipe();
     }
 
     private void CreateEpisodeInfo()
@@ -24,9 +23,13 @@ public class StageSelectUI : FloatingPopupBase
         foreach (var episode in episodes)
         {
             var episodeInfo = Instantiate(episodeInfoPrefab, contentTransform);
-            episodeInfo.Initialize(this); // 부모 UI 전달
             episodeInfo.SetEpisodeInfo(episode);
         }
+
+
+        swipeUI.InitializeSwipe();
+
+
     }
 
     public void PauseSwipeUI()

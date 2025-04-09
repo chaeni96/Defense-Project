@@ -60,10 +60,10 @@ public class FullWindowLobbyDlg : FullWindowBase
         // 캠프 패널 활성화 및 초기 UI 표시
         campPanel.SetActive(true);
 
-        // StageSelectUI 표시 (캠프 패널의 내용)
-        if(campUI == null)
+        // EpisodeInfoUI 표시 (캠프 패널의 내용)
+        if (campUI == null)
         {
-            campUI = await UIManager.Instance.ShowUI<StageSelectUI>();
+            campUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
 
         }
         initialized = true;
@@ -87,7 +87,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         // 캠프 UI가 없으면 생성, 있으면 표시
         if (campUI == null)
         {
-            campUI = await UIManager.Instance.ShowUI<StageSelectUI>();
+            campUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
         }
 
     }
@@ -104,7 +104,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
         if (campUI != null)
         {
-           UIManager.Instance.CloseUI<StageSelectUI>();
+           UIManager.Instance.CloseUI<EpisodeInfoUI>();
         }
 
         // 부스터 UI가 없으면 생성, 있으면 표시
