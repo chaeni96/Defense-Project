@@ -13,10 +13,10 @@ public class SelectStagePopup : FloatingPopupBase
     [SerializeField] private StageCardUI stageCardPrefab;
     [SerializeField] private TMP_Text episodeTitleText;
 
-    private StageSelectUI parentStageSelectUI;
+    private EpisodeSelectPopup parentStageSelectUI;
     private D_EpisodeData currentEpisode;
 
-    public void Initialize(StageSelectUI stageSelectUI)
+    public void Initialize(EpisodeSelectPopup stageSelectUI)
     {
         parentStageSelectUI = stageSelectUI;
     }

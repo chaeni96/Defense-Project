@@ -19,11 +19,10 @@ public class EpisodeInfoUI : FloatingPopupBase
     public override void InitializeUI()
     {
         base.InitializeUI();
-        CreateEpisodeInfo();
     }
 
     //클리어한 에피소드의 다음 에피소드 로드
-    private void CreateEpisodeInfo()
+    public void CreateEpisodeInfo()
     {
         // 현재 유저의 클리어 에피소드 정보 가져오기
         userData = D_LocalUserData.GetEntity(0);
@@ -62,8 +61,15 @@ public class EpisodeInfoUI : FloatingPopupBase
     }
 
     //에피소드 선택 버튼
-    public void OnClickSelectEpisodeBtn()
+    public async void OnClickSelectEpisodeBtn()
     {
+        var selectPopup =  await UIManager.Instance.ShowUI<EpisodeSelectPopup>();
+
+        // 생성된 팝업에 현재 에피소드 정보 전달
+        if (selectPopup != null)
+        {
+            selectPopup.SetCurrentEpisode(episodeData);
+        }
 
     }
 

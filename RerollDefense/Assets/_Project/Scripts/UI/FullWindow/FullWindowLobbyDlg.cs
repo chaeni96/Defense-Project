@@ -29,7 +29,7 @@ public class FullWindowLobbyDlg : FullWindowBase
 
     private bool initialized = false;
 
-    private UIBase campUI;
+    private EpisodeInfoUI episodeUI;
     private UIBase boosterUI;
 
 
@@ -61,9 +61,10 @@ public class FullWindowLobbyDlg : FullWindowBase
         campPanel.SetActive(true);
 
         // EpisodeInfoUI 표시 (캠프 패널의 내용)
-        if (campUI == null)
+        if (episodeUI == null)
         {
-            campUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
+            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
+            episodeUI.CreateEpisodeInfo();
 
         }
         initialized = true;
@@ -85,9 +86,10 @@ public class FullWindowLobbyDlg : FullWindowBase
         }
 
         // 캠프 UI가 없으면 생성, 있으면 표시
-        if (campUI == null)
+        if (episodeUI == null)
         {
-            campUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
+            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
+            episodeUI.CreateEpisodeInfo();
         }
 
     }
@@ -102,7 +104,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         await SwitchPanel(boosterPanel, boosterButton);
 
         // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
-        if (campUI != null)
+        if (episodeUI != null)
         {
            UIManager.Instance.CloseUI<EpisodeInfoUI>();
         }

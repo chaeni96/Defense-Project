@@ -84,7 +84,7 @@ MonoBehaviour:
     - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: babe22f9b2efcb149b39e982a2b5e5d9
-    m_Address: StageSelectUI
+    m_Address: EpisodeSelectPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - UI
