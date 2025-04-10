@@ -44,10 +44,12 @@ public class BuffManager : MonoBehaviour
 
     //현재 적용된 버프들 -> 나중에 특정 subject 모든 버프 제거하거나, 특정 ID 버프 제거등 사용하기 위함
     private Dictionary<StatSubject, List<BuffTimeBase>> activeBuffs = new Dictionary<StatSubject, List<BuffTimeBase>>();
+    // 버프 ID와 설명 매핑
+    private Dictionary<int, string> buffDescriptions = new Dictionary<int, string>();
 
-  
+
     //WildCard나 아이템 등에서 버프 적용하는 메서드 -> 호출하면 버프 적용
-    public void ApplyBuff(D_BuffData buffData, StatSubject subject)
+    public void ApplyBuff(D_BuffData buffData, StatSubject subject, string description = "")
     {
         //버프 타입에 맞는 버프 객체 생성
         var buff = CreateBuff(buffData.f_buffType);
@@ -65,6 +67,20 @@ public class BuffManager : MonoBehaviour
         buff.StartBuff(subject);
         activeBuffs[subject].Add(buff);
 
+        // 설명 저장 (버프 ID와 연결)
+        int buffId = buff.GetBuffUID();
+        buffDescriptions[buffId] = description;
+
+    }
+
+    // 버프 설명 가져오기
+    public string GetBuffDescription(int buffId)
+    {
+        if (buffDescriptions.TryGetValue(buffId, out string description))
+        {
+            return description;
+        }
+        return "";
     }
 
     // 버프 프리뷰 표시
@@ -100,6 +116,19 @@ public class BuffManager : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    public Dictionary<StatSubject, List<BuffTimeBase>> GetAllActiveBuffs()
+    {
+        // 현재 활성화된 모든 버프 정보를 복사해서 반환
+        Dictionary<StatSubject, List<BuffTimeBase>> buffsCopy = new Dictionary<StatSubject, List<BuffTimeBase>>();
+
+        foreach (var kvp in activeBuffs)
+        {
+            buffsCopy[kvp.Key] = new List<BuffTimeBase>(kvp.Value);
+        }
+
+        return buffsCopy;
     }
 
     //버프 삭제 관련 메서드들

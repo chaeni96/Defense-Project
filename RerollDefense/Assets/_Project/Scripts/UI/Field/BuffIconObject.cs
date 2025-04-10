@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,14 +16,14 @@ public class BuffIconObject : MonoBehaviour
     [SerializeField] private Material TemporalBuffMat;
 
     [SerializeField] private GameObject descriptionPanel;
+    [SerializeField] private TMP_Text buffName;
     [SerializeField] private TMP_Text descriptionText;
 
 
     [SerializeField] private Image iconImage;
 
 
-    private float descriptionDuration = 3f;
-    private Coroutine hideDescriptionCoroutine;
+    private float descriptionDuration = 1.5f;
 
     public void Initialize(D_BuffData buffData, string buffDescription)
     {
@@ -62,16 +63,12 @@ public class BuffIconObject : MonoBehaviour
     {
         descriptionPanel.SetActive(true);
 
-        if (hideDescriptionCoroutine != null)
-        {
-            StopCoroutine(hideDescriptionCoroutine);
-        }
-        hideDescriptionCoroutine = StartCoroutine(HideDescriptionAfterDelay());
-    }
+        // 기존 트윈이 있다면 중지
+        DOTween.Kill(descriptionPanel);
 
-    private IEnumerator HideDescriptionAfterDelay()
-    {
-        yield return new WaitForSeconds(descriptionDuration);
-        descriptionPanel.SetActive(false);
+       
+        DOVirtual.DelayedCall(descriptionDuration, () => {
+            descriptionPanel.SetActive(false);
+        }).SetId(descriptionPanel); 
     }
 }
