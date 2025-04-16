@@ -157,6 +157,7 @@ MonoBehaviour:
   scenekind: 0
   placedTileMap: {fileID: 0}
   tileMapGrid: {fileID: 0}
+  bgmAddressableKey: Bgm_Lobby
 --- !u!4 &104147983
 Transform:
   m_ObjectHideFlags: 0

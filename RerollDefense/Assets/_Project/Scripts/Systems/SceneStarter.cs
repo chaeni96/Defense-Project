@@ -17,6 +17,9 @@ public class SceneStarter : MonoBehaviour
     [SerializeField] private Transform tileMapGrid;  // Inspector에서 할당
 
 
+    // 씬별 BGM 설정
+    [SerializeField] private string bgmAddressableKey;
+
 
     void Start()
     {
@@ -44,6 +47,11 @@ public class SceneStarter : MonoBehaviour
         if (scenekind == SceneKind.InGame)
         {
             yield return StartCoroutine(InitializeGameScene());
+        }
+
+        if (!string.IsNullOrEmpty(bgmAddressableKey))
+        {
+            AudioManager.Instance.PlayBGM(bgmAddressableKey);
         }
 
         // 모든 초기화가 끝난 후 UI 초기화

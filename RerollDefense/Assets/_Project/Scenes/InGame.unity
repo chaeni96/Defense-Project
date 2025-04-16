@@ -3023,6 +3023,7 @@ MonoBehaviour:
   scenekind: 1
   placedTileMap: {fileID: 1420055970}
   tileMapGrid: {fileID: 545611165}
+  bgmAddressableKey: Bgm_Game
 --- !u!1 &589993358
 GameObject:
   m_ObjectHideFlags: 0

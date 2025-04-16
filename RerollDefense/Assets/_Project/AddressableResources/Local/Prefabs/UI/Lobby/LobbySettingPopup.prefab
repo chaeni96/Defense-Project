@@ -2146,6 +2146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e410659558936dd4aaec4d94552a9ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmVolumeSlider: {fileID: 7802254017712367536}
+  sfxVolumeSlider: {fileID: 3475898408454399649}
 --- !u!1 &7802254017441713429
 GameObject:
   m_ObjectHideFlags: 0

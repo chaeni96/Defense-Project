@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
@@ -33,6 +34,20 @@ public class AudioManager : MonoBehaviour
     //이것도 AudioClipInfo의 변수로 넣을지 고민중
     [SerializeField] private int maxConcurrentSameSounds = 5;
 
+
+    // BGM 관련 변수
+    private AudioSource bgmAudioSource1;
+    private AudioSource bgmAudioSource2;
+    private AudioSource currentBgmSource;
+    private AudioSource nextBgmSource;
+    private string currentBgmKey = "";
+    [SerializeField] private float bgmVolume = 0.5f;
+    [SerializeField] private float bgmFadeDuration = 1.0f;
+
+
+    [SerializeField] private float sfxMasterVolume = 1.0f; // SFX 마스터 볼륨
+
+
     public static AudioManager Instance
     {
         get
@@ -62,7 +77,149 @@ public class AudioManager : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            // BGM 오디오 소스 초기화
+            bgmAudioSource1 = gameObject.AddComponent<AudioSource>();
+            bgmAudioSource1.loop = true;
+            bgmAudioSource1.volume = bgmVolume;
+
+            bgmAudioSource2 = gameObject.AddComponent<AudioSource>();
+            bgmAudioSource2.loop = true;
+            bgmAudioSource2.volume = 0;
+
+            currentBgmSource = bgmAudioSource1;
+            nextBgmSource = bgmAudioSource2;
         }
+    }
+
+    // BGM 재생 메서드
+    public void PlayBGM(string addressableKey, float fadeTime = -1)
+    {
+        // 이미 같은 BGM이 재생 중이면 무시
+        if (currentBgmKey == addressableKey && currentBgmSource.isPlaying)
+            return;
+
+        currentBgmKey = addressableKey;
+        float actualFadeTime = fadeTime >= 0 ? fadeTime : bgmFadeDuration;
+        StartCoroutine(PlayBGMAsync(addressableKey, actualFadeTime));
+    }
+
+    private IEnumerator PlayBGMAsync(string addressableKey, float fadeTime)
+    {
+        // 오디오 클립 정보가 없으면 생성
+        if (!audioClips.ContainsKey(addressableKey))
+        {
+            audioClips[addressableKey] = new AudioClipInfo(addressableKey, bgmVolume);
+        }
+
+        AudioClipInfo info = audioClips[addressableKey];
+
+        // 클립이 로드되지 않았으면 어드레서블로 로드
+        if (info.clip == null && !info.loadOperation.HasValue)
+        {
+            // 어드레서블 비동기 로드 시작
+            info.loadOperation = Addressables.LoadAssetAsync<AudioClip>(info.addressableKey);
+            yield return info.loadOperation;
+
+            if (info.loadOperation.Value.Status == AsyncOperationStatus.Succeeded)
+            {
+                info.clip = info.loadOperation.Value.Result;
+            }
+            else
+            {
+                Debug.LogWarning("BGM 어드레서블 로드 실패: " + info.addressableKey);
+                info.loadOperation = null;
+                yield break;
+            }
+        }
+        else if (info.loadOperation.HasValue && !info.loadOperation.Value.IsDone)
+        {
+            // 이미 로드 중이면 완료될 때까지 대기
+            yield return info.loadOperation;
+
+            if (info.loadOperation.Value.Status == AsyncOperationStatus.Succeeded)
+            {
+                info.clip = info.loadOperation.Value.Result;
+            }
+            else
+            {
+                Debug.LogWarning("BGM 로드 실패: " + addressableKey);
+                info.loadOperation = null;
+                yield break;
+            }
+        }
+
+        // 새 BGM 설정
+        nextBgmSource.clip = info.clip;
+        nextBgmSource.volume = 0;
+        nextBgmSource.Play();
+
+        // 크로스페이드 실행
+        yield return StartCoroutine(CrossFadeBGM(fadeTime));
+    }
+
+    private IEnumerator CrossFadeBGM(float duration)
+    {
+        float currentTime = 0;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            float t = currentTime / duration;
+            currentBgmSource.volume = Mathf.Lerp(bgmVolume, 0, t);
+            nextBgmSource.volume = Mathf.Lerp(0, bgmVolume, t);
+            yield return null;
+        }
+
+        // 페이드 완료 후 이전 BGM 중지
+        currentBgmSource.Stop();
+        currentBgmSource.clip = null;
+
+        // 소스 교체
+        AudioSource temp = currentBgmSource;
+        currentBgmSource = nextBgmSource;
+        nextBgmSource = temp;
+    }
+
+    // BGM 정지
+    public void StopBGM(float fadeTime = -1)
+    {
+        float actualFadeTime = fadeTime >= 0 ? fadeTime : bgmFadeDuration;
+        StartCoroutine(FadeOutBGM(actualFadeTime));
+        currentBgmKey = "";
+    }
+
+    private IEnumerator FadeOutBGM(float duration)
+    {
+        float currentTime = 0;
+        float startVolume = currentBgmSource.volume;
+
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            float t = currentTime / duration;
+            currentBgmSource.volume = Mathf.Lerp(startVolume, 0, t);
+            yield return null;
+        }
+
+        currentBgmSource.Stop();
+        currentBgmSource.clip = null;
+    }
+
+    // BGM 볼륨 설정
+    public void SetBGMVolume(float volume)
+    {
+        bgmVolume = Mathf.Clamp01(volume);
+        if (currentBgmSource.isPlaying)
+        {
+            currentBgmSource.volume = bgmVolume;
+        }
+    }
+
+    // 현재 재생 중인 BGM 이름 반환
+    public string GetCurrentBGM()
+    {
+        return currentBgmKey;
     }
 
     // 효과음 비동기로 로드하고 재생하는 코루틴
@@ -136,7 +293,7 @@ public class AudioManager : MonoBehaviour
         // 새 오디오 소스 생성
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
         newSource.clip = info.clip;
-        newSource.volume = info.volume;
+        newSource.volume = info.volume * sfxMasterVolume;
         newSource.Play();
 
         // 활성 소스 리스트에 추가
@@ -193,7 +350,31 @@ public class AudioManager : MonoBehaviour
         activeAudioSources.Clear();
     }
 
-    // 지정된 효과음 제외한 모든 효과음 언로드하기
+    // 효과음 볼륨 조절 메서드
+    public void SetSFXVolume(float volume)
+    {
+        sfxMasterVolume = Mathf.Clamp01(volume);
+
+        // 현재 재생 중인 모든 효과음에도 적용
+        foreach (var sources in activeAudioSources.Values)
+        {
+            foreach (var source in sources)
+            {
+                // 원래 볼륨 (클립 정보에서) * 마스터 볼륨
+                string key = activeAudioSources.FirstOrDefault(x => x.Value.Contains(source)).Key;
+                if (!string.IsNullOrEmpty(key) && audioClips.ContainsKey(key))
+                {
+                    source.volume = audioClips[key].volume * sfxMasterVolume;
+                }
+            }
+        }
+
+        // 설정 저장
+        PlayerPrefs.SetFloat("SFXVolume", sfxMasterVolume);
+        PlayerPrefs.Save();
+    }
+
+    // 지정된 효과음 제외한 모든 효과음 언로드하기 -> 아직 쓰는곳 없음 나중에 최적화위해서
     // 씬전환할때 필요없는 오디오 에셋을 메모리에서 해제하기위함
     // ignoreList = 보존할 목록
     public void UnloadAllSoundsExcept(List<string> ignoreList)
