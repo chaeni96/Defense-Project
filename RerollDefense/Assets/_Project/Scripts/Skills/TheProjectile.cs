@@ -19,6 +19,7 @@ public class TheProjectile : SkillBase
         if (target == null) return;
 
         transform.position = owner.transform.position;
+        soundEffect.PlaySound();
     }
 
     public override void CleanUp()

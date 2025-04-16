@@ -163,4 +163,9 @@ public class FullWindowLobbyDlg : FullWindowBase
         return canvasGroup;
     }
 
+    public async void OnClickLobbySettingPopup()
+    {
+        await UIManager.Instance.ShowUI<LobbySettingPopup>();
+    }
+
 }
