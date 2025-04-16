@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1183667827297006579}
   - component: {fileID: -8371793040103205213}
+  - component: {fileID: 7789704312091564430}
   m_Layer: 2
   m_Name: AoeRangeObject
   m_TagString: Untagged
@@ -46,11 +47,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
+  soundEffect: {fileID: 7789704312091564430}
   totalFXDelay: 0.7
   enemyMask:
     serializedVersion: 2
     m_Bits: 1152
   myCollider: {fileID: 0}
+--- !u!114 &7789704312091564430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183667827297006581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dda6e23009d957b48bbff87802c6ac7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundName: Explosion
+  volume: 0.5
 --- !u!1 &6793195774205868046
 GameObject:
   m_ObjectHideFlags: 0

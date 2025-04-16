@@ -11,6 +11,8 @@ public abstract class SkillBase : MonoBehaviour
     /// 
 
     public UnitController owner; //스킬을 발동한 주체
+    public SoundPlayer soundEffect;
+
     public virtual void Initialize(UnitController owner)
     {
         this.owner = owner;

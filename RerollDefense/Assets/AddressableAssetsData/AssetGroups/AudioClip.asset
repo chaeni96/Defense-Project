@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Packed Assets
+  m_Name: AudioClip
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: AudioClip
   m_Data:
     m_SerializedData: []
-  m_GUID: 6b8bda78cda09ce4295d55d40959d3ba
+  m_GUID: 0399952db0135a248a905df8acdab1e8
   m_SerializeEntries:
-  - m_GUID: 481555c8ddf57c9458462117a4528d61
-    m_Address: Enemy_Normal2
+  - m_GUID: e6b9da850f375824eb9cb6811b134660
+    m_Address: Explosion
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0cfb3025af2847a4b94fcc1266a48523
-    m_Address: Enemy_Boss
+  - m_GUID: f96ae71a18928964f88039c71ed088a2
+    m_Address: Projectile
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -31,5 +31,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: ed5278df9c756cd4097e2884326ae032, type: 2}
-    - {fileID: 11400000, guid: cf43322faceaaab479a849c90458c399, type: 2}
+    - {fileID: 11400000, guid: 8d54b0603a1803a45937268baf449b42, type: 2}
+    - {fileID: 11400000, guid: 1da9d90f8cce55c4f93c2e5900e576e7, type: 2}
