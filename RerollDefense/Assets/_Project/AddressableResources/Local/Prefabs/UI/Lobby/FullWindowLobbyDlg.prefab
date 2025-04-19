@@ -890,9 +890,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   campPanel: {fileID: 7396547024932139216}
-  boosterPanel: {fileID: 5202508525619338702}
+  inventoryPanel: {fileID: 5202508525619338702}
   campButton: {fileID: 4052054436937752043}
-  boosterButton: {fileID: 7202568312880850842}
+  inventoryButton: {fileID: 7202568312880850842}
   transitionDuration: 0.3
   transitionEase: 6
 --- !u!1 &2818436379210550978
@@ -1917,7 +1917,7 @@ GameObject:
   - component: {fileID: 5534914693039418641}
   - component: {fileID: 8703227430895034871}
   m_Layer: 5
-  m_Name: BoosterPanel
+  m_Name: InventoryPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5078,7 +5078,7 @@ GameObject:
   - component: {fileID: 7396547025767180087}
   - component: {fileID: 7396547025767180088}
   m_Layer: 5
-  m_Name: On_Booster
+  m_Name: On_Inven
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5289,7 +5289,7 @@ GameObject:
   - component: {fileID: 7396547025784859260}
   - component: {fileID: 7202568312880850842}
   m_Layer: 5
-  m_Name: Button_Booster
+  m_Name: Button_Inven
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5401,7 +5401,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 905342493597120765}
         m_TargetAssemblyTypeName: FullWindowLobbyDlg, Assembly-CSharp
-        m_MethodName: SwitchToBoosterPanel
+        m_MethodName: SwitchToInventoryPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6743,7 +6743,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAC15\uD654"
+  m_text: "\uC7A5\uC778"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b6a7997e015e9dd40a1c9c8fcca6e805, type: 2}
   m_sharedMaterial: {fileID: -5402406680456461312, guid: b6a7997e015e9dd40a1c9c8fcca6e805, type: 2}
