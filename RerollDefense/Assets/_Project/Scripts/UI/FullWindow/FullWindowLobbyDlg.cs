@@ -12,10 +12,10 @@ public class FullWindowLobbyDlg : FullWindowBase
     //화면 패널
     
     [SerializeField] private GameObject campPanel;
-    [SerializeField] private GameObject boosterPanel;
+    [SerializeField] private GameObject inventoryPanel;
     
     [SerializeField] private Button campButton;
-    [SerializeField] private Button boosterButton;
+    [SerializeField] private Button inventoryButton;
 
 
     [SerializeField] private float transitionDuration = 0.3f;
@@ -30,7 +30,7 @@ public class FullWindowLobbyDlg : FullWindowBase
     private bool initialized = false;
 
     private EpisodeInfoUI episodeUI;
-    private UIBase boosterUI;
+    private RelicInventoryUI inventoryUI;
 
 
     public override void InitializeUI()
@@ -38,8 +38,8 @@ public class FullWindowLobbyDlg : FullWindowBase
         base.InitializeUI();
 
         // 모든 패널과 버튼을 리스트로 관리
-        allPanels = new List<GameObject> { campPanel, boosterPanel };
-        allButtons = new List<Button> { campButton, boosterButton };
+        allPanels = new List<GameObject> { campPanel, inventoryPanel };
+        allButtons = new List<Button> { campButton, inventoryButton };
 
         // 초기 패널 설정 (캠프 패널)
         currentPanel = campPanel;
@@ -67,6 +67,13 @@ public class FullWindowLobbyDlg : FullWindowBase
             episodeUI.CreateEpisodeInfo();
 
         }
+
+        if(inventoryUI == null)
+        {
+            inventoryUI = await UIManager.Instance.ShowUI<RelicInventoryUI>();
+            inventoryUI.HideUI();
+        }
+
         initialized = true;
 
     }
@@ -76,32 +83,30 @@ public class FullWindowLobbyDlg : FullWindowBase
         if (!initialized || currentPanel == campPanel)
             return;
 
-        // 페이드 애니메이션 실행
         await SwitchPanel(campPanel, campButton);
 
         // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
-        if (boosterUI != null)
+        if (inventoryUI != null)
         {
-            UIManager.Instance.CloseUI<BoosterSelectUI>();
+            UIManager.Instance.CloseUI<RelicInventoryUI>();
         }
 
         // 캠프 UI가 없으면 생성, 있으면 표시
         if (episodeUI == null)
         {
-            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
+            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
             episodeUI.CreateEpisodeInfo();
         }
 
     }
 
-    // 부스터 패널로 전환
-    public async void SwitchToBoosterPanel()
+    // 인벤토리(유물) 패널로 전환
+    public async void SwitchToInventoryPanel()
     {
-        if (!initialized || currentPanel == boosterPanel)
+        if (!initialized || currentPanel == inventoryPanel)
             return;
 
-        // 페이드 애니메이션 실행
-        await SwitchPanel(boosterPanel, boosterButton);
+        await SwitchPanel(inventoryPanel, inventoryButton);
 
         // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
         if (episodeUI != null)
@@ -109,12 +114,9 @@ public class FullWindowLobbyDlg : FullWindowBase
            UIManager.Instance.CloseUI<EpisodeInfoUI>();
         }
 
-        // 부스터 UI가 없으면 생성, 있으면 표시
-        if (boosterUI == null)
-        {
-            boosterUI = await UIManager.Instance.ShowUI<BoosterSelectUI>(); // 여기에 실제 UI 타입 지정
-        }
-   
+        inventoryUI = await UIManager.Instance.ShowUI<RelicInventoryUI>(); // 여기에 실제 UI 타입 지정
+        inventoryUI.InitLobbyDlg(this);
+
     }
     // 애니메이션 없는 패널 전환용 메서드
     private Task SwitchPanel(GameObject targetPanel, Button clickedButton)

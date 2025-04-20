@@ -73,6 +73,9 @@ public enum StatName
     CostChargingSpeed,
     WildCardCount,
 
+    InventoryCount,//유저 인벤토리 개수
+    UnitInventoryCount, // 유닛 당 가질수있는 인벤토리 개수
+
 }
 
 public enum CardGrade
@@ -141,5 +144,13 @@ public enum EventTriggerType
     OnDeath,
     OnDamaged,
 
+
+}
+
+public enum ItemType
+{
+    Equipment_Item, 
+    Currency,
+    HardCurrency,
 
 }

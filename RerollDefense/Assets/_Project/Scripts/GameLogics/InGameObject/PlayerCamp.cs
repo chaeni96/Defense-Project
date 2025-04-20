@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class PlayerCamp : MonoBehaviour
 
     [SerializeField] private float hpUpdateSpeed = 5f;  // HP Bar 감소 속도
 
+    [SerializeField] private TMP_Text hpText;
 
     private float targetHPRatio;
     private Coroutine hpUpdateCoroutine;
@@ -26,6 +28,9 @@ public class PlayerCamp : MonoBehaviour
             targetHPRatio = hpBar.value;
         }
 
+        UpdateHPText(GameManager.Instance.GetSystemStat(StatName.CurrentHp));
+
+
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         GameManager.Instance.OnHPChanged += OnHPChanged;
@@ -39,6 +44,9 @@ public class PlayerCamp : MonoBehaviour
         hpBar.value = targetHPRatio;
 
 
+        // HP 텍스트 업데이트
+        UpdateHPText(currentHp);
+
         if (GameManager.Instance.GetSystemStat(StatName.CurrentHp) <= 0)
         {
             GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
@@ -51,6 +59,16 @@ public class PlayerCamp : MonoBehaviour
         //    StopCoroutine(hpUpdateCoroutine);
         //}
         //hpUpdateCoroutine = StartCoroutine(UpdateHPBarSmoothly());
+    }
+
+    private void UpdateHPText(float currentHp)
+    {
+        if (hpText != null)
+        {
+            float maxHP = GameManager.Instance.GetSystemStat(StatName.MaxHP);
+
+            hpText.text = $"{Mathf.Ceil(currentHp)}/{Mathf.Ceil(maxHP)}";
+        }
     }
 
     private IEnumerator UpdateHPBarSmoothly()

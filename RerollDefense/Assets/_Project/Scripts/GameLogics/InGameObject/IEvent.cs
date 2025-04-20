@@ -76,3 +76,36 @@ public class SpawnEnemyEvent : IEvent
         StageManager.Instance.NotifyEnemyIncrease(data.f_spawnCount);
     }
 }
+
+
+//아이템 드랍 이벤트
+
+public class DropItemEvent : IEvent
+{
+    private D_DropItemEventData data;
+
+    private FieldDropItemObject item;
+
+    public EventType GetEventType() => EventType.DropItem;
+    
+    public DropItemEvent(D_DropItemEventData eventData)
+    {
+        this.data = eventData;   
+    }
+
+    public void StartEvent(GameObject gameObject, Vector3 position)
+    {
+
+        var obj = ResourceManager.Instance.Instantiate("FieldDropItemObject");
+        //아이템 생성해서 드랍하기
+        item = obj.GetComponent<FieldDropItemObject>();
+        item.LoadItemIcon(data.f_ITemData.f_itemIcon.f_addressableKey);
+        item.transform.position = position;
+
+        //아이템 타입에 따라서 인벤에 넣을지 스탯 올려야하는지 구분해야됨
+
+
+
+
+    }
+}

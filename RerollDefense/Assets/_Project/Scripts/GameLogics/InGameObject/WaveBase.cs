@@ -71,6 +71,9 @@ public abstract class BattleWaveBase : WaveBase
         // 여기서 "StartWave 버튼"을 활성화하는 UI를 활성화 하도록 해야함.OnStartWaveButtonClicked연결할것.
         // 혹은 이벤트 연결 필요
 
+        //test용으로 선언
+        SpawnWaveEnemies();
+
         Debug.Log("전투 웨이브 시작 준비 완료! 사용자 입력을 대기합니다.");
     }
     public virtual void OnStartWaveButtonClicked()
@@ -318,6 +321,8 @@ public class EventEnemyWave : BattleWaveBase
 {
     private D_EventEnemyWaveData eventWaveData;
 
+    private bool isGetItem;
+
     public EventEnemyWave(D_EventEnemyWaveData data) : base(data)
     {
         eventWaveData = data;
@@ -379,6 +384,16 @@ public class EventEnemyWave : BattleWaveBase
         {
             isSpawnDone = true;
             CheckWaveCompletion();
+        }
+    }
+
+    public override void CheckWaveCompletion()
+    {
+        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted && isGetItem)
+        {
+            //아이템을 습득해야 넘기기 
+            isWaveCompleted = true;
+            StageManager.Instance.OnWaveComplete();
         }
     }
 }

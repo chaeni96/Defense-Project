@@ -85,6 +85,10 @@ public class EventManager : MonoBehaviour
         {
             return new SpawnEnemyEvent(spawnData);
         }
+        else if(eventData is D_DropItemEventData itemData)
+        {
+            return new DropItemEvent(itemData);
+        }
 
         return null;
     }

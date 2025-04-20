@@ -157,6 +157,7 @@ MonoBehaviour:
   scenekind: 0
   placedTileMap: {fileID: 0}
   tileMapGrid: {fileID: 0}
+  bgmAddressableKey: 
 --- !u!4 &104147983
 Transform:
   m_ObjectHideFlags: 0
@@ -678,6 +679,7 @@ GameObject:
   - component: {fileID: 1934840173}
   - component: {fileID: 1934840172}
   - component: {fileID: 1934840171}
+  - component: {fileID: 1934840174}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -793,3 +795,11 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!81 &1934840174
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934840169}
+  m_Enabled: 1
