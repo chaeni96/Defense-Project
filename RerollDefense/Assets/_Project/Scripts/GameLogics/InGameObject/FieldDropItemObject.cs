@@ -9,13 +9,19 @@ public class FieldDropItemObject : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer itemIcon;
 
+    [SerializeField] private float autoCollectDelay = 0.5f;     // 떨어진 후 자동 수집까지 대기 시간
+    [SerializeField] private float flySpeed = 10f;              // 날아가는 속도
+    [SerializeField] private Ease flyEase = Ease.InExpo;        // 날아가는 이징
+    [SerializeField] private float scaleDownDuration = 0.5f;    // 크기 줄어드는 시간
+
+    [SerializeField] private Material itemTraolMat;
+
     // 튕김 효과 관련 변수들
      private float initialBounceHeight = 1f;  // 첫 튕김 높이
      private float bounceDuration = 0.15f;      // 튕김 지속 시간
      private float fallDuration = 0.1f;         // 떨어지는 지속 시간
      private Ease bounceEase = Ease.OutQuad;    // 튕김 이징
      private Ease fallEase = Ease.InQuad;       // 떨어짐 이징
-     private float randomHorizontalForce = 1f; // 랜덤 수평 이동 정도
      private int bounceCount = 2;               // 튕김 횟수
      private float bounceReduction = 0.3f;      // 튕김 높이 감소 비율
 
@@ -28,6 +34,8 @@ public class FieldDropItemObject : MonoBehaviour
     private Vector3 finalPosition;                              // 최종 위치 저장용
     private Sequence floatingSequence;                          // 떠다니는 시퀀스 저장용
 
+    private D_ItemData itemData;
+
     private void Awake()
     {
         // 초기에는 아이콘을 숨김
@@ -35,13 +43,9 @@ public class FieldDropItemObject : MonoBehaviour
             itemIcon.enabled = false;
     }
 
-    private void OnDestroy()
+    public void InitializeItem(D_ItemData item)
     {
-        // 시퀀스 정리
-        if (floatingSequence != null && floatingSequence.IsActive())
-        {
-            floatingSequence.Kill();
-        }
+        itemData = item;
     }
 
     public void LoadItemIcon(string addressablekey)
@@ -72,7 +76,6 @@ public class FieldDropItemObject : MonoBehaviour
         }
     }
 
-    // 아이템 생성 시 호출하여 튕김 효과 실행
     // 아이템 생성 시 호출하여 튕김 효과 실행
     public void PlayBounceAnimation()
     {
@@ -146,11 +149,14 @@ public class FieldDropItemObject : MonoBehaviour
         // 튕김 애니메이션이 끝나면 두둥실 떠다니는 애니메이션 시작
         bounceSequence.OnComplete(() => {
             StartFloatingAnimation();
+            // 자동 수집 시작 (딜레이 후)
+            StartCoroutine(AutoCollectAfterDelay(autoCollectDelay));
         });
 
         // 시퀀스 실행
         bounceSequence.Play();
     }
+
     // 두둥실 떠다니는 애니메이션
     private void StartFloatingAnimation()
     {
@@ -181,9 +187,123 @@ public class FieldDropItemObject : MonoBehaviour
         floatingSequence.Play();
     }
 
+    // 지연 후 자동 수집 시작
+    private IEnumerator AutoCollectAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        CollectItem();
+    }
+
+    // 아이템 수집 애니메이션
+    private void CollectItem()
+    {
+        // 떠다니는 애니메이션 중지
+        if (floatingSequence != null && floatingSequence.IsActive())
+        {
+            floatingSequence.Kill();
+        }
+
+        // 아이템 타입에 따른 목표 위치 결정
+        Vector3 targetPosition = GetTargetPositionByItemType();
+
+        // 날아가는 애니메이션 시퀀스 생성
+        Sequence collectSequence = DOTween.Sequence();
+
+        // 먼저 약간 위로 올라가는 효과 (아이템이 움직이기 시작함을 표시)
+        collectSequence.Append(
+        transform.DOMove(transform.position + Vector3.up * 0.3f, 0.1f)
+        .SetEase(Ease.OutQuad)
+        .OnComplete(() => {
+         // 위로 올라가는 효과가 완료되었을 때 머티리얼 변경
+             if (itemTraolMat != null && itemIcon != null)
+            {
+             itemIcon.material = itemTraolMat;
+            }
+        })
+    );
+
+        // 타겟으로 날아감
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        float duration = distance / flySpeed;  // 속도에 따른 시간 계산
+
+        collectSequence.Append(
+            transform.DOMove(targetPosition, duration)
+            .SetEase(flyEase)
+        );
+
+        // 동시에 줄어드는 효과
+        collectSequence.Join(
+            transform.DOScale(Vector3.zero, scaleDownDuration)
+            .SetEase(Ease.InBack)
+            .SetDelay(duration - scaleDownDuration)  // 도착 직전에 줄어들기 시작
+        );
+
+        // 수집 완료 후 오브젝트 제거
+        collectSequence.OnComplete(() => {
+            // 아이템 수집 성공 이벤트 발생 가능
+            OnItemCollected();
+
+            // 게임 오브젝트 제거
+            Destroy(gameObject);
+        });
+
+        // 시퀀스 실행
+        collectSequence.Play();
+    }
+
+
+    // 타입별 목표 위치 반환
+    private Vector3 GetTargetPositionByItemType()
+    {
+        // UI 캔버스 월드 위치를 기반으로 인벤토리의 해당 아이템 슬롯 위치를 계산
+        // 실제 구현시 UI 캔버스와 슬롯 위치를 참조해야 함
+
+        // 임시 화면 위치 (실제로는 UI 캔버스의 월드 위치를 가져와야 함)
+
+        if (itemData.f_itemType == ItemType.Currency)
+        {
+
+            return new Vector3(-2.82f, -6f, 0);
+
+        }
+        else if(itemData.f_itemType == ItemType.Equipment_Item)
+        {
+            return new Vector3(-2.16f, -6f, 0);
+        }
+
+        return new Vector3(0, 0, 0);
+
+      
+    }
+
+    // 아이템 수집 완료 시 호출
+    private void OnItemCollected()
+    {
+
+        Debug.Log($"{itemData.f_itemType} 타입 아이템 수집 완료!");
+
+        // TODO: 이벤트 시스템이나 GameManager를 통해 아이템 수집 알림
+    }
+
     public void PlayBounceAnimationImmediate(Vector3 startPosition)
     {
         transform.position = startPosition;
         PlayBounceAnimation();
+    }
+
+
+    private void OnDestroy()
+    {
+        // 시퀀스 정리
+        if (floatingSequence != null && floatingSequence.IsActive())
+        {
+            floatingSequence.Kill();
+        }
+
+        // 어드레서블 리소스 해제
+        if (sprite.IsValid())
+        {
+            Addressables.Release(sprite);
+        }
     }
 }
