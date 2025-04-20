@@ -101,5 +101,11 @@ public class DropItemEvent : IEvent
         item = obj.GetComponent<FieldDropItemObject>();
         item.LoadItemIcon(data.f_ITemData.f_itemIcon.f_addressableKey);
         item.transform.position = position;
+
+        //아이템 타입에 따라서 인벤에 넣을지 스탯 올려야하는지 구분해야됨
+
+
+
+
     }
 }
