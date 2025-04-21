@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 using DG.Tweening;
+using static UnityEditor.PlayerSettings;
 
 
 [UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
@@ -16,12 +17,12 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
     public GameObject forthCardDeck;
-    public GameObject fifthCardDeck;
 
 
     //[SerializeField] private GameObject CostGauge;  
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
+    [SerializeField] private TMP_Text currentCostText;
 
     [SerializeField] private TMP_ColorGradient normalColorGradient;
     [SerializeField] private TMP_ColorGradient rareColorGradient;
@@ -36,16 +37,14 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private TMP_Text legendaryPercent;
     [SerializeField] private TMP_Text mythicPercent;
 
-    [SerializeField] private List<Image> cardGradeImages;  // Inspector에서 firstCardGrade, secondCardGrade, thirdCardGrade 순서대로 할당
+    //[SerializeField] private List<Image> cardGradeImages;  // Inspector에서 firstCardGrade, secondCardGrade, thirdCardGrade 순서대로 할당
     [SerializeField] private TMP_Text progressWaveIndex; //진행중인 웨이브 인덱스
     [SerializeField] private TMP_Text remainEnemyCount; //남은 enemy 수
 
     //카드덱
     private List<GameObject> cardDecks;
-    [SerializeField] private List<GameObject> emptyCardObjects;
+    //[SerializeField] private List<GameObject> emptyCardObjects;
     private List<UnitCardObject> currentCards;
-
-    private bool isChecking = false;
 
     //test용 변수들
     public float checkCooldown = 1f;
@@ -85,13 +84,26 @@ public class FullWindowInGameDlg : FullWindowBase
         shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
         shopLevelText.text = $"Shop Level : {shopLevel}";
 
+        UpdateText();
 
+        GameManager.Instance.OnCostUsed += CostUse;
+  
+    }
+    public void UpdateText()
+    {
+        int currentCost = GameManager.Instance.GetSystemStat(StatName.Cost);
+        currentCostText.text = currentCost.ToString();  
     }
 
 
+    private void CostUse(int usedCost)
+    {
+        UpdateText();
+    }
+
     private void InitializeCardDecks()
     {
-        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, forthCardDeck, fifthCardDeck };
+        cardDecks = new List<GameObject> { firstCardDeck, secondCardDeck, thirdCardDeck, forthCardDeck };
 
       
         currentCards = new List<UnitCardObject>();
@@ -101,7 +113,8 @@ public class FullWindowInGameDlg : FullWindowBase
             currentCards.Add(null);
         }
 
-        StartCoroutine(CheckAndFillCardDecks());
+        CheckAndFillCardDecks();
+        //StartCoroutine(CheckAndFillCardDecks());
     }
 
     private void UpdateWaveIndex(int currentIndex, int subIndex = 0)
@@ -115,33 +128,46 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
-    private IEnumerator CheckAndFillCardDecks()
+    private void CheckAndFillCardDecks()
     {
-        var cardDatas = new List<D_TileCardData>();
+        //var cardDatas = new List<D_TileCardData>();
 
-        // 카드 데이터 미리 준비
+        //// 카드 데이터 미리 준비
+        //for (int i = 0; i < cardDecks.Count; i++)
+        //{
+        //    if (emptyCardObjects[i].activeSelf && currentCards[i] == null)
+        //    {
+        //        cardDatas.Add(GetCardKeyBasedOnProbability());
+        //    }
+        //    else
+        //    {
+        //        cardDatas.Add(null);
+        //    }
+        //}
+
+        //// 각 카드에 대해 0.1초 간격으로 코루틴 실행
+        //for (int i = 0; i < cardDecks.Count; i++)
+        //{
+        //    if (cardDatas[i] != null)
+        //    {
+        //        emptyCardObjects[i].SetActive(false);
+        //        StartCoroutine(PlayEffectAndSpawnCard(i, cardDatas[i]));
+        //        yield return new WaitForSeconds(0.06f); // 다음 카드 이펙트 간격
+        //    }
+        //}
+
+        //TODO : 채현
+        //RT 렌더러 넣으면서 변경된 부분, 원래 유닛카드 배경 이펙트주는거 없이 카드 덱 설정
+
         for (int i = 0; i < cardDecks.Count; i++)
         {
-            if (emptyCardObjects[i].activeSelf && currentCards[i] == null)
+            if (currentCards[i] == null)
             {
-                cardDatas.Add(GetCardKeyBasedOnProbability());
-            }
-            else
-            {
-                cardDatas.Add(null);
+                D_TileCardData cardData = GetCardKeyBasedOnProbability();
+                CreateUnitCardWithData(cardDecks[i], i, cardData);
             }
         }
 
-        // 각 카드에 대해 0.1초 간격으로 코루틴 실행
-        for (int i = 0; i < cardDecks.Count; i++)
-        {
-            if (cardDatas[i] != null)
-            {
-                emptyCardObjects[i].SetActive(false);
-                StartCoroutine(PlayEffectAndSpawnCard(i, cardDatas[i]));
-                yield return new WaitForSeconds(0.06f); // 다음 카드 이펙트 간격
-            }
-        }
     }
     private IEnumerator PlayEffectAndSpawnCard(int index, D_TileCardData cardData)
     {
@@ -149,10 +175,10 @@ public class FullWindowInGameDlg : FullWindowBase
 
         // 등급 색상 적용
         Color gradeColor = GetGradeColor(grade);
-        cardGradeImages[index].color = gradeColor;
+        //cardGradeImages[index].color = gradeColor;
 
         // 이펙트 실행
-        PlayCardEnterEffect(cardGradeImages[index]);
+        //PlayCardEnterEffect(cardGradeImages[index]);
 
         // 이펙트 실행 시간만큼 대기
         yield return new WaitForSeconds(0.24f);
@@ -370,13 +396,13 @@ public class FullWindowInGameDlg : FullWindowBase
                 currentCards[i] = null;
             }
 
-            cardGradeImages[i].color = Color.white;
+            //cardGradeImages[i].color = Color.white;
 
             // UnitCard_Empty 활성화
-            emptyCardObjects[i].SetActive(true);
+           // emptyCardObjects[i].SetActive(true);
         }
             // 새 카드 덱 생성
-            StartCoroutine(CheckAndFillCardDecks());
+            CheckAndFillCardDecks();
     }
        
 
@@ -458,7 +484,7 @@ public class FullWindowInGameDlg : FullWindowBase
         if (deckIndex != -1)
         {
             currentCards[deckIndex] = null;
-            emptyCardObjects[deckIndex].SetActive(true);
+            //emptyCardObjects[deckIndex].SetActive(true);
         }
     }
 
@@ -498,6 +524,7 @@ public class FullWindowInGameDlg : FullWindowBase
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
             StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
             StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
+            GameManager.Instance.OnCostUsed -= CostUse;
 
         }
     }

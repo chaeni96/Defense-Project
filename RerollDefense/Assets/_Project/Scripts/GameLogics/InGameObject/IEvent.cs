@@ -104,6 +104,7 @@ public class DropItemEvent : IEvent
         item.InitializeItem(data.f_ITemData);
 
         //아이템 타입에 따라서 인벤에 넣을지 스탯 올려야하는지 구분해야됨
+        //아이템이 생성되자마자? 몬스터가 죽자마자 인벤에 들어가야됨
 
 
 

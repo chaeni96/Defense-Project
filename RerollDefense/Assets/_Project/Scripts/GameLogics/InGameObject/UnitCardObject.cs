@@ -843,8 +843,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         RectTransform layoutRect = tileImageLayout.GetComponent<RectTransform>();
 
         // 전체 레이아웃 크기 설정 (타일 크기 * 그리드 크기 + 간격)
-        float tileSize = 100f;
-        float spacing = 10f; // 0.1 * tileSize
+        float tileSize = 50f;
+        float spacing = 1.5f; // 0.1 * tileSize
         layoutRect.sizeDelta = new Vector2(width * (tileSize + spacing) - spacing, height * (tileSize + spacing) - spacing);
 
         // 유닛 데이터를 그리드 위치에 매핑
@@ -881,7 +881,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     tileObject.SetPosition(posX, posY);
 
                     // 이미지 리스트에 타일 이미지 컴포넌트 추가 (UnitTileObject의 unitImage 참조)
-                    Image tileImage = tileObject.unitImage;
+                    Image tileImage = tileObject.backgroundImage;
 
                     if (tileImage != null)
                     {

@@ -96,7 +96,7 @@ MonoBehaviour:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1200cef424b48614082284978dd27bc1
-    m_Address: UnitCardObject
+    m_Address: UnitCardObjectBefore
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -133,6 +133,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a54438047af51f646a74db7fd2d05f76
     m_Address: FieldDropItemObject
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2802907c2e65404f9cbe865c4c0a5a9
+    m_Address: UnitCardObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
