@@ -9023,6 +9023,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1878331751703702602}
+  - component: {fileID: 912265208730960984}
   m_Layer: 5
   m_Name: InventoryTab
   m_TagString: Untagged
@@ -9058,6 +9059,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -234}
   m_SizeDelta: {x: 0, y: 1200}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &912265208730960984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3966729106557613719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92bfacc6f5eec149912c4bf81b00ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3991158281907053571
 GameObject:
   m_ObjectHideFlags: 0
