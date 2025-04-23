@@ -27,18 +27,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b8920a6303bea13439ce5d62ba1279ad
-    m_Address: Test_ItemIcon_1
+  - m_GUID: 251fc76857fcc0947acc3c1bf29dc78d
+    m_Address: ItemIcon_Sword
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b8e9a97692cfb7d4b828dcd12a2cdf23
-    m_Address: Test_ItemIcon_3
+  - m_GUID: b8920a6303bea13439ce5d62ba1279ad
+    m_Address: ItemIcon_Hammer
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 476942b0d44402742a0fe55b9aa172f1
-    m_Address: Test_ItemIcon_2
+    m_Address: ItemIcon_Gem
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8e9a97692cfb7d4b828dcd12a2cdf23
+    m_Address: ItemIcon_Potion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2262f6fae4ab63d41a09d42d823c9b4b
+    m_Address: ItemIcon_Shield
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fbd8c22cfb3026408f4ea1a47f4402f
+    m_Address: ItemIcon_Pick
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

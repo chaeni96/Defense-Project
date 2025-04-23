@@ -260,13 +260,13 @@ public class FieldDropItemObject : MonoBehaviour
 
         // 임시 화면 위치 (실제로는 UI 캔버스의 월드 위치를 가져와야 함)
 
-        if (itemData.f_itemType == ItemType.Currency)
+        if (itemData.f_type == ItemType.Currency)
         {
 
             return new Vector3(-2.82f, -6f, 0);
 
         }
-        else if(itemData.f_itemType == ItemType.Equipment_Item)
+        else if(itemData.f_type == ItemType.Equipment_Item)
         {
             return new Vector3(-2.16f, -6f, 0);
         }
@@ -280,7 +280,9 @@ public class FieldDropItemObject : MonoBehaviour
     private void OnItemCollected()
     {
 
-        Debug.Log($"{itemData.f_itemType} 타입 아이템 수집 완료!");
+        Debug.Log($"{itemData.f_type} 타입 아이템 수집 완료!");
+
+        InventoryManager.Instance.OnFieldItemCollected(itemData);
 
         // TODO: 이벤트 시스템이나 GameManager를 통해 아이템 수집 알림
     }

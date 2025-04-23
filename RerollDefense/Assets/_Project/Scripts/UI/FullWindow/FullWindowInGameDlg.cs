@@ -51,6 +51,11 @@ public class FullWindowInGameDlg : FullWindowBase
     private int shopLevel;
     private int shopUpgradeCost;
 
+    [SerializeField] private Transform inventorySlotParent; // 인벤토리 슬롯이 생성될 부모 Transform
+    [SerializeField] private GameObject slotItemPrefab; // 슬롯 프리팹
+    [SerializeField] private Button currencyTabButton; // 재화 탭 버튼
+    [SerializeField] private Button equipmentTabButton; // 장비 탭 버튼
+
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
     {
@@ -63,6 +68,8 @@ public class FullWindowInGameDlg : FullWindowBase
 
         InitializeCardDecks();
         UpdateShopLevelUI();
+
+        InitializeInventoryUI();
 
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;  
@@ -89,6 +96,43 @@ public class FullWindowInGameDlg : FullWindowBase
         GameManager.Instance.OnCostUsed += CostUse;
   
     }
+
+    // InitializeUI 메서드에 추가
+    private void InitializeInventoryUI()
+    {
+
+        InventoryManager.Instance.LoadInventory();
+        // 인벤토리 매니저의 이벤트 구독
+        InventoryManager.Instance.OnInventoryChanged += RefreshInventoryUI;
+        InventoryManager.Instance.OnItemCollected += OnItemCollected;
+    }
+
+    // 인벤토리 UI 갱신
+    private void RefreshInventoryUI()
+    {
+        if (InventoryManager.Instance == null || inventorySlotParent == null || slotItemPrefab == null)
+        {
+            return;
+        }
+
+        // 모든 자식 오브젝트 제거
+        foreach (Transform child in inventorySlotParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+
+        InventoryManager.Instance.RefreshInventoryUI(inventorySlotParent, slotItemPrefab);
+        
+    }
+
+    // 아이템 수집 이벤트 처리
+    private void OnItemCollected(D_ItemData item)
+    {
+        RefreshInventoryUI();
+    }
+
+
     public void UpdateText()
     {
         int currentCost = GameManager.Instance.GetSystemStat(StatName.Cost);

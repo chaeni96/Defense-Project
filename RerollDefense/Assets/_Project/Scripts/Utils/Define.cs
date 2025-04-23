@@ -149,8 +149,15 @@ public enum EventTriggerType
 
 public enum ItemType
 {
-    Equipment_Item, 
     Currency,
-    HardCurrency,
+    Equipment_Item, //세분화 시켜야함 -> weapon, armor...
+}
 
+public enum ItemGrade
+{
+    Normal = 0,
+    Rare,
+    Epic,
+    Legendary,
+    Mythic,
 }

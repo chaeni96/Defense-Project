@@ -96,18 +96,64 @@ public class DropItemEvent : IEvent
     public void StartEvent(GameObject gameObject, Vector3 position)
     {
 
-        var obj = ResourceManager.Instance.Instantiate("FieldDropItemObject");
-        //아이템 생성해서 드랍하기
-        item = obj.GetComponent<FieldDropItemObject>();
-        item.LoadItemIcon(data.f_ITemData.f_itemIcon.f_addressableKey);
-        item.transform.position = position;
-        item.InitializeItem(data.f_ITemData);
+        // 먼저 아이템을 선택하여 인벤토리에 즉시 추가 (시각적 효과와 별개로 데이터 보존)
+        D_ItemData selectedItem = SelectRandomItem();
 
-        //아이템 타입에 따라서 인벤에 넣을지 스탯 올려야하는지 구분해야됨
-        //아이템이 생성되자마자? 몬스터가 죽자마자 인벤에 들어가야됨
+        if (selectedItem != null)
+        {
+            // 인벤토리에 아이템 추가 (실제 데이터 저장)
+            //InventoryManager.Instance.AddItem(selectedItem);
+
+            // 시각적 효과를 위한 필드 드롭 아이템 생성
+            var obj = ResourceManager.Instance.Instantiate("FieldDropItemObject");
+            FieldDropItemObject item = obj.GetComponent<FieldDropItemObject>();
+            item.transform.position = position;
+            item.InitializeItem(selectedItem);
+            item.LoadItemIcon(selectedItem.f_iconImage.f_addressableKey);
+        }
+
+    }
 
 
+    // 확률에 따른 아이템 선택 메서드
+    private D_ItemData SelectRandomItem()
+    {
+        if (data.f_dropItems == null || data.f_dropItems.Count == 0)
+            return null;
 
+        // 1. 먼저 드롭할 DropItemData를 선택 (여러 개의 DropItemData가 있을 수 있음)
+        D_DropItemData dropItemData = data.f_dropItems[Random.Range(0, data.f_dropItems.Count)];
 
+        if (dropItemData.f_itemList == null || dropItemData.f_itemList.Count == 0)
+            return null;
+
+        // 2. 확률에 따라 itemList에서 아이템 선택
+        float totalChance = 0;
+
+        // 모든 아이템의 확률 총합 계산
+        foreach (var itemListEntry in dropItemData.f_itemList)
+        {
+            totalChance += itemListEntry.f_chance;
+        }
+
+        // 1~totalChance 사이의 랜덤 값 생성
+        float randomValue = Random.Range(0, totalChance);
+
+        // 누적 확률로 아이템 선택
+        float cumulativeChance = 0;
+
+        foreach (var itemListEntry in dropItemData.f_itemList)
+        {
+            cumulativeChance += itemListEntry.f_chance;
+
+            // 랜덤 값이 누적 확률 이하라면 해당 아이템 선택
+            if (randomValue <= cumulativeChance)
+            {
+                return itemListEntry.f_itemData;
+            }
+        }
+
+        // 기본값으로 첫 번째 아이템 반환 (만약 모든 확률의 합이 0이거나 문제가 있는 경우)
+        return dropItemData.f_itemList[0].f_itemData;
     }
 }
