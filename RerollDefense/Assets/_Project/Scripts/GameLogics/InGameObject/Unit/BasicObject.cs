@@ -1,4 +1,5 @@
 using BansheeGz.BGDatabase;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 public class BasicObject : MonoBehaviour, IStatSubscriber
 {
-
+    public Animator animator;
 
     //처음 Subject에서 가져온 기본 스탯, 레벨업이나 버프 적용시 참조하는 기준값
     public Dictionary<StatName, StatStorage> baseStats = new Dictionary<StatName, StatStorage>();
@@ -19,7 +20,18 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
 
     public bool isEnemy = false;
-   
+
+
+    //임시방편 state 변경, 나중에 다 삭제할거임
+    public State currentState;
+    public void ChangeState<T>(T state) where T : State
+    {
+        currentState?.ExitState(this);
+        currentState = state;
+        currentState?.EnterState(this);
+    }
+
+
     public virtual void Initialize()
     {
         foreach (var subject in subjects)
@@ -27,6 +39,15 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
             StatManager.Instance.Subscribe(this, subject);
         }
     }
+
+    public virtual void Update()
+    {
+        if (Time.timeScale != 0)
+        {
+            currentState?.UpdateState(this);
+        }
+    }
+
 
     public void AddSubject(StatSubject subject)
     {

@@ -112,7 +112,9 @@ public class TileMapManager : MonoBehaviour
             {
                 Vector2 customPos = ConvertToCustomCoordinates(position);
 
-                var tileData = new TileData(customPos);
+                //TODO : 채현
+                //타일 타입도 데이터에서 지정해줘야됨
+                var tileData = new TileData(customPos, TileType.Attackable);
                 SetTileData(tileData);
             }
         }
@@ -135,7 +137,7 @@ public class TileMapManager : MonoBehaviour
             objectController.CheckAttackAvailability();
 
             // 타일 데이터 업데이트
-            var tileData = new TileData(position)
+            var tileData = new TileData(position, TileType.Attackable)
             {
                 isAvailable = false,
                 placedUnit = objectController
@@ -174,7 +176,7 @@ public class TileMapManager : MonoBehaviour
     // 타일 점유상태로 변경
     // 오브젝트를 실제 배치할때 사용
     // 상대적인 타일 위치들을 기준위치에 더해서 처리
-    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> units)
+    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> units, bool blockPath = true)
     {
         for (int i = 0; i < tileOffsets.Count; i++)
         {
@@ -183,14 +185,19 @@ public class TileMapManager : MonoBehaviour
             // 각 유닛의 tilePosition 직접 설정
             units[i].tilePosition = position;
             units[i].CheckAttackAvailability();
+
+            // 공격 가능한 유닛인지 확인
+            bool isAttackableUnit = units[i].canAttack;
+
             // 각 프리뷰 유닛에 맞는 타일 데이터 설정
-            var tileData = new TileData(position)
+            var tileData = new TileData(position, TileType.None)
             {
                 isAvailable = false,
-                placedUnit = units[i]
+                isPassable = !blockPath || isAttackableUnit, // 공격 가능한 유닛은 적이 지나갈 수 있음
+                placedUnit = units[i],
+                tileType = isAttackableUnit ? TileType.Attackable : TileType.Blocked
             };
 
-            
             SetTileData(tileData);
         }
     }

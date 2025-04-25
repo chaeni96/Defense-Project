@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class State
 {
+    public TriggerKeyword animTrigger;
     public BasicObject basicObj;
 
     public abstract void EnterState(BasicObject obj);

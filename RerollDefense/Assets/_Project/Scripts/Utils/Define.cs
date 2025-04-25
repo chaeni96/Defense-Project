@@ -161,3 +161,12 @@ public enum ItemGrade
     Legendary,
     Mythic,
 }
+
+public enum TriggerKeyword
+{
+    None = 0,
+    Idle,
+    Run,
+    Attack,
+
+}

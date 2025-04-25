@@ -71,15 +71,14 @@ public abstract class BattleWaveBase : WaveBase
         // 여기서 "StartWave 버튼"을 활성화하는 UI를 활성화 하도록 해야함.OnStartWaveButtonClicked연결할것.
         // 혹은 이벤트 연결 필요
 
-        //test용으로 선언
         SpawnWaveEnemies();
 
         Debug.Log("전투 웨이브 시작 준비 완료! 사용자 입력을 대기합니다.");
     }
-    public virtual void OnStartWaveButtonClicked()
-    {
-        SpawnWaveEnemies();
-    }
+
+    //웨이브 시작 버튼 클릭시 호출될 메서드
+    protected abstract void OnStartWaveButtonClicked();
+
     protected abstract void SpawnWaveEnemies();
 
     protected abstract int CalculateTotalEnemies();
@@ -149,6 +148,22 @@ public class NormalBattleWave : BattleWaveBase
         return normalWaveData.f_enemyGroups.Sum(group => group.f_amount);
     }
 
+    protected override void OnStartWaveButtonClicked()
+    {
+
+        // EnemyManager로부터 현재 생성된 모든 적 가져오기
+        List<Enemy> currentEnemies = EnemyManager.Instance.GetAllEnemys();
+
+        for (int i = 0; i < currentEnemies.Count; i++)
+        {
+            Enemy enemy = currentEnemies[i];
+            // 각 적마다 다른 이동 인터벌 적용 가능 (필요에 따라)
+            float delay = i * 0.5f; // 예시: 0.5초 간격으로 이동 시작
+
+            StageManager.Instance.StartCoroutine(EnableEnemyMovementAfterDelay(enemy, delay));
+        }
+    }
+
     /// <summary>
     /// 자식 클래스에서 구현하는 스폰 로직
     /// (실제 코루틴 호출 등)
@@ -162,44 +177,75 @@ public class NormalBattleWave : BattleWaveBase
         // 코루틴을 통해 실제 스폰
         foreach (D_enemyGroups groupData in normalWaveData.f_enemyGroups)
         {
-            StageManager.Instance.StartCoroutine(CoSpawnEnemyGroup(groupData));
+            CoSpawnEnemyGroup(groupData);
         }
     }
 
-    private IEnumerator CoSpawnEnemyGroup(D_enemyGroups enemyGroupData)
+    private void CoSpawnEnemyGroup(D_enemyGroups enemyGroupData)
     {
         if (enemyGroupData == null || enemyGroupData.f_enemy == null)
         {
             Debug.LogError("적 그룹 데이터 없음");
-            yield break;
+            return;
         }
 
-        yield return new WaitForSeconds(enemyGroupData.f_startDelay);
+        // 모든 적 한번에 생성 (이동 불가능 상태로)
+        List<Enemy> spawnedEnemies = new List<Enemy>();
 
-        for (int spawnedCount = 0; spawnedCount < enemyGroupData.f_amount; spawnedCount++)
+        // 기본 스폰 오프셋
+        Vector2 spawnOffset = enemyGroupData.f_spawnOffset;
+
+        for (int i = 0; i < enemyGroupData.f_amount; i++)
         {
             if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
             {
-                EnemyManager.Instance.SpawnEnemy(enemyGroupData.f_enemy);
+                // 시작 타일 위치
+                Vector2 startTilePos = enemyGroupData.f_startTilePos;
+
+                // 각 적마다 다른 오프셋 계산
+                Vector2 individualOffset = new Vector2(
+               spawnOffset.x * (i+1) ,  // x축으로 spawnOffset.x씩 증가
+               spawnOffset.y * (i+1)   // y축으로 spawnOffset.y씩 증가
+           );
+                individualOffset += new Vector2(0.5f, 0f);
+
+
+
+                // 적 생성 (이동 불가능 상태로)
+                EnemyManager.Instance.SpawnEnemy(
+                    enemyGroupData.f_enemy,
+                    startTilePos,    
+                    individualOffset
+                );
+
+                // 생성된 적 가져오기
+                Enemy enemy = EnemyManager.Instance.GetEnemyAtIndex(EnemyManager.Instance.GetEnemyCount() - 1);
+                if (enemy != null)
+                {
+                    spawnedEnemies.Add(enemy);
+                }
             }
             else
             {
                 Debug.LogError("오브젝트 풀 키가 없음");
                 break;
             }
-
-            yield return new WaitForSeconds(enemyGroupData.f_spawnInterval);
         }
 
-        ++completedGroupCount;
-
-        // 모든 그룹이 스폰을 완료했는지 확인
+        completedGroupCount++;
         if (completedGroupCount >= totalGroupCount)
         {
             isSpawnDone = true;
             CheckWaveCompletion();
         }
     }
+
+    private IEnumerator EnableEnemyMovementAfterDelay(Enemy enemy, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        enemy.SetReadyToMove(true); // 지연 후 이동 가능 상태로 설정
+    }
+
 }
 
 /// <summary>
@@ -243,6 +289,9 @@ public class BossBattleWave : BattleWaveBase
             total += bossWaveData.f_supportEnemyGroups.Sum(group => group.f_amount);
         }
         return total;
+    }
+    protected override void OnStartWaveButtonClicked()
+    {
     }
 
     protected override void SpawnWaveEnemies()
@@ -348,6 +397,9 @@ public class EventEnemyWave : BattleWaveBase
         return eventWaveData.f_eventEnemyGroups.Sum(group => group.f_amount);
     }
 
+    protected override void OnStartWaveButtonClicked()
+    {
+    }
     protected override void SpawnWaveEnemies()
     {
         totalGroupCount = eventWaveData.f_eventEnemyGroups.Count;
@@ -373,7 +425,7 @@ public class EventEnemyWave : BattleWaveBase
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
                 // 이벤트 적 스폰 (드롭 아이템 정보 포함 가능)
-                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, groupData.f_EventDummyData);
+                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, null,groupData.f_EventDummyData);
             }
 
             yield return new WaitForSeconds(groupData.f_spawnInterval);

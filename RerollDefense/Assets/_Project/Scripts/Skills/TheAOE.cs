@@ -29,7 +29,7 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
         currentScheduleUID = TimeTableManager.Instance.RegisterSchedule(totalFXDelay);
         TimeTableManager.Instance.AddTimeChangeSubscriber(this);
         TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentScheduleUID);
-        soundEffect.PlaySound();
+        //soundEffect.PlaySound();
     }
 
     public void OnChangeTime(int scheduleUID, float remainTime)

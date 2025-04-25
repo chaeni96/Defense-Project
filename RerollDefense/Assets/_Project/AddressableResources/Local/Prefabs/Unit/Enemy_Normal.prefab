@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: 4677653435779347748, guid: 2eb609ba3948e3041a308190d7ecc830, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.85, y: 0.69}
@@ -548,10 +548,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e6089088c0341544a2fb08fe71779f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 823469577158176638}
   subjects: 
   isEnemy: 0
   spriteRenderer: {fileID: 333312759545504093}
   enemyCollider: {fileID: 7174515326430547063}
+  isReadyToMove: 0
   enemyType: 0
   hpBar: {fileID: 2995499982571823016}
   hpBarCanvas: {fileID: 7213748503801390195}

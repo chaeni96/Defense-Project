@@ -107,34 +107,53 @@ public class EnemyManager : MonoBehaviour
         moveSpeeds = new NativeArray<float>(enemyCount, Allocator.TempJob);
     }
 
-    public void SpawnEnemy(D_EnemyData enemyData, Vector3? initPos = null, List<D_EventDummyData> events = null)
+    public void SpawnEnemy(D_EnemyData enemyData, Vector2? customStartTilePos = null, Vector2? spawnOffset = null, List<D_EventDummyData> events = null)
     {
+        // 시작 타일 위치 (기본값 또는 지정된 값 사용)
+        Vector2 startTilePos = customStartTilePos ?? TileMapManager.Instance.GetStartPosition();
 
-        var startTilePos = TileMapManager.Instance.GetStartPosition();
-        Vector3 startPos = initPos ?? TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
+        // 시작 위치를 월드 좌표로 변환
+        Vector3 startWorldPos = TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
 
-        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, startPos, (int)ObjectLayer.Enemy);
+        // 스폰 오프셋 적용 (기본값 또는 지정된 값 사용)
+        Vector2 offset = spawnOffset ?? Vector2.zero;
+        Vector3 spawnPos = new Vector3(startWorldPos.x + offset.x, startWorldPos.y + offset.y, startWorldPos.z);
+
+        GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, spawnPos, (int)ObjectLayer.Enemy);
 
         if (enemyObj != null)
         {
             Enemy enemy = enemyObj.GetComponent<Enemy>();
-            enemy.transform.position = startPos;
+            enemy.transform.position = spawnPos;
             enemy.Initialize();
             enemy.InitializeEnemyInfo(enemyData);
 
-            if(events != null && events.Count() > 0)
+            if (events != null && events.Count() > 0)
             {
                 enemy.InitializeEvents(events);
             }
 
-            // 초기 경로 설정
-            List<Vector3> initialPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
-            enemyPaths[enemy] = initialPath;
+            // 경로 설정: 스폰 위치 -> 시작 타일 -> 끝 타일
+            List<Vector3> path = new List<Vector3>();
+
+            // 오프셋이 있으면 시작 타일을 첫 경유지로 추가
+            if (offset != Vector2.zero)
+            {
+                path.Add(startWorldPos);
+            }
+
+            // 시작 타일에서 끝 타일까지의 경로 가져오기
+            List<Vector3> mainPath = PathFindingManager.Instance.FindPathFromPosition(startWorldPos);
+
+            // 경로 합치기
+            path.AddRange(mainPath);
+
+            // 경로 설정
+            enemyPaths[enemy] = path;
             enemyPathIndex[enemy] = 0;
 
             UpdateEnemiesPath();
         }
-
     }
 
     // 모든 enemy List 가지고 오기
@@ -210,6 +229,17 @@ public class EnemyManager : MonoBehaviour
             for (int i = 0; i < enemies.Count; i++)
             {
                 Enemy enemy = enemies[i];
+
+                // 이동 준비가 완료된 적만 처리
+                if (!enemy.isReadyToMove)
+                {
+                    // 아직 이동 준비가 안된 적은 현재 위치 유지
+                    targetPositions[i] = enemy.transform.position;
+                    moveSpeeds[i] = 0; // 속도를 0으로 설정하여 이동하지 않게 함
+                    continue;
+                }
+
+
                 List<Vector3> enemyPath = enemyPaths[enemy];
                 int pathIndex = enemyPathIndex[enemy];
 
@@ -220,6 +250,7 @@ public class EnemyManager : MonoBehaviour
                     // 다음 목표 지점으로 이동 시작할 때 방향 체크
                     Vector3 currentPos = enemyPath[pathIndex];
                     Vector3 nextPos = enemyPath[pathIndex + 1];
+
                     float directionX = nextPos.x - currentPos.x;
 
                     if (Mathf.Abs(directionX) > 0.01f)

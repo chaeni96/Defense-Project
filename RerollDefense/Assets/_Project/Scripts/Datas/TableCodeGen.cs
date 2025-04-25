@@ -3029,8 +3029,9 @@ public partial class D_enemyGroups : BGEntity
 		public const string NormalBattleWaveData = "NormalBattleWaveData";
 		public const string enemy = "enemy";
 		public const string amount = "amount";
-		public const string startDelay = "startDelay";
-		public const string spawnInterval = "spawnInterval";
+		public const string startTilePos = "startTilePos";
+		public const string spawnOffset = "spawnOffset";
+		public const string moveInterval = "moveInterval";
 	}
 	private static BansheeGz.BGDatabase.BGMetaNested _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaNested MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaNested>(new BGId(5572311145210933879UL,7563200510926775201UL), () => _metaDefault = null));
@@ -3056,15 +3057,20 @@ public partial class D_enemyGroups : BGEntity
 		get => _f_amount[Index];
 		set => _f_amount[Index] = value;
 	}
-	public System.Single f_startDelay
+	public UnityEngine.Vector2 f_startTilePos
 	{
-		get => _f_startDelay[Index];
-		set => _f_startDelay[Index] = value;
+		get => _f_startTilePos[Index];
+		set => _f_startTilePos[Index] = value;
 	}
-	public System.Single f_spawnInterval
+	public UnityEngine.Vector2 f_spawnOffset
 	{
-		get => _f_spawnInterval[Index];
-		set => _f_spawnInterval[Index] = value;
+		get => _f_spawnOffset[Index];
+		set => _f_spawnOffset[Index] = value;
+	}
+	public System.Single f_moveInterval
+	{
+		get => _f_moveInterval[Index];
+		set => _f_moveInterval[Index] = value;
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5038163328612525559UL, 15929138475061095592UL), () => _ufle12jhs77_f_name = null));
@@ -3074,10 +3080,12 @@ public partial class D_enemyGroups : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_enemy => _ufle12jhs77_f_enemy ?? (_ufle12jhs77_f_enemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5372526711535969942UL, 7967627309530633119UL), () => _ufle12jhs77_f_enemy = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_amount;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_amount => _ufle12jhs77_f_amount ?? (_ufle12jhs77_f_amount = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4620231744031655326UL, 15413228034535967896UL), () => _ufle12jhs77_f_amount = null));
-	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_startDelay;
-	public static BansheeGz.BGDatabase.BGFieldFloat _f_startDelay => _ufle12jhs77_f_startDelay ?? (_ufle12jhs77_f_startDelay = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4746755855330187311UL, 12384430583430897816UL), () => _ufle12jhs77_f_startDelay = null));
-	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_spawnInterval;
-	public static BansheeGz.BGDatabase.BGFieldFloat _f_spawnInterval => _ufle12jhs77_f_spawnInterval ?? (_ufle12jhs77_f_spawnInterval = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5135458425188321857UL, 10050492424633496228UL), () => _ufle12jhs77_f_spawnInterval = null));
+	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_startTilePos;
+	public static BansheeGz.BGDatabase.BGFieldVector2 _f_startTilePos => _ufle12jhs77_f_startTilePos ?? (_ufle12jhs77_f_startTilePos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(4984206588872304771UL, 7875449727248367012UL), () => _ufle12jhs77_f_startTilePos = null));
+	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_spawnOffset;
+	public static BansheeGz.BGDatabase.BGFieldVector2 _f_spawnOffset => _ufle12jhs77_f_spawnOffset ?? (_ufle12jhs77_f_spawnOffset = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5159557381650164847UL, 10125891109824692117UL), () => _ufle12jhs77_f_spawnOffset = null));
+	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_moveInterval;
+	public static BansheeGz.BGDatabase.BGFieldFloat _f_moveInterval => _ufle12jhs77_f_moveInterval ?? (_ufle12jhs77_f_moveInterval = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4728437364755693201UL, 1084968186532763327UL), () => _ufle12jhs77_f_moveInterval = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

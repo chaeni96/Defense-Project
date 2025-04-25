@@ -51,6 +51,7 @@ public class FullWindowInGameDlg : FullWindowBase
     private int shopLevel;
     private int shopUpgradeCost;
 
+    [SerializeField] private Button startBattleBtn;
     [SerializeField] private Transform inventorySlotParent; // 인벤토리 슬롯이 생성될 부모 Transform
     [SerializeField] private GameObject slotItemPrefab; // 슬롯 프리팹
     [SerializeField] private Button currencyTabButton; // 재화 탭 버튼
@@ -76,6 +77,19 @@ public class FullWindowInGameDlg : FullWindowBase
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
         StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
         StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
+
+    }
+
+    public void SetupStartButton()
+    {
+        // 모든 적 이동 시작
+        var enemies = EnemyManager.Instance.GetAllEnemys();
+        foreach (var enemy in enemies)
+        {
+            enemy.ChangeState(new EnemyMoveState());
+            enemy.SetReadyToMove(true);
+        }
+
     }
 
 

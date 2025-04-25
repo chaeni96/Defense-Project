@@ -32,7 +32,10 @@ public class Enemy : BasicObject
 
     public SpriteRenderer spriteRenderer;
     public Collider2D enemyCollider;
-    
+
+    public bool isReadyToMove = false; // 이동 준비 완료 상태
+
+
     [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
     [SerializeField] private Slider hpBar;  // Inspector에서 할당
 
@@ -46,12 +49,9 @@ public class Enemy : BasicObject
     private bool isActive;
     private Vector3 originalScale;
 
+
     public Action OnUpdateDistanceCheck;
 
-    private void Update()
-    {
-        OnUpdateDistanceCheck?.Invoke();
-    }
     public override void Initialize()
     {
         base.Initialize();
@@ -62,6 +62,8 @@ public class Enemy : BasicObject
         UpdateHpBar();
 
         InitializeLineRenderer();
+
+        ChangeState(new EnemyIdleState());
 
     }
 
@@ -190,6 +192,12 @@ public class Enemy : BasicObject
             // HP 바 업데이트
             UpdateHpBar();
         }
+    }
+
+    // 이동 시작 설정
+    public void SetReadyToMove(bool ready)
+    {
+        isReadyToMove = ready;
     }
 
     private void UpdateHpBar()

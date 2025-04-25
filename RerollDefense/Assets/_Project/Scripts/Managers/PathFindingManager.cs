@@ -85,8 +85,8 @@ public class PathFindingManager : MonoBehaviour
             foreach (Vector2 neighborPosition in GetNeighbors(currentNode.Position))
             {
                 var tileData = TileMapManager.Instance.GetTileData(neighborPosition);
-                if (tileData == null || !tileData.isAvailable ||
-                    closedList.Contains(new Node(neighborPosition)))
+                // 타일이 없거나 지나갈 수 없는 타일이면 스킵
+                if (tileData == null || !tileData.isPassable || closedList.Contains(new Node(neighborPosition)))
                 {
                     continue;
                 }
