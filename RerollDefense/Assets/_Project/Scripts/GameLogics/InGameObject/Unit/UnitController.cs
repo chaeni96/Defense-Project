@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.IO;
+using Unity.VisualScripting;
 
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
@@ -70,17 +72,33 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [HideInInspector]
     public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
 
+    [SerializeField] private Slider hpBar;  // Inspector에서 할당
+
+    [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
+
 
     public override void Initialize()
     {
         base.Initialize();
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
+        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         unitSortingOrder = 0;
         baseSortingOrder = -1;
         unitSprite.sortingOrder = unitSortingOrder;
         unitBaseSprite.sortingOrder = baseSortingOrder; // 베이스는 항상 한단계 뒤에
 
+    }
+
+    private void UpdateHpBar()
+    {
+        float currentHp = GetStat(StatName.CurrentHp);
+        float maxHp = GetStat(StatName.MaxHP);
+
+        if (hpBar != null && maxHp > 0)
+        {
+            hpBar.value = currentHp / maxHp;
+        }
     }
 
     public void UpdateStarDisplay(int? starLevel = null)
@@ -172,6 +190,19 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
+        // currentHP를 maxHP로 초기화
+        if (!currentStats.ContainsKey(StatName.CurrentHp))
+        {
+            var maxHp = GetStat(StatName.MaxHP);
+            currentStats[StatName.CurrentHp] = new StatStorage
+            {
+                statName = StatName.CurrentHp,
+                value = Mathf.FloorToInt(maxHp),
+                multiply = 1f
+            };
+        }
+
+        UpdateHpBar();
         UpdateStarDisplay();
 
         if (tileCard != null)
@@ -187,8 +218,32 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     //스탯 변경시 할 행동들
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
+        if (GetStat(StatName.CurrentHp) <= 0) return;  // 이미 죽었거나 죽는 중이면 스탯 변경 무시
+
         base.OnStatChanged(subject, statChange);
-        
+
+        // 체력 관련 스탯이 변경되었을 때
+        if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
+        {
+            if (statChange.statName == StatName.CurrentHp)
+            {
+                // 데미지를 입었을 경우 깜빡이는 효과 적용
+                DOTween.Sequence()
+                .Append(unitSprite.DOColor(UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+                .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f))  // 0.1초 동안 원래 색으로
+                .OnComplete(() =>
+                {
+                    // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
+                    if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
+                    {
+                        OnDead();
+                    }
+                });
+            }
+
+            // HP 바 업데이트
+            UpdateHpBar();
+        }
         ApplyEffect();
 
         //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
@@ -196,6 +251,60 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         {
             attackTimer = 0;
         }
+    }
+
+
+    public void onDamaged(BasicObject attacker, float damage = 0)
+    {
+        if (attacker != null)
+        {
+            //attacker의 공격력 
+            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
+            {
+                hpStat.value -= (int)damage;
+                UpdateHpBar();
+                HitEffect();
+            }
+        }
+
+        if (GetStat(StatName.CurrentHp) <= 0)
+        {
+            OnDead();
+        }
+    }
+
+    public void HitEffect()
+    {
+
+        // 기존 트윈이 실행 중이면 중단
+        transform.DOKill(true);
+
+
+
+        // 데미지를 입으면 빨간색으로 깜빡임
+        if (unitSprite != null)
+        {
+            // 색상 변경 시퀀스
+            DOTween.Sequence()
+                .Append(unitSprite.DOColor( UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+                .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f));  // 0.1초 동안 원래 색으로
+        }
+    }
+
+    public void OnDead()
+    {
+        isActive = false;
+        baseStats.Clear();
+        currentStats.Clear();
+
+        // 기존 단일 타일 로직
+        TileMapManager.Instance.ReleaseTile(originalTilePosition);
+
+
+        // 유닛 매니저에서 등록 해제
+        UnitManager.Instance.UnregisterUnit(this);
+        EnemyManager.Instance.UpdateEnemiesPath();
+
     }
 
     public void MoveScale()

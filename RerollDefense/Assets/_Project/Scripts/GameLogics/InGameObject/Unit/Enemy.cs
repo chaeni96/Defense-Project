@@ -52,6 +52,10 @@ public class Enemy : BasicObject
 
     public Action OnUpdateDistanceCheck;
 
+    public UnitController attackTarget = null;
+    private bool isAttackAnimationPlaying = false;
+    private float lastAttackTime = 0f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -294,6 +298,57 @@ public class Enemy : BasicObject
 
         // 현재 웨이브에 적 감소 알림
         StageManager.Instance.NotifyEnemyDecrease();
+    }
+
+    // 공격 메서드
+    public void AttackTarget()
+    {
+        float attackCooldown = GetStat(StatName.AttackSpeed);
+
+        // 애니메이션이 진행 중이거나 쿨다운이 끝나지 않았으면 공격하지 않음
+        if (isAttackAnimationPlaying || Time.time - lastAttackTime < attackCooldown)
+            return;
+
+        // 타겟 확인
+        if (attackTarget == null || !attackTarget.canAttack ||
+            Vector2.Distance(transform.position, attackTarget.transform.position) > GetStat(StatName.AttackRange))
+        {
+            // 타겟이 사라졌거나 공격 범위를 벗어나면 이동 상태로 돌아감
+            ChangeState(new EnemyMoveState());
+            return;
+        }
+
+        // 적을 바라보도록 방향 전환
+        bool shouldFlip = transform.position.x > attackTarget.transform.position.x;
+        spriteRenderer.flipX = shouldFlip;
+
+        // 공격 애니메이션 시작
+        isAttackAnimationPlaying = true;
+        animator.CrossFade(TriggerKeyword.Attack.ToString(), 0.1f);
+
+        // 데미지 적용
+        float damage = GetStat(StatName.ATK);
+        attackTarget.onDamaged(this, damage);
+
+        // 공격 시간 기록
+        lastAttackTime = Time.time;
+
+        // 애니메이션 종료 시간 계산하여 자동으로 플래그 해제
+        StartCoroutine(ResetAttackAnimation());
+    }
+
+    // 애니메이션 플래그 리셋
+    private IEnumerator ResetAttackAnimation()
+    {
+        // 현재 애니메이션 정보 가져오기
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // 애니메이션 길이만큼 대기
+        float animLength = stateInfo.length;
+        yield return new WaitForSeconds(animLength);
+
+        // 플래그 해제
+        isAttackAnimationPlaying = false;
     }
 
 }
