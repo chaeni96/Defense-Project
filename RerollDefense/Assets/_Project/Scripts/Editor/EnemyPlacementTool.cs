@@ -314,24 +314,47 @@ public class EnemyPlacementTool : EditorWindow
             placement.f_name = "Map_" + mapId;
             placement.f_mapID = mapId;
         }
+        else
+        {
+            // 다른 mapId를 가진 모든 엔티티 찾기
+            List<D_EnemyPlacementData> allPlacements = new List<D_EnemyPlacementData>();
+            D_EnemyPlacementData.ForEachEntity(p => allPlacements.Add(p));
 
-        // 기존 셀 데이터 클리어
-        placement.f_cellData.Clear();
+            // 현재 맵과 관련된 엔티티만 추출
+            List<D_EnemyPlacementData> toRemove = allPlacements.FindAll(p => p.f_mapID == mapId);
+
+            // 모든 관련 엔티티 삭제하고 새로 생성
+            foreach (var p in toRemove)
+            {
+                p.Delete();
+                // 메타에서 직접 삭제 시도
+                //D_EnemyPlacementData.MetaDefault.DeleteEntities(p.Id);
+            }
+
+            // 새 엔티티 생성
+            placement = D_EnemyPlacementData.NewEntity();
+            placement.f_name = "Map_" + mapId;
+            placement.f_mapID = mapId;
+        }
 
         // 새로운 셀 데이터 추가
         for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 12; x++)
             {
-                if (!cells[y, x].isEmpty)
+                if (cells[y, x] != null && !cells[y, x].isEmpty)
                 {
-                    //var cellData = D_EnemyPlacementCellData.NewEntity(placement);
-                    //cellData.f_name = $"Cell_{x}_{y}";
-                    //cellData.f_Position = new Vector2Int(x, y);
-                    //cellData.f_Enemy = cells[y, x].enemy;
+                    // D_cellData 클래스명 사용
+                    var cellData = D_cellData.NewEntity(placement);
+                    cellData.f_name = $"Cell_{x}_{y}";
+                    cellData.f_position = new Vector2(x, y); // Vector2 타입 사용
+                    cellData.f_enemy = cells[y, x].enemy;
                 }
             }
         }
+
+        // 변경사항 저장
+        BGRepo.I.Save();
 
         EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
     }
