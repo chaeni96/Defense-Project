@@ -108,9 +108,11 @@ public class EnemyMoveState : State
         }
     }
 }
-
 public class EnemyAttackState : State
 {
+    private float targetCheckTimer = 0f;
+    private const float TARGET_CHECK_INTERVAL = 0.1f; // 더 자주 타겟 상태 확인
+
     public EnemyAttackState()
     {
         animTrigger = TriggerKeyword.Attack;
@@ -123,11 +125,16 @@ public class EnemyAttackState : State
 
         // 이동 중지
         enemy.SetReadyToMove(false);
+        targetCheckTimer = 0f;
     }
 
     public override void ExitState(BasicObject obj)
     {
-        // 필요한 정리 작업
+        Enemy enemy = obj as Enemy;
+        if (enemy == null) return;
+
+        // 상태 전환 시 애니메이션 플래그 리셋
+        enemy.isAttackAnimationPlaying = false;
     }
 
     public override void UpdateState(BasicObject obj)
@@ -135,13 +142,23 @@ public class EnemyAttackState : State
         Enemy enemy = obj as Enemy;
         if (enemy == null) return;
 
-        // 타겟이 사라졌거나 범위를 벗어났는지 확인
-        if (enemy.attackTarget == null || !enemy.attackTarget.canAttack ||
-            Vector2.Distance(enemy.transform.position, enemy.attackTarget.transform.position) > enemy.GetStat(StatName.AttackRange))
+        // 더 자주 타겟 상태 확인
+        targetCheckTimer += Time.deltaTime;
+        if (targetCheckTimer >= TARGET_CHECK_INTERVAL)
         {
-            // 이동 상태로 돌아가기
-            enemy.ChangeState(new EnemyMoveState());
-            return;
+            // 타겟이 사라졌거나, 죽었거나, 범위를 벗어났는지 확인
+            if (enemy.attackTarget == null ||
+                !enemy.attackTarget.canAttack ||
+                enemy.attackTarget.GetStat(StatName.CurrentHp) <= 0 ||
+                Vector2.Distance(enemy.transform.position, enemy.attackTarget.transform.position) > enemy.GetStat(StatName.AttackRange))
+            {
+                // 이동 상태로 돌아가기
+                enemy.attackTarget = null; // 타겟 제거
+                enemy.ChangeState(new EnemyMoveState());
+                return;
+            }
+
+            targetCheckTimer = 0f;
         }
 
         // 공격 시도

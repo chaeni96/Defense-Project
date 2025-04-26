@@ -53,7 +53,7 @@ public class Enemy : BasicObject
     public Action OnUpdateDistanceCheck;
 
     public UnitController attackTarget = null;
-    private bool isAttackAnimationPlaying = false;
+    public bool isAttackAnimationPlaying = false;
     private float lastAttackTime = 0f;
 
     public override void Initialize()
@@ -309,11 +309,13 @@ public class Enemy : BasicObject
         if (isAttackAnimationPlaying || Time.time - lastAttackTime < attackCooldown)
             return;
 
-        // 타겟 확인
+        // 타겟 확인 (이미 공격 상태로 들어온 상태에서 확인 중복이긴 하지만 안전장치로 유지)
         if (attackTarget == null || !attackTarget.canAttack ||
+            attackTarget.GetStat(StatName.CurrentHp) <= 0 ||
             Vector2.Distance(transform.position, attackTarget.transform.position) > GetStat(StatName.AttackRange))
         {
-            // 타겟이 사라졌거나 공격 범위를 벗어나면 이동 상태로 돌아감
+            // 타겟이 사라졌거나 죽었거나 공격 범위를 벗어나면 이동 상태로 돌아감
+            attackTarget = null; // 타겟 제거
             ChangeState(new EnemyMoveState());
             return;
         }
@@ -322,32 +324,28 @@ public class Enemy : BasicObject
         bool shouldFlip = transform.position.x > attackTarget.transform.position.x;
         spriteRenderer.flipX = shouldFlip;
 
+        // 공격 시간 기록
+        lastAttackTime = Time.time;
+
         // 공격 애니메이션 시작
         isAttackAnimationPlaying = true;
         animator.CrossFade(TriggerKeyword.Attack.ToString(), 0.1f);
 
-        // 데미지 적용
-        float damage = GetStat(StatName.ATK);
-        attackTarget.onDamaged(this, damage);
-
-        // 공격 시간 기록
-        lastAttackTime = Time.time;
-
-        // 애니메이션 종료 시간 계산하여 자동으로 플래그 해제
-        StartCoroutine(ResetAttackAnimation());
+        // 참고: 데미지는 애니메이션 이벤트의 ApplyDamage 메서드에서 적용됨
     }
 
-    // 애니메이션 플래그 리셋
-    private IEnumerator ResetAttackAnimation()
+    public void ApplyDamage()
     {
-        // 현재 애니메이션 정보 가져오기
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (attackTarget != null && attackTarget.canAttack)
+        {
+            float damage = GetStat(StatName.ATK);
+            attackTarget.onDamaged(this, damage);
+        }
+    }
 
-        // 애니메이션 길이만큼 대기
-        float animLength = stateInfo.length;
-        yield return new WaitForSeconds(animLength);
-
-        // 플래그 해제
+    // 애니메이션 종료 이벤트에서 호출될 메서드
+    public void OnAttackAnimationEnd()
+    {
         isAttackAnimationPlaying = false;
     }
 
