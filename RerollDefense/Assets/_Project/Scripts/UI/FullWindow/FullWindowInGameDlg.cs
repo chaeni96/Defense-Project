@@ -80,18 +80,6 @@ public class FullWindowInGameDlg : FullWindowBase
 
     }
 
-    public void SetupStartButton()
-    {
-        // 모든 적 이동 시작
-        var enemies = EnemyManager.Instance.GetAllEnemys();
-        foreach (var enemy in enemies)
-        {
-            enemy.ChangeState(new EnemyMoveState());
-            enemy.SetReadyToMove(true);
-        }
-
-    }
-
 
     //관련 유아이 초기화
     private void InitializeAssociateUI()
