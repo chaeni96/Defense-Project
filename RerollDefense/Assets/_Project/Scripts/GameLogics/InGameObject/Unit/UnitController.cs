@@ -88,6 +88,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         unitSprite.sortingOrder = unitSortingOrder;
         unitBaseSprite.sortingOrder = baseSortingOrder; // 베이스는 항상 한단계 뒤에
 
+        ChangeState(new UnitIdleState());
+
     }
 
     private void UpdateHpBar()
@@ -210,8 +212,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             isMultiUnit = tileCard.f_isMultiTileUinit;
         }
-
-
     }
 
 
@@ -805,6 +805,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         //공격가능한 위치인지 체크
         CheckAttackAvailability();
+
+       
     }
 
     // 합성 수행

@@ -581,4 +581,32 @@ public class FullWindowInGameDlg : FullWindowBase
         GameManager.Instance.ChangeState(new GamePauseState(GameManager.Instance.currentState));
 
     }
+
+    public void OnClickStartBattleBtn()
+    {
+        // 모든 유닛을 UnitMoveToTargetState로 변경
+        List<UnitController> units = UnitManager.Instance.GetUnits();
+
+        foreach (var unit in units)
+        {
+            // 유닛이 존재하고 공격 가능한 상태인지 확인
+            if (unit != null && unit.canAttack)
+            {
+                // UnitMoveToTargetState로 상태 전환
+                unit.ChangeState(new UnitMoveToTargetState());
+            }
+        }
+
+        List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null)
+            {
+                enemy.ChangeState(new EnemyMoveToTargetState());
+            }
+        }
+
+    }
+
+
 }

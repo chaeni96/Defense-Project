@@ -4191,7 +4191,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1517095120206005814}
         m_TargetAssemblyTypeName: FullWindowInGameDlg, Assembly-CSharp
-        m_MethodName: SetupStartButton
+        m_MethodName: OnClickStartBattleBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

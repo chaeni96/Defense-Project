@@ -766,6 +766,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 UnitManager.Instance.RegisterUnit(unitInstance);
             }
 
+
+
             TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
         }
 

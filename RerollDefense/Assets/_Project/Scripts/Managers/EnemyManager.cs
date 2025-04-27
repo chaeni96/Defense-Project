@@ -218,109 +218,109 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
-        if (enemies.Count == 0 || Time.timeScale == 0) return; //enemy 없거나 비활성화면 리턴해야됨
+        //if (enemies.Count == 0 || Time.timeScale == 0) return; //enemy 없거나 비활성화면 리턴해야됨
 
-        try
-        {
-            // TransformAccessArray, NativeArray 초기화
-            InitializeArrays(enemies.Count);
+        //try
+        //{
+        //    // TransformAccessArray, NativeArray 초기화
+        //    InitializeArrays(enemies.Count);
 
-            //jobSystem에 필요한 데이터 설정
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                Enemy enemy = enemies[i];
+        //    //jobSystem에 필요한 데이터 설정
+        //    for (int i = 0; i < enemies.Count; i++)
+        //    {
+        //        Enemy enemy = enemies[i];
 
-                // 이동 준비가 완료된 적만 처리
-                if (!enemy.isReadyToMove)
-                {
-                    // 아직 이동 준비가 안된 적은 현재 위치 유지
-                    targetPositions[i] = enemy.transform.position;
-                    moveSpeeds[i] = 0; // 속도를 0으로 설정하여 이동하지 않게 함
-                    continue;
-                }
-
-
-                List<Vector3> enemyPath = enemyPaths[enemy];
-                int pathIndex = enemyPathIndex[enemy];
-
-                moveSpeeds[i] = enemy.GetStat(StatName.MoveSpeed);
-
-                if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
-                {
-                    // 다음 목표 지점으로 이동 시작할 때 방향 체크
-                    Vector3 currentPos = enemyPath[pathIndex];
-                    Vector3 nextPos = enemyPath[pathIndex + 1];
-
-                    float directionX = nextPos.x - currentPos.x;
-
-                    if (Mathf.Abs(directionX) > 0.01f)
-                    {
-                        enemy.spriteRenderer.flipX = directionX < 0;
-                    }
-
-                    targetPositions[i] = enemyPath[pathIndex + 1]; // 다음 목표 위치 설정
-                }
-                else
-                {
-                    targetPositions[i] = enemy.transform.position; //마지막 위치면 현재 위치 유지
-                }
-            }
-
-            // Job 실행
-            var moveJob = new MoveEnemiesJob
-            {
-                TargetPositions = targetPositions,
-                DeltaTime = Time.deltaTime,
-                MoveSpeeds = moveSpeeds,
-                ArrivalDist = arrivalDist
-            };
-
-            JobHandle jobHandle = moveJob.Schedule(transformAccessArray);
-            jobHandle.Complete();
-
-            // 이동 후 처리 (도착 체크 및 enemy 관리)
-            for (int i = enemies.Count - 1; i >= 0; i--)
-            {
-                if (i >= enemies.Count) continue;
-
-                Enemy enemy = enemies[i];
-
-                if (enemy == null) continue;
+        //        // 이동 준비가 완료된 적만 처리
+        //        if (!enemy.isReadyToMove)
+        //        {
+        //            // 아직 이동 준비가 안된 적은 현재 위치 유지
+        //            targetPositions[i] = enemy.transform.position;
+        //            moveSpeeds[i] = 0; // 속도를 0으로 설정하여 이동하지 않게 함
+        //            continue;
+        //        }
 
 
-                // Sorting Order 업데이트
-                UpdateEnemySortingOrder(enemy);
+        //        List<Vector3> enemyPath = enemyPaths[enemy];
+        //        int pathIndex = enemyPathIndex[enemy];
 
-                // 기존 도착 체크 로직
-                if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;
+        //        moveSpeeds[i] = enemy.GetStat(StatName.MoveSpeed);
 
-                int pathIndex = enemyPathIndex[enemy];
-                List<Vector3> path = enemyPaths[enemy];
+        //        if (pathIndex < enemyPath.Count - 1) // 다음 경로 포인트 있을 경우
+        //        {
+        //            // 다음 목표 지점으로 이동 시작할 때 방향 체크
+        //            Vector3 currentPos = enemyPath[pathIndex];
+        //            Vector3 nextPos = enemyPath[pathIndex + 1];
 
-                if (pathIndex < path.Count - 1)
-                {
-                    Vector3 targetPos = path[pathIndex + 1];
-                    if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
-                    {
-                        enemyPathIndex[enemy]++;
-                    }
-                }
-                else
-                {
-                    // 마지막 지점 도달
-                    enemy.OnReachEndTile();
+        //            float directionX = nextPos.x - currentPos.x;
 
-                }
-            }
+        //            if (Mathf.Abs(directionX) > 0.01f)
+        //            {
+        //                enemy.spriteRenderer.flipX = directionX < 0;
+        //            }
 
-        }
-        finally
-        {
-            // 항상 NativeArray들 정리
-            if (transformAccessArray.isCreated) transformAccessArray.Dispose();
-            if (targetPositions.IsCreated) targetPositions.Dispose();
-            if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
-        }
+        //            targetPositions[i] = enemyPath[pathIndex + 1]; // 다음 목표 위치 설정
+        //        }
+        //        else
+        //        {
+        //            targetPositions[i] = enemy.transform.position; //마지막 위치면 현재 위치 유지
+        //        }
+        //    }
+
+        //    // Job 실행
+        //    var moveJob = new MoveEnemiesJob
+        //    {
+        //        TargetPositions = targetPositions,
+        //        DeltaTime = Time.deltaTime,
+        //        MoveSpeeds = moveSpeeds,
+        //        ArrivalDist = arrivalDist
+        //    };
+
+        //    JobHandle jobHandle = moveJob.Schedule(transformAccessArray);
+        //    jobHandle.Complete();
+
+        //    // 이동 후 처리 (도착 체크 및 enemy 관리)
+        //    for (int i = enemies.Count - 1; i >= 0; i--)
+        //    {
+        //        if (i >= enemies.Count) continue;
+
+        //        Enemy enemy = enemies[i];
+
+        //        if (enemy == null) continue;
+
+
+        //        // Sorting Order 업데이트
+        //        UpdateEnemySortingOrder(enemy);
+
+        //        // 기존 도착 체크 로직
+        //        if (!enemyPaths.ContainsKey(enemy) || !enemyPathIndex.ContainsKey(enemy)) continue;
+
+        //        int pathIndex = enemyPathIndex[enemy];
+        //        List<Vector3> path = enemyPaths[enemy];
+
+        //        if (pathIndex < path.Count - 1)
+        //        {
+        //            Vector3 targetPos = path[pathIndex + 1];
+        //            if (Vector3.Distance(enemy.transform.position, targetPos) < arrivalDist)
+        //            {
+        //                enemyPathIndex[enemy]++;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // 마지막 지점 도달
+        //            enemy.OnReachEndTile();
+
+        //        }
+        //    }
+
+        //}
+        //finally
+        //{
+        //    // 항상 NativeArray들 정리
+        //    if (transformAccessArray.isCreated) transformAccessArray.Dispose();
+        //    if (targetPositions.IsCreated) targetPositions.Dispose();
+        //    if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
+        //}
     }
     public void UpdateEnemiesPath()
     {

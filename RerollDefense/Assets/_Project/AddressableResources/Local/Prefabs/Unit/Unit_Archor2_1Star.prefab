@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481cfc4e0ad18bb4db1103e1c43d1bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
+  animator: {fileID: 581131749487388403}
   subjects: 
   isEnemy: 0
   attackTimer: 0
@@ -595,7 +595,7 @@ Animator:
   m_GameObject: {fileID: 6055504362306426277}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d0beecc497eb0de4cb0f2c6dcbf76bc9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2f6cf529b0d0a6a4f80a8b642e7eda35, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
