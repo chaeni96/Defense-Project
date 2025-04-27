@@ -20,6 +20,7 @@ MonoBehaviour:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-2-3ac37181180d63942a497eb1ef96ba7c-708293681-0
         - globalObjectIdString: GlobalObjectId_V1-2-3ac37181180d63942a497eb1ef96ba7c-680266440685053950-680266440046105551
+        - globalObjectIdString: GlobalObjectId_V1-2-3ac37181180d63942a497eb1ef96ba7c-2143335304-0
         values:
         - colorIndex: 2
           iconNameOrGuid: 
@@ -29,5 +30,9 @@ MonoBehaviour:
           iconNameOrGuid: 
           isIconRecursive: 0
           isColorRecursive: 0
+        - colorIndex: 2
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 1
   bookmarks: []
   bookmarkedScenePaths: []

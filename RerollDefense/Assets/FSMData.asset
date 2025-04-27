@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13a68fa8c6e98147a3805e1502d3cd8, type: 3}
+  m_Name: FSMData
+  m_EditorClassIdentifier: 
+  StateEntries:
+  - Id: -1
+    StateTypeName: AnyState
+    Position: {x: 100, y: 100}
+    Parameters: []
+  - Id: 0
+    StateTypeName: Kylin.FSM.AttackState
+    Position: {x: 458, y: 192}
+    Parameters: []
+  - Id: 1
+    StateTypeName: Kylin.FSM.IdleState
+    Position: {x: 702, y: 368}
+    Parameters: []
+  - Id: 2
+    StateTypeName: Kylin.FSM.AttackState
+    Position: {x: 540, y: 317}
+    Parameters: []
+  - Id: 3
+    StateTypeName: Kylin.FSM.ChaseState
+    Position: {x: 701, y: 493}
+    Parameters: []
+  Transitions:
+  - FromStateId: -1
+    ToStateId: 0
+    RequiredTriggers: 1000000020000000
+    IgnoreTriggers: 08000000
+    Priority: 70
