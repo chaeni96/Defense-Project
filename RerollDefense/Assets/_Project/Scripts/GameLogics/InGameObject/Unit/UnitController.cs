@@ -81,7 +81,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         base.Initialize();
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
-        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
+        //hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         unitSortingOrder = 0;
         baseSortingOrder = -1;
@@ -202,7 +202,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
-        UpdateHpBar();
+        //UpdateHpBar();
         UpdateStarDisplay();
 
         if (tileCard != null)
@@ -242,7 +242,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             }
 
             // HP 바 업데이트
-            UpdateHpBar();
+            //UpdateHpBar();
         }
         ApplyEffect();
 
@@ -262,7 +262,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
             {
                 hpStat.value -= (int)damage;
-                UpdateHpBar();
+                //UpdateHpBar();
                 HitEffect();
             }
         }

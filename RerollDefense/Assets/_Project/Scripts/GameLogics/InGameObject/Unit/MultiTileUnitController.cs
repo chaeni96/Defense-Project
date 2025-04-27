@@ -287,7 +287,7 @@ public class MultiTileUnitController : UnitController
                 TileMapManager.Instance.SetTileData(tileData);
 
                 // 원래 점유 상태를 기록
-                originalTiles.Add(new TileData(originalPos, TileType.Attackable)
+                originalTiles.Add(new TileData(originalPos)
                 {
                     isAvailable = !wasOccupied,
                     placedUnit = wasOccupied ? this : null

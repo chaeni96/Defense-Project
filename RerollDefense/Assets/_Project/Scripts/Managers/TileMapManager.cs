@@ -111,40 +111,39 @@ public class TileMapManager : MonoBehaviour
             if (tileMap.HasTile(position))
             {
                 Vector2 customPos = ConvertToCustomCoordinates(position);
-
-                //TODO : 채현
-                //타일 타입도 데이터에서 지정해줘야됨
-                var tileData = new TileData(customPos, TileType.Attackable);
+                var tileData = new TileData(customPos);
                 SetTileData(tileData);
             }
         }
 
-        foreach(var specialTile in mapData.f_specialTiles)
-        {
-            //타일 데이터 가져와서 장애물 설치
+        
+        // 게임 시작전에 맵에 오브젝트 설치하는 코드 -> 아레나 방식으로 바꾸면서 지워야할 부분
+        //foreach(var specialTile in mapData.f_specialTiles)
+        //{
+        //    //타일 데이터 가져와서 장애물 설치
       
-            Vector2 position = specialTile.f_cellPosition;
+        //    Vector2 position = specialTile.f_cellPosition;
 
-            Vector3 newObjectPos = GetTileToWorldPosition(position);
+        //    Vector3 newObjectPos = GetTileToWorldPosition(position);
 
-            var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos, (int)ObjectLayer.Player);
+        //    var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos, (int)ObjectLayer.Player);
 
-            var objectController = newSpecialObject.GetComponent<UnitController>();
-            objectController.InitializeUnitInfo(specialTile.f_specialObject);
-            UnitManager.Instance.RegisterUnit(objectController);
+        //    var objectController = newSpecialObject.GetComponent<UnitController>();
+        //    objectController.InitializeUnitInfo(specialTile.f_specialObject);
+        //    UnitManager.Instance.RegisterUnit(objectController);
 
-            objectController.tilePosition = position;
-            objectController.CheckAttackAvailability();
+        //    objectController.tilePosition = position;
+        //    objectController.CheckAttackAvailability();
 
-            // 타일 데이터 업데이트
-            var tileData = new TileData(position, TileType.Attackable)
-            {
-                isAvailable = false,
-                placedUnit = objectController
-            };
+        //    // 타일 데이터 업데이트
+        //    var tileData = new TileData(position)
+        //    {
+        //        isAvailable = false,
+        //        placedUnit = objectController
+        //    };
 
-            SetTileData(tileData);
-        }
+        //    SetTileData(tileData);
+        //}
     }
 
     //타일 좌표 월드 좌표 변환
@@ -176,7 +175,7 @@ public class TileMapManager : MonoBehaviour
     // 타일 점유상태로 변경
     // 오브젝트를 실제 배치할때 사용
     // 상대적인 타일 위치들을 기준위치에 더해서 처리
-    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> units, bool blockPath = true)
+    public void OccupyTiles(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> units)
     {
         for (int i = 0; i < tileOffsets.Count; i++)
         {
@@ -186,16 +185,11 @@ public class TileMapManager : MonoBehaviour
             units[i].tilePosition = position;
             units[i].CheckAttackAvailability();
 
-            // 공격 가능한 유닛인지 확인
-            bool isAttackableUnit = units[i].canAttack;
-
             // 각 프리뷰 유닛에 맞는 타일 데이터 설정
-            var tileData = new TileData(position, TileType.None)
+            var tileData = new TileData(position)
             {
                 isAvailable = false,
-                isPassable = !blockPath || isAttackableUnit, // 공격 가능한 유닛은 적이 지나갈 수 있음
                 placedUnit = units[i],
-                tileType = isAttackableUnit ? TileType.Attackable : TileType.Blocked
             };
 
             SetTileData(tileData);

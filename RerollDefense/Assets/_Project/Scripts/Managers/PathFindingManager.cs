@@ -86,7 +86,7 @@ public class PathFindingManager : MonoBehaviour
             {
                 var tileData = TileMapManager.Instance.GetTileData(neighborPosition);
                 // 타일이 없거나 지나갈 수 없는 타일이면 스킵
-                if (tileData == null || !tileData.isPassable || closedList.Contains(new Node(neighborPosition)))
+                if (tileData == null || !tileData.isAvailable || closedList.Contains(new Node(neighborPosition)))
                 {
                     continue;
                 }
