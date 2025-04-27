@@ -33,7 +33,7 @@ public class Enemy : BasicObject
     public SpriteRenderer spriteRenderer;
     public Collider2D enemyCollider;
 
-    public bool isReadyToMove = false; // 이동 준비 완료 상태
+    public bool isReadyToMove = true; // 이동 준비 완료 상태
 
 
     [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
