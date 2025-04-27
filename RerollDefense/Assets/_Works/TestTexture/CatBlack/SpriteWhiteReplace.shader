@@ -50,14 +50,14 @@ Shader "Custom/SpriteWhiteReplace_TintedGradientThreshold"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                fixed4 texCol = tex2D(_MainTex, i.uv);
+                ixed4 texCol = tex2D(_MainTex, i.uv);
 
-                // 밝기 조건은 Threshold 값으로 비교
-                if (texCol.r > _Threshold)
-                {
-                    texCol.rgb *= i.color.rgb;
-                }
+                texCol.a *= i.color.a;
+                float t = step(_Threshold, texCol.r); 
+                float3 tinted = texCol.rgb * i.color.rgb;
+                texCol.rgb = lerp(texCol.rgb, tinted, t);
 
+                // 3) 최종 리턴
                 return texCol;
             }
             ENDCG

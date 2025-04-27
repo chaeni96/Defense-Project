@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef9a2d4e38efb848a09d7abcc8b8679, type: 3}
+  m_Name: FSMDataCollection
+  m_EditorClassIdentifier: 
+  entries:
+  - id: testFSM
+    data: {fileID: 11400000, guid: 52cc34370a7f28a41b5c894630bd445b, type: 2}
+  - id: testFSM2
+    data: {fileID: 11400000, guid: 04cd400010a94ea47b8be4fe2da8384a, type: 2}

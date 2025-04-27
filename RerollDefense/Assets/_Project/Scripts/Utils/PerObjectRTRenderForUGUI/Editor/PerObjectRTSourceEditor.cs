@@ -23,7 +23,7 @@ namespace CatDarkGame.PerObjectRTRenderForUGUI
         private void OnDisable()
         {
             
-        }
+        } 
 
         public override void OnInspectorGUI()
         {

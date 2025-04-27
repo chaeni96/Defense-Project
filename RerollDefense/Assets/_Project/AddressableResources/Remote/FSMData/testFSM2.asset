@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13a68fa8c6e98147a3805e1502d3cd8, type: 3}
+  m_Name: testFSM2
+  m_EditorClassIdentifier: 
+  InitialStateId: 0
+  StateEntries:
+  - Id: -1
+    stateTypeName: AnyState
+    position: {x: 100, y: 100}
+    Parameters: []
+  - Id: 0
+    stateTypeName: TestAState
+    position: {x: 583, y: 301}
+    Parameters:
+    - Name: testTimer
+      Type: 1
+      StringValue: 2.4
+  - Id: 1
+    stateTypeName: TestBState
+    position: {x: 583, y: 119}
+    Parameters:
+    - Name: testTimer
+      Type: 1
+      StringValue: 3
+  Transitions:
+  - FromStateId: -1
+    ToStateId: 0
+    RequiredTriggers: 0000000000040000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 0
+    ToStateId: 1
+    RequiredTriggers: 0000000000080000
+    IgnoreTriggers: 
+    Priority: 0
