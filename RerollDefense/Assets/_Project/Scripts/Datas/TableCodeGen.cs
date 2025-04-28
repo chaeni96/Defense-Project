@@ -2439,6 +2439,7 @@ public partial class D_NormalBattleWaveData : BGEntity, D_WaveDummyData
 		public const string name = "name";
 		public const string waveType = "waveType";
 		public const string enemyGroups = "enemyGroups";
+		public const string mapID = "mapID";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4999377484231959274UL,5641040283909218478UL), () => _metaDefault = null));
@@ -2455,12 +2456,19 @@ public partial class D_NormalBattleWaveData : BGEntity, D_WaveDummyData
 		set => _f_waveType.SetStoredValue(Index, (System.Int32) value);
 	}
 	public List<D_enemyGroups> f_enemyGroups => BGCodeGenUtils.GetNested<D_enemyGroups>(_f_enemyGroups, Index);
+	public System.Int32 f_mapID
+	{
+		get => _f_mapID[Index];
+		set => _f_mapID[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5198096744199374732UL, 12583835185553226120UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_waveType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_waveType => _ufle12jhs77_f_waveType ?? (_ufle12jhs77_f_waveType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4701626643325239214UL, 16981198359215634358UL), () => _ufle12jhs77_f_waveType = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_enemyGroups;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_enemyGroups => _ufle12jhs77_f_enemyGroups ?? (_ufle12jhs77_f_enemyGroups = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5172849092912884667UL, 17811197957680909980UL), () => _ufle12jhs77_f_enemyGroups = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_mapID;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_mapID => _ufle12jhs77_f_mapID ?? (_ufle12jhs77_f_mapID = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5562627595306264017UL, 11912024549301176448UL), () => _ufle12jhs77_f_mapID = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveDummyData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();

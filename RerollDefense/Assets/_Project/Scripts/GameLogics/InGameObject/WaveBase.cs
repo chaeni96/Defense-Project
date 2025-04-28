@@ -116,9 +116,29 @@ public class NormalBattleWave : BattleWaveBase
 {
     private D_NormalBattleWaveData normalWaveData;
 
+    private D_EnemyPlacementData placementData;
+    private float gridSize = 0.6f; // 그리드 한 칸의 크기
+
+
+    private int totalEnemies = 0;
+    private int remainEnemies = 0;
+    private bool isSpawnDone = false;
+
+    private int mapId;
+    private Vector2 centerOffset = new Vector2(0f, 2.5f); // 중앙 기준점 오프셋
+
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {
         normalWaveData = data;
+
+        // 해당 맵 ID에 대한 배치 데이터 로드
+        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == normalWaveData.f_mapID);
+
+        if (placementData == null)
+        {
+            Debug.LogError($"맵 ID {mapId}에 대한 에너미 배치 데이터가 없습니다!");
+        }
+
     }
 
     /// <summary>
@@ -128,125 +148,98 @@ public class NormalBattleWave : BattleWaveBase
     {
         string waveInfo = "일반 전투 웨이브\n";
 
-        var groupedEnemies = normalWaveData.f_enemyGroups
-                                .GroupBy(g => g.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
+        var groupedEnemies = placementData.f_cellData
+                                .GroupBy(cell => cell.f_enemy.f_name)
+                                .Select(g => new { Name = g.Key, Count = g.Count() });
 
         foreach (var group in groupedEnemies)
         {
-            waveInfo += $"{group.Name} x{group.TotalAmount}\n";
+            waveInfo += $"{group.Name} x{group.Count}\n";
         }
 
         return waveInfo;
     }
 
-    /// <summary>
-    /// 자식 클래스에서 구현하는 총 적 수 계산 로직
-    /// </summary>
-    protected override int CalculateTotalEnemies()
+    public override void StartWave()
     {
-        return normalWaveData.f_enemyGroups.Sum(group => group.f_amount);
-    }
+        isWaveCompleted = false;
+        isSpawnDone = false;
 
-    protected override void OnStartWaveButtonClicked()
-    {
-
-        // EnemyManager로부터 현재 생성된 모든 적 가져오기
-        List<Enemy> currentEnemies = EnemyManager.Instance.GetAllEnemys();
-
-        for (int i = 0; i < currentEnemies.Count; i++)
+        if (placementData == null)
         {
-            Enemy enemy = currentEnemies[i];
-            // 각 적마다 다른 이동 인터벌 적용 가능 (필요에 따라)
-            float delay = i * 0.5f; // 예시: 0.5초 간격으로 이동 시작
-
-            StageManager.Instance.StartCoroutine(EnableEnemyMovementAfterDelay(enemy, delay));
-        }
-    }
-
-    /// <summary>
-    /// 자식 클래스에서 구현하는 스폰 로직
-    /// (실제 코루틴 호출 등)
-    /// </summary>
-    protected override void SpawnWaveEnemies()
-    {
-        // 그룹 스폰
-        totalGroupCount = normalWaveData.f_enemyGroups.Count;
-        completedGroupCount = 0;
-
-        // 코루틴을 통해 실제 스폰
-        foreach (D_enemyGroups groupData in normalWaveData.f_enemyGroups)
-        {
-            CoSpawnEnemyGroup(groupData);
-        }
-    }
-
-    private void CoSpawnEnemyGroup(D_enemyGroups enemyGroupData)
-    {
-        if (enemyGroupData == null || enemyGroupData.f_enemy == null)
-        {
-            Debug.LogError("적 그룹 데이터 없음");
+            Debug.LogError($"맵 ID {mapId}에 대한 에너미 배치 데이터가 없습니다!");
+            isWaveCompleted = true;
+            StageManager.Instance.OnWaveComplete();
             return;
         }
 
-        // 모든 적 한번에 생성 (이동 불가능 상태로)
-        List<Enemy> spawnedEnemies = new List<Enemy>();
+        // 총 에너미 수 계산
+        totalEnemies = placementData.f_cellData.Count;
+        remainEnemies = totalEnemies;
+        StageManager.Instance.SetTotalEnemyCount(totalEnemies);
 
-        // 기본 스폰 오프셋
-        Vector2 spawnOffset = enemyGroupData.f_spawnOffset;
+        // 에너미 생성
+        SpawnWaveEnemies();
+    }
 
-        for (int i = 0; i < enemyGroupData.f_amount; i++)
+    protected override void SpawnWaveEnemies()
+    {
+        foreach (var cellData in placementData.f_cellData)
         {
-            if (enemyGroupData.f_enemy.f_ObjectPoolKey != null)
+            if (cellData.f_enemy != null && cellData.f_enemy.f_ObjectPoolKey != null)
             {
-                // 시작 타일 위치
-                Vector2 startTilePos = enemyGroupData.f_startTilePos;
+                // 그리드 좌표를 게임 월드 좌표로 변환
+                Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-                // 각 적마다 다른 오프셋 계산
-                Vector2 individualOffset = new Vector2(
-               spawnOffset.x * (i+1) ,  // x축으로 spawnOffset.x씩 증가
-               spawnOffset.y * (i+1)   // y축으로 spawnOffset.y씩 증가
-           );
-                individualOffset += new Vector2(0.5f, 0f);
-
-
-
-                // 적 생성 (이동 불가능 상태로)
-                EnemyManager.Instance.SpawnEnemy(
-                    enemyGroupData.f_enemy,
-                    startTilePos,    
-                    individualOffset
+                // 에너미 직접 생성
+                GameObject enemyObj = PoolingManager.Instance.GetObject(
+                    cellData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey,
+                    worldPos,
+                    (int)ObjectLayer.Enemy
                 );
 
-                // 생성된 적 가져오기
-                Enemy enemy = EnemyManager.Instance.GetEnemyAtIndex(EnemyManager.Instance.GetEnemyCount() - 1);
-                if (enemy != null)
+                if (enemyObj != null)
                 {
-                    spawnedEnemies.Add(enemy);
+                    Enemy enemy = enemyObj.GetComponent<Enemy>();
+                    enemy.transform.position = worldPos;
+                    enemy.Initialize();
+                    enemy.InitializeEnemyInfo(cellData.f_enemy);
                 }
             }
-            else
-            {
-                Debug.LogError("오브젝트 풀 키가 없음");
-                break;
-            }
         }
 
-        completedGroupCount++;
-        if (completedGroupCount >= totalGroupCount)
-        {
-            isSpawnDone = true;
-            CheckWaveCompletion();
-        }
+        isSpawnDone = true;
+        CheckWaveCompletion();
     }
 
-    private IEnumerator EnableEnemyMovementAfterDelay(Enemy enemy, float delay)
+    // 그리드 좌표를 월드 좌표로 변환하는 함수
+    private Vector2 ConvertGridToWorldPosition(Vector2 gridPos)
     {
-        yield return new WaitForSeconds(delay);
-        enemy.SetReadyToMove(true); // 지연 후 이동 가능 상태로 설정
+        float gridCenterX = 0f;
+        float gridCenterY = 4f;
+
+        // 중앙을 기준으로 좌표 계산
+        float xPos = (gridPos.x - gridCenterX) * gridSize + centerOffset.x;
+        float yPos = (gridCenterY - gridPos.y) * gridSize + centerOffset.y;
+
+        return new Vector2(xPos, yPos);
     }
+
+    protected override void OnStartWaveButtonClicked()
+    { 
+    }
+
+ 
+
+    protected override int CalculateTotalEnemies()
+    {
+        return placementData != null ? placementData.f_cellData.Count : 0;
+    }
+
 
 }
+
+   
 
 /// <summary>
 /// 보스 전투 웨이브 클래스

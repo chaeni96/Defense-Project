@@ -356,6 +356,7 @@ public class EnemyPlacementTool : EditorWindow
         // 변경사항 저장
         BGRepo.I.Save();
 
+
         EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
     }
 }
