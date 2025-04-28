@@ -17,3 +17,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 52cc34370a7f28a41b5c894630bd445b, type: 2}
   - id: testFSM2
     data: {fileID: 11400000, guid: 04cd400010a94ea47b8be4fe2da8384a, type: 2}
+  - id: UnitFSM
+    data: {fileID: 11400000, guid: b80fa7b38c40df342a38d8d0f0b13f24, type: 2}
+  - id: testUnitFSM
+    data: {fileID: 11400000, guid: f1a8ecc4cca33544bb6c1d490eeb4089, type: 2}

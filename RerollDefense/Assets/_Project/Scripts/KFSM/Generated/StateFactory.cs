@@ -24,6 +24,7 @@ namespace Kylin.FSM
                 case "AttackState": state = new AttackState(); break;
                 case "ChaseState": state = new ChaseState(); break;
                 case "IdleState": state = new IdleState(); break;
+                case "MoveForwardState": state = new MoveForwardState(); break;
                 case "TestAState": state = new TestAState(); break;
                 case "TestBState": state = new TestBState(); break;
                 default:

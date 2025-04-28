@@ -40,6 +40,8 @@ namespace Kylin.FSM
         private CancellationTokenSource localCts;
         private CancellationTokenSource linkedCts; //쓸일 있을지? 무리어미 같은거..?
 
+        [SerializeField] protected Animator animator;
+
 
         protected FSMDataAsset LoadFSMDataById()
         {
@@ -100,7 +102,7 @@ namespace Kylin.FSM
 
 
             stateMachine = new StateController();
-            stateMachine.Initialize(states, transitions, initId);
+            stateMachine.Initialize(states, transitions, initId, this.gameObject);
             stateMachine.RegistFSMSubscriber(this);
             // 업데이트 루프 유니테스크로 했는데 맞나 모르겠음 확인할것 TODO : 김기린
             RunLoop(linkedCts.Token).Forget();
@@ -146,6 +148,15 @@ namespace Kylin.FSM
 
         public void SetTrigger(Trigger trigger)
         {
+            if (animator != null && trigger != Trigger.None)
+            {
+                // 열거형 값의 이름을 애니메이터 트리거로 사용
+                string triggerName = trigger.ToString();
+                animator.SetTrigger(triggerName);
+
+                // 디버그용
+                Debug.Log($"FSM Trigger: {triggerName} 애니메이션 재생");
+            }
         }
 
         public void ChangeState(int stateID)

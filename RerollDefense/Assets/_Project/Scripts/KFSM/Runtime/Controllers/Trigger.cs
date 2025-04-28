@@ -18,5 +18,7 @@ namespace Kylin.FSM
         TargetMiss = 1 << 9,
         TestATrigger = 1 << 10,
         TestBTrigger = 1 << 11,
+        MoveFinished = 1 << 12,
+
     }
 }

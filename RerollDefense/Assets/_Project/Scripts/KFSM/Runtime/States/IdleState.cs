@@ -6,6 +6,12 @@ namespace Kylin.FSM
     public class IdleState : StateBase
     {
         [SerializeField] private int testValueIdle;
+
+        public override void OnEnter()
+        {
+            Debug.Log("IDle : State Enter!!");
+        }
+
         public override void OnUpdate()
         {
         }

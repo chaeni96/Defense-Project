@@ -20,7 +20,10 @@ namespace Kylin.FSM
 
         private HashSet<IFSMSubscriber> subscribers = new();
 
-        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId)
+        private GameObject _ownerObject; // 소유자 GameObject
+
+
+        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, GameObject owner)
         {
             //_states = states;
             _states = new Dictionary<int, StateBase>();
@@ -36,9 +39,10 @@ namespace Kylin.FSM
                     g => g.ToArray()
                 );
 
+            _ownerObject = owner;
 
             // 상태 초기화
-            foreach (var s in states) s?.Initialize(this);
+            foreach (var s in states) s?.Initialize(this, _ownerObject);
 
             ChangeState(initialStateId);
         }
