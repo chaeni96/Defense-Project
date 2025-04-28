@@ -531,6 +531,10 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             currentCards[deckIndex] = null;
             //emptyCardObjects[deckIndex].SetActive(true);
+
+            //빈 카드 덱에 새 카드 생성 로직 추가
+            D_TileCardData cardData = GetCardKeyBasedOnProbability();
+            CreateUnitCardWithData(cardDecks[deckIndex], deckIndex, cardData);
         }
     }
 

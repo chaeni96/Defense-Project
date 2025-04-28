@@ -12,7 +12,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     [SerializeField] private GameObject tileImageLayout; // TileImage_Layout 게임오브젝트
     [SerializeField] private GameObject tileImagePrefab; // Tile_Image 프리팹
 
-  
+    [SerializeField] private GameObject unitImageObject;
+    [SerializeField] private GameObject unitTraitObject;
+    [SerializeField] private GameObject costImageObject;
     [SerializeField] private List<Image> tileImages = new List<Image>();
     [SerializeField] private TMP_Text cardCostText;
 
@@ -97,6 +99,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
         cardCostText.gameObject.SetActive(visible);
+        unitImageObject.SetActive(visible);
+        unitTraitObject.SetActive(visible);
+        costImageObject.SetActive(visible);
     }
 
     // 코스트 변경시 호출될 메서드
@@ -778,7 +783,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         });
 
         // enemy path 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
+        //EnemyManager.Instance.UpdateEnemiesPath();
 
         // 사용된 카드 제거 -> 이벤트 통해서
         OnCardUsed?.Invoke(transform.parent.gameObject);

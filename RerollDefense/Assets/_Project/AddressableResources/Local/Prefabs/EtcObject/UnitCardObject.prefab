@@ -663,6 +663,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileImageLayout: {fileID: 6474842296381161736}
   tileImagePrefab: {fileID: 7188001131296686382, guid: 41c61041f4b54e74e887102bc88840a5, type: 3}
+  unitImageObject: {fileID: 7212514877783160527}
+  unitTraitObject: {fileID: 3520545437632310733}
+  costImageObject: {fileID: 3648361110417641868}
   tileImages:
   - {fileID: 0}
   - {fileID: 0}
