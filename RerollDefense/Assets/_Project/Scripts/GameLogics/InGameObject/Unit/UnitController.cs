@@ -137,10 +137,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         if (unit == null) return;
 
-
-        fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.None);
-
-
         isEnemy = false;
 
         unitData = unit;

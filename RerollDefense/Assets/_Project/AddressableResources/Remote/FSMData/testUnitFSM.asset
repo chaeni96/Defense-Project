@@ -20,7 +20,7 @@ MonoBehaviour:
     Parameters: []
   - Id: 0
     stateTypeName: IdleState
-    position: {x: 446, y: 124}
+    position: {x: 531, y: 123}
     Parameters:
     - Name: testValueIdle
       Type: 0
@@ -62,20 +62,10 @@ MonoBehaviour:
     position: {x: 962, y: 502}
     Parameters: []
   Transitions:
-  - FromStateId: -1
-    ToStateId: 0
-    RequiredTriggers: 00000000
-    IgnoreTriggers: 
-    Priority: 0
   - FromStateId: 0
     ToStateId: 1
     RequiredTriggers: 0000000001000000
     IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 1
-    ToStateId: 0
-    RequiredTriggers: 00000000
-    IgnoreTriggers: 00100000
     Priority: 0
   - FromStateId: 0
     ToStateId: 2
@@ -99,11 +89,11 @@ MonoBehaviour:
     Priority: 0
   - FromStateId: 3
     ToStateId: 0
-    RequiredTriggers: 000000000002000040000000
+    RequiredTriggers: 0000000040000000
     IgnoreTriggers: 
     Priority: 0
   - FromStateId: 3
     ToStateId: 2
-    RequiredTriggers: 00000000
+    RequiredTriggers: 0000000000020000
     IgnoreTriggers: 
     Priority: 0
