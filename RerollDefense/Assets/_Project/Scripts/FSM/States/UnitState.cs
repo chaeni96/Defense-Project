@@ -86,7 +86,7 @@ public class UnitAttackState : State
             // 타겟이 없으면 Idle 상태로 전환
             if (!hasTarget)
             {
-                unitController.ChangeState(new UnitIdleState());
+                //unitController.ChangeState(new UnitIdleState());
             }
 
             targetCheckTimer = 0f;
@@ -182,7 +182,7 @@ public class UnitMoveToTargetState : State
         // 공격 범위 안에 들어왔으면 공격 상태로 전환
         if (distanceToTarget <= attackRange)
         {
-            unitController.ChangeState(new UnitAttackState());
+            //unitController.ChangeState(new UnitAttackState());
             return;
         }
 
@@ -194,7 +194,7 @@ public class UnitMoveToTargetState : State
         // 이동 방향에 따라 스프라이트 방향 설정 (왼쪽/오른쪽)
         if (Mathf.Abs(direction.x) > 0.01f)
         {
-            unitController.unitSprite.flipX = direction.x < 0;
+            //unitController.unitSprite.flipX = direction.x < 0;
         }
     }
 

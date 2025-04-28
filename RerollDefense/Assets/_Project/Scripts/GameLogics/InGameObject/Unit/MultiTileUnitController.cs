@@ -142,8 +142,8 @@ public class MultiTileUnitController : UnitController
         SetPreviewMaterial(canPlace);
 
         // 시각적 효과 (한 번만 실행)
-        unitSprite.transform.DOKill();
-        unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+        //unitSprite.transform.DOKill();
+        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
     }
 
     // 드래그 위치 업데이트
@@ -257,14 +257,12 @@ public class MultiTileUnitController : UnitController
 
     protected override void SetDeleteMat()
     {
-        if (unitSprite != null)
-        {
-            unitSprite.material = deleteMaterial;
-            unitBaseSprite.material = deleteMaterial;
-
-            // 머테리얼 변경 이벤트 발생
-            OnMaterialChanged?.Invoke(deleteMaterial);
-        }
+        //if (unitSprite != null)
+        //{
+        //    unitSprite.material = deleteMaterial;
+        //    // 머테리얼 변경 이벤트 발생
+        //    OnMaterialChanged?.Invoke(deleteMaterial);
+        //}
     }
 
     // 배치 가능 여부 확인
@@ -382,18 +380,12 @@ public class MultiTileUnitController : UnitController
     {
         Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
 
-        if (unitSprite != null)
-        {
-            unitSprite.material = targetMaterial;
-            unitBaseSprite.material = targetMaterial;
-
-            // 프리뷰일 때는 Sorting Order를 높게 설정
-            unitSprite.sortingOrder = 100;
-            unitBaseSprite.sortingOrder = 99;  // base는 한단계 아래로
-
-            // 머테리얼 변경 이벤트 발생
-            OnMaterialChanged?.Invoke(targetMaterial);
-        }
+        //if (unitSprite != null)
+        //{
+        //    unitSprite.material = targetMaterial;
+        //    // 머테리얼 변경 이벤트 발생
+        //    OnMaterialChanged?.Invoke(targetMaterial);
+        //}
 
     }
 
@@ -536,7 +528,7 @@ public class MultiTileUnitController : UnitController
             UpdateStarDisplay(originalStarLevel);
 
             // 애니메이션 리셋
-            unitSprite.transform.DORewind();
+            //unitSprite.transform.DORewind();
 
             isShowingMergePreview = false;
             mergeTargetTile = null;

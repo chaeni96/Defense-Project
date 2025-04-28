@@ -27,6 +27,7 @@ namespace Kylin.FSM
     {
         abstract void SetTrigger(Trigger trigger);
         abstract void ChangeState(int stateID);
+
     }
 
     public abstract class FSMObjectBase : MonoBehaviour, IFSMSubscriber
@@ -40,7 +41,7 @@ namespace Kylin.FSM
         private CancellationTokenSource localCts;
         private CancellationTokenSource linkedCts; //쓸일 있을지? 무리어미 같은거..?
 
-        [SerializeField] protected Animator animator;
+        public Animator animator;
 
 
         protected FSMDataAsset LoadFSMDataById()
@@ -102,7 +103,7 @@ namespace Kylin.FSM
 
 
             stateMachine = new StateController();
-            stateMachine.Initialize(states, transitions, initId, this.gameObject);
+            stateMachine.Initialize(states, transitions, initId, this);
             stateMachine.RegistFSMSubscriber(this);
             // 업데이트 루프 유니테스크로 했는데 맞나 모르겠음 확인할것 TODO : 김기린
             RunLoop(linkedCts.Token).Forget();
@@ -146,6 +147,7 @@ namespace Kylin.FSM
             Application.quitting -= CancelFSM;
         }
 
+        //수정해야될부분 트리거 넣으면 무조건 애니메이션 재생됨
         public void SetTrigger(Trigger trigger)
         {
             if (animator != null && trigger != Trigger.None)
@@ -154,11 +156,10 @@ namespace Kylin.FSM
                 string triggerName = trigger.ToString();
                 animator.SetTrigger(triggerName);
 
-                // 디버그용
-                Debug.Log($"FSM Trigger: {triggerName} 애니메이션 재생");
             }
         }
 
+      
         public void ChangeState(int stateID)
         {
         }

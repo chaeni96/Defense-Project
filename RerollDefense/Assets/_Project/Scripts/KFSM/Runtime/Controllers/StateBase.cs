@@ -9,13 +9,13 @@ namespace Kylin.FSM
     {
         public int Id { get; private set; }
         protected StateController Controller { get; private set; }
-        protected GameObject Owner; // 소유자 MonoBehaviour (일반적으로 FSMObjectBase)
+        protected FSMObjectBase Owner; // 소유자 MonoBehaviour (일반적으로 FSMObjectBase)
 
         internal void SetID(int Id)
         {
             this.Id = Id;
         }
-        internal void Initialize(StateController controller, GameObject owner)
+        internal void Initialize(StateController controller, FSMObjectBase owner)
         {
             Controller = controller;
             Owner = owner;

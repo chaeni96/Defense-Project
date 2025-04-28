@@ -593,7 +593,7 @@ public class FullWindowInGameDlg : FullWindowBase
             if (unit != null && unit.canAttack)
             {
                 // UnitMoveToTargetState로 상태 전환
-                unit.ChangeState(new UnitMoveToTargetState());
+                unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.ChaseTarget);
             }
         }
 
@@ -602,7 +602,7 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             if (enemy != null)
             {
-                enemy.ChangeState(new EnemyMoveToTargetState());
+                //enemy.ChangeState(new EnemyMoveToTargetState());
             }
         }
 

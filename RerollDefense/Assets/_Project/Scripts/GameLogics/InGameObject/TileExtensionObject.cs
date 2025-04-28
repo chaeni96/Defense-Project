@@ -45,10 +45,10 @@ public class TileExtensionObject : MonoBehaviour
             tileSprite.material = newMaterial;
 
             // 부모 유닛의 소팅 오더를 기반으로 자신의 소팅 오더 설정
-            if (parentUnit.unitSprite != null)
-            {
-                tileSprite.sortingOrder = parentUnit.unitSprite.sortingOrder - 1;
-            }
+            //if (parentUnit.unitSprite != null)
+            //{
+            //    tileSprite.sortingOrder = parentUnit.unitSprite.sortingOrder - 1;
+            //}
         }
     }
 

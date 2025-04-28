@@ -1,25 +1,28 @@
-namespace Kylin.FSM
+using System;
+using UnityEngine;
+using Kylin.FSM;
+
+[FSMContextFolder("Create/State/Attack")]
+public class AttackState : StateBase
 {
-    using UnityEngine;
-
-    [FSMContextFolder("Create/State/Attack")]
-    public class AttackState : StateBase
+ 
+    public override void OnEnter()
     {
-        private float _start;
-        public override void OnEnter()
-        {
-            _start = Time.time;
-            Controller.RegisterTrigger(Trigger.AttackAnimation); //애니메이션 발동용 트리거
-            Controller.AddPersistentTrigger(Trigger.SuperArmor);
-        }
-
-        public override void OnUpdate()
-        { 
-        }
-
-        public override void OnExit()
-        {
-            Controller.RemovePersistentTrigger(Trigger.SuperArmor);
-        }
+        Debug.Log("AttackState 시작");
+     
     }
+
+    public override void OnUpdate()
+    {
+      
+
+        
+    }
+
+    public override void OnExit()
+    {
+        Debug.Log("AttackState 종료");
+    }
+
+   
 }

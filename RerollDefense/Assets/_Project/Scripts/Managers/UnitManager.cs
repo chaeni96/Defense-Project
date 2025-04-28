@@ -82,83 +82,83 @@ public class UnitManager : MonoBehaviour
     private void Update()
     {
         //enemy가 한마리도 없으면 return
-        if (EnemyManager.Instance.GetEnemyCount() == 0) return;
+        //if (EnemyManager.Instance.GetEnemyCount() == 0) return;
 
-        activeUnits.Clear();
+        //activeUnits.Clear();
 
-        //공격 가능한 유닛만 담아두기
-        for (int i = 0; i < units.Count; i++)
-        {
+        ////공격 가능한 유닛만 담아두기
+        //for (int i = 0; i < units.Count; i++)
+        //{
 
-            if (units[i] != null && units[i].canAttack)
-            {
-                activeUnits.Add(units[i]);
-            }
-        }
+        //    if (units[i] != null && units[i].canAttack)
+        //    {
+        //        activeUnits.Add(units[i]);
+        //    }
+        //}
 
-        // 공격 가능한 유닛이 없으면 리턴
-        if (activeUnits.Count == 0) return;
+        //// 공격 가능한 유닛이 없으면 리턴
+        //if (activeUnits.Count == 0) return;
 
-        int enemyCount = EnemyManager.Instance.GetEnemyCount();
+        //int enemyCount = EnemyManager.Instance.GetEnemyCount();
 
-        try
-        {
-            // NativeArray 초기화
-            InitializeArrays(activeUnits.Count, enemyCount);
+        //try
+        //{
+        //    // NativeArray 초기화
+        //    InitializeArrays(activeUnits.Count, enemyCount);
 
-            // 유닛 데이터 설정
-            for (int i = 0; i < activeUnits.Count; i++)
-            {
-                unitPositions[i] = activeUnits[i].transform.position;
-                attackRanges[i] = activeUnits[i].GetStat(StatName.AttackRange);
-                attackTimers[i] = activeUnits[i].attackTimer;
-            }
+        //    // 유닛 데이터 설정
+        //    for (int i = 0; i < activeUnits.Count; i++)
+        //    {
+        //        unitPositions[i] = activeUnits[i].transform.position;
+        //        attackRanges[i] = activeUnits[i].GetStat(StatName.AttackRange);
+        //        attackTimers[i] = activeUnits[i].attackTimer;
+        //    }
 
-            //enemy 트랜스폼 enemyPositions에 담아오기 
-            EnemyManager.Instance.GetEnemyPositions(enemyPositions);
+        //    //enemy 트랜스폼 enemyPositions에 담아오기 
+        //    EnemyManager.Instance.GetEnemyPositions(enemyPositions);
 
-            // Job 생성 및 실행
-            var attackJob = new UnitAttackJob
-            {
-                UnitPositions = unitPositions,
-                EnemyPositions = enemyPositions,
-                AttackRanges = attackRanges,
-                TargetIndices = targetIndices,
-                AttackTimers = attackTimers,
-                DeltaTime = Time.deltaTime
-            };
+        //    // Job 생성 및 실행
+        //    var attackJob = new UnitAttackJob
+        //    {
+        //        UnitPositions = unitPositions,
+        //        EnemyPositions = enemyPositions,
+        //        AttackRanges = attackRanges,
+        //        TargetIndices = targetIndices,
+        //        AttackTimers = attackTimers,
+        //        DeltaTime = Time.deltaTime
+        //    };
 
-            JobHandle jobHandle = attackJob.Schedule(activeUnits.Count, 64);
-            jobHandle.Complete();
+        //    JobHandle jobHandle = attackJob.Schedule(activeUnits.Count, 64);
+        //    jobHandle.Complete();
 
-            // 공격 처리
-            for (int i = 0; i < activeUnits.Count; i++)
-            {
-                int targetIndex = targetIndices[i];
-                if (targetIndex != -1 && attackTimers[i] >= 1f / activeUnits[i].GetStat(StatName.AttackSpeed))
-                {
-                    UnitController unit = activeUnits[i];
-                    Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
-                    if (targetEnemy != null)
-                    {
-                        Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
-                            targetEnemy.transform.position : unit.transform.position;
+        //    // 공격 처리
+        //    for (int i = 0; i < activeUnits.Count; i++)
+        //    {
+        //        int targetIndex = targetIndices[i];
+        //        if (targetIndex != -1 && attackTimers[i] >= 1f / activeUnits[i].GetStat(StatName.AttackSpeed))
+        //        {
+        //            UnitController unit = activeUnits[i];
+        //            Enemy targetEnemy = EnemyManager.Instance.GetEnemyAtIndex(targetIndex);
+        //            if (targetEnemy != null)
+        //            {
+        //                Vector3 targetPos = unit.attackType == SkillAttackType.Projectile ?
+        //                    targetEnemy.transform.position : unit.transform.position;
 
-                        AttackSkillManager.Instance.ActiveSkill(unit.unitData.f_SkillPoolingKey.f_PoolObjectAddressableKey, unit, targetPos);
-                        unit.attackTimer = 0f;
-                    }
-                }
-                else
-                {
-                    activeUnits[i].attackTimer = attackTimers[i];
-                }
-            }
-        }
-        finally
-        {
-            // 항상 NativeArray 정리 보장
-            DisposeArrays();
-        }
+        //                AttackSkillManager.Instance.ActiveSkill(unit.unitData.f_SkillPoolingKey.f_PoolObjectAddressableKey, unit, targetPos);
+        //                unit.attackTimer = 0f;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            activeUnits[i].attackTimer = attackTimers[i];
+        //        }
+        //    }
+        //}
+        //finally
+        //{
+        //    // 항상 NativeArray 정리 보장
+        //    DisposeArrays();
+        //}
     }
     public void RegisterUnit(UnitController unit)
     {
@@ -166,6 +166,31 @@ public class UnitManager : MonoBehaviour
         {
             units.Add(unit);
         }
+    }
+
+    // 가장 가까운 유닛 찾기
+    public BasicObject GetNearestUnit(Vector2 position)
+    {
+        BasicObject nearest = null;
+        float minDistance = float.MaxValue;
+
+        foreach (var unit in units)
+        {
+            if (unit == null || !unit.gameObject.activeInHierarchy) continue;
+
+            float distance = Vector2.Distance(
+                position,
+                new Vector2(unit.transform.position.x, unit.transform.position.y)
+            );
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearest = unit;
+            }
+        }
+
+        return nearest;
     }
 
     public void UnregisterUnit(UnitController unit)

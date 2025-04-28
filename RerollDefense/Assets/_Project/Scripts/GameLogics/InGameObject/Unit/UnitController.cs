@@ -37,18 +37,15 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     //inspector에 할당
 
-    public SpriteRenderer unitSprite;
+    //public SpriteRenderer unitSprite;
 
     //TODO : Multitile용 유닛 만들면 다시 private
-    [SerializeField] public SpriteRenderer unitBaseSprite;
     [SerializeField] public Material enabledMaterial;   // 배치 가능할 때 사용
     [SerializeField] public Material disabledMaterial; // 배치 불가능할 때 사용
     [SerializeField] public Material deleteMaterial;   // 배치 삭제할 때 사용
     [SerializeField] public Material originalMaterial; //기본 머테리얼
     [SerializeField] public LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
 
-    private int unitSortingOrder;
-    private int baseSortingOrder;
     private bool isActive = true;
 
     // 드래그 앤 드롭을 위한 변수 추가
@@ -80,17 +77,20 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public override void Initialize()
     {
         base.Initialize();
+
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
-        unitSortingOrder = 0;
-        baseSortingOrder = -1;
-        unitSprite.sortingOrder = unitSortingOrder;
-        unitBaseSprite.sortingOrder = baseSortingOrder; // 베이스는 항상 한단계 뒤에
-
-        ChangeState(new UnitIdleState());
+        //ChangeState(new UnitIdleState());
 
     }
+
+    public override Transform GetTarget()
+    {
+        // EnemyManager에서 가장 가까운 적을 찾음
+        return EnemyManager.Instance.GetNearestEnemy(transform.position)?.transform;
+    }
+
 
     private void UpdateHpBar()
     {
@@ -136,6 +136,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void InitializeUnitInfo(D_UnitData unit, D_TileCardData tileCard = null)
     {
         if (unit == null) return;
+
+
+        fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.None);
+
 
         isEnemy = false;
 
@@ -204,6 +208,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
+
         UpdateHpBar();
         UpdateStarDisplay();
 
@@ -212,6 +217,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             isMultiUnit = tileCard.f_isMultiTileUinit;
         }
+
+
     }
 
 
@@ -225,20 +232,26 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-            if (statChange.statName == StatName.CurrentHp)
+            //if (statChange.statName == StatName.CurrentHp)
+            //{
+            //    // 데미지를 입었을 경우 깜빡이는 효과 적용
+            //    DOTween.Sequence()
+            //    .Append(unitSprite.DOColor(UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+            //    .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f))  // 0.1초 동안 원래 색으로
+            //    .OnComplete(() =>
+            //    {
+            //        // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
+            //        if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
+            //        {
+            //            OnDead();
+            //        }
+            //    });
+            //}
+
+
+            if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
             {
-                // 데미지를 입었을 경우 깜빡이는 효과 적용
-                DOTween.Sequence()
-                .Append(unitSprite.DOColor(UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f))  // 0.1초 동안 원래 색으로
-                .OnComplete(() =>
-                {
-                    // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
-                    if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
-                    {
-                        OnDead();
-                    }
-                });
+                OnDead();
             }
 
             // HP 바 업데이트
@@ -282,13 +295,13 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
 
         // 데미지를 입으면 빨간색으로 깜빡임
-        if (unitSprite != null)
-        {
-            // 색상 변경 시퀀스
-            DOTween.Sequence()
-                .Append(unitSprite.DOColor( UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f));  // 0.1초 동안 원래 색으로
-        }
+        //if (unitSprite != null)
+        //{
+        //    // 색상 변경 시퀀스
+        //    DOTween.Sequence()
+        //        .Append(unitSprite.DOColor( UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
+        //        .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f));  // 0.1초 동안 원래 색으로
+        //}
     }
 
     public void OnDead()
@@ -315,7 +328,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // vibrato: 진동 횟수
         // elasticity: 탄성 (0~1)
 
-        unitSprite.transform.DOPunchScale(punch: new Vector3(0.4f, 0.4f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
+        //unitSprite.transform.DOPunchScale(punch: new Vector3(0.4f, 0.4f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
 
     }
 
@@ -358,9 +371,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         Vector3 position = transform.position;
         position.z = -1;
         transform.position = position;
-
-        unitSprite.sortingOrder = 100;
-        unitBaseSprite.sortingOrder = 99;
 
         canPlace = false;
 
@@ -562,7 +572,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
             {
                 UpGradeUnitLevel(originalStarLevel);
-                unitSprite.transform.DORewind(); // 애니메이션 리셋
+                //unitSprite.transform.DORewind(); // 애니메이션 리셋
             }
 
             isShowingMergePreview = false;
@@ -572,8 +582,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 위치 교환 프리뷰 초기화
         if (swapTargetUnit != null && isSwapping)
         {
-            swapTargetUnit.unitSprite.DORewind();
-            swapTargetUnit.unitBaseSprite.DORewind();
+            //swapTargetUnit.unitSprite.DORewind();
+           // swapTargetUnit.unitBaseSprite.DORewind();
             isSwapping = false;
             swapTargetUnit = null;
         }
@@ -667,7 +677,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
             {
                 UpGradeUnitLevel(originalStarLevel);
-                unitSprite.transform.DORewind(); // 애니메이션 리셋
+                //unitSprite.transform.DORewind(); // 애니메이션 리셋
             }
 
             isShowingMergePreview = false;
@@ -677,8 +687,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 위치 교환 프리뷰 초기화
         if (swapTargetUnit != null && isSwapping)
         {
-            swapTargetUnit.unitSprite.DORewind();
-            swapTargetUnit.unitBaseSprite.DORewind();
+            //swapTargetUnit.unitSprite.DORewind();
+            //swapTargetUnit.unitBaseSprite.DORewind();
             isSwapping = false;
             swapTargetUnit = null;
         }
@@ -727,8 +737,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         SetPreviewMaterial(canPlace);
 
         // 시각적 효과 (한 번만 실행)
-        unitSprite.transform.DOKill();
-        unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+        //unitSprite.transform.DOKill();
+        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
     }
 
     // 위치 교환 가능 여부 확인
@@ -762,8 +772,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         isSwapping = true;
 
         // 교환 대상 유닛에 시각적 효과 적용
-        swapTargetUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.5f, 0.3f, 3, 0.7f);
-        swapTargetUnit.unitBaseSprite.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 3, 0.7f);
+        //swapTargetUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.5f, 0.3f, 3, 0.7f);
+        //swapTargetUnit.unitBaseSprite.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 3, 0.7f);
 
         // 현재 드래그 중인 유닛의 위치를 교환 대상 유닛 위치로 설정
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
@@ -903,52 +913,45 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 배치 가능할 때와 불가능할 때의 머테리얼 설정
         Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
 
-        if (unitSprite != null)
-        {
-            unitSprite.material = targetMaterial;
-            unitBaseSprite.material = targetMaterial;
+        //if (unitSprite != null)
+        //{
+        //    unitSprite.material = targetMaterial;
 
-            // 프리뷰일 때는 Sorting Order를 높게 설정
-            unitSprite.sortingOrder = 100;
-            unitBaseSprite.sortingOrder = 99;  // base는 한단계 아래로
-        }
+        //}
     }
 
     protected virtual void SetDeleteMat()
     {
-        if (unitSprite != null)
-        {
-            unitSprite.material = deleteMaterial;
-            unitBaseSprite.material = deleteMaterial;
-        }
+        //if (unitSprite != null)
+        //{
+        //    unitSprite.material = deleteMaterial;
+        //}
     }
 
     // 프리뷰 종료 시 원본 머테리얼로 복원
     public virtual void DestroyPreviewUnit()
     {
         // 실제 유닛으로 전환 시 원래 sorting order로 복구
-        unitSprite.sortingOrder = unitSortingOrder;
-        unitBaseSprite.sortingOrder = unitSprite.sortingOrder - 1;
+        //unitSprite.sortingOrder = unitSortingOrder;
 
-        unitSprite.material = originalMaterial;
-        unitBaseSprite.material = originalMaterial;
+        //unitSprite.material = originalMaterial;
     }
 
 
     public void ApplyEffect(float duration = 0.5f)
     {
         // 원래 색상 저장
-        UnityEngine.Color originalColor = unitSprite.color;
-        UnityEngine.Color effectColor = UnityEngine.Color.yellow; // 고정된 노란색
+        //UnityEngine.Color originalColor = unitSprite.color;
+        //UnityEngine.Color effectColor = UnityEngine.Color.yellow; // 고정된 노란색
 
-        // DOTween으로 색상 변경
-        unitSprite.DOColor(effectColor, duration * 0.5f)
-            .OnComplete(() =>
-            {
-                unitSprite.DOColor(originalColor, duration * 0.5f);
-            });
+        //// DOTween으로 색상 변경
+        //unitSprite.DOColor(effectColor, duration * 0.5f)
+        //    .OnComplete(() =>
+        //    {
+        //        unitSprite.DOColor(originalColor, duration * 0.5f);
+        //    });
 
-        unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
 
     }
 

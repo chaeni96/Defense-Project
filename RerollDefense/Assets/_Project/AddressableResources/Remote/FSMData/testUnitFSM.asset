@@ -27,7 +27,7 @@ MonoBehaviour:
       StringValue: 0
   - Id: 1
     stateTypeName: MoveForwardState
-    position: {x: 697, y: 303}
+    position: {x: 815, y: 239}
     Parameters:
     - Name: targetPosition
       Type: 5
@@ -35,6 +35,32 @@ MonoBehaviour:
     - Name: moveSpeed
       Type: 1
       StringValue: 2
+  - Id: 2
+    stateTypeName: ChaseState
+    position: {x: 540, y: 408}
+    Parameters:
+    - Name: testIntValue
+      Type: 0
+      StringValue: 0
+    - Name: testIntValue2
+      Type: 1
+      StringValue: 0
+    - Name: testIntValue3
+      Type: 3
+      StringValue: 
+    - Name: testIntValue4
+      Type: 2
+      StringValue: false
+    - Name: testIntValue5
+      Type: 0
+      StringValue: 0
+    - Name: testIntValue6
+      Type: 0
+      StringValue: 0
+  - Id: 3
+    stateTypeName: AttackState
+    position: {x: 962, y: 502}
+    Parameters: []
   Transitions:
   - FromStateId: -1
     ToStateId: 0
@@ -50,4 +76,34 @@ MonoBehaviour:
     ToStateId: 0
     RequiredTriggers: 00000000
     IgnoreTriggers: 00100000
+    Priority: 0
+  - FromStateId: 0
+    ToStateId: 2
+    RequiredTriggers: 0000000000200000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 2
+    ToStateId: 0
+    RequiredTriggers: 0000000000020000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 2
+    ToStateId: 3
+    RequiredTriggers: 0000000002000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 0
+    ToStateId: 3
+    RequiredTriggers: 0000000002000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 3
+    ToStateId: 0
+    RequiredTriggers: 000000000002000040000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 3
+    ToStateId: 2
+    RequiredTriggers: 00000000
+    IgnoreTriggers: 
     Priority: 0

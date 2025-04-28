@@ -838,7 +838,7 @@ RectTransform:
   m_GameObject: {fileID: 1285452147489344459}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0}
+  m_LocalScale: {x: 0.050000004, y: 0.050000004, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1993338232785722374}
@@ -2455,7 +2455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2588135530255351659
 Transform:
   m_ObjectHideFlags: 0
@@ -2829,7 +2829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7128824697889525841
 Transform:
   m_ObjectHideFlags: 0
@@ -3555,9 +3555,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7253741586421560969}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8875421434253360920}
@@ -3925,7 +3925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 106}
+  m_AnchoredPosition: {x: 0, y: 105.9999}
   m_SizeDelta: {x: 77.8, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8548620470206162936
@@ -3983,6 +3983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5747223416929348838}
+  fsmObj: {fileID: 2876986328044023446}
   subjects: 
   isEnemy: 0
   attackTimer: 0
@@ -3992,15 +3993,13 @@ MonoBehaviour:
   starObjects: []
   unitType: 1
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
-  unitSprite: {fileID: 0}
-  unitBaseSprite: {fileID: 0}
-  enabledMaterial: {fileID: 0}
-  disabledMaterial: {fileID: 0}
-  deleteMaterial: {fileID: 0}
-  originalMaterial: {fileID: 0}
+  enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
+  disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
+  deleteMaterial: {fileID: 2100000, guid: 3ea0ab36c3513254d90aff3352c348c4, type: 2}
+  originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   unitLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   isDragging: 0
   isMultiUnit: 0
   hpBar: {fileID: 2714087839050459189}
@@ -4052,7 +4051,7 @@ Animator:
   m_GameObject: {fileID: 8548620470206162936}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fb9b44aab810ac642a99366f899eb340, type: 2}
+  m_Controller: {fileID: 9100000, guid: fbb6f2a8cc8d1ad469ea0c90db75378f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -4075,7 +4074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50a00ab334c4fec4484c340ef2c7086e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _poolIndex: 1
+  _poolIndex: 0
   _bounds:
     m_Center: {x: 1.2114961, y: 0.95164585, z: 0}
     m_Extent: {x: 3.8197138, y: 4.036952, z: 0.005}
@@ -4215,9 +4214,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8942867841179373497}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.26, z: 0}
-  m_LocalScale: {x: 1.99, y: 0.57, z: 1}
+  m_LocalScale: {x: 1.99, y: 0.57, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8662331587158974845}
@@ -4298,9 +4297,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9088960359685259443}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1464405938403607906}

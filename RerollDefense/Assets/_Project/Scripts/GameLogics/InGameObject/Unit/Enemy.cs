@@ -65,10 +65,15 @@ public class Enemy : BasicObject
 
         UpdateHpBar();
 
-        InitializeLineRenderer();
+        //InitializeLineRenderer();
 
-        ChangeState(new EnemyIdleState());
+        //ChangeState(new EnemyIdleState());
 
+    }
+
+    public override Transform GetTarget()
+    {
+        return UnitManager.Instance.GetNearestUnit(transform.position)?.transform;
     }
 
     private void InitializeLineRenderer()
@@ -316,7 +321,7 @@ public class Enemy : BasicObject
         {
             // 타겟이 사라졌거나 죽었거나 공격 범위를 벗어나면 이동 상태로 돌아감
             attackTarget = null; // 타겟 제거
-            ChangeState(new EnemyMoveState());
+            //ChangeState(new EnemyMoveState());
             return;
         }
 

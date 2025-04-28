@@ -11,9 +11,6 @@ public class EnemyManager : MonoBehaviour
 {
     private static EnemyManager _instance;
 
-    //test용 변수
-    [SerializeField] private float arrivalDist = 0.1f;
-
     //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
     private Dictionary<Collider2D, Enemy> activeEnemies = new Dictionary<Collider2D, Enemy>();
@@ -215,6 +212,30 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public BasicObject GetNearestEnemy(Vector2 position)
+    {
+        BasicObject nearest = null;
+        float minDistance = float.MaxValue;
+
+        foreach (var enemy in enemies)
+        {
+            if (enemy == null || !enemy.gameObject.activeInHierarchy) continue;
+
+            float distance = Vector2.Distance(
+                position,
+                new Vector2(enemy.transform.position.x, enemy.transform.position.y)
+            );
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearest = enemy;
+            }
+        }
+
+        return nearest;
+    }
+
 
     private void Update()
     {
@@ -324,31 +345,31 @@ public class EnemyManager : MonoBehaviour
     }
     public void UpdateEnemiesPath()
     {
-        // 메인 경로 업데이트
-        var startPos = TileMapManager.Instance.GetTileToWorldPosition(TileMapManager.Instance.GetStartPosition());
-        mainPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
+        //// 메인 경로 업데이트
+        //var startPos = TileMapManager.Instance.GetTileToWorldPosition(TileMapManager.Instance.GetStartPosition());
+        //mainPath = PathFindingManager.Instance.FindPathFromPosition(startPos);
        
-        // 경로 라인 활성화 및 업데이트
-        if (mainPathRenderer != null)
-        {
-            mainPathRenderer.enabled = true;
-            UpdateMainPathVisual();
-        }
+        //// 경로 라인 활성화 및 업데이트
+        //if (mainPathRenderer != null)
+        //{
+        //    mainPathRenderer.enabled = true;
+        //    UpdateMainPathVisual();
+        //}
 
-        // 각 enemy의 경로 업데이트
-        foreach (var enemy in enemies)
-        {
-            List<Vector3> newPath = PathFindingManager.Instance.FindPathFromPosition(enemy.transform.position);
-            if (newPath.Count > 0)
-            {
-                enemyPaths[enemy] = newPath;
-                enemyPathIndex[enemy] = 0;
+        //// 각 enemy의 경로 업데이트
+        //foreach (var enemy in enemies)
+        //{
+        //    List<Vector3> newPath = PathFindingManager.Instance.FindPathFromPosition(enemy.transform.position);
+        //    if (newPath.Count > 0)
+        //    {
+        //        enemyPaths[enemy] = newPath;
+        //        enemyPathIndex[enemy] = 0;
 
-                // 메인 경로와 크게 다른 경우에만 개별 경로 표시
-                bool shouldShowPath = IsPathDifferentMainPath(newPath);
-                UpdateEnemyPathVisual(enemy, shouldShowPath ? newPath : null);
-            }
-        }
+        //        // 메인 경로와 크게 다른 경우에만 개별 경로 표시
+        //        bool shouldShowPath = IsPathDifferentMainPath(newPath);
+        //        UpdateEnemyPathVisual(enemy, shouldShowPath ? newPath : null);
+        //    }
+        //}
     }
 
 

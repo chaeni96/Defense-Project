@@ -20,10 +20,10 @@ namespace Kylin.FSM
 
         private HashSet<IFSMSubscriber> subscribers = new();
 
-        private GameObject _ownerObject; // 소유자 GameObject
+        private FSMObjectBase _ownerObject; // 소유자 GameObject - 이것도 바꿔야됨
 
 
-        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, GameObject owner)
+        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, FSMObjectBase owner)
         {
             //_states = states;
             _states = new Dictionary<int, StateBase>();

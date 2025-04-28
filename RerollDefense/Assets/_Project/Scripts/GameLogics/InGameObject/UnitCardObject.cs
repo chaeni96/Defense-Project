@@ -125,10 +125,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         SetUIVisibility(false);  // UI 숨기기
 
         // 마우스 커서의 월드 좌표 계산
-
         Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
         worldPos.z = 0;
-
+        worldPos.y += 0.2f; // 오프셋 조정
         Vector2 tilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
         CreatePreviewInstances(tilePos);
         UpdatePreviewInstancesPosition(tilePos);
@@ -140,10 +139,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         if (!isDragging) return;
 
         hasDragged = true;
-
         Vector3 worldPos = GameManager.Instance.mainCamera.ScreenToWorldPoint(eventData.position);
         worldPos.z = 0;
-
+        worldPos.y += 0.1f; // 오프셋 조정
         Vector2 tilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
 
         if (tilePos != previousTilePosition)
@@ -280,8 +278,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         previewUnit.SetPreviewMaterial(true);
 
         // 시각적 효과
-        previewUnit.unitSprite.transform.DOKill();
-        previewUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+        //previewUnit.unitSprite.transform.DOKill();
+        //previewUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
     }
 
     private void PerformMultiTileMerge(MultiTileUnitController previewUnit, MultiTileUnitController targetUnit)
@@ -425,8 +423,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             {
                 // TODO : 멀티타일용 유닛오브젝트 만들면 이부분 꼭 빼기!!!!!!! 지금은 유닛 프리팹에 UnitController만 들어있어서 이렇게 한거임
                 // 기존 컴포넌트의 중요 데이터 보존
-                SpriteRenderer unitSprite = oldController.unitSprite;
-                SpriteRenderer unitBaseSprite = oldController.unitBaseSprite;
+                //SpriteRenderer unitSprite = oldController.unitSprite;
+                //SpriteRenderer unitBaseSprite = oldController.unitBaseSprite;
                 GameObject unitStarObject = oldController.unitStarObject;
                 Material enabledMaterial = oldController.enabledMaterial;
                 Material disabledMaterial = oldController.disabledMaterial;
@@ -438,8 +436,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 multiController = previewInstance.AddComponent<MultiTileUnitController>();
 
                 // 기존 데이터 복사
-                multiController.unitSprite = unitSprite;
-                multiController.unitBaseSprite = unitBaseSprite;
+                //multiController.unitSprite = unitSprite;
+                //multiController.unitBaseSprite = unitBaseSprite;
                 multiController.unitStarObject = unitStarObject;
                 multiController.enabledMaterial = enabledMaterial;
                 multiController.disabledMaterial = disabledMaterial;
@@ -589,7 +587,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         Vector2 extTilePos = basePosition + offset;
                         Vector3 extWorldPos = TileMapManager.Instance.GetTileToWorldPosition(extTilePos);
                         extObj.transform.position = extWorldPos;
-                        extObj.tileSprite.material = multiTileUnit.unitSprite.material;
+                        //extObj.tileSprite.material = multiTileUnit.unitSprite.material;
                         extObj.tileSprite.sortingOrder = 100;
                     }
                 }
@@ -659,7 +657,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     mergedUnit.UpdateStarDisplay(newStarLevel);  // 여기에서 UpGradeUnitLevel 대신 UpdateStarDisplay 사용
 
                     mergedUnit.SetPreviewMaterial(canPlace);
-                    mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+                    //mergedUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
                     currentPreviews[i] = mergedUnit;
                 }
                 else
@@ -903,11 +901,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                             GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
                             UnitController unitController = tempUnit.GetComponent<UnitController>();
 
-                            if (unitController != null && unitController.unitSprite != null)
-                            {
-                                Sprite unitSprite = unitController.unitSprite.sprite;
-                                tileObject.InitUnitImage(unitSprite, false);
-                            }
+                            //if (unitController != null && unitController.unitSprite != null)
+                            //{
+                            //    Sprite unitSprite = unitController.unitSprite.sprite;
+                            //    tileObject.InitUnitImage(unitSprite, false);
+                            //}
 
                             PoolingManager.Instance.ReturnObject(tempUnit);
                         }

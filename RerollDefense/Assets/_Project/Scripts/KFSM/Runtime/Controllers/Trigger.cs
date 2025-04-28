@@ -19,6 +19,8 @@ namespace Kylin.FSM
         TestATrigger = 1 << 10,
         TestBTrigger = 1 << 11,
         MoveFinished = 1 << 12,
+        ChaseTarget = 1 << 13,
+        Idle = 1 << 14,
 
     }
 }

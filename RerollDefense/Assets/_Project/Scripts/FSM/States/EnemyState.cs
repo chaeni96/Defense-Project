@@ -104,7 +104,7 @@ public class EnemyMoveState : State
         if (closestTarget != null)
         {
             enemy.attackTarget = closestTarget;
-            enemy.ChangeState(new EnemyAttackState());
+            //enemy.ChangeState(new EnemyAttackState());
         }
     }
 }
@@ -154,7 +154,7 @@ public class EnemyAttackState : State
             {
                 // 이동 상태로 돌아가기
                 enemy.attackTarget = null; // 타겟 제거
-                enemy.ChangeState(new EnemyMoveState());
+                //enemy.ChangeState(new EnemyMoveState());
                 return;
             }
 
@@ -246,7 +246,7 @@ public class EnemyMoveToTargetState : State
             if (unit != null)
             {
                 enemyController.attackTarget = unit;
-                enemyController.ChangeState(new EnemyAttackState());
+                //enemyController.ChangeState(new EnemyAttackState());
             }
             return;
         }
