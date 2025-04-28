@@ -1,4 +1,5 @@
 using BGDatabaseEnum;
+using CatDarkGame.PerObjectRTRenderForUGUI;
 using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
@@ -12,7 +13,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     [SerializeField] private GameObject tileImageLayout; // TileImage_Layout 게임오브젝트
     [SerializeField] private GameObject tileImagePrefab; // Tile_Image 프리팹
 
-    [SerializeField] private GameObject unitImageObject;
+    //[SerializeField] private GameObject unitImageObject;
+    [SerializeField] private PerObjectRTRenderer unitRTObject;
     [SerializeField] private GameObject unitTraitObject;
     [SerializeField] private GameObject costImageObject;
     [SerializeField] private List<Image> tileImages = new List<Image>();
@@ -38,6 +40,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     private bool isDragging = false;
     private bool hasDragged = false;  // 실제 드래그 여부를 체크하는 변수 추가
     private bool canPlace = false;
+    private PerObjectRTSource rtSource;
 
     // 활성화되었던 이미지의 인덱스를 저장할 리스트 추가
     private List<int> activeImageIndices = new List<int>();
@@ -63,6 +66,15 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         GameManager.Instance.OnCostAdd += OnCostChanged;
 
         StageManager.Instance.OnWaveFinish += CancelDragging;
+
+        rtSource = CreatePreviewInstances(new Vector3(3000f, 0f)).GetComponent<PerObjectRTSource>();
+
+        if(rtSource != null && unitRTObject != null)
+        {
+            unitRTObject.source = rtSource;
+            rtSource.CalculateAutoBounds();
+
+        }
 
     }
 
@@ -98,8 +110,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 tileImages[index].gameObject.SetActive(visible);
             }
         }
+
         cardCostText.gameObject.SetActive(visible);
-        unitImageObject.SetActive(visible);
+        unitRTObject.gameObject.SetActive(visible);
         unitTraitObject.SetActive(visible);
         costImageObject.SetActive(visible);
     }
@@ -383,7 +396,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         else
         {
             SetUIVisibility(true);  // 배치 실패시 UI 다시 보이게
-            CancelPlacement();
+            UnitInstanceViewOut();
         }
 
         isDragging = false;
@@ -392,7 +405,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
-    private void CreatePreviewInstances(Vector3 tilePos)
+    private UnitController CreatePreviewInstances(Vector3 tilePos)
     {
         var tileCardData = D_TileCardData.GetEntity(tileCardName);
         bool isMultiUnit = tileCardData.f_isMultiTileUinit;
@@ -534,6 +547,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 }
             }
         }
+
+        return originalPreviews[0];
     }
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
@@ -793,7 +808,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         extensionPreviews.Clear();
         Destroy(gameObject);
     }
-
+    private void UnitInstanceViewOut()
+    {
+        foreach (var instance in currentPreviews.Values)
+        {
+            instance.transform.position = new Vector3(3000f, 0f);
+        }
+    }
 
     // 배치 취소시 호출 메서드: 프리뷰 인스턴스 정리
     private void CancelPlacement()
@@ -801,7 +822,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 기존 프리뷰 반환 코드 유지
         foreach (var instance in currentPreviews.Values)
         {
-            PoolingManager.Instance.ReturnObject(instance.gameObject);
+            instance.transform.position = new Vector3(3000f, 0f);
         }
 
         // 확장 오브젝트 프리뷰도 반환
@@ -960,7 +981,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         if (isDragging)
         {
             SetUIVisibility(true);
-            CancelPlacement();
+            UnitInstanceViewOut();
             isDragging = false;
 
             GameManager.Instance.CanclePrepareUseCost();
@@ -970,6 +991,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     private void CleanUp()
     {
         ClearTileImages(); // 타일 이미지 제거
+        CancelPlacement();
 
         originalPreviews.Clear();
         currentPreviews.Clear();
