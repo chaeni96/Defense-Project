@@ -114,6 +114,7 @@ public abstract class BattleWaveBase : WaveBase
         // 에너미가 모두 죽었는지 체크
         bool allEnemiesDead = remainEnemies <= 0 && isSpawnDone;
 
+
         // 모든 유닛이 죽었는지 체크
         List<UnitController> units = UnitManager.Instance.GetUnits();
         bool allUnitsDead = units.Count <= 0 || !units.Any(unit => unit != null && unit.gameObject.activeSelf);
@@ -149,7 +150,7 @@ public abstract class BattleWaveBase : WaveBase
             CameraController cameraController = Camera.main.GetComponent<CameraController>();
             if (cameraController != null)
             {
-                cameraController.OnBattleEnd();
+                //cameraController.OnBattleEnd();
             }
 
             // BattleWinState로 전환
@@ -218,8 +219,6 @@ public class NormalBattleWave : BattleWaveBase
 
 
     private int totalEnemies = 0;
-    private int remainEnemies = 0;
-    private bool isSpawnDone = false;
 
     private int mapId;
     private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳
@@ -301,6 +300,8 @@ public class NormalBattleWave : BattleWaveBase
                     enemy.transform.position = worldPos;
                     enemy.Initialize();
                     enemy.InitializeEnemyInfo(cellData.f_enemy);
+
+                    StageManager.Instance.NotifyEnemyIncrease(1);
                 }
             }
         }

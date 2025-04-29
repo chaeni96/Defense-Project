@@ -2089,10 +2089,10 @@ namespace Kylin.FSM
             sb.AppendLine("                    return null;");
             sb.AppendLine("            }");
             sb.AppendLine();
+            sb.AppendLine("            state.SetID(stateEntry.Id);");
             sb.AppendLine("            // 파라미터 값 설정");
             sb.AppendLine("            if (stateEntry.Parameters != null && stateEntry.Parameters.Count > 0)");
             sb.AppendLine("            {");
-            sb.AppendLine("                state.SetID(stateEntry.Id);");
             sb.AppendLine("                InitializeStateParameters(state, stateEntry);");
             sb.AppendLine("            }");
             sb.AppendLine();

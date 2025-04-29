@@ -34,10 +34,10 @@ namespace Kylin.FSM
                     return null;
             }
 
+            state.SetID(stateEntry.Id);
             // 파라미터 값 설정
             if (stateEntry.Parameters != null && stateEntry.Parameters.Count > 0)
             {
-                state.SetID(stateEntry.Id);
                 InitializeStateParameters(state, stateEntry);
             }
 

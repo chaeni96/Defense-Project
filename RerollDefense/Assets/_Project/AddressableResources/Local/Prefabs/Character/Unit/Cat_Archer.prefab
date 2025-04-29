@@ -1264,7 +1264,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3700856410528798369
 Transform:
   m_ObjectHideFlags: 0
@@ -4019,6 +4019,8 @@ MonoBehaviour:
   dataCollection: {fileID: 11400000, guid: 5273f65290b95ef41b4ac4fa1a75ef24, type: 2}
   fsmId: testUnitFSM
   animator: {fileID: 5747223416929348838}
+  isEnemy: 0
+  isFinished: 0
   CurrentTarget: {fileID: 0}
   basicObject: {fileID: 0}
 --- !u!111 &5974903699912134167
