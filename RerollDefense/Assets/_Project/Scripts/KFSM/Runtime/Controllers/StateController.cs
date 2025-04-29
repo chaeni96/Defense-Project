@@ -84,7 +84,9 @@ namespace Kylin.FSM
             // 현재 상태 리스트 + AnyState 리스트
             var list = _transitionsByState.TryGetValue(_currentStateId, out var cs)
                 ? cs : Array.Empty<Transition>();
-            var any = _transitionsByState[Transition.ANY_STATE];
+
+            _transitionsByState.TryGetValue(Transition.ANY_STATE, out var any);
+            //var any = _transitionsByState[Transition.ANY_STATE];
 
             // 상태별 전환
             for (int i = 0; i < list.Length; i++)
@@ -97,13 +99,16 @@ namespace Kylin.FSM
                 }
             }
             // AnyState 전환
-            for (int i = 0; i < any.Length; i++)
+            if(any != null)
             {
-                var t = any[i];
-                if ((mask & t.RequiredMask) == t.RequiredMask && (mask & t.IgnoreMask) == 0)
+                for (int i = 0; i < any.Length; i++)
                 {
-                    ChangeState(t.ToStateId);
-                    return;
+                    var t = any[i];
+                    if ((mask & t.RequiredMask) == t.RequiredMask && (mask & t.IgnoreMask) == 0)
+                    {
+                        ChangeState(t.ToStateId);
+                        return;
+                    }
                 }
             }
         }

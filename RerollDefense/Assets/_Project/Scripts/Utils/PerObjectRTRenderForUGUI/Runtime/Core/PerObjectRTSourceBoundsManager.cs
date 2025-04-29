@@ -45,7 +45,6 @@ namespace CatDarkGame.PerObjectRTRenderForUGUI
             }
             instance._renderSourceQueue.Add(source);
         }
-
         private void OnProcessBoundsUpdate()
         {
             Canvas.preWillRenderCanvases -= OnProcessBoundsUpdate;

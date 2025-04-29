@@ -80,10 +80,10 @@ namespace CatDarkGame.PerObjectRTRenderForUGUI
                 _init = false;
                 return;
             }
+            _init = true;
             CollectRenderers();
             IElementPool<PerObjectRTSource>.Register(this);
             RegisterRenderElementRebuild();
-            _init = true;
 
             _needSort = true;
             RegisterBoundsUpdate();
