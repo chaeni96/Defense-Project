@@ -99,8 +99,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         //pathFindingManager의 시작타일과 끝타일도 초기화 해줘야됨
         TileMapManager.Instance.InitializeTiles(stageData.f_StartTilePos, stageData.f_EndTilePos);
 
-        GameManager.Instance.InitializePlayerCamp(stageData.f_EndTilePos);
-
         // 웨이브 데이터 초기화
         InitializeWaves();
 

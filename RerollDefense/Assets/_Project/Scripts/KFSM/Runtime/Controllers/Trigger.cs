@@ -23,5 +23,6 @@ namespace Kylin.FSM
         Idle = 1 << 14,
         BattleWin = 1 << 15,
 
+
     }
 }

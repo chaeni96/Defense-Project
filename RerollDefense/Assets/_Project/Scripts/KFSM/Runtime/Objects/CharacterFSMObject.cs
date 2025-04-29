@@ -11,6 +11,8 @@ namespace Kylin.FSM
         public BasicObject CurrentTarget;
         public BasicObject basicObject;//이 상태머신을 들고있는 오브젝트(유닛, 에너미)
 
+        public bool isEnemy;
+
         protected void Initialized()
         {
             base.Initialized();
@@ -18,6 +20,8 @@ namespace Kylin.FSM
             // basicObject가 없으면 가져오기
             if (basicObject == null)
                 basicObject = GetComponent<BasicObject>();
+
+            isEnemy = basicObject.isEnemy;
 
             // 초기 타겟 설정
             UpdateTarget();

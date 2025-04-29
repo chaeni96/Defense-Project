@@ -597,8 +597,16 @@ public class FullWindowInGameDlg : FullWindowBase
             if (unit != null && unit.canAttack)
             {
                 // UnitMoveToTargetState로 상태 전환
-                unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.ChaseTarget);
+                unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
             }
+        }
+
+
+        
+        CameraController cameraController = Camera.main.GetComponent<CameraController>();
+        if (cameraController != null)
+        {
+            cameraController.OnBattleStart();
         }
 
         List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();

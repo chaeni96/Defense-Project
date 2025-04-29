@@ -34,7 +34,16 @@ MonoBehaviour:
       StringValue: (665.71,699.2805,649.2805)
     - Name: moveSpeed
       Type: 1
-      StringValue: 2
+      StringValue: 1.5
+    - Name: unitTargetPos
+      Type: 1
+      StringValue: 4.65
+    - Name: enemyTargetPos
+      Type: 1
+      StringValue: 7.38
+    - Name: stopDistance
+      Type: 1
+      StringValue: 0.1
   - Id: 2
     stateTypeName: ChaseState
     position: {x: 540, y: 408}
@@ -95,5 +104,10 @@ MonoBehaviour:
   - FromStateId: 3
     ToStateId: 2
     RequiredTriggers: 0000000000020000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 1
+    ToStateId: 2
+    RequiredTriggers: 0000000000200000
     IgnoreTriggers: 
     Priority: 0
