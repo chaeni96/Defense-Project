@@ -167,6 +167,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2cb43f7cc73beb489f833f8609133b9
+    m_Address: Enemy_Archer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88ef8bfb0594e8a4d96e70ebca386f23
+    m_Address: Enemy_Spearman
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f21a12b30aae4db48b59586adb71f52d
+    m_Address: Enemy_Swordman
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:

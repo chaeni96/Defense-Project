@@ -12,38 +12,44 @@ namespace Kylin.FSM
         private Transform transform;
         private CharacterFSMObject characterFSM;
         private Vector3 targetPosition;
-
+        private bool checkInit;
         public override void OnEnter()
         {
+
             Debug.Log("MoveForwardState : State Enter!!");
             transform = Owner.transform;
             characterFSM = Owner as CharacterFSMObject;
 
             if (characterFSM == null) return;
 
-
-          
-            float killZoneX;
-
-            if (characterFSM.isEnemy)
-            {
-                // 에너미는 왼쪽에 있는 킬존으로 이동
-                killZoneX = enemyTargetPos;
-            }
-            else
-            {
-                // 유닛은 오른쪽에 있는 킬존으로 이동
-                killZoneX = unitTargetPos;
-            }
-
-            // 타겟 위치 설정
-            targetPosition = new Vector3(killZoneX, transform.position.y, transform.position.z);
+            checkInit = false;
 
         }
 
         public override void OnUpdate()
         {
             if (transform == null || characterFSM == null) return;
+
+            if(!checkInit)
+            {
+                float killZoneX;
+
+                if (characterFSM.isEnemy)
+                {
+                    // 에너미는 왼쪽에 있는 킬존으로 이동
+                    killZoneX = enemyTargetPos;
+                }
+                else
+                {
+                    // 유닛은 오른쪽에 있는 킬존으로 이동
+                    killZoneX = unitTargetPos;
+                }
+
+                // 타겟 위치 설정
+                targetPosition = new Vector3(killZoneX, transform.position.y, transform.position.z);
+
+                checkInit = true;
+            }
 
             // 목표 지점까지의 거리 계산
             float distanceToTarget = Vector2.Distance(

@@ -41,7 +41,6 @@ public class EnemyMoveState : State
         Enemy enemy = obj as Enemy;
         if (enemy != null)
         {
-            enemy.SetReadyToMove(true);
             targetCheckTimer = 0f;
         }
     }
@@ -124,7 +123,7 @@ public class EnemyAttackState : State
         if (enemy == null) return;
 
         // 이동 중지
-        enemy.SetReadyToMove(false);
+        //enemy.SetReadyToMove(false);
         targetCheckTimer = 0f;
     }
 
@@ -211,7 +210,7 @@ public class EnemyMoveToTargetState : State
         if (enemyController != null)
         {
             // 공격 준비 활성화
-            enemyController.SetReadyToMove(false); // 기존 경로 이동 시스템 비활성화
+            //enemyController.SetReadyToMove(false); // 기존 경로 이동 시스템 비활성화
             attackRange = enemyController.GetStat(StatName.AttackRange);
             FindNearestUnit();
         }

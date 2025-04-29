@@ -45,23 +45,36 @@ public abstract class WaveBase
     }
 }
 
+public enum BattleResult
+{
+    None,
+    Victory,
+    Defeat
+}
 public abstract class BattleWaveBase : WaveBase
 {
     protected bool isSpawnDone = false;
     protected int totalGroupCount = 0;
     protected int completedGroupCount = 0;
     protected int remainEnemies = 0;
-
+    protected BattleResult battleResult = BattleResult.None;
+    protected bool isBattleFinished = false;
 
     //떨어진 아이템 회수, 저금통 이자 지급, 전투 종료 연출 출력 시간
     protected float interestDelay = 0.6f; //일단 0.6초
+
     public BattleWaveBase(D_WaveDummyData data) : base(data)
     {
+        UnitManager.Instance.OnUnitDeath += CheckBattleResult;
+
     }
+
     public override void StartWave()
     {
         isWaveCompleted = false;
         isSpawnDone = false;
+        isBattleFinished = false;
+        battleResult = BattleResult.None;
 
         // 자식 클래스에서 총 적 수 계산
         remainEnemies = CalculateTotalEnemies();
@@ -82,6 +95,7 @@ public abstract class BattleWaveBase : WaveBase
     protected abstract void SpawnWaveEnemies();
 
     protected abstract int CalculateTotalEnemies();
+
     public override void AddEnemies(int count)
     {
         remainEnemies += count;
@@ -91,21 +105,104 @@ public abstract class BattleWaveBase : WaveBase
     public override void DecreaseEnemyCount()
     {
         remainEnemies--;
-        CheckWaveCompletion();
+        CheckBattleResult(); // 에너미가 죽을 때마다 승패 체크
     }
+
+    // 승패 판정 메서드 추가
+    public virtual void CheckBattleResult()
+    {
+        // 에너미가 모두 죽었는지 체크
+        bool allEnemiesDead = remainEnemies <= 0 && isSpawnDone;
+
+        // 모든 유닛이 죽었는지 체크
+        List<UnitController> units = UnitManager.Instance.GetUnits();
+        bool allUnitsDead = units.Count <= 0 || !units.Any(unit => unit != null && unit.gameObject.activeSelf);
+
+        if (allEnemiesDead && !allUnitsDead)
+        {
+            // 유닛이 살아있고 에너미가 모두 죽으면 승리
+            if (battleResult == BattleResult.None)
+            {
+                battleResult = BattleResult.Victory;
+                OnBattleVictory();
+            }
+        }
+        else if (allUnitsDead && !allEnemiesDead)
+        {
+            // 유닛이 모두 죽고 에너미가 살아있으면 패배
+            if (battleResult == BattleResult.None)
+            {
+                battleResult = BattleResult.Defeat;
+                OnBattleDefeat();
+            }
+        }
+    }
+
+    // 승리 시 호출되는 메서드
+    protected virtual void OnBattleVictory()
+    {
+        if (!isBattleFinished)
+        {
+            isBattleFinished = true;
+
+            // 카메라 원위치로 이동
+            CameraController cameraController = Camera.main.GetComponent<CameraController>();
+            if (cameraController != null)
+            {
+                cameraController.OnBattleEnd();
+            }
+
+            // BattleWinState로 전환
+            EnterBattleWinState();
+        }
+    }
+
+    // 패배 시 호출되는 메서드
+    protected virtual void OnBattleDefeat()
+    {
+        if (!isBattleFinished)
+        {
+            isBattleFinished = true;
+
+            // 바로 웨이브 종료 및 게임 오버 처리
+            GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
+        }
+    }
+
+    // BattleWinState로 전환하는 메서드
+    protected virtual void EnterBattleWinState()
+    {
+        // 모든 유닛 BattleWinState로 변경
+        List<UnitController> units = UnitManager.Instance.GetUnits();
+        foreach (var unit in units)
+        {
+            if (unit != null && unit.gameObject.activeSelf)
+            {
+                // FSM 상태 전환
+                unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.BattleWin);
+            }
+        }
+    }
+
     public override void CheckWaveCompletion()
     {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
+        // BattleWinState에서 애니메이션이 끝나면 호출되므로, 여기서는 isWaveCompleted만 설정
+        if (battleResult == BattleResult.Victory && !isWaveCompleted)
         {
             isWaveCompleted = true;
             StageManager.Instance.OnWaveComplete();
         }
     }
+
     public override void EndWave()
     {
         isSpawnDone = false;
         remainEnemies = 0;
         completedGroupCount = 0;
+        battleResult = BattleResult.None;
+        isBattleFinished = false;
+        UnitManager.Instance.OnUnitDeath -= CheckBattleResult;
+
     }
 }
 
@@ -125,7 +222,7 @@ public class NormalBattleWave : BattleWaveBase
     private bool isSpawnDone = false;
 
     private int mapId;
-    private Vector2 centerOffset = new Vector2(9.09f, 1.83f); //배치할곳
+    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳
 
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {

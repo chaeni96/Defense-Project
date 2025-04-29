@@ -25,7 +25,7 @@ public class AnimationEventReceiver : MonoBehaviour
     {
         if (parentEnemy != null)
         {
-            parentEnemy.OnAttackAnimationEnd();
+            //parentEnemy.OnAttackAnimationEnd();
         }
     }
 }

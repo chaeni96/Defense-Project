@@ -43,6 +43,8 @@ namespace Kylin.FSM
         public Animator animator;
 
 
+        public bool isEnemy;
+        public bool isFinished;
 
         protected FSMDataAsset LoadFSMDataById()
         {
@@ -97,7 +99,7 @@ namespace Kylin.FSM
             Initialized();
         }
 
-        protected void Initialized()
+        protected virtual void Initialized()
         {
             ConfigureStateMachine(out var states, out var transitions, out var initId);
 

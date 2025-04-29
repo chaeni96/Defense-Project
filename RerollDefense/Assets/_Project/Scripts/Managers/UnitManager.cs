@@ -21,6 +21,7 @@ public class UnitManager : MonoBehaviour
     private NativeArray<int> targetIndices;
     private NativeArray<float> attackTimers;
 
+    public event System.Action OnUnitDeath;
 
     public static UnitManager Instance
     {
@@ -64,6 +65,14 @@ public class UnitManager : MonoBehaviour
 
     public List<UnitController> GetUnits() => units;
 
+
+    public void NotifyUnitDead(UnitController unit)
+    {
+        // 유닛 리스트에서 제거하는 등의 처리...
+
+        // 이벤트 발생
+        OnUnitDeath?.Invoke();
+    }
     private void InitializeArrays(int unitCount, int enemyCount)
     {
         if (unitPositions.IsCreated) unitPositions.Dispose();

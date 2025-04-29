@@ -11,9 +11,7 @@ namespace Kylin.FSM
         public BasicObject CurrentTarget;
         public BasicObject basicObject;//이 상태머신을 들고있는 오브젝트(유닛, 에너미)
 
-        public bool isEnemy;
-
-        protected void Initialized()
+        protected override void Initialized()
         {
             base.Initialized();
 
@@ -25,6 +23,9 @@ namespace Kylin.FSM
 
             // 초기 타겟 설정
             UpdateTarget();
+
+
+            isFinished = false;
         }
 
         // 타겟 업데이트 메서드
@@ -90,14 +91,36 @@ namespace Kylin.FSM
         {
             if (basicObject != null && CurrentTarget != null)
             {
-                var enemyObj = CurrentTarget.GetComponent<Enemy>();
-                if (enemyObj != null)
+                if (CurrentTarget.isEnemy)
                 {
-                    // 데미지 계산 및 적용만 담당
-                    float damage = basicObject.GetStat(StatName.ATK);
-                    enemyObj.onDamaged(basicObject, damage);
+                    var enemyObj = CurrentTarget.GetComponent<Enemy>();
+                    if (enemyObj != null)
+                    {
+                        // 데미지 계산 및 적용만 담당
+                        float damage = basicObject.GetStat(StatName.ATK);
+                        enemyObj.onDamaged(basicObject, damage);
+                    }
                 }
+                else
+                {
+                    var enemyObj = CurrentTarget.GetComponent<UnitController>();
+
+                    if (enemyObj != null)
+                    {
+                        // 데미지 계산 및 적용만 담당
+                        float damage = basicObject.GetStat(StatName.ATK);
+                        enemyObj.onDamaged(basicObject, damage);
+                    }
+                }
+
+                
             }
+        }
+
+
+        public void FinishBattleWinAnimation()
+        {
+            isFinished = true;
         }
     }
 }

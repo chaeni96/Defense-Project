@@ -23,3 +23,5 @@ MonoBehaviour:
     data: {fileID: 0}
   - id: unitArcherFSM
     data: {fileID: 11400000, guid: e90fb7fd72fd07b40819d1ab0c6ce4d4, type: 2}
+  - id: testEnemyFSM
+    data: {fileID: 11400000, guid: f6ad7e1b1aec4e94f99c81be594a1d8b, type: 2}

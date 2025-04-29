@@ -333,6 +333,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         GameManager.Instance.ChangeState(new GameResultState(GameStateType.Victory));
     }
 
+    public WaveBase GetCurrentWave()
+    {
+        return currentWave;
+    }
+
     public void CleanUp()
     {
 

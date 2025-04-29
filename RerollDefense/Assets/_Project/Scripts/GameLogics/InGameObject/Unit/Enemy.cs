@@ -33,9 +33,6 @@ public class Enemy : BasicObject
     public SpriteRenderer spriteRenderer;
     public Collider2D enemyCollider;
 
-    public bool isReadyToMove = true; // 이동 준비 완료 상태
-
-
     [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
     [SerializeField] private Slider hpBar;  // Inspector에서 할당
 
@@ -61,13 +58,21 @@ public class Enemy : BasicObject
         base.Initialize();
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
-        originalScale = transform.localScale;
+        //originalScale = transform.localScale;
 
         UpdateHpBar();
+
+        isEnemy = true;
+
 
         //InitializeLineRenderer();
 
         //ChangeState(new EnemyIdleState());
+
+        // X 스케일을 -1배 곱해서 좌우 반전
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
 
     }
 
@@ -86,8 +91,6 @@ public class Enemy : BasicObject
 
     public void InitializeEnemyInfo(D_EnemyData data)
     {
-        isEnemy = true;
-
         enemyData = data;
 
 
@@ -145,7 +148,6 @@ public class Enemy : BasicObject
         }
 
         isActive = true;
-        isReach = false;
 
         UpdateHpBar();
     }
@@ -182,31 +184,14 @@ public class Enemy : BasicObject
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-            if (statChange.statName == StatName.CurrentHp)
+            if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
             {
-                // 데미지를 입었을 경우 깜빡이는 효과 적용
-                DOTween.Sequence()
-                .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                .Append(spriteRenderer.DOColor(Color.white, 0.1f))  // 0.1초 동안 원래 색으로
-                .OnComplete(() =>
-                {
-                    // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
-                    if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
-                    {
-                        OnDead();
-                    }
-                });
+                OnDead();
             }
 
             // HP 바 업데이트
             UpdateHpBar();
         }
-    }
-
-    // 이동 시작 설정
-    public void SetReadyToMove(bool ready)
-    {
-        isReadyToMove = ready;
     }
 
     private void UpdateHpBar()
@@ -227,19 +212,19 @@ public class Enemy : BasicObject
     }
 
 
-    public void OnReachEndTile()
-    {
-        //enemy의 공격력만큼 player의 hp감소 -> 스탯매니저 통해서 값 변경
-        StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
-        {
-            statName = StatName.CurrentHp,
-            value = currentStats[StatName.ATK].value * -1 ,
-            multiply = currentStats[StatName.ATK].multiply
-        });
+    //public void OnReachEndTile()
+    //{
+    //    //enemy의 공격력만큼 player의 hp감소 -> 스탯매니저 통해서 값 변경
+    //    StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
+    //    {
+    //        statName = StatName.CurrentHp,
+    //        value = currentStats[StatName.ATK].value * -1 ,
+    //        multiply = currentStats[StatName.ATK].multiply
+    //    });
 
-        isReach = true;
-        OnDead();
-    }
+    //    isReach = true;
+    //    OnDead();
+    //}
 
     public void onDamaged(BasicObject attacker, float damage = 0)
     {
@@ -250,7 +235,7 @@ public class Enemy : BasicObject
             {
                 hpStat.value -= (int)damage;
                 UpdateHpBar();
-                HitEffect();
+                //HitEffect();
             }
         }
 
@@ -285,15 +270,8 @@ public class Enemy : BasicObject
 
     public void OnDead()
     {
-        //TODO : 나중에 수정 boss가 집에 안도착했을때 예외처리 필요함
-        if (enemyType == EnemyType.Boss && !isReach)
-        {
-            GameObject explosion = PoolingManager.Instance.GetObject("ExplosionEffectObject", transform.position);
-            explosion.GetComponent<EffectExplosion>().InitializeEffect(this);
-        }
-
         // 이벤트 매니저를 통해 OnDeath 이벤트 트리거
-        EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
+       // EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
 
         isActive = false;
         baseStats.Clear();
@@ -346,12 +324,6 @@ public class Enemy : BasicObject
             float damage = GetStat(StatName.ATK);
             attackTarget.onDamaged(this, damage);
         }
-    }
-
-    // 애니메이션 종료 이벤트에서 호출될 메서드
-    public void OnAttackAnimationEnd()
-    {
-        isAttackAnimationPlaying = false;
     }
 
 }

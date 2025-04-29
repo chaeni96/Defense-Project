@@ -22,9 +22,11 @@ namespace Kylin.FSM
             switch (stateEntry.stateTypeName)
             {
                 case "AttackState": state = new AttackState(); break;
+                case "BattleWinState": state = new BattleWinState(); break;
                 case "ChaseState": state = new ChaseState(); break;
                 case "IdleState": state = new IdleState(); break;
                 case "MoveForwardState": state = new MoveForwardState(); break;
+                case "MoveToKillZoneState": state = new MoveToKillZoneState(); break;
                 case "TestAState": state = new TestAState(); break;
                 case "TestBState": state = new TestBState(); break;
                 default:
@@ -32,10 +34,10 @@ namespace Kylin.FSM
                     return null;
             }
 
-            state.SetID(stateEntry.Id);
             // 파라미터 값 설정
             if (stateEntry.Parameters != null && stateEntry.Parameters.Count > 0)
             {
+                state.SetID(stateEntry.Id);
                 InitializeStateParameters(state, stateEntry);
             }
 

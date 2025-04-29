@@ -614,7 +614,8 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             if (enemy != null)
             {
-                //enemy.ChangeState(new EnemyMoveToTargetState());
+                enemy.fsmObj.isEnemy = true;
+                enemy.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
             }
         }
 

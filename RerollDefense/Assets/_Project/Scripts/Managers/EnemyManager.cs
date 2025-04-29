@@ -191,9 +191,9 @@ public class EnemyManager : MonoBehaviour
     // Collider2D를 키로 사용하여 Enemy 등록
     public void RegisterEnemy(Enemy enemy, Collider2D collider)
     {
-        if (!activeEnemies.ContainsKey(collider))
+
+        if (!enemies.Contains(enemy))
         {
-            activeEnemies.Add(collider, enemy);
             enemies.Add(enemy);
         }
     }
