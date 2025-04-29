@@ -40,8 +40,8 @@ namespace Kylin.FSM
 
         private CancellationTokenSource localCts;
         private CancellationTokenSource linkedCts; //쓸일 있을지? 무리어미 같은거..?
-
         public Animator animator;
+
 
 
         protected FSMDataAsset LoadFSMDataById()

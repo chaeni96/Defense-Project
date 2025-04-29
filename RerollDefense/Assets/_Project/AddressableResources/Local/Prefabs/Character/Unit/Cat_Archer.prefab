@@ -1348,7 +1348,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6523583996790570544
 Transform:
   m_ObjectHideFlags: 0
@@ -4019,6 +4019,8 @@ MonoBehaviour:
   dataCollection: {fileID: 11400000, guid: 5273f65290b95ef41b4ac4fa1a75ef24, type: 2}
   fsmId: testUnitFSM
   animator: {fileID: 5747223416929348838}
+  CurrentTarget: {fileID: 0}
+  basicObject: {fileID: 0}
 --- !u!111 &5974903699912134167
 Animation:
   m_ObjectHideFlags: 0
@@ -4051,7 +4053,7 @@ Animator:
   m_GameObject: {fileID: 8548620470206162936}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fbb6f2a8cc8d1ad469ea0c90db75378f, type: 2}
+  m_Controller: {fileID: 9100000, guid: ee6a5310d4512f94ca199a6fa3f6a4a4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

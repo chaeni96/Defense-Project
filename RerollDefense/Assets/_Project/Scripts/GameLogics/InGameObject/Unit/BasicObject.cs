@@ -71,7 +71,7 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         return 0f;
     }
 
-    public virtual Transform GetTarget()
+    public virtual BasicObject GetTarget()
     {
         return null;
     }

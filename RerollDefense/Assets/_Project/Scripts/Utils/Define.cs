@@ -29,6 +29,10 @@ public enum StatSubject
     EnemyNormal, // 일반 몬스터
     EnemyFaster, // 스피드 빠른 일반 몬스터
     EnemyBoss, //보스 몬스터
+
+    PlayerSwordman,
+    PlayerSpearman,
+
     
 
 }
@@ -90,8 +94,10 @@ public enum UnitType
 {
     Base,
     Archer,
-    Archer2,
-    Mage,
+    Swordman,
+    Spearman,
+
+    
 }
 public enum BuffType
 {

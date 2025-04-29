@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class testBtn : MonoBehaviour
 {
-    [SerializeField]private Kylin.FSM.UnitFSMObject fsmobj;
+    [SerializeField]private Kylin.FSM.CharacterFSMObject fsmobj;
 
 
     public void OnclickTest()

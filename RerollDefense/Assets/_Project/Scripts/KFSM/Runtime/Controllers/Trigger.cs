@@ -21,6 +21,7 @@ namespace Kylin.FSM
         MoveFinished = 1 << 12,
         ChaseTarget = 1 << 13,
         Idle = 1 << 14,
+        BattleWin = 1 << 15,
 
     }
 }

@@ -71,9 +71,9 @@ public class Enemy : BasicObject
 
     }
 
-    public override Transform GetTarget()
+    public override BasicObject GetTarget()
     {
-        return UnitManager.Instance.GetNearestUnit(transform.position)?.transform;
+        return UnitManager.Instance.GetNearestUnit(transform.position);
     }
 
     private void InitializeLineRenderer()

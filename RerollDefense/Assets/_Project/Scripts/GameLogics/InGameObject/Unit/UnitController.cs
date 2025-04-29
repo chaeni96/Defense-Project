@@ -85,10 +85,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     }
 
-    public override Transform GetTarget()
+    public override BasicObject GetTarget()
     {
         // EnemyManager에서 가장 가까운 적을 찾음
-        return EnemyManager.Instance.GetNearestEnemy(transform.position)?.transform;
+        return EnemyManager.Instance.GetNearestEnemy(transform.position);
     }
 
 
@@ -332,7 +332,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void CheckAttackAvailability()
     {
         // y가 9보다 크면 공격 불가
-        canAttack = tilePosition.y < 10;
+        //canAttack = tilePosition.y < 10;
     }
 
     public void SetActive(bool active)

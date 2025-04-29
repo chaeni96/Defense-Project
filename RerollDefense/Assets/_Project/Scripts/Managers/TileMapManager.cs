@@ -183,7 +183,7 @@ public class TileMapManager : MonoBehaviour
 
             // 각 유닛의 tilePosition 직접 설정
             units[i].tilePosition = position;
-            units[i].CheckAttackAvailability();
+            //units[i].CheckAttackAvailability();
 
             // 각 프리뷰 유닛에 맞는 타일 데이터 설정
             var tileData = new TileData(position)
@@ -211,10 +211,10 @@ public class TileMapManager : MonoBehaviour
             Vector3Int unityPos = ConvertToUnityCoordinates(checkPosition);
 
             // 시작/끝 타일 체크
-            if (checkPosition == startTilePos || checkPosition == endTilePos)
-            {
-                return false;
-            }
+            //if (checkPosition == startTilePos || checkPosition == endTilePos)
+            //{
+            //    return false;
+            //}
 
             if (tileData == null || !tileMap.HasTile(unityPos))
             {
@@ -263,34 +263,34 @@ public class TileMapManager : MonoBehaviour
         try
         {
             // 현재 존재하는 적들의 위치 체크 -> 시작지점과 모든 적의 현재 위치에서 경로 확인
-            HashSet<Vector2> checkPoints = new HashSet<Vector2> { startTilePos };
+            //HashSet<Vector2> checkPoints = new HashSet<Vector2> { startTilePos };
 
-            if (EnemyManager.Instance != null)
-            {
-                var enemies = EnemyManager.Instance.GetAllEnemys();
-                foreach (var enemy in enemies)
-                {
-                    if (enemy != null)
-                    {
-                        Vector2 enemyPos = GetWorldToTilePosition(enemy.transform.position);
-                        // 적이 새로 배치하려는 타일 위에 있다면 해당 위치는 체크하지 않음
-                        if (!tileOffsets.Any(offset => enemyPos == basePosition + offset))
-                        {
-                            checkPoints.Add(enemyPos);
-                        }
-                    }
-                }
-            }
+            //if (EnemyManager.Instance != null)
+            //{
+            //    var enemies = EnemyManager.Instance.GetAllEnemys();
+            //    foreach (var enemy in enemies)
+            //    {
+            //        if (enemy != null)
+            //        {
+            //            Vector2 enemyPos = GetWorldToTilePosition(enemy.transform.position);
+            //            // 적이 새로 배치하려는 타일 위에 있다면 해당 위치는 체크하지 않음
+            //            if (!tileOffsets.Any(offset => enemyPos == basePosition + offset))
+            //            {
+            //                checkPoints.Add(enemyPos);
+            //            }
+            //        }
+            //    }
+            //}
 
-            // 모든 체크포인트에서 경로 확인
-            foreach (var point in checkPoints)
-            {
-                if (!PathFindingManager.Instance.HasValidPath(point, endTilePos))
-                {
-                    canPlace = false;
-                    break;
-                }
-            }
+            //// 모든 체크포인트에서 경로 확인
+            //foreach (var point in checkPoints)
+            //{
+            //    if (!PathFindingManager.Instance.HasValidPath(point, endTilePos))
+            //    {
+            //        canPlace = false;
+            //        break;
+            //    }
+            //}
         }
         finally
         {
