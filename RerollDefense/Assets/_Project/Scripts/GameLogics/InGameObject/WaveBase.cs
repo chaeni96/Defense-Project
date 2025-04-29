@@ -117,7 +117,7 @@ public class NormalBattleWave : BattleWaveBase
     private D_NormalBattleWaveData normalWaveData;
 
     private D_EnemyPlacementData placementData;
-    private float gridSize = 0.6f; // 그리드 한 칸의 크기
+    private float gridSize = 0.55f; // 그리드 한 칸의 크기
 
 
     private int totalEnemies = 0;
@@ -125,7 +125,7 @@ public class NormalBattleWave : BattleWaveBase
     private bool isSpawnDone = false;
 
     private int mapId;
-    private Vector2 centerOffset = new Vector2(0f, 2.5f); // 중앙 기준점 오프셋
+    private Vector2 centerOffset = new Vector2(9.09f, 1.83f); //배치할곳
 
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {

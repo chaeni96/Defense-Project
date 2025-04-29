@@ -3,12 +3,13 @@ using UnityEditor;
 using BansheeGz.BGDatabase;
 using System.Collections.Generic;
 using UnityEditorEventType = UnityEngine.EventType;
+using Kylin.FSM;
 
 public class EnemyPlacementTool : EditorWindow
 {
     private int mapId = 0;
     private Vector2 scrollPosition;
-    private EnemyCell[,] cells = new EnemyCell[9, 12]; // 9x12 그리드
+    private EnemyCell[,] cells = new EnemyCell[10, 12]; // 10x12 그리드
     private Vector2Int selectedCell = new Vector2Int(-1, -1);
 
     // 셀 데이터 클래스
@@ -19,16 +20,16 @@ public class EnemyPlacementTool : EditorWindow
         public bool isEmpty => enemy == null;
     }
 
-    [MenuItem("Tools/Enemy Placement Tool")]
-    public static void ShowWindow()
+    [MenuItem("Window/Custom Tools/Enemy Placement Tool", false, 100)]
+    public static void Open()
     {
-        GetWindow<EnemyPlacementTool>("Enemy Placement Tool");
+        var window = GetWindow<EnemyPlacementTool>("Enemy Placement Tool");
     }
 
     private void OnEnable()
     {
         // 셀 초기화
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 12; x++)
             {
@@ -108,15 +109,15 @@ public class EnemyPlacementTool : EditorWindow
 
         // 이 부분이 중요합니다 - 그리드를 그리기 위한 영역을 미리 확보
         float cellSize = 40f; // 더 큰 셀 크기
-        Rect layoutRect = GUILayoutUtility.GetRect(12 * cellSize + 40, 9 * cellSize + 60);
+        Rect layoutRect = GUILayoutUtility.GetRect(12 * cellSize + 40, 10 * cellSize + 60);
 
         // 그리드의 시작 위치를 layoutRect 기준으로 설정
-        Rect gridRect = new Rect(layoutRect.x + 30, layoutRect.y + 20, cellSize * 12, cellSize * 9);
+        Rect gridRect = new Rect(layoutRect.x + 30, layoutRect.y + 20, cellSize * 12, cellSize * 10);
 
         // 그리드 배경 (흰색)
         EditorGUI.DrawRect(gridRect, Color.white);
 
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 12; x++)
             {
@@ -194,7 +195,7 @@ public class EnemyPlacementTool : EditorWindow
             EditorGUI.LabelField(labelRect, x.ToString(), axisStyle);
         }
 
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < 10; y++)
         {
             Rect labelRect = new Rect(gridRect.x - 20, gridRect.y + y * cellSize, 20, cellSize);
             EditorGUI.LabelField(labelRect, y.ToString(), axisStyle);
@@ -270,7 +271,7 @@ public class EnemyPlacementTool : EditorWindow
     private void LoadDataIfExists()
     {
         // 모든 셀 초기화
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 12; x++)
             {
@@ -288,7 +289,7 @@ public class EnemyPlacementTool : EditorWindow
                 int x = (int)cellData.f_position.x;
                 int y = (int)cellData.f_position.y;
 
-                if (x >= 0 && x < 12 && y >= 0 && y < 9)
+                if (x >= 0 && x < 12 && y >= 0 && y < 10)
                 {
                     cells[y, x].enemy = cellData.f_enemy;
                 }
@@ -338,7 +339,7 @@ public class EnemyPlacementTool : EditorWindow
         }
 
         // 새로운 셀 데이터 추가
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 12; x++)
             {
