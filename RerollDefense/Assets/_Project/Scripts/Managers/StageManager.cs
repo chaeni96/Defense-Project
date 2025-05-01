@@ -226,16 +226,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     }
 
     // 적 수 변경 처리 - UI 업데이트와 이벤트 발생만 담당
-    public void UpdateEnemyCount(int change)
-    {
-        // 총 남은 적 수 업데이트
-        totalRemainingEnemies += change;
-
-        // 음수가 되지 않도록 보정
-        totalRemainingEnemies = Mathf.Max(0, totalRemainingEnemies);
-
+    public void UpdateEnemyCount(int count)
+    {      
         // UI 업데이트를 위한 이벤트 발생 - 총 남은 적 수 전달
-        OnEnemyCountChanged?.Invoke(totalRemainingEnemies);
+        OnEnemyCountChanged?.Invoke(count);
     }
 
 
@@ -306,28 +300,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         // UI 업데이트를 위한 이벤트 발생
         OnEnemyCountChanged?.Invoke(totalRemainingEnemies);
-    }
-
-    public void NotifyEnemyDecrease()
-    {
-        // UI 업데이트
-        UpdateEnemyCount(-1);
-
-        // 현재 웨이브에 적 감소 알림
-        if (currentWave != null)
-        {
-            currentWave.DecreaseEnemyCount();
-        }
-    }
-
-
-    public void NotifyEnemyIncrease(int count)
-    {
-        // 현재 웨이브에 적 추가 알림
-        if (currentWave != null)
-        {
-            currentWave.AddEnemies(count);
-        }
     }
 
     public bool IsLastWave()

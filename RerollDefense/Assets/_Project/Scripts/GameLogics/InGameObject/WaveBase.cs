@@ -34,10 +34,6 @@ public abstract class WaveBase
     public virtual void HandleTimeChange(float remainTime) { }
     public virtual void HandleScheduleComplete(int scheduleUID) { }
 
-    public virtual void AddEnemies(int count) { }
-
-    public virtual void DecreaseEnemyCount() { }
-
     //보상, 추가 연출 등 효과를 위한 시간 제공 코루틴임
     public virtual IEnumerator EndWaveRoutine()
     {
@@ -66,7 +62,7 @@ public abstract class BattleWaveBase : WaveBase
     public BattleWaveBase(D_WaveDummyData data) : base(data)
     {
         UnitManager.Instance.OnUnitDeath += CheckBattleResult;
-
+        EnemyManager.Instance.OnEnemyDeath += CheckBattleResult;
     }
 
     public override void StartWave()
@@ -86,6 +82,7 @@ public abstract class BattleWaveBase : WaveBase
         // 혹은 이벤트 연결 필요
         SpawnWaveEnemies();
 
+        StageManager.Instance.UpdateEnemyCount(totalGroupCount);
         Debug.Log("전투 웨이브 시작 준비 완료! 사용자 입력을 대기합니다.");
     }
 
@@ -96,24 +93,13 @@ public abstract class BattleWaveBase : WaveBase
 
     protected abstract int CalculateTotalEnemies();
 
-    public override void AddEnemies(int count)
-    {
-        remainEnemies += count;
-        StageManager.Instance.UpdateEnemyCount(count);
-    }
-
-    public override void DecreaseEnemyCount()
-    {
-        remainEnemies--;
-        CheckBattleResult(); // 에너미가 죽을 때마다 승패 체크
-    }
 
     // 승패 판정 메서드 추가
     public virtual void CheckBattleResult()
     {
-        // 에너미가 모두 죽었는지 체크
-        bool allEnemiesDead = remainEnemies <= 0 && isSpawnDone;
-
+        // 에너미가 모두 죽었는지 체크 - 실제 존재하는 활성화된 적 객체로 확인
+        List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();
+        bool allEnemiesDead = (enemies.Count <= 0 || !enemies.Any(enemy => enemy != null && enemy.gameObject.activeSelf)) && isSpawnDone;
 
         // 모든 유닛이 죽었는지 체크
         List<UnitController> units = UnitManager.Instance.GetUnits();
@@ -145,6 +131,8 @@ public abstract class BattleWaveBase : WaveBase
         if (!isBattleFinished)
         {
             isBattleFinished = true;
+
+   
 
             // BattleWinState로 전환
             EnterBattleWinState();
@@ -199,6 +187,8 @@ public abstract class BattleWaveBase : WaveBase
         battleResult = BattleResult.None;
         isBattleFinished = false;
         UnitManager.Instance.OnUnitDeath -= CheckBattleResult;
+        EnemyManager.Instance.OnEnemyDeath -= CheckBattleResult;
+
 
     }
 }
@@ -765,18 +755,6 @@ public class PrizeHuntingWave : WaveBase
         }
 
         return waveInfo;
-    }
-
-    public override void AddEnemies(int count)
-    {
-        remainEnemies += count;
-        StageManager.Instance.UpdateEnemyCount(count);
-    }
-
-    public override void DecreaseEnemyCount()
-    {
-        --remainEnemies;
-        CheckWaveCompletion();
     }
 
     public override void CheckWaveCompletion()

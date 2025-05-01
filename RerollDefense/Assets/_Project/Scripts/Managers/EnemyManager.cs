@@ -35,6 +35,9 @@ public class EnemyManager : MonoBehaviour
 
     private const int BASE_ORDER = 0; // Order in Layer의 기본값
 
+    public event System.Action OnEnemyDeath;
+
+
     public static EnemyManager Instance
     {
         get
@@ -87,6 +90,12 @@ public class EnemyManager : MonoBehaviour
         StageManager.Instance.OnWaveFinish += HidePathLines;
     }
 
+
+    public void NotifyEnemyDead()
+    {
+        // 이벤트 발생
+        OnEnemyDeath?.Invoke();
+    }
 
     public void SpawnEnemy(D_EnemyData enemyData, Vector2 spawnPos, List<D_EventDummyData> events = null)
     {
@@ -143,7 +152,7 @@ public class EnemyManager : MonoBehaviour
     }
 
     // Collider2D를 키로 사용하여 Enemy 등록
-    public void RegisterEnemy(Enemy enemy, Collider2D collider)
+    public void RegisterEnemy(Enemy enemy)
     {
 
         if (!enemies.Contains(enemy))
@@ -153,16 +162,14 @@ public class EnemyManager : MonoBehaviour
     }
 
     // Enemy 해제
-    public void UnregisterEnemy(Collider2D collider)
+    public void UnregisterEnemy(Enemy enemy)
     {
-        if (activeEnemies.ContainsKey(collider))
+        if (enemies.Contains(enemy))
         {
-            Enemy enemy = activeEnemies[collider];
-            activeEnemies.Remove(collider);
-            enemy.pathRenderer.positionCount = 0;
             enemies.Remove(enemy);
-            enemyPaths.Remove(enemy);
-            enemyPathIndex.Remove(enemy);
+
+            PoolingManager.Instance.ReturnObject(enemy.gameObject);
+
         }
     }
 

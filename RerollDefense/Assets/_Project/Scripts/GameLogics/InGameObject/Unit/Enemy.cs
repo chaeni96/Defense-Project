@@ -53,7 +53,7 @@ public class Enemy : BasicObject
     public override void Initialize()
     {
         base.Initialize();
-        EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
+        EnemyManager.Instance.RegisterEnemy(this);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         UpdateHpBar();
@@ -166,11 +166,6 @@ public class Enemy : BasicObject
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-            if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
-            {
-                OnDead();
-            }
-
             // HP 바 업데이트
             UpdateHpBar();
         }
@@ -220,11 +215,10 @@ public class Enemy : BasicObject
         isActive = false;
         baseStats.Clear();
         currentStats.Clear();
-        EnemyManager.Instance.UnregisterEnemy(enemyCollider);
-        PoolingManager.Instance.ReturnObject(gameObject);
+        EnemyManager.Instance.UnregisterEnemy(this);
+        EnemyManager.Instance.NotifyEnemyDead();
+        StageManager.Instance.UpdateEnemyCount(EnemyManager.Instance.GetAllEnemys().Count);
 
-        // 현재 웨이브에 적 감소 알림
-        StageManager.Instance.NotifyEnemyDecrease();
     }
 
 }

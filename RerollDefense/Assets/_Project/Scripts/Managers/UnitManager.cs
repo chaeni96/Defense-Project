@@ -68,8 +68,6 @@ public class UnitManager : MonoBehaviour
 
     public void NotifyUnitDead(UnitController unit)
     {
-        // 유닛 리스트에서 제거하는 등의 처리...
-
         // 이벤트 발생
         OnUnitDeath?.Invoke();
     }

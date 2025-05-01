@@ -228,27 +228,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-            //if (statChange.statName == StatName.CurrentHp)
-            //{
-            //    // 데미지를 입었을 경우 깜빡이는 효과 적용
-            //    DOTween.Sequence()
-            //    .Append(unitSprite.DOColor(UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-            //    .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f))  // 0.1초 동안 원래 색으로
-            //    .OnComplete(() =>
-            //    {
-            //        // 깜빡임 효과가 끝난 후 체력이 0 이하인지 확인하고 죽음 처리
-            //        if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
-            //        {
-            //            OnDead();
-            //        }
-            //    });
-            //}
-
-
-            if (GetStat(StatName.CurrentHp) <= 0 && !isActive)
-            {
-                OnDead();
-            }
 
             // HP 바 업데이트
             UpdateHpBar();
@@ -308,10 +287,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 기존 단일 타일 로직
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
-
-        UnitManager.Instance.NotifyUnitDead(this);
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
+
+        UnitManager.Instance.NotifyUnitDead(this);
     }
 
     public void MoveScale()

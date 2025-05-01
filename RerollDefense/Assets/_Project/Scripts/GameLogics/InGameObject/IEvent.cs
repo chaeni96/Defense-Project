@@ -71,9 +71,6 @@ public class SpawnEnemyEvent : IEvent
                 }
             }
         }
-
-        // 적 카운트 증가 통지
-        StageManager.Instance.NotifyEnemyIncrease(data.f_spawnCount);
     }
 }
 
