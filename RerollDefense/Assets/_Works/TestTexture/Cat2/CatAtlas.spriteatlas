@@ -56,13 +56,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4f0c4502a8c4abb4da777bc9e3e37254, type: 3}
   - {fileID: 21300000, guid: 66d9b2036a53cc54b99aa36b91495543, type: 3}
   - {fileID: 21300000, guid: 70c61a135fc85494ea3aaa8904037e35, type: 3}
+  - {fileID: 21300000, guid: 97f25c632a5cd924488a6feb723679ff, type: 3}
   - {fileID: 21300000, guid: d03afdb337ca7f24aacdbd2cc558d3f5, type: 3}
   - {fileID: 21300000, guid: a2c652f32368e9a42906df6a8d39d5ff, type: 3}
   - {fileID: 21300000, guid: fd74cb24e53387446b004030d49b21f9, type: 3}
+  - {fileID: 21300000, guid: b4023c24151a52141bf5c923cc5e21db, type: 3}
   - {fileID: 21300000, guid: e98cb3642ede99940a9efacb923ff8a8, type: 3}
   - {fileID: 21300000, guid: 12ed8ce4d4459a5488a47ad8344a6573, type: 3}
   - {fileID: 21300000, guid: e629a305870c6e142842fd488f379291, type: 3}
   - {fileID: 21300000, guid: c9648c656e0640a4d93344c34dc55f4d, type: 3}
+  - {fileID: 21300000, guid: 1b3bfb85151037d4eab1abc5bb4a96ec, type: 3}
   - {fileID: 21300000, guid: 76a8c5a50e3f34947a8f5362d2570376, type: 3}
   - {fileID: 21300000, guid: a23e23e59e61b2145a1d6359e7e50311, type: 3}
   - {fileID: 21300000, guid: 9c0b1ef596f7b214b96165fcc6685a7a, type: 3}
@@ -70,13 +73,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 12aef856852b64f41b8e4b4095ee8f1a, type: 3}
   - {fileID: 21300000, guid: 1db8a4c7bedb8e14aba2f802a77361bc, type: 3}
   - {fileID: 21300000, guid: 1ca542481fb23e0478fa8791104b41e6, type: 3}
+  - {fileID: 21300000, guid: 99ea8c5807db6f246a14a2448e7de0f8, type: 3}
   - {fileID: 21300000, guid: ea87a3b85642fc943824fa99d69a5ff7, type: 3}
   - {fileID: 21300000, guid: 5eee1bf8239a5f9419091a35ee669498, type: 3}
   - {fileID: 21300000, guid: d8118419368d69b4d9048c07a31f28a5, type: 3}
+  - {fileID: 21300000, guid: 4cdd346a9451ee14eb0bbdc14e74c57d, type: 3}
   - {fileID: 21300000, guid: e9cfcf9aaacd5464db2ae74912cb138d, type: 3}
   - {fileID: 21300000, guid: c511bebaf9fb0eb4a8f67eb5d9d68ca3, type: 3}
   - {fileID: 21300000, guid: 0f8700ea046d63543b0ff30a0f93d4d1, type: 3}
   - {fileID: 21300000, guid: 91a3a6ea3e110ef429ddca806d092bbb, type: 3}
+  - {fileID: 21300000, guid: fa8d430b392e20e4b81178dfe46201be, type: 3}
   - {fileID: 21300000, guid: cce3325b2665fa24cb5eb7ff8c72f724, type: 3}
   - {fileID: 21300000, guid: c5d83e6bcd165534581dc22026583ea9, type: 3}
   - {fileID: 21300000, guid: 4d3d058b467bb2e4baa08f0db5cacea2, type: 3}
@@ -89,13 +95,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0e54d8bd315a5f44788a42de3d72f0ef, type: 3}
   - {fileID: 21300000, guid: ee2bacdd2e59b3b41bbd3297d489353f, type: 3}
   - {fileID: 21300000, guid: ef0d8afdeb682264eb0dd17f9239346e, type: 3}
+  - {fileID: 21300000, guid: da06913e727f33344a68b5576787b521, type: 3}
   - {fileID: 21300000, guid: b869d68ef752c334ead2ed9a870559cf, type: 3}
   - {fileID: 21300000, guid: 4d4d259eec5eebe468b444ce4534857b, type: 3}
   - {fileID: 21300000, guid: d9ab46ee507d04548aaa844db1e9a945, type: 3}
+  - {fileID: 21300000, guid: 10d596ee48810a14f8614b1c7633f664, type: 3}
   - {fileID: 21300000, guid: 35228e7f5e1e8a24591992dd148739ae, type: 3}
   - {fileID: 21300000, guid: 8364a48fd7c1d4047811115eb0b0af24, type: 3}
   - {fileID: 21300000, guid: 3c16ae8fe409e6049837c02a9c9f692a, type: 3}
   - {fileID: 21300000, guid: 1f9731af69677414098c74c0f2fd5367, type: 3}
+  - {fileID: 21300000, guid: 0a10beef3ed9835478b4f37410d12278, type: 3}
   m_PackedSpriteNamesToIndex:
   - bow_4
   - body_cloth
@@ -103,13 +112,16 @@ SpriteAtlas:
   - claok_back
   - bow_3
   - har_back
+  - right_arm_cloth_3
   - left_arm_cloth_4
   - spear
   - top_1
+  - left_arm_cloth 1
   - left_arm
   - top_2
   - bow_2
   - tail
+  - cheek_3
   - bag_1
   - shoulder_item_right
   - right_arm_cloth_old
@@ -117,13 +129,16 @@ SpriteAtlas:
   - hat_front
   - cloak_2
   - sword
+  - Cheek_pattern
   - cloak_1
   - arrow_2
   - ear_default
+  - eye_1
   - cape_1
   - right_arm_cloth
   - right_arm
   - right_arm_cloth_2
+  - eye_2
   - belt_1
   - top-6
   - ear_inner
@@ -136,13 +151,16 @@ SpriteAtlas:
   - cape_3
   - right_leg
   - top_4
+  - cape_3 1
   - cape_2
   - face
   - eye
+  - cape_4
   - body
   - arrow
   - left_leg
   - bow_1
+  - cheek
   m_RenderDataMap: {}
   m_Tag: CatAtlas
   m_IsVariant: 0
