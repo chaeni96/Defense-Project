@@ -146,13 +146,6 @@ public abstract class BattleWaveBase : WaveBase
         {
             isBattleFinished = true;
 
-            // 카메라 원위치로 이동
-            CameraController cameraController = Camera.main.GetComponent<CameraController>();
-            if (cameraController != null)
-            {
-                //cameraController.OnBattleEnd();
-            }
-
             // BattleWinState로 전환
             EnterBattleWinState();
         }
@@ -227,7 +220,7 @@ public class NormalBattleWave : BattleWaveBase
         normalWaveData = data;
 
         // 해당 맵 ID에 대한 배치 데이터 로드
-        placementData = normalWaveData.f_enemyPlaceData;
+        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == normalWaveData.f_mapId);
 
         if (placementData == null)
         {
@@ -297,205 +290,169 @@ public class NormalBattleWave : BattleWaveBase
 /// <summary>
 /// 보스 전투 웨이브 클래스
 /// </summary>
+/// 
+
 public class BossBattleWave : BattleWaveBase
 {
     private D_BossBattleWaveData bossWaveData;
 
+    private D_EnemyPlacementData placementData;
+    private float gridSize = 0.55f; // 그리드 한 칸의 크기
+
+    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
+
     public BossBattleWave(D_BossBattleWaveData data) : base(data)
     {
         bossWaveData = data;
-    }
 
-    public override string GetWaveInfoText()
-    {
-        string waveInfo = "보스 전투 웨이브\n";
-        waveInfo += $"보스: {bossWaveData.f_bossEnemy.f_name}\n";
+        // 해당 맵 ID에 대한 배치 데이터 로드
+        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == bossWaveData.f_mapId);
 
-        if (bossWaveData.f_supportEnemyGroups != null && bossWaveData.f_supportEnemyGroups.Count > 0)
+        if (placementData == null)
         {
-            var groupedEnemies = bossWaveData.f_supportEnemyGroups
-                                    .GroupBy(g => g.f_enemy.f_name)
-                                    .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
-
-            waveInfo += "서포터:\n";
-            foreach (var group in groupedEnemies)
-            {
-                waveInfo += $"{group.Name} x{group.TotalAmount}\n";
-            }
+            Debug.LogError($"맵 {placementData.f_mapID} 에너미 배치 데이터가 없습니다!");
         }
 
-        return waveInfo;
     }
 
     protected override int CalculateTotalEnemies()
     {
-        int total = 1; // 보스 1마리
-        if (bossWaveData.f_supportEnemyGroups != null)
-        {
-            total += bossWaveData.f_supportEnemyGroups.Sum(group => group.f_amount);
-        }
-        return total;
-    }
-    protected override void OnStartWaveButtonClicked()
-    {
-    }
+        return placementData != null ? placementData.f_cellData.Count : 0;
 
+    }
+    /// <summary>
+    /// 웨이브 설명 텍스트
+    /// </summary>
+    public override string GetWaveInfoText()
+    {
+
+        string waveInfo = "보스 전투 웨이브\n";
+
+        var groupedEnemies = placementData.f_cellData
+                                .GroupBy(cell => cell.f_enemy.f_name)
+                                .Select(g => new { Name = g.Key, Count = g.Count() });
+
+        foreach (var group in groupedEnemies)
+        {
+            waveInfo += $"{group.Name} x{group.Count}\n";
+        }
+
+        return waveInfo;
+    }
     protected override void SpawnWaveEnemies()
     {
-        totalGroupCount = 1; // 보스 그룹
-        if (bossWaveData.f_supportEnemyGroups != null)
+        foreach (var cellData in placementData.f_cellData)
         {
-            totalGroupCount += bossWaveData.f_supportEnemyGroups.Count;
-        }
 
-        completedGroupCount = 0;
+            // 그리드 좌표를 게임 월드 좌표로 변환
+            Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-        // 보스 스폰
-        StageManager.Instance.StartCoroutine(CoSpawnBoss());
-
-        // 서포트 적 스폰
-        if (bossWaveData.f_supportEnemyGroups != null && bossWaveData.f_supportEnemyGroups.Count > 0)
-        {
-            foreach (D_supportEnemyGroups group in bossWaveData.f_supportEnemyGroups)
-            {
-                StageManager.Instance.StartCoroutine(CoSpawnSupportGroup(group));
-            }
-        }
-    }
-
-    private IEnumerator CoSpawnBoss()
-    {
-        yield return new WaitForSeconds(bossWaveData.f_startDelay);
-
-        if (bossWaveData.f_bossEnemy.f_ObjectPoolKey != null)
-        {
-            //EnemyManager.Instance.SpawnEnemy(bossWaveData.f_bossEnemy);
-        }
-
-        ++completedGroupCount;
-        CheckSpawnCompletion();
-    }
-
-    private IEnumerator CoSpawnSupportGroup(D_supportEnemyGroups groupData)
-    {
-        if (groupData == null || groupData.f_enemy == null)
-        {
-            yield break;
-        }
-
-        yield return new WaitForSeconds(groupData.f_startDelay);
-
-        for (int spawnedCount = 0; spawnedCount < groupData.f_amount; spawnedCount++)
-        {
-            if (groupData.f_enemy.f_ObjectPoolKey != null)
-            {
-                // EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
-            }
-
-            yield return new WaitForSeconds(groupData.f_spawnInterval);
-        }
-
-        ++completedGroupCount;
-        CheckSpawnCompletion();
-    }
-
-    private void CheckSpawnCompletion()
-    {
-        if (completedGroupCount >= totalGroupCount)
-        {
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
             isSpawnDone = true;
-            CheckWaveCompletion();
         }
+    }
+
+    // 그리드 좌표를 월드 좌표로 변환하는 함수
+    private Vector2 ConvertGridToWorldPosition(Vector2 gridPos)
+    {
+        float gridCenterX = 0f;
+        float gridCenterY = 5f;
+
+        // 중앙을 기준으로 좌표 계산
+        float xPos = (gridPos.x - gridCenterX) * gridSize + centerOffset.x;
+        float yPos = (gridCenterY - gridPos.y) * gridSize + centerOffset.y;
+
+        return new Vector2(xPos, yPos);
+    }
+
+    protected override void OnStartWaveButtonClicked()
+    {
+        //버튼 클릭했을때 에너미 상태변경 
     }
 }
 
 /// <summary>
 /// 이벤트 에너미 웨이브 클래스
 /// </summary>
+/// 
+
 public class EventEnemyWave : BattleWaveBase
 {
-    private D_EventEnemyWaveData eventWaveData;
+    private D_EventEnemyWaveData eventEnemyWaveData;
 
-    private bool isGetItem;
+    private D_EnemyPlacementData placementData;
+    private float gridSize = 0.55f; // 그리드 한 칸의 크기
+
+    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
 
     public EventEnemyWave(D_EventEnemyWaveData data) : base(data)
     {
-        eventWaveData = data;
-    }
+        eventEnemyWaveData = data;
 
-    public override string GetWaveInfoText()
-    {
-        string waveInfo = "보물 고블린 웨이브\n";
-        var groupedEnemies = eventWaveData.f_eventEnemyGroups
-                            .GroupBy(g => g.f_enemy.f_name)
-                            .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
+        // 해당 맵 ID에 대한 배치 데이터 로드
+        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == eventEnemyWaveData.f_mapId);
 
-        foreach (var group in groupedEnemies)
+        if (placementData == null)
         {
-            waveInfo += $"{group.Name} x{group.TotalAmount}\n";
+            Debug.LogError($"맵 {placementData.f_mapID} 에너미 배치 데이터가 없습니다!");
         }
 
-        return waveInfo;
     }
 
     protected override int CalculateTotalEnemies()
     {
-        return eventWaveData.f_eventEnemyGroups.Sum(group => group.f_amount);
+        return placementData != null ? placementData.f_cellData.Count : 0;
+
+    }
+    /// <summary>
+    /// 웨이브 설명 텍스트
+    /// </summary>
+    public override string GetWaveInfoText()
+    {
+        string waveInfo = "보물 에너미 등장 웨이브\n";
+
+        var groupedEnemies = placementData.f_cellData
+                                .GroupBy(cell => cell.f_enemy.f_name)
+                                .Select(g => new { Name = g.Key, Count = g.Count() });
+
+        foreach (var group in groupedEnemies)
+        {
+            waveInfo += $"{group.Name} x{group.Count}\n";
+        }
+
+        return waveInfo;
+    }
+    protected override void SpawnWaveEnemies()
+    {
+        foreach (var cellData in placementData.f_cellData)
+        {
+
+            // 그리드 좌표를 게임 월드 좌표로 변환
+            Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
+
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
+            isSpawnDone = true;
+        }
+    }
+
+    // 그리드 좌표를 월드 좌표로 변환하는 함수
+    private Vector2 ConvertGridToWorldPosition(Vector2 gridPos)
+    {
+        float gridCenterX = 0f;
+        float gridCenterY = 5f;
+
+        // 중앙을 기준으로 좌표 계산
+        float xPos = (gridPos.x - gridCenterX) * gridSize + centerOffset.x;
+        float yPos = (gridCenterY - gridPos.y) * gridSize + centerOffset.y;
+
+        return new Vector2(xPos, yPos);
     }
 
     protected override void OnStartWaveButtonClicked()
     {
-    }
-    protected override void SpawnWaveEnemies()
-    {
-        totalGroupCount = eventWaveData.f_eventEnemyGroups.Count;
-        completedGroupCount = 0;
-
-        foreach (D_eventEnemyGroups groupData in eventWaveData.f_eventEnemyGroups)
-        {
-            StageManager.Instance.StartCoroutine(CoSpawnEventGroup(groupData));
-        }
-    }
-
-    private IEnumerator CoSpawnEventGroup(D_eventEnemyGroups groupData)
-    {
-        if (groupData == null || groupData.f_enemy == null)
-        {
-            yield break;
-        }
-
-        yield return new WaitForSeconds(groupData.f_startDelay);
-
-        for (int spawnedCount = 0; spawnedCount < groupData.f_amount; spawnedCount++)
-        {
-            if (groupData.f_enemy.f_ObjectPoolKey != null)
-            {
-                // 이벤트 적 스폰 (드롭 아이템 정보 포함 가능)
-                // EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, null,groupData.f_EventDummyData);
-            }
-
-            yield return new WaitForSeconds(groupData.f_spawnInterval);
-        }
-
-        ++completedGroupCount;
-        if (completedGroupCount >= totalGroupCount)
-        {
-            isSpawnDone = true;
-            CheckWaveCompletion();
-        }
-    }
-
-    public override void CheckWaveCompletion()
-    {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted && isGetItem)
-        {
-            //아이템을 습득해야 넘기기 
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-        }
+        //버튼 클릭했을때 에너미 상태변경 
     }
 }
-
 
 public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleCompleteSubscriber
 {

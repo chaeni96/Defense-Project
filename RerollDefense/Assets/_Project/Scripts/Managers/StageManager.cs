@@ -255,7 +255,48 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         {
             currentWaveIndex++;
         }
+
+        CleanUpBeforeNextWave();
+
         StartNextWave();
+    }
+    //웨이브 간 오브젝트 정리
+    private void CleanUpBeforeNextWave()
+    {
+        if(currentWave is NormalBattleWave || currentWave is BossBattleWave || currentWave is EventEnemyWave )
+        {
+
+            var units = UnitManager.Instance.GetUnits();
+            foreach (var unit in units)
+            {
+                unit.SetActive(false);
+            }
+
+            // 적 오브젝트 비활성화
+            var enemies = EnemyManager.Instance.GetAllEnemys();
+            foreach (var enemy in enemies)
+            {
+                enemy.SetActive(false);
+            }
+            UnitManager.Instance.CleanUp();
+            EnemyManager.Instance.CleanUp();    
+
+
+            // 카메라 원위치로 이동
+            CameraController cameraController = GameManager.Instance.mainCamera.GetComponent<CameraController>();
+            if (cameraController != null)
+            {
+                cameraController.OnBattleEnd();
+            }
+        }
+        //전투 웨이브인 경우에는 살아남은 유닛들은 원래 있던 자리로 돌아가야됨
+
+        // 진행 중인 모든 투사체 제거
+        ProjectileManager.Instance.CleanUp();
+
+        // 진행중인 모든 스킬 제거
+        AttackSkillManager.Instance.CleanUp();
+
     }
 
     public void SetTotalEnemyCount(int count)
