@@ -5,8 +5,6 @@ using Kylin.FSM;
 [FSMContextFolder("Create/State/Attack")]
 public class AttackState : StateBase
 {
-    private float attackTimer = 0f;
-    private float attackInterval = 1f;
     private float targetCheckInterval = 0.2f; // 타겟 및 범위 체크 주기
     private float lastTargetCheckTime = 0f;
     private CharacterFSMObject characterFSM;
@@ -14,7 +12,6 @@ public class AttackState : StateBase
     public override void OnEnter()
     {
         Debug.Log("AttackState 시작");
-        attackTimer = 0f;
         lastTargetCheckTime = 0f;
 
         // Owner를 CharacterFSMObject로 캐스팅

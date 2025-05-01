@@ -87,35 +87,10 @@ public class EnemyManager : MonoBehaviour
         StageManager.Instance.OnWaveFinish += HidePathLines;
     }
 
-    private void InitializeArrays(int enemyCount)
+
+    public void SpawnEnemy(D_EnemyData enemyData, Vector2 spawnPos, List<D_EventDummyData> events = null)
     {
-        if (transformAccessArray.isCreated) transformAccessArray.Dispose();
-        if (targetPositions.IsCreated) targetPositions.Dispose();
-        if (moveSpeeds.IsCreated) moveSpeeds.Dispose();
-
-        Transform[] transforms = new Transform[enemyCount];
-        for (int i = 0; i < enemyCount; i++)
-        {
-            transforms[i] = enemies[i].transform;
-        }
-        transformAccessArray = new TransformAccessArray(transforms);
-
-        targetPositions = new NativeArray<float3>(enemyCount, Allocator.TempJob);
-        moveSpeeds = new NativeArray<float>(enemyCount, Allocator.TempJob);
-    }
-
-    public void SpawnEnemy(D_EnemyData enemyData, Vector2? customStartTilePos = null, Vector2? spawnOffset = null, List<D_EventDummyData> events = null)
-    {
-        // 시작 타일 위치 (기본값 또는 지정된 값 사용)
-        Vector2 startTilePos = customStartTilePos ?? TileMapManager.Instance.GetStartPosition();
-
-        // 시작 위치를 월드 좌표로 변환
-        Vector3 startWorldPos = TileMapManager.Instance.GetTileToWorldPosition(startTilePos);
-
-        // 스폰 오프셋 적용 (기본값 또는 지정된 값 사용)
-        Vector2 offset = spawnOffset ?? Vector2.zero;
-        Vector3 spawnPos = new Vector3(startWorldPos.x + offset.x, startWorldPos.y + offset.y, startWorldPos.z);
-
+      
         GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, spawnPos, (int)ObjectLayer.Enemy);
 
         if (enemyObj != null)
@@ -128,28 +103,7 @@ public class EnemyManager : MonoBehaviour
             if (events != null && events.Count() > 0)
             {
                 enemy.InitializeEvents(events);
-            }
-
-            // 경로 설정: 스폰 위치 -> 시작 타일 -> 끝 타일
-            List<Vector3> path = new List<Vector3>();
-
-            // 오프셋이 있으면 시작 타일을 첫 경유지로 추가
-            if (offset != Vector2.zero)
-            {
-                path.Add(startWorldPos);
-            }
-
-            // 시작 타일에서 끝 타일까지의 경로 가져오기
-            List<Vector3> mainPath = PathFindingManager.Instance.FindPathFromPosition(startWorldPos);
-
-            // 경로 합치기
-            path.AddRange(mainPath);
-
-            // 경로 설정
-            enemyPaths[enemy] = path;
-            enemyPathIndex[enemy] = 0;
-
-            UpdateEnemiesPath();
+            }    
         }
     }
 

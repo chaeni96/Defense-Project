@@ -8,7 +8,9 @@ using Kylin.FSM;
 public class EnemyPlacementTool : EditorWindow
 {
     private int mapId = 0;
-    private Vector2 scrollPosition;
+    private Vector2 mainScrollPosition; // 전체 창에 대한 스크롤 위치
+    private Vector2 enemyScrollPosition; // 에너미 목록 스크롤 위치
+    private Vector2 eventScrollPosition; // 이벤트 목록 스크롤 위치
     private EnemyCell[,] cells = new EnemyCell[10, 12]; // 10x12 그리드
     private Vector2Int selectedCell = new Vector2Int(-1, -1);
 
@@ -17,6 +19,7 @@ public class EnemyPlacementTool : EditorWindow
     private class EnemyCell
     {
         public D_EnemyData enemy;
+        public List<D_EventDummyData> events = new List<D_EventDummyData>(); // 이벤트 목록 추가
         public bool isEmpty => enemy == null;
     }
 
@@ -43,33 +46,13 @@ public class EnemyPlacementTool : EditorWindow
 
     private void OnGUI()
     {
+        // 전체 창에 대한 스크롤 시작
+        mainScrollPosition = EditorGUILayout.BeginScrollView(mainScrollPosition, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+
         EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
 
         // 왼쪽 패널 - MapID 입력 영역
-        EditorGUILayout.BeginVertical(GUILayout.Width(180), GUILayout.ExpandHeight(true));
-
-        GUILayout.Label("Enemy Placement Tool", EditorStyles.boldLabel);
-        EditorGUILayout.Space(70);
-
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Map ID:", GUILayout.Width(60));
-        mapId = EditorGUILayout.IntField(mapId);
-        EditorGUILayout.EndHorizontal();
-
-        EditorGUILayout.Space(20);
-
-        if (GUILayout.Button("Load Map"))
-        {
-            LoadDataIfExists();
-        }
-
-        EditorGUILayout.Space();
-        if (GUILayout.Button("Save Data"))
-        {
-            SaveData();
-        }
-
-        EditorGUILayout.EndVertical();
+        DrawLeftPanel();
 
         // 약간의 공간 추가
         GUILayout.Space(10);
@@ -82,12 +65,18 @@ public class EnemyPlacementTool : EditorWindow
         // 약간의 공간 추가
         GUILayout.Space(10);
 
-        // 오른쪽 패널 - 에너미 선택 영역
-        EditorGUILayout.BeginVertical(GUILayout.Width(320), GUILayout.ExpandHeight(true));
+        // 오른쪽 패널 - 에너미 선택 및 이벤트 지정 영역
+        EditorGUILayout.BeginVertical(GUILayout.Width(600), GUILayout.ExpandHeight(true));
 
         if (selectedCell.x >= 0 && selectedCell.y >= 0)
         {
             DrawEnemySelection();
+
+            // 에너미가 선택된 경우에만 이벤트 선택 UI 표시
+            if (!cells[selectedCell.y, selectedCell.x].isEmpty)
+            {
+                DrawEventSelection();
+            }
         }
         else
         {
@@ -97,18 +86,66 @@ public class EnemyPlacementTool : EditorWindow
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.EndHorizontal();
+
+        // 추가 공간 (하단 여백)
+        GUILayout.Space(20);
+
+        // 전체 스크롤 종료
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawLeftPanel()
+    {
+        EditorGUILayout.BeginVertical(GUILayout.Width(180), GUILayout.ExpandHeight(true));
+
+        GUILayout.Label("Enemy Placement Tool", EditorStyles.boldLabel);
+        EditorGUILayout.Space(20);
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Map ID:", GUILayout.Width(60));
+        mapId = EditorGUILayout.IntField(mapId);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space(10);
+
+        if (GUILayout.Button("Load Map"))
+        {
+            LoadDataIfExists();
+        }
+
+        EditorGUILayout.Space();
+        if (GUILayout.Button("Save Data"))
+        {
+            SaveData();
+        }
+
+        // 추가 도구 버튼들
+        EditorGUILayout.Space(20);
+
+        if (GUILayout.Button("모든 셀 초기화"))
+        {
+            if (EditorUtility.DisplayDialog("초기화 확인", "모든 셀의 데이터를 초기화하시겠습니까?", "예", "아니오"))
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    for (int x = 0; x < 12; x++)
+                    {
+                        cells[y, x].enemy = null;
+                        cells[y, x].events.Clear();
+                    }
+                }
+            }
+        }
+
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawGrid()
     {
-
-        GUILayout.Space(50);
-
-
-        EditorGUILayout.LabelField("배치 그리드", EditorStyles.boldLabel);
+        GUILayout.Label("배치 그리드", EditorStyles.boldLabel);
 
         // 이 부분이 중요합니다 - 그리드를 그리기 위한 영역을 미리 확보
-        float cellSize = 40f; // 더 큰 셀 크기
+        float cellSize = 40f; // 셀 크기
         Rect layoutRect = GUILayoutUtility.GetRect(12 * cellSize + 40, 10 * cellSize + 60);
 
         // 그리드의 시작 위치를 layoutRect 기준으로 설정
@@ -128,6 +165,13 @@ public class EnemyPlacementTool : EditorWindow
                 {
                     // 에너미가 있는 셀은 회색으로 채우기
                     EditorGUI.DrawRect(cellRect, new Color(0.7f, 0.7f, 0.7f));
+
+                    // 이벤트가 있는 셀은 테두리를 다른 색으로 표시
+                    if (cells[y, x].events != null && cells[y, x].events.Count > 0)
+                    {
+                        Rect eventIndicatorRect = new Rect(cellRect.x + 2, cellRect.y + 2, cellRect.width - 4, cellRect.height - 4);
+                        EditorGUI.DrawRect(eventIndicatorRect, new Color(0.9f, 0.6f, 0.3f, 0.3f)); // 이벤트 있음 표시
+                    }
                 }
 
                 // 테두리 그리기 (검은색)
@@ -151,11 +195,51 @@ public class EnemyPlacementTool : EditorWindow
                 coordStyle.alignment = TextAnchor.UpperLeft;
                 EditorGUI.LabelField(new Rect(cellRect.x + 2, cellRect.y + 2, cellRect.width, 16), $"{x},{y}", coordStyle);
 
+                // 에너미가 있는 경우 셀 중앙에 에너미 정보 표시
+                if (!cells[y, x].isEmpty)
+                {
+                    GUIStyle enemyStyle = new GUIStyle(GUI.skin.label);
+                    enemyStyle.fontSize = 9;
+                    enemyStyle.alignment = TextAnchor.MiddleCenter;
+                    enemyStyle.normal.textColor = Color.black;
+                    enemyStyle.wordWrap = true;
+
+                    // 에너미 이름 표시 (짧게 줄임)
+                    string enemyName = cells[y, x].enemy.f_name;
+                    if (enemyName.Length > 10)
+                    {
+                        enemyName = enemyName.Substring(0, 8) + "..";
+                    }
+
+                    EditorGUI.LabelField(
+                        new Rect(cellRect.x, cellRect.y + 16, cellRect.width, cellRect.height - 16),
+                        enemyName,
+                        enemyStyle
+                    );
+
+                    // 이벤트 개수 표시
+                    if (cells[y, x].events.Count > 0)
+                    {
+                        GUIStyle eventStyle = new GUIStyle(GUI.skin.label);
+                        eventStyle.fontSize = 9;
+                        eventStyle.fontStyle = FontStyle.Bold;
+                        eventStyle.alignment = TextAnchor.LowerRight;
+                        eventStyle.normal.textColor = new Color(0.8f, 0.4f, 0.0f);
+
+                        EditorGUI.LabelField(
+                            cellRect,
+                            $"E:{cells[y, x].events.Count}",
+                            eventStyle
+                        );
+                    }
+                }
+
                 // 셀 클릭 처리
                 if (Event.current.type == UnityEditorEventType.MouseDown && cellRect.Contains(Event.current.mousePosition))
                 {
                     selectedCell = new Vector2Int(x, y);
                     Repaint();
+                    Event.current.Use(); // 이벤트 소비 (다른 컨트롤에 전파 방지)
                 }
             }
         }
@@ -204,8 +288,6 @@ public class EnemyPlacementTool : EditorWindow
 
     private void DrawEnemySelection()
     {
-        GUILayout.Space(50);
-
         EditorGUILayout.LabelField("에너미 선택", EditorStyles.boldLabel);
 
         // 선택된 셀 정보 표시
@@ -225,6 +307,7 @@ public class EnemyPlacementTool : EditorWindow
             if (GUILayout.Button("제거", GUILayout.Width(60)))
             {
                 cells[selectedCell.y, selectedCell.x].enemy = null;
+                cells[selectedCell.y, selectedCell.x].events.Clear(); // 에너미 제거시 이벤트도 함께 제거
             }
         }
         else
@@ -239,11 +322,15 @@ public class EnemyPlacementTool : EditorWindow
 
         // 에너미 목록 헤더
         EditorGUILayout.LabelField("에너미 목록:");
+
+        // 에너미 검색 필드 추가
         EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("검색:", GUILayout.Width(40));
+        string searchText = EditorGUILayout.TextField(GUI.tooltip); // 검색어 입력 필드
         EditorGUILayout.EndHorizontal();
 
         // 에너미 목록 스크롤 영역
-        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(300));
+        enemyScrollPosition = EditorGUILayout.BeginScrollView(enemyScrollPosition, GUILayout.Height(150));
 
         // BGDatabase에서 모든 EnemyData 불러오기
         List<D_EnemyData> allEnemies = new List<D_EnemyData>();
@@ -252,8 +339,14 @@ public class EnemyPlacementTool : EditorWindow
         // 에너미 이름순으로 정렬
         allEnemies.Sort((a, b) => a.f_name.CompareTo(b.f_name));
 
+        // 검색어 필터링
+        string searchLower = searchText?.ToLower() ?? "";
         foreach (var enemy in allEnemies)
         {
+            // 검색어가 있으면 필터링
+            if (!string.IsNullOrEmpty(searchText) && !enemy.f_name.ToLower().Contains(searchLower))
+                continue;
+
             EditorGUILayout.BeginHorizontal();
 
             // 에너미 선택 버튼
@@ -261,6 +354,135 @@ public class EnemyPlacementTool : EditorWindow
             {
                 cells[selectedCell.y, selectedCell.x].enemy = enemy;
             }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawEventSelection()
+    {
+        // 구분선
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+        // 이벤트 섹션 헤더
+        EditorGUILayout.LabelField("이벤트 설정", EditorStyles.boldLabel);
+
+        // 현재 설정된 이벤트 목록 표시
+        EditorGUILayout.LabelField("현재 이벤트:");
+
+        if (cells[selectedCell.y, selectedCell.x].events.Count == 0)
+        {
+            EditorGUILayout.HelpBox("할당된 이벤트가 없습니다.", MessageType.Info);
+        }
+        else
+        {
+            // 현재 할당된 이벤트 목록 표시
+            for (int i = 0; i < cells[selectedCell.y, selectedCell.x].events.Count; i++)
+            {
+                var eventData = cells[selectedCell.y, selectedCell.x].events[i];
+                EditorGUILayout.BeginHorizontal();
+
+                string eventType = eventData is D_SpawnEnemyEventData ? "스폰 이벤트" :
+                                   eventData is D_DropItemEventData ? "아이템 드롭 이벤트" : "기타 이벤트";
+
+                string triggerType = eventData.f_eventTriggerType.ToString();
+
+                EditorGUILayout.LabelField($"{i + 1}. {eventData.f_name}");
+                EditorGUILayout.LabelField($"[{eventType}]", GUILayout.Width(90));
+                EditorGUILayout.LabelField($"[{triggerType}]", GUILayout.Width(80));
+
+                if (GUILayout.Button("제거", GUILayout.Width(60)))
+                {
+                    cells[selectedCell.y, selectedCell.x].events.RemoveAt(i);
+                    break; // 리스트가 변경되었으므로 루프 종료
+                }
+
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+
+        // 이벤트 검색 필드
+        EditorGUILayout.Space();
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("이벤트 검색:", GUILayout.Width(70));
+        string eventSearchText = EditorGUILayout.TextField(GUI.tooltip);
+        EditorGUILayout.EndHorizontal();
+
+        // 새 이벤트 추가 섹션
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("이벤트 추가:");
+
+        // 이벤트 목록 스크롤 영역
+        eventScrollPosition = EditorGUILayout.BeginScrollView(eventScrollPosition, GUILayout.Height(150));
+
+        string searchLower = eventSearchText?.ToLower() ?? "";
+
+        // 스폰 이벤트 목록 표시
+        EditorGUILayout.LabelField("스폰 이벤트:", EditorStyles.boldLabel);
+        List<D_SpawnEnemyEventData> spawnEvents = new List<D_SpawnEnemyEventData>();
+        D_SpawnEnemyEventData.ForEachEntity(e => spawnEvents.Add(e));
+        spawnEvents.Sort((a, b) => a.f_name.CompareTo(b.f_name));
+
+        foreach (var spawnEvent in spawnEvents)
+        {
+            // 검색어 필터링
+            if (!string.IsNullOrEmpty(eventSearchText) && !spawnEvent.f_name.ToLower().Contains(searchLower))
+                continue;
+
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(spawnEvent.f_name, GUILayout.Width(150)))
+            {
+                // 중복 검사
+                if (!cells[selectedCell.y, selectedCell.x].events.Contains(spawnEvent))
+                {
+                    cells[selectedCell.y, selectedCell.x].events.Add(spawnEvent);
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("이벤트 중복", "이미 추가된 이벤트입니다.", "확인");
+                }
+            }
+
+            EditorGUILayout.LabelField($"트리거: {spawnEvent.f_eventTriggerType}");
+            EditorGUILayout.LabelField($"적: {spawnEvent.f_enemy.f_name}, 수량: {spawnEvent.f_spawnCount}");
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        // 아이템 드롭 이벤트 목록 표시
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("아이템 드롭 이벤트:", EditorStyles.boldLabel);
+        List<D_DropItemEventData> dropEvents = new List<D_DropItemEventData>();
+        D_DropItemEventData.ForEachEntity(e => dropEvents.Add(e));
+        dropEvents.Sort((a, b) => a.f_name.CompareTo(b.f_name));
+
+        foreach (var dropEvent in dropEvents)
+        {
+            // 검색어 필터링
+            if (!string.IsNullOrEmpty(eventSearchText) && !dropEvent.f_name.ToLower().Contains(searchLower))
+                continue;
+
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(dropEvent.f_name, GUILayout.Width(150)))
+            {
+                // 중복 검사
+                if (!cells[selectedCell.y, selectedCell.x].events.Contains(dropEvent))
+                {
+                    cells[selectedCell.y, selectedCell.x].events.Add(dropEvent);
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("이벤트 중복", "이미 추가된 이벤트입니다.", "확인");
+                }
+            }
+
+            EditorGUILayout.LabelField($"트리거: {dropEvent.f_eventTriggerType}");
+            EditorGUILayout.LabelField($"아이템 드롭 이벤트 (개수: {dropEvent.f_count})");
 
             EditorGUILayout.EndHorizontal();
         }
@@ -276,6 +498,7 @@ public class EnemyPlacementTool : EditorWindow
             for (int x = 0; x < 12; x++)
             {
                 cells[y, x].enemy = null;
+                cells[y, x].events.Clear();
             }
         }
 
@@ -292,6 +515,13 @@ public class EnemyPlacementTool : EditorWindow
                 if (x >= 0 && x < 12 && y >= 0 && y < 10)
                 {
                     cells[y, x].enemy = cellData.f_enemy;
+
+                    // ViewRelationMultiple로 설정된 이벤트 데이터 로드
+                    if (cellData.f_events != null)
+                    {
+                        // f_events는 ViewRelationMultiple 필드로, 실제 DB에 저장된 이벤트 데이터 목록
+                        cells[y, x].events = new List<D_EventDummyData>(cellData.f_events);
+                    }
                 }
             }
 
@@ -328,8 +558,6 @@ public class EnemyPlacementTool : EditorWindow
             foreach (var p in toRemove)
             {
                 p.Delete();
-                // 메타에서 직접 삭제 시도
-                //D_EnemyPlacementData.MetaDefault.DeleteEntities(p.Id);
             }
 
             // 새 엔티티 생성
@@ -350,13 +578,29 @@ public class EnemyPlacementTool : EditorWindow
                     cellData.f_name = $"Cell_{x}_{y}";
                     cellData.f_position = new Vector2(x, y); // Vector2 타입 사용
                     cellData.f_enemy = cells[y, x].enemy;
+
+                    if (cells[y, x].events != null && cells[y, x].events.Count > 0)
+                    {
+                        try
+                        {
+                            // 현재 셀의 이벤트 목록 복사
+                            List<D_EventDummyData> eventsList = new List<D_EventDummyData>(cells[y, x].events);
+
+                            // 셀 데이터의 events 필드에 설정
+                            cellData.f_events = eventsList;
+                        }
+                        catch (System.Exception e)
+                        {
+                            // 에러를 로그에 기록
+                            Debug.LogError($"이벤트 데이터 저장 중 오류 발생: {e.Message}");
+                        }
+                    }
                 }
             }
         }
 
         // 변경사항 저장
         BGRepo.I.Save();
-
 
         EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
     }

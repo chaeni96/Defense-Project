@@ -7,9 +7,7 @@ namespace Kylin.FSM
     public class BattleWinState : StateBase
     {
 
-        [SerializeField] private float celebrationDuration = 2.0f; // 승리 모션 지속 시간
         private CharacterFSMObject characterFSM;
-        private bool isAnimationFinished = false;
 
         public override void OnEnter()
         {

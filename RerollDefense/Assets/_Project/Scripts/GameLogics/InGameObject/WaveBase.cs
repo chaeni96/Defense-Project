@@ -77,13 +77,13 @@ public abstract class BattleWaveBase : WaveBase
         battleResult = BattleResult.None;
 
         // 자식 클래스에서 총 적 수 계산
-        remainEnemies = CalculateTotalEnemies();
-        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
+        totalGroupCount = CalculateTotalEnemies();
+        StageManager.Instance.SetTotalEnemyCount(totalGroupCount);
+        remainEnemies = totalGroupCount;
 
         // TODO:김기린
         // 여기서 "StartWave 버튼"을 활성화하는 UI를 활성화 하도록 해야함.OnStartWaveButtonClicked연결할것.
         // 혹은 이벤트 연결 필요
-
         SpawnWaveEnemies();
 
         Debug.Log("전투 웨이브 시작 준비 완료! 사용자 입력을 대기합니다.");
@@ -156,6 +156,8 @@ public abstract class BattleWaveBase : WaveBase
             // BattleWinState로 전환
             EnterBattleWinState();
         }
+
+        StageManager.Instance.OnWaveComplete();
     }
 
     // 패배 시 호출되는 메서드
@@ -168,6 +170,8 @@ public abstract class BattleWaveBase : WaveBase
             // 바로 웨이브 종료 및 게임 오버 처리
             GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
         }
+
+        isWaveCompleted = true;
     }
 
     // BattleWinState로 전환하는 메서드
@@ -188,9 +192,8 @@ public abstract class BattleWaveBase : WaveBase
     public override void CheckWaveCompletion()
     {
         // BattleWinState에서 애니메이션이 끝나면 호출되므로, 여기서는 isWaveCompleted만 설정
-        if (battleResult == BattleResult.Victory && !isWaveCompleted)
+        if (isWaveCompleted)
         {
-            isWaveCompleted = true;
             StageManager.Instance.OnWaveComplete();
         }
     }
@@ -217,26 +220,27 @@ public class NormalBattleWave : BattleWaveBase
     private D_EnemyPlacementData placementData;
     private float gridSize = 0.55f; // 그리드 한 칸의 크기
 
-
-    private int totalEnemies = 0;
-
-    private int mapId;
-    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳
+    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
 
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {
         normalWaveData = data;
 
         // 해당 맵 ID에 대한 배치 데이터 로드
-        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == normalWaveData.f_mapID);
+        placementData = normalWaveData.f_enemyPlaceData;
 
         if (placementData == null)
         {
-            Debug.LogError($"맵 ID {mapId}에 대한 에너미 배치 데이터가 없습니다!");
+            Debug.LogError($"맵 {placementData.f_mapID} 에너미 배치 데이터가 없습니다!");
         }
 
     }
 
+    protected override int CalculateTotalEnemies()
+    {
+        return placementData != null ? placementData.f_cellData.Count : 0;
+
+    }
     /// <summary>
     /// 웨이브 설명 텍스트
     /// </summary>
@@ -255,66 +259,24 @@ public class NormalBattleWave : BattleWaveBase
 
         return waveInfo;
     }
-
-    public override void StartWave()
-    {
-        isWaveCompleted = false;
-        isSpawnDone = false;
-
-        if (placementData == null)
-        {
-            Debug.LogError($"맵 ID {mapId}에 대한 에너미 배치 데이터가 없습니다!");
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-            return;
-        }
-
-        // 총 에너미 수 계산
-        totalEnemies = placementData.f_cellData.Count;
-        remainEnemies = totalEnemies;
-        StageManager.Instance.SetTotalEnemyCount(totalEnemies);
-
-        // 에너미 생성
-        SpawnWaveEnemies();
-    }
-
     protected override void SpawnWaveEnemies()
     {
         foreach (var cellData in placementData.f_cellData)
         {
-            if (cellData.f_enemy != null && cellData.f_enemy.f_ObjectPoolKey != null)
-            {
-                // 그리드 좌표를 게임 월드 좌표로 변환
-                Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-                // 에너미 직접 생성
-                GameObject enemyObj = PoolingManager.Instance.GetObject(
-                    cellData.f_enemy.f_ObjectPoolKey.f_PoolObjectAddressableKey,
-                    worldPos,
-                    (int)ObjectLayer.Enemy
-                );
+            // 그리드 좌표를 게임 월드 좌표로 변환
+            Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-                if (enemyObj != null)
-                {
-                    Enemy enemy = enemyObj.GetComponent<Enemy>();
-                    enemy.transform.position = worldPos;
-                    enemy.Initialize();
-                    enemy.InitializeEnemyInfo(cellData.f_enemy);
-
-                    StageManager.Instance.NotifyEnemyIncrease(1);
-                }
-            }
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
+            isSpawnDone = true;
         }
-
-        isSpawnDone = true;
-        CheckWaveCompletion();
     }
 
     // 그리드 좌표를 월드 좌표로 변환하는 함수
     private Vector2 ConvertGridToWorldPosition(Vector2 gridPos)
     {
         float gridCenterX = 0f;
-        float gridCenterY = 4f;
+        float gridCenterY = 5f;
 
         // 중앙을 기준으로 좌표 계산
         float xPos = (gridPos.x - gridCenterX) * gridSize + centerOffset.x;
@@ -324,20 +286,13 @@ public class NormalBattleWave : BattleWaveBase
     }
 
     protected override void OnStartWaveButtonClicked()
-    { 
-    }
-
- 
-
-    protected override int CalculateTotalEnemies()
     {
-        return placementData != null ? placementData.f_cellData.Count : 0;
+        //버튼 클릭했을때 에너미 상태변경 
     }
-
 
 }
 
-   
+
 
 /// <summary>
 /// 보스 전투 웨이브 클래스
@@ -414,7 +369,7 @@ public class BossBattleWave : BattleWaveBase
 
         if (bossWaveData.f_bossEnemy.f_ObjectPoolKey != null)
         {
-            EnemyManager.Instance.SpawnEnemy(bossWaveData.f_bossEnemy);
+            //EnemyManager.Instance.SpawnEnemy(bossWaveData.f_bossEnemy);
         }
 
         ++completedGroupCount;
@@ -434,7 +389,7 @@ public class BossBattleWave : BattleWaveBase
         {
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
-                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
+                // EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
             }
 
             yield return new WaitForSeconds(groupData.f_spawnInterval);
@@ -516,7 +471,7 @@ public class EventEnemyWave : BattleWaveBase
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
                 // 이벤트 적 스폰 (드롭 아이템 정보 포함 가능)
-                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, null,groupData.f_EventDummyData);
+                // EnemyManager.Instance.SpawnEnemy(groupData.f_enemy, null, null,groupData.f_EventDummyData);
             }
 
             yield return new WaitForSeconds(groupData.f_spawnInterval);
@@ -688,7 +643,7 @@ public class PrizeHuntingWave : WaveBase
     private int remainEnemies = 0;
     private bool isSpawnDone = false;
 
-    public PrizeHuntingWave(D_PrizeHuntingWaveData data, D_HuntingOptionData option ) : base(data)
+    public PrizeHuntingWave(D_PrizeHuntingWaveData data, D_HuntingOptionData option) : base(data)
     {
         prizeHuntingData = data;
         selectedOption = option;
@@ -752,7 +707,7 @@ public class PrizeHuntingWave : WaveBase
         if (selectedOption.f_spawnEnemy != null && selectedOption.f_spawnEnemy.f_ObjectPoolKey != null)
         {
             // 선택된 옵션에 따른 현상금 사냥꾼 스폰
-            EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy);
+            // EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy);
 
             // 보상/위험 요소 적용 (필요한 경우)
             ApplyRewardsAndRisks();
@@ -780,7 +735,7 @@ public class PrizeHuntingWave : WaveBase
         {
             if (groupData.f_enemy.f_ObjectPoolKey != null)
             {
-                EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
+                //EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
             }
             else
             {

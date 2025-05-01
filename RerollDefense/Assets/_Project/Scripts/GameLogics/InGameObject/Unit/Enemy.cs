@@ -42,10 +42,7 @@ public class Enemy : BasicObject
 
     private D_EnemyData enemyData;
 
-    private bool isReach;
     private bool isActive;
-    private Vector3 originalScale;
-
 
     public Action OnUpdateDistanceCheck;
 
@@ -58,17 +55,10 @@ public class Enemy : BasicObject
         base.Initialize();
         EnemyManager.Instance.RegisterEnemy(this, enemyCollider);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
-        //originalScale = transform.localScale;
 
         UpdateHpBar();
 
         isEnemy = true;
-
-
-        //InitializeLineRenderer();
-
-        //ChangeState(new EnemyIdleState());
-
         // X 스케일을 -1배 곱해서 좌우 반전
         Vector3 scale = transform.localScale;
         scale.x *= -1;
@@ -79,14 +69,6 @@ public class Enemy : BasicObject
     public override BasicObject GetTarget()
     {
         return UnitManager.Instance.GetNearestUnit(transform.position);
-    }
-
-    private void InitializeLineRenderer()
-    {
-        pathRenderer.positionCount = 0;
-        pathRenderer.startWidth = 0.03f;
-        pathRenderer.endWidth = 0.03f;
-        pathRenderer.sortingOrder = 1; // 경로가 타일맵 위에 그려지도록
     }
 
     public void InitializeEnemyInfo(D_EnemyData data)
@@ -211,21 +193,6 @@ public class Enemy : BasicObject
         isActive = active;
     }
 
-
-    //public void OnReachEndTile()
-    //{
-    //    //enemy의 공격력만큼 player의 hp감소 -> 스탯매니저 통해서 값 변경
-    //    StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
-    //    {
-    //        statName = StatName.CurrentHp,
-    //        value = currentStats[StatName.ATK].value * -1 ,
-    //        multiply = currentStats[StatName.ATK].multiply
-    //    });
-
-    //    isReach = true;
-    //    OnDead();
-    //}
-
     public void onDamaged(BasicObject attacker, float damage = 0)
     {
         if (attacker != null)
@@ -245,33 +212,10 @@ public class Enemy : BasicObject
         }
     }
 
-    public void HitEffect()
-    {
-
-        // 기존 트윈이 실행 중이면 중단
-        transform.DOKill(true);
-
-        // 원래 크기로 초기화
-        transform.localScale = originalScale;
-
-        // 펀치 스케일 효과 적용
-        transform.DOPunchScale(Vector3.one * 0.1f, 0.2f, 1, 1)
-            .SetEase(Ease.OutQuart);
-
-        // 데미지를 입으면 빨간색으로 깜빡임
-        if (spriteRenderer != null)
-        {
-            // 색상 변경 시퀀스
-            DOTween.Sequence()
-                .Append(spriteRenderer.DOColor(Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-                .Append(spriteRenderer.DOColor(Color.white, 0.1f));  // 0.1초 동안 원래 색으로
-        }
-    }
-
     public void OnDead()
     {
         // 이벤트 매니저를 통해 OnDeath 이벤트 트리거
-       // EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
+        EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
 
         isActive = false;
         baseStats.Clear();
@@ -281,49 +225,6 @@ public class Enemy : BasicObject
 
         // 현재 웨이브에 적 감소 알림
         StageManager.Instance.NotifyEnemyDecrease();
-    }
-
-    // 공격 메서드
-    public void AttackTarget()
-    {
-        float attackCooldown = GetStat(StatName.AttackSpeed);
-
-        // 애니메이션이 진행 중이거나 쿨다운이 끝나지 않았으면 공격하지 않음
-        if (isAttackAnimationPlaying || Time.time - lastAttackTime < attackCooldown)
-            return;
-
-        // 타겟 확인 (이미 공격 상태로 들어온 상태에서 확인 중복이긴 하지만 안전장치로 유지)
-        if (attackTarget == null || !attackTarget.canAttack ||
-            attackTarget.GetStat(StatName.CurrentHp) <= 0 ||
-            Vector2.Distance(transform.position, attackTarget.transform.position) > GetStat(StatName.AttackRange))
-        {
-            // 타겟이 사라졌거나 죽었거나 공격 범위를 벗어나면 이동 상태로 돌아감
-            attackTarget = null; // 타겟 제거
-            //ChangeState(new EnemyMoveState());
-            return;
-        }
-
-        // 적을 바라보도록 방향 전환
-        bool shouldFlip = transform.position.x > attackTarget.transform.position.x;
-        spriteRenderer.flipX = shouldFlip;
-
-        // 공격 시간 기록
-        lastAttackTime = Time.time;
-
-        // 공격 애니메이션 시작
-        isAttackAnimationPlaying = true;
-        animator.CrossFade(TriggerKeyword.Attack.ToString(), 0.1f);
-
-        // 참고: 데미지는 애니메이션 이벤트의 ApplyDamage 메서드에서 적용됨
-    }
-
-    public void ApplyDamage()
-    {
-        if (attackTarget != null && attackTarget.canAttack)
-        {
-            float damage = GetStat(StatName.ATK);
-            attackTarget.onDamaged(this, damage);
-        }
     }
 
 }

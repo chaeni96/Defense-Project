@@ -309,11 +309,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 기존 단일 타일 로직
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
 
-
+        UnitManager.Instance.NotifyUnitDead(this);
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
-        EnemyManager.Instance.UpdateEnemiesPath();
-
     }
 
     public void MoveScale()
