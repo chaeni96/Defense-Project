@@ -15,11 +15,6 @@ public class TileMapManager : MonoBehaviour
     public Tilemap tileMap;
 
     private D_MapData mapData;
-    private Transform tileMapGrid;
-
-    [SerializeField] private Vector2 startTilePos;
-    [SerializeField] private Vector2 endTilePos;
-
 
     // 각 타일의 상태 정보를 저장하는 딕셔너리, 좌표를 키값으로
     private Dictionary<Vector2, TileData> tileMapDatas;
@@ -67,8 +62,6 @@ public class TileMapManager : MonoBehaviour
         tileMapDatas = new Dictionary<Vector2, TileData>();
         tileMap = gameMap;
         this.mapData = mapData;
-        tileMapGrid = grid;
-
     }
 
     // Unity 좌표를 사용자 정의 좌표로 변환 (왼쪽 상단이 0,0)
@@ -91,12 +84,8 @@ public class TileMapManager : MonoBehaviour
     }
 
     //endTile에 playerCamp 설치
-    public void InitializeTiles(Vector2 startTile, Vector2 endTile)
+    public void InitializeTiles()
     {
-        //startTile, endTile 지정
-        startTilePos = startTile;
-        endTilePos = endTile;
-
         //tileMap 설치
         InstallTileMap(mapData);
 
@@ -115,35 +104,6 @@ public class TileMapManager : MonoBehaviour
                 SetTileData(tileData);
             }
         }
-
-        
-        // 게임 시작전에 맵에 오브젝트 설치하는 코드 -> 아레나 방식으로 바꾸면서 지워야할 부분
-        //foreach(var specialTile in mapData.f_specialTiles)
-        //{
-        //    //타일 데이터 가져와서 장애물 설치
-      
-        //    Vector2 position = specialTile.f_cellPosition;
-
-        //    Vector3 newObjectPos = GetTileToWorldPosition(position);
-
-        //    var newSpecialObject = PoolingManager.Instance.GetObject(specialTile.f_specialObject.f_UnitPoolingKey.f_PoolObjectAddressableKey, newObjectPos, (int)ObjectLayer.Player);
-
-        //    var objectController = newSpecialObject.GetComponent<UnitController>();
-        //    objectController.InitializeUnitInfo(specialTile.f_specialObject);
-        //    UnitManager.Instance.RegisterUnit(objectController);
-
-        //    objectController.tilePosition = position;
-        //    objectController.CheckAttackAvailability();
-
-        //    // 타일 데이터 업데이트
-        //    var tileData = new TileData(position)
-        //    {
-        //        isAvailable = false,
-        //        placedUnit = objectController
-        //    };
-
-        //    SetTileData(tileData);
-        //}
     }
 
     //타일 좌표 월드 좌표 변환
@@ -210,12 +170,7 @@ public class TileMapManager : MonoBehaviour
             // 사용자 정의 좌표를 Unity 좌표로 변환하여 타일 존재 여부 확인
             Vector3Int unityPos = ConvertToUnityCoordinates(checkPosition);
 
-            // 시작/끝 타일 체크
-            //if (checkPosition == startTilePos || checkPosition == endTilePos)
-            //{
-            //    return false;
-            //}
-
+ 
             if (tileData == null || !tileMap.HasTile(unityPos))
             {
                 return false;
@@ -240,73 +195,8 @@ public class TileMapManager : MonoBehaviour
                 }
             }
         }
-
-        // 유닛 배치하기 전에 그 위치에 임시 배치했을때, 모든 enemy들이 목적지까지 도달할수있는지 체크
-
-        Dictionary<Vector2, bool> originalStates = new Dictionary<Vector2, bool>();
-
-        // 새로 배치할 타일들을 임시로 점유
-        foreach (var offset in tileOffsets)
-        {
-            Vector2 checkPos = basePosition + offset;
-            var tileData = GetTileData(checkPos);
-            if (tileData != null)
-            {
-                originalStates[checkPos] = tileData.isAvailable;
-                tileData.isAvailable = false;
-                SetTileData(tileData);
-            }
-        }
-
-        bool canPlace = true;
-
-        try
-        {
-            // 현재 존재하는 적들의 위치 체크 -> 시작지점과 모든 적의 현재 위치에서 경로 확인
-            //HashSet<Vector2> checkPoints = new HashSet<Vector2> { startTilePos };
-
-            //if (EnemyManager.Instance != null)
-            //{
-            //    var enemies = EnemyManager.Instance.GetAllEnemys();
-            //    foreach (var enemy in enemies)
-            //    {
-            //        if (enemy != null)
-            //        {
-            //            Vector2 enemyPos = GetWorldToTilePosition(enemy.transform.position);
-            //            // 적이 새로 배치하려는 타일 위에 있다면 해당 위치는 체크하지 않음
-            //            if (!tileOffsets.Any(offset => enemyPos == basePosition + offset))
-            //            {
-            //                checkPoints.Add(enemyPos);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //// 모든 체크포인트에서 경로 확인
-            //foreach (var point in checkPoints)
-            //{
-            //    if (!PathFindingManager.Instance.HasValidPath(point, endTilePos))
-            //    {
-            //        canPlace = false;
-            //        break;
-            //    }
-            //}
-        }
-        finally
-        {
-            // 원래 상태로 복원
-            foreach (var kvp in originalStates)
-            {
-                var tileData = GetTileData(new Vector2(kvp.Key.x, kvp.Key.y));
-                if (tileData != null)
-                {
-                    tileData.isAvailable = kvp.Value;
-                    SetTileData(tileData);
-                }
-            }
-        }
             
-        return canPlace;
+        return true;
     }
 
 
@@ -352,9 +242,6 @@ public class TileMapManager : MonoBehaviour
         }
     }
 
-    public Vector2 GetStartPosition() => startTilePos;
-    public Vector2 GetEndPosition() => endTilePos;
-
     private void CleanUp()
     {
         // Dictionary 정리
@@ -366,11 +253,6 @@ public class TileMapManager : MonoBehaviour
         // 참조 데이터 정리
         tileMap = null;
         mapData = null;
-        tileMapGrid = null;
-
-        // 시작/끝 타일 위치 초기화
-        startTilePos = Vector2.zero;
-        endTilePos = Vector2.zero;
     }
 
     //시작 타일, 도착타일 pos

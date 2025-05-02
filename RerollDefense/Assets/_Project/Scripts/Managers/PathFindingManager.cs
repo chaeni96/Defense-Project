@@ -43,16 +43,6 @@ public class PathFindingManager : MonoBehaviour
 
     }
 
-
-    //enemy 현재의 position에서 endTile까지 최단거리 구하기
-    public List<Vector3> FindPathFromPosition(Vector3 worldPosition)
-    {
-        Vector2 startPos = TileMapManager.Instance.GetWorldToTilePosition(worldPosition);
-
-        return FindPath(startPos, TileMapManager.Instance.GetEndPosition());
-    }
-
-
     public bool HasValidPath(Vector2 start, Vector2 end)
     {
         var path = FindPath(start, end);
