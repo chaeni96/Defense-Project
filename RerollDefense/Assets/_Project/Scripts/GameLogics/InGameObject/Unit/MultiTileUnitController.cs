@@ -97,17 +97,6 @@ public class MultiTileUnitController : UnitController
 
             previousTilePosition = currentTilePos;
         }
-
-        // 쓰레기통 위에 있는지 확인
-        if (GameManager.Instance.IsOverTrashCan(worldPos))
-        {
-            isOverTrashCan = true;
-            SetDeleteMat();
-        }
-        else
-        {
-            isOverTrashCan = false;
-        }
     }
 
     // 합성 프리뷰 표시 메서드 추가
@@ -173,12 +162,8 @@ public class MultiTileUnitController : UnitController
         bool isSuccess = false;
 
         // 쓰레기통 위에 드롭한 경우 유닛 삭제
-        if (isOverTrashCan)
-        {
-            DeleteUnit();
-            isSuccess = true;
-        }
-        else if (hasDragged && previousTilePosition != originalTilePosition)
+       
+      if (hasDragged && previousTilePosition != originalTilePosition)
         {
             // 합성 처리
             if (isShowingMergePreview && mergeTargetTile != null && CanMergeWithTarget(mergeTargetTile))
@@ -198,9 +183,7 @@ public class MultiTileUnitController : UnitController
         if (!isSuccess)
         {
             ResetMergePreview();
-            DestroyPreviewUnit();
             ReturnToOriginalPosition();
-            CheckAttackAvailability();
         }
     }
 
@@ -226,7 +209,6 @@ public class MultiTileUnitController : UnitController
 
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
-        EnemyManager.Instance.UpdateEnemiesPath();
 
         // 코스트 정산
         int refundCost = 0;
@@ -255,15 +237,7 @@ public class MultiTileUnitController : UnitController
         PoolingManager.Instance.ReturnObject(gameObject);
     }
 
-    protected override void SetDeleteMat()
-    {
-        //if (unitSprite != null)
-        //{
-        //    unitSprite.material = deleteMaterial;
-        //    // 머테리얼 변경 이벤트 발생
-        //    OnMaterialChanged?.Invoke(deleteMaterial);
-        //}
-    }
+ 
 
     // 배치 가능 여부 확인
     protected override bool CheckPlacementPossibility(Vector2 targetPos)
@@ -353,14 +327,7 @@ public class MultiTileUnitController : UnitController
         // 확장 타일 객체 위치 업데이트
         UpdateExtensionObjects();
 
-        // 프리뷰 종료
-        DestroyPreviewUnit();
-
-        // 적 경로 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
-
-        // 공격가능한 위치인지 체크
-        CheckAttackAvailability();
+   
     }
 
     // 확장 타일 객체 업데이트
@@ -375,34 +342,13 @@ public class MultiTileUnitController : UnitController
         }
     }
 
-    // 머테리얼 변경 (오버라이드)
-    public override void SetPreviewMaterial(bool canPlace)
-    {
-        Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
-
-        //if (unitSprite != null)
-        //{
-        //    unitSprite.material = targetMaterial;
-        //    // 머테리얼 변경 이벤트 발생
-        //    OnMaterialChanged?.Invoke(targetMaterial);
-        //}
-
-    }
-
     //원래 위치로 돌아가기
-    protected override void ReturnToOriginalPosition()
+    public override void ReturnToOriginalPosition()
     {
         transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
         OnMovingPositionChanged?.Invoke(originalPosition, 0.3f);
     }
 
-    // 프리뷰 삭제 (오버라이드)
-    public override void DestroyPreviewUnit()
-    {
-        base.DestroyPreviewUnit();
-
-        OnMaterialChanged?.Invoke(originalMaterial);
-    }
 
     // 합성 관련 메서드 비활성화 (멀티타일은 합성 불가)
     protected override bool CanMergeWithTarget(TileData tileData)
@@ -504,9 +450,6 @@ public class MultiTileUnitController : UnitController
 
         // 유닛 풀링 시스템으로 반환
         PoolingManager.Instance.ReturnObject(gameObject);
-
-        // 적 경로 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
     }
 
     private void ResetMergePreview()

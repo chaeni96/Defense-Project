@@ -44,8 +44,8 @@ public class AttackSkillManager : MonoBehaviour
         switch (unit.attackType)
         {
             case SkillAttackType.Projectile:
-                unit.MoveScale();
-                StartCoroutine(ActiveProjectileSkill(skillPoolingKey, unit, targetPos));
+                //unit.MoveScale();
+                //StartCoroutine(ActiveProjectileSkill(skillPoolingKey, unit, targetPos));
                 break;
 
             case SkillAttackType.AOE:
@@ -57,21 +57,21 @@ public class AttackSkillManager : MonoBehaviour
     }
 
 
-    private IEnumerator ActiveProjectileSkill(string skillPoolingKey, UnitController unit, Vector3 targetPos)
-    {
-        int projectileCount = (int)unit.GetStat(StatName.ProjectileCount);
+    //private IEnumerator ActiveProjectileSkill(string skillPoolingKey, UnitController unit, Vector3 targetPos)
+    //{
+    //    int projectileCount = (int)unit.GetStat(StatName.ProjectileCount);
 
-        Enemy target = EnemyManager.Instance.GetEnemyAtPosition(targetPos);
+    //    //Enemy target = EnemyManager.Instance.GetEnemyAtPosition(targetPos);
 
-        for (int i = 0; i < projectileCount; i++)
-        {
-            Vector3 currentTargetPos = target.transform.position;
-            CreateSkillObject(skillPoolingKey, unit, currentTargetPos);
+    //    //for (int i = 0; i < projectileCount; i++)
+    //    //{
+    //    //    Vector3 currentTargetPos = target.transform.position;
+    //    //    CreateSkillObject(skillPoolingKey, unit, currentTargetPos);
 
-            // 0.1초 간격으로 생성
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
+    //    //    // 0.1초 간격으로 생성
+    //    //    yield return new WaitForSeconds(0.1f);
+    //    //}
+    //}
 
     private void CreateSkillObject(string skillPoolingKey, UnitController unit, Vector3 targetPos)
     {

@@ -9,51 +9,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.CullingGroup;
 
-public class DistanceChecker
-{
-    public BuffTimeBase linkedTimeBaseBuff;
-    public float maxDistance;
-
-    public void InitiliazeDistanceChecker(Enemy targetObject)
-    {
-        targetObject.OnUpdateDistanceCheck += OnUpdate;
-    }
-
-    public void OnUpdate()
-    {
-
-    }
-
-
-}
-
 public class Enemy : BasicObject
 {
+    public bool isActive = false;
 
-    public SpriteRenderer spriteRenderer;
-    public Collider2D enemyCollider;
-
-    [SerializeField] private EnemyType enemyType;//인스펙터에서 바인딩해주기
     [SerializeField] private Slider hpBar;  // Inspector에서 할당
-
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
-
-    public LineRenderer pathRenderer;  // Inspector에서 할당
 
     private D_EnemyData enemyData;
 
-    private bool isActive;
-
     public Action OnUpdateDistanceCheck;
-
-    public UnitController attackTarget = null;
-    public bool isAttackAnimationPlaying = false;
-    private float lastAttackTime = 0f;
-
     public override void Initialize()
     {
+
         base.Initialize();
-        EnemyManager.Instance.RegisterEnemy(this);
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         UpdateHpBar();
@@ -74,7 +43,6 @@ public class Enemy : BasicObject
     public void InitializeEnemyInfo(D_EnemyData data)
     {
         enemyData = data;
-
 
         baseStats.Clear();
         currentStats.Clear();
@@ -115,8 +83,6 @@ public class Enemy : BasicObject
                 multiply = baseStat.Value.multiply
             };
         }
-
-
         // currentHP를 maxHP로 초기화
         if (!currentStats.ContainsKey(StatName.CurrentHp))
         {
@@ -128,9 +94,6 @@ public class Enemy : BasicObject
                 multiply = 1f
             };
         }
-
-        isActive = true;
-
         UpdateHpBar();
     }
     //이벤트 등록
@@ -212,12 +175,11 @@ public class Enemy : BasicObject
         // 이벤트 매니저를 통해 OnDeath 이벤트 트리거
         EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
 
-        isActive = false;
         baseStats.Clear();
         currentStats.Clear();
         EnemyManager.Instance.UnregisterEnemy(this);
         EnemyManager.Instance.NotifyEnemyDead();
-        StageManager.Instance.UpdateEnemyCount(EnemyManager.Instance.GetAllEnemys().Count);
+        StageManager.Instance.UpdateEnemyCount(EnemyManager.Instance.GetActiveEnemyCount());
 
     }
 

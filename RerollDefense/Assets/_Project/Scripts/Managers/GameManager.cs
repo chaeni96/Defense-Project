@@ -483,7 +483,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     public void ClearGameScene()
     {
         // 유닛과 적 상태 변경
-        var units = UnitManager.Instance.GetUnits();
+        var units = UnitManager.Instance.GetAllUnits();
         foreach (var unit in units)
         {
             unit.SetActive(false);

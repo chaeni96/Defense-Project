@@ -28,7 +28,7 @@ namespace Kylin.FSM
         private void CheckAllUnitsFinished()
         {
             // 모든 유닛이 애니메이션을 끝냈는지 확인
-            List<UnitController> units = UnitManager.Instance.GetUnits();
+            List<UnitController> units = UnitManager.Instance.GetAllUnits();
             bool allFinished = true;
 
             foreach (var unit in units)

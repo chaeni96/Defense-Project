@@ -23,9 +23,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public SkillAttackType attackType;
 
     [HideInInspector]
-    public bool canAttack = true; // 공격 가능 여부
-
-    [HideInInspector]
     public D_UnitData unitData;
 
     public List<GameObject> starObjects = new List<GameObject>();  // 생성된 별들을 관리하기 위한 리스트
@@ -34,27 +31,16 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public GameObject unitStarObject;
 
-
-    //inspector에 할당
-
-    //public SpriteRenderer unitSprite;
-
-    //TODO : Multitile용 유닛 만들면 다시 private
-    [SerializeField] public Material enabledMaterial;   // 배치 가능할 때 사용
-    [SerializeField] public Material disabledMaterial; // 배치 불가능할 때 사용
-    [SerializeField] public Material deleteMaterial;   // 배치 삭제할 때 사용
-    [SerializeField] public Material originalMaterial; //기본 머테리얼
-    [SerializeField] public LayerMask unitLayer;  // Inspector에서 Unit 레이어 체크
-
-    private bool isActive = true;
+    public bool isActive = true;
 
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
-    protected Vector3 originalPosition;
-    protected Vector2 originalTilePosition;
+    public Vector3 originalPosition;
+    public Vector2 originalTilePosition;
     protected Vector2 previousTilePosition; // 이전 타일 위치 추적용
     protected bool hasDragged = false;
     protected bool canPlace = false;
+
     // 합성 관련 변수
     private TileData mergeTargetTile = null;
     protected int originalStarLevel = 0;
@@ -63,8 +49,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     //합성 불가할대 위치 변환 
     private UnitController swapTargetUnit = null;
     private bool isSwapping = false;
-
-    protected bool isOverTrashCan = false;
 
     [HideInInspector]
     public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
@@ -204,7 +188,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
-
         UpdateHpBar();
         UpdateStarDisplay();
 
@@ -213,10 +196,13 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             isMultiUnit = tileCard.f_isMultiTileUinit;
         }
-
-
     }
 
+    public void SaveOriginalUnitPos()
+    {
+        originalPosition = transform.position;
+
+    }
 
     //스탯 변경시 할 행동들
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
@@ -264,19 +250,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void HitEffect()
     {
 
-        // 기존 트윈이 실행 중이면 중단
-        transform.DOKill(true);
-
-
-
         // 데미지를 입으면 빨간색으로 깜빡임
-        //if (unitSprite != null)
-        //{
-        //    // 색상 변경 시퀀스
-        //    DOTween.Sequence()
-        //        .Append(unitSprite.DOColor( UnityEngine.Color.red, 0.1f))  // 0.1초 동안 빨간색으로
-        //        .Append(unitSprite.DOColor(UnityEngine.Color.white, 0.1f));  // 0.1초 동안 원래 색으로
-        //}
     }
 
     public void OnDead()
@@ -291,25 +265,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         UnitManager.Instance.UnregisterUnit(this);
 
         UnitManager.Instance.NotifyUnitDead(this);
-    }
-
-    public void MoveScale()
-    {
-        // DOPunchScale 상세 파라미터
-        // punch:크기 변화
-        // duration: 전체 재생 시간
-        // vibrato: 진동 횟수
-        // elasticity: 탄성 (0~1)
-
-        //unitSprite.transform.DOPunchScale(punch: new Vector3(0.4f, 0.4f, 0f), duration: 0.1f, vibrato: 4, elasticity: 0.8f);
-
-    }
-
-    // 공격 가능 여부를 확인하는 메서드
-    public void CheckAttackAvailability()
-    {
-        // y가 9보다 크면 공격 불가
-        //canAttack = tilePosition.y < 10;
     }
 
     public void SetActive(bool active)
@@ -331,8 +286,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         originalPosition = transform.position;
         originalTilePosition = tilePosition;
 
-        canAttack = false;
-
         // 현재 별 레벨 저장
         originalStarLevel = (int)GetStat(StatName.UnitStarLevel);
 
@@ -346,9 +299,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         transform.position = position;
 
         canPlace = false;
-
-        // 쓰레기통 표시
-        GameManager.Instance.ShowTrashCan();
     }
 
     // 드래그 중 호출
@@ -401,17 +351,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             previousTilePosition = currentTilePos;
         }
-
-        // 쓰레기통 위에 있는지 확인
-        if (GameManager.Instance.IsOverTrashCan(worldPos))
-        {
-            isOverTrashCan = true;
-            SetDeleteMat();
-        }
-        else
-        {
-            isOverTrashCan = false;
-        }
     }
 
     private void UpdateDragPosition(Vector2 currentTilePos)
@@ -439,13 +378,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         bool isSuccess = false;
 
-        // 쓰레기통 위에 드롭한 경우 유닛 삭제
-        if (isOverTrashCan)
-        {
-            DeleteUnit();
-            isSuccess = true;
-        }
-        else if (hasDragged && previousTilePosition != originalTilePosition)
+        if (hasDragged && previousTilePosition != originalTilePosition)
         {
             // 합성 처리
             if (isShowingMergePreview && mergeTargetTile != null && CanMergeWithTarget(mergeTargetTile))
@@ -471,10 +404,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         if (!isSuccess)
         {
             ResetPreviewStates();
-            DestroyPreviewUnit();
             ReturnToOriginalPosition();
-
-            CheckAttackAvailability();
         }
     }
 
@@ -512,19 +442,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         transform.DOMove(targetWorldPos, 0.3f).SetEase(Ease.OutBack);
         swapTargetUnit.transform.DOMove(myWorldPos, 0.3f).SetEase(Ease.OutBack);
 
-        // 정리
-        DestroyPreviewUnit();
-        swapTargetUnit.DestroyPreviewUnit();
-
-        // 공격 가능 상태 업데이트
-        CheckAttackAvailability();
-        swapTargetUnit.CheckAttackAvailability();
 
 
         ResetPreviewStates();
-
-        // 적 경로 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
     }
 
     private void ResetPreviewStates()
@@ -545,7 +465,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
             {
                 UpGradeUnitLevel(originalStarLevel);
-                //unitSprite.transform.DORewind(); // 애니메이션 리셋
             }
 
             isShowingMergePreview = false;
@@ -555,8 +474,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 위치 교환 프리뷰 초기화
         if (swapTargetUnit != null && isSwapping)
         {
-            //swapTargetUnit.unitSprite.DORewind();
-           // swapTargetUnit.unitBaseSprite.DORewind();
             isSwapping = false;
             swapTargetUnit = null;
         }
@@ -572,7 +489,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
-        EnemyManager.Instance.UpdateEnemiesPath();
 
         //코스트 정산
         int refundCost = 0;
@@ -650,7 +566,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
             {
                 UpGradeUnitLevel(originalStarLevel);
-                //unitSprite.transform.DORewind(); // 애니메이션 리셋
             }
 
             isShowingMergePreview = false;
@@ -660,8 +575,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 위치 교환 프리뷰 초기화
         if (swapTargetUnit != null && isSwapping)
         {
-            //swapTargetUnit.unitSprite.DORewind();
-            //swapTargetUnit.unitBaseSprite.DORewind();
             isSwapping = false;
             swapTargetUnit = null;
         }
@@ -709,9 +622,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 프리뷰 머테리얼 설정
         SetPreviewMaterial(canPlace);
 
-        // 시각적 효과 (한 번만 실행)
-        //unitSprite.transform.DOKill();
-        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
+        // TODO: 합성했을시 시각적 효과 (한 번만 실행)
+
     }
 
     // 위치 교환 가능 여부 확인
@@ -779,17 +691,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         Vector3 finalPosition = TileMapManager.Instance.GetTileToWorldPosition(previousTilePosition);
         finalPosition.z = 0;
         transform.position = finalPosition;
-
-        // 프리뷰 종료
-        DestroyPreviewUnit();
-
-        // 적 경로 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
-
-        //공격가능한 위치인지 체크
-        CheckAttackAvailability();
-
-       
     }
 
     // 합성 수행
@@ -816,12 +717,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         UnitManager.Instance.UnregisterUnit(this);
         Destroy(gameObject);
 
-        // 적 경로 업데이트
-        EnemyManager.Instance.UpdateEnemiesPath();
     }
 
     // 원래 위치로 돌아가기
-    protected virtual void ReturnToOriginalPosition()
+    public virtual void ReturnToOriginalPosition()
     {
         transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
     }
@@ -841,7 +740,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             if (stat.Key == StatName.UnitStarLevel) continue;
 
             float upgradePercent = GetStatUpgradePercent(stat.Key);
-            float baseValue = baseStats[stat.Key].value;
 
             if (upgradePercent == 100)
             {
@@ -884,48 +782,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public virtual void SetPreviewMaterial(bool canPlace)
     {
         // 배치 가능할 때와 불가능할 때의 머테리얼 설정
-        Material targetMaterial = canPlace ? enabledMaterial : disabledMaterial;
-
-        //if (unitSprite != null)
-        //{
-        //    unitSprite.material = targetMaterial;
-
-        //}
+      
     }
 
-    protected virtual void SetDeleteMat()
-    {
-        //if (unitSprite != null)
-        //{
-        //    unitSprite.material = deleteMaterial;
-        //}
-    }
 
-    // 프리뷰 종료 시 원본 머테리얼로 복원
-    public virtual void DestroyPreviewUnit()
-    {
-        // 실제 유닛으로 전환 시 원래 sorting order로 복구
-        //unitSprite.sortingOrder = unitSortingOrder;
-
-        //unitSprite.material = originalMaterial;
-    }
 
 
     public void ApplyEffect(float duration = 0.5f)
     {
-        // 원래 색상 저장
-        //UnityEngine.Color originalColor = unitSprite.color;
-        //UnityEngine.Color effectColor = UnityEngine.Color.yellow; // 고정된 노란색
-
-        //// DOTween으로 색상 변경
-        //unitSprite.DOColor(effectColor, duration * 0.5f)
-        //    .OnComplete(() =>
-        //    {
-        //        unitSprite.DOColor(originalColor, duration * 0.5f);
-        //    });
-
-        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
-
     }
 
 }

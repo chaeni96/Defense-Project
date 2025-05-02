@@ -257,13 +257,16 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     //웨이브 간 오브젝트 정리
     private void CleanUpBeforeNextWave()
     {
-        if(currentWave is NormalBattleWave || currentWave is BossBattleWave || currentWave is EventEnemyWave )
+        if(currentWave is BattleWaveBase )
         {
 
-            var units = UnitManager.Instance.GetUnits();
+            var units = UnitManager.Instance.GetAllUnits();
             foreach (var unit in units)
             {
-                unit.SetActive(false);
+                unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.ReturnToOriginPos);
+
+                // 타일맵에 있던 원래 위치로 돌아가기
+                unit.ReturnToOriginalPosition();
             }
 
             // 적 오브젝트 비활성화
@@ -272,7 +275,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             {
                 enemy.SetActive(false);
             }
-            UnitManager.Instance.CleanUp();
+
             EnemyManager.Instance.CleanUp();    
 
 
@@ -282,6 +285,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             {
                 cameraController.OnBattleEnd();
             }
+
+
+
+
         }
         //전투 웨이브인 경우에는 살아남은 유닛들은 원래 있던 자리로 돌아가야됨
 

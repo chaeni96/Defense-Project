@@ -14,7 +14,7 @@ public class PrizeHuntingSelectUI : FloatingPopupBase
     [SerializeField] private TMP_Text highlightText;
 
     private List<HuntingOptionObject> spawnedOptions;
-    private float optionSpawnDelay = 0.03f; // 각 옵션 생성 간격
+    private float optionSpawnDelay = 0.1f; // 각 옵션 생성 간격
 
     private int cardsRevealed = 0; // 뒤집힌 카드 수
 
@@ -88,69 +88,38 @@ public class PrizeHuntingSelectUI : FloatingPopupBase
     {
         option.SetSelectable(false);
 
-        // 초기 상태: 세로로 얇은 상태
-        option.transform.localScale = new Vector3(0.05f, 0f, 1f);
+        // 초기 상태: 보이지 않는 상태
+        option.transform.localScale = new Vector3(0f, 0f, 0f);
 
+        // 뿅! 하고 나타나는 애니메이션
         Sequence cardSequence = DOTween.Sequence();
 
-        // 1. 세로로 늘어나기
-        cardSequence.Append(option.transform.DOScaleY(1.8f, 0.1f)
-            .SetEase(Ease.OutExpo));
-
-        // 2. 가로로 늘어나면서 약간 위로 튀어오르기
-        cardSequence.Append(option.transform.DOScaleX(1.1f, 0.15f)
+        // 약간 커졌다가 원래 크기로 돌아오는 효과
+        cardSequence.Append(option.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f)
             .SetEase(Ease.OutBack));
 
-        // 카드가 약간 위로 튀어오르는 효과
-        cardSequence.Join(option.transform.DOLocalMoveY(0.3f, 0.15f)
+        // 약간 위로 튀어오르는 효과 추가
+        cardSequence.Join(option.transform.DOLocalMoveY(0.2f, 0.1f)
             .SetEase(Ease.OutQuad)
             .SetRelative(true));
 
-        // 3. 원래 크기로 돌아오기
-        cardSequence.Append(option.transform.DOScale(Vector3.one, 0.1f)
+        // 원래 크기와 위치로 돌아오기
+        cardSequence.Append(option.transform.DOScale(Vector3.one, 0.05f)
             .SetEase(Ease.OutQuad));
 
-        // 원래 위치로 돌아오기
-        cardSequence.Join(option.transform.DOLocalMoveY(0f, 0.1f)
+        cardSequence.Join(option.transform.DOLocalMoveY(0f, 0.05f)
             .SetEase(Ease.InQuad));
-        // 시퀀스 실행 대기
+
+        // 시퀀스 완료 대기
         yield return cardSequence.WaitForCompletion();
 
-        // 4. Y축 기준 회전 효과 - 빠르게 여러 바퀴 회전 후 천천히 돌아오기
-        Sequence rotateSequence = DOTween.Sequence();
-
-        // 회전 시작 시 스케일 살짝 조정 (납작해지는 효과)
-        rotateSequence.Append(option.transform.DOScaleX(0.8f, 0.15f)
-            .SetEase(Ease.InSine));
-
-        // Y축 기준 빠르게 여러 바퀴 회전 (예: 1080도 = 3바퀴)
-        rotateSequence.Append(option.transform.DOLocalRotate(new Vector3(0, 1080, 0), 0.8f, RotateMode.FastBeyond360)
-            .SetEase(Ease.OutQuint));
-
-        // 회전 중에 스케일 다시 원래대로
-        rotateSequence.Join(option.transform.DOScaleX(1f, 0.4f)
-            .SetEase(Ease.OutBack));
-
-        // 회전 애니메이션이 약 절반 정도 진행된 시점에 카드 뒷면 비활성화
-        rotateSequence.InsertCallback(0.4f, () => {
-            if (option.cardBackImage != null && option.cardBackImage.gameObject.activeSelf)
-            {
-                option.cardBackImage.gameObject.SetActive(false);
-                // 카드 뒤집힘 이벤트 발생
-                option.NotifyCardRevealed();
-            }
-        });
-
-        // 약간 오버슈트 후 천천히 원래 각도로 돌아오기
-        rotateSequence.Insert(rotateSequence.Duration() - 0.22f,
-            option.transform.DOLocalRotate(new Vector3(0, -25, 0), 0.3f)
-            .SetEase(Ease.OutBack));
-
-        // 최종적으로 0도로 천천히 돌아오기
-        rotateSequence.Append(option.transform.DOLocalRotate(Vector3.zero, 0.5f)
-            .SetEase(Ease.InOutSine));
-
-        yield return rotateSequence.WaitForCompletion();
+        // 카드 뒷면 비활성화하고 즉시 앞면 보여주기
+        if (option.cardBackImage != null && option.cardBackImage.gameObject.activeSelf)
+        {
+            option.cardBackImage.gameObject.SetActive(false);
+            // 카드 뒤집힘 이벤트 발생
+            option.NotifyCardRevealed();
+        }
     }
 
     // 카드가 뒤집혔을 때 호출되는 메소드

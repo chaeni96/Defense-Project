@@ -120,3 +120,8 @@ MonoBehaviour:
     RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
     Priority: 0
+  - FromStateId: 4
+    ToStateId: 0
+    RequiredTriggers: 0000000000000100
+    IgnoreTriggers: 
+    Priority: 0

@@ -61,12 +61,19 @@ public abstract class BattleWaveBase : WaveBase
 
     public BattleWaveBase(D_WaveDummyData data) : base(data)
     {
-        UnitManager.Instance.OnUnitDeath += CheckBattleResult;
-        EnemyManager.Instance.OnEnemyDeath += CheckBattleResult;
+        // 초기 상태 설정
+        isWaveCompleted = false;
+        isSpawnDone = false;
+        isBattleFinished = false;
+        battleResult = BattleResult.None;
     }
 
     public override void StartWave()
     {
+
+        UnitManager.Instance.OnUnitDeath += CheckBattleResult;
+        EnemyManager.Instance.OnEnemyDeath += CheckBattleResult;
+
         isWaveCompleted = false;
         isSpawnDone = false;
         isBattleFinished = false;
@@ -97,48 +104,50 @@ public abstract class BattleWaveBase : WaveBase
     // 승패 판정 메서드 추가
     public virtual void CheckBattleResult()
     {
-        // 에너미가 모두 죽었는지 체크 - 실제 존재하는 활성화된 적 객체로 확인
-        List<Enemy> enemies = EnemyManager.Instance.GetAllEnemys();
-        bool allEnemiesDead = (enemies.Count <= 0 || !enemies.Any(enemy => enemy != null && enemy.gameObject.activeSelf)) && isSpawnDone;
-
-        // 모든 유닛이 죽었는지 체크
-        List<UnitController> units = UnitManager.Instance.GetUnits();
-        bool allUnitsDead = units.Count <= 0 || !units.Any(unit => unit != null && unit.gameObject.activeSelf);
-
-        if (allEnemiesDead && !allUnitsDead)
+        if(!isWaveCompleted)
         {
-            // 유닛이 살아있고 에너미가 모두 죽으면 승리
-            if (battleResult == BattleResult.None)
+            // 에너미가 모두 죽었는지 체크 - 실제 존재하는 활성화된 적 객체로 확인
+            bool allEnemiesDead = EnemyManager.Instance.GetActiveEnemyCount() <= 0;
+
+            // 모든 유닛이 죽었는지 체크
+            bool allUnitsDead = UnitManager.Instance.GetActiveUnitCount() <= 0;
+
+            if (allEnemiesDead && !allUnitsDead)
             {
-                battleResult = BattleResult.Victory;
-                OnBattleVictory();
+                // 유닛이 살아있고 에너미가 모두 죽으면 승리
+                if (battleResult == BattleResult.None)
+                {
+                    battleResult = BattleResult.Victory;
+                    OnBattleVictory();
+                }
+            }
+            else if (allUnitsDead && !allEnemiesDead)
+            {
+                // 유닛이 모두 죽고 에너미가 살아있으면 패배
+                if (battleResult == BattleResult.None)
+                {
+                    battleResult = BattleResult.Defeat;
+                    OnBattleDefeat();
+                }
             }
         }
-        else if (allUnitsDead && !allEnemiesDead)
-        {
-            // 유닛이 모두 죽고 에너미가 살아있으면 패배
-            if (battleResult == BattleResult.None)
-            {
-                battleResult = BattleResult.Defeat;
-                OnBattleDefeat();
-            }
-        }
+
+      
+
     }
 
     // 승리 시 호출되는 메서드
     protected virtual void OnBattleVictory()
     {
-        if (!isBattleFinished)
+        if (!isBattleFinished && !isWaveCompleted)
         {
             isBattleFinished = true;
-
-   
+            isWaveCompleted = true;
 
             // BattleWinState로 전환
             EnterBattleWinState();
         }
 
-        StageManager.Instance.OnWaveComplete();
     }
 
     // 패배 시 호출되는 메서드
@@ -148,18 +157,18 @@ public abstract class BattleWaveBase : WaveBase
         {
             isBattleFinished = true;
 
+            isWaveCompleted = true;
             // 바로 웨이브 종료 및 게임 오버 처리
             GameManager.Instance.ChangeState(new GameResultState(GameStateType.Defeat));
         }
 
-        isWaveCompleted = true;
     }
 
     // BattleWinState로 전환하는 메서드
     protected virtual void EnterBattleWinState()
     {
         // 모든 유닛 BattleWinState로 변경
-        List<UnitController> units = UnitManager.Instance.GetUnits();
+        List<UnitController> units = UnitManager.Instance.GetAllUnits();
         foreach (var unit in units)
         {
             if (unit != null && unit.gameObject.activeSelf)
@@ -168,15 +177,8 @@ public abstract class BattleWaveBase : WaveBase
                 unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.BattleWin);
             }
         }
-    }
 
-    public override void CheckWaveCompletion()
-    {
-        // BattleWinState에서 애니메이션이 끝나면 호출되므로, 여기서는 isWaveCompleted만 설정
-        if (isWaveCompleted)
-        {
-            StageManager.Instance.OnWaveComplete();
-        }
+        CheckWaveCompletion();
     }
 
     public override void EndWave()
@@ -447,11 +449,8 @@ public class EventEnemyWave : BattleWaveBase
 public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleCompleteSubscriber
 {
     private D_WildCardWaveData wildCardWaveData;
-    //private float selectionTime;
-    //private float minSelectionTime;
-    //private int timeScheduleUID = -1;
+
     private WildCardSelectUI selectUI;
-    //private InGameCountdownUI countdownUI;
 
     //TODO : 카드 선택 장수도 스탯으로 빼기
     public WildcardWave(D_WildCardWaveData data) : base(data)
@@ -580,121 +579,15 @@ public class HuntingSelectTimeWave : WaveBase
 }
 
 
-public class PrizeHuntingWave : WaveBase
+public class PrizeHuntingWave : BattleWaveBase
 {
     private D_PrizeHuntingWaveData prizeHuntingData;
     private D_HuntingOptionData selectedOption;
-
-    private int totalGroupCount = 0;
-    private int completedGroupCount = 0;
-    private int remainEnemies = 0;
-    private bool isSpawnDone = false;
 
     public PrizeHuntingWave(D_PrizeHuntingWaveData data, D_HuntingOptionData option) : base(data)
     {
         prizeHuntingData = data;
         selectedOption = option;
-    }
-
-    public override void StartWave()
-    {
-        isWaveCompleted = false;
-        isSpawnDone = false;
-
-        if (selectedOption == null)
-        {
-            Debug.LogError("현상금 사냥꾼 옵션 데이터가 없습니다!");
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
-            return;
-        }
-
-        // 현상금 사냥꾼 + 서포트 적 총 수 계산
-        remainEnemies = 1; // 메인 현상금 사냥꾼
-        if (prizeHuntingData.f_supportEnemys != null && prizeHuntingData.f_supportEnemys.Count > 0)
-        {
-            remainEnemies += prizeHuntingData.f_supportEnemys.Sum(group => group.f_amount);
-        }
-
-        StageManager.Instance.SetTotalEnemyCount(remainEnemies);
-
-        // 현상금 사냥꾼과 서포트 적 스폰
-        SpawnHuntingAndSupportEnemies();
-    }
-
-    private void SpawnHuntingAndSupportEnemies()
-    {
-        // 총 스폰할 그룹 수 계산 (현상금 사냥꾼 + 서포트 그룹)
-        totalGroupCount = 1; // 현상금 사냥꾼
-        if (prizeHuntingData.f_supportEnemys != null)
-        {
-            totalGroupCount += prizeHuntingData.f_supportEnemys.Count;
-        }
-
-        completedGroupCount = 0;
-
-        // 메인 현상금 사냥꾼 스폰
-        StageManager.Instance.StartCoroutine(CoSpawnHuntingEnemy());
-
-        // 서포트 적 스폰
-        if (prizeHuntingData.f_supportEnemys != null && prizeHuntingData.f_supportEnemys.Count > 0)
-        {
-            foreach (D_supportEnemys group in prizeHuntingData.f_supportEnemys)
-            {
-                StageManager.Instance.StartCoroutine(CoSpawnSupportGroup(group));
-            }
-        }
-    }
-
-    private IEnumerator CoSpawnHuntingEnemy()
-    {
-        yield return new WaitForSeconds(0.5f); // 약간의 지연
-
-        // 선택된 옵션의 현상금 사냥꾼 스폰
-        if (selectedOption.f_spawnEnemy != null && selectedOption.f_spawnEnemy.f_ObjectPoolKey != null)
-        {
-            // 선택된 옵션에 따른 현상금 사냥꾼 스폰
-            // EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy);
-
-            // 보상/위험 요소 적용 (필요한 경우)
-            ApplyRewardsAndRisks();
-        }
-        else
-        {
-            Debug.LogError("현상금 사냥꾼 오브젝트 풀 키가 없음");
-        }
-
-        ++completedGroupCount;
-        CheckSpawnCompletion();
-    }
-
-    private IEnumerator CoSpawnSupportGroup(D_supportEnemys groupData)
-    {
-        if (groupData == null || groupData.f_enemy == null)
-        {
-            Debug.LogError("서포트 그룹 데이터 오류");
-            yield break;
-        }
-
-        yield return new WaitForSeconds(groupData.f_startDelay);
-
-        for (int spawnedCount = 0; spawnedCount < groupData.f_amount; spawnedCount++)
-        {
-            if (groupData.f_enemy.f_ObjectPoolKey != null)
-            {
-                //EnemyManager.Instance.SpawnEnemy(groupData.f_enemy);
-            }
-            else
-            {
-                Debug.LogError("서포트 적 오브젝트 풀 키가 없음");
-                break;
-            }
-
-            yield return new WaitForSeconds(groupData.f_spawnInterval);
-        }
-
-        ++completedGroupCount;
-        CheckSpawnCompletion();
     }
 
     private void ApplyRewardsAndRisks()
@@ -721,14 +614,6 @@ public class PrizeHuntingWave : WaveBase
         }
     }
 
-    private void CheckSpawnCompletion()
-    {
-        if (completedGroupCount >= totalGroupCount)
-        {
-            isSpawnDone = true;
-            CheckWaveCompletion();
-        }
-    }
 
     public override string GetWaveInfoText()
     {
@@ -740,38 +625,42 @@ public class PrizeHuntingWave : WaveBase
             waveInfo += $"설명: {selectedOption.f_description}\n";
         }
 
-        // 서포트 적이 있다면 표시
-        if (prizeHuntingData.f_supportEnemys != null && prizeHuntingData.f_supportEnemys.Count > 0)
-        {
-            var groupedEnemies = prizeHuntingData.f_supportEnemys
-                                .GroupBy(g => g.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, TotalAmount = g.Sum(x => x.f_amount) });
-
-            waveInfo += "서포트 적:";
-            foreach (var group in groupedEnemies)
-            {
-                waveInfo += $"{group.Name} x{group.TotalAmount}\n";
-            }
-        }
-
         return waveInfo;
     }
 
-    public override void CheckWaveCompletion()
+    protected override void SpawnWaveEnemies()
     {
-        if (isSpawnDone && remainEnemies <= 0 && !isWaveCompleted)
+        // 선택된 옵션의 현상금 사냥꾼 스폰
+        if (selectedOption.f_spawnEnemy != null && selectedOption.f_spawnEnemy.f_ObjectPoolKey != null)
         {
-            isWaveCompleted = true;
-            StageManager.Instance.OnWaveComplete();
+            //TODO : 지금은 데이터에서 spawnPos로 가져오고 있는데 서포트 에너미도 등장시킬거면 에너미 배치 데이터 사용
+            EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy, selectedOption.f_spawnPos, null);
+
+            // 보상/위험 요소 적용 (필요한 경우)
+            ApplyRewardsAndRisks();
         }
+        else
+        {
+            Debug.LogError("현상금 사냥꾼 오브젝트 풀 키가 없음");
+        }
+
+    }
+
+    protected override int CalculateTotalEnemies()
+    {
+        return 1;
+    }
+
+    protected override void OnStartWaveButtonClicked()
+    {
     }
 
     public override void EndWave()
     {
+        base.EndWave();
         // 필요한 리소스 정리
-        isSpawnDone = false;
         remainEnemies = 0;
-        completedGroupCount = 0;
         selectedOption = null;
     }
+
 }

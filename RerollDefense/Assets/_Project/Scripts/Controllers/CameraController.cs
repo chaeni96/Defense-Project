@@ -60,7 +60,7 @@ public class CameraController : MonoBehaviour
     private void FindLeadUnit()
     {
         // 모든 유닛 가져오기
-        List<UnitController> allUnits = UnitManager.Instance.GetUnits();
+        List<UnitController> allUnits = UnitManager.Instance.GetAllUnits();
 
         // X 좌표가 가장 큰 활성화된 유닛 찾기
         UnitController leadUnit = allUnits

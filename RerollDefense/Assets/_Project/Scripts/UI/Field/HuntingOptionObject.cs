@@ -32,8 +32,8 @@ public class HuntingOptionObject : MonoBehaviour
         onOptionClicked = callback;
         enemyNameText.text = data.f_spawnEnemy.Name;
 
-        // 프리뷰 이미지 로드
-        LoadEnemyPreviewImage();
+        // TODO: 프리뷰 이미지 로드 -> RT 렌더러로 가지고오기
+        //LoadEnemyPreviewImage();
 
         UpdateUI();
     }

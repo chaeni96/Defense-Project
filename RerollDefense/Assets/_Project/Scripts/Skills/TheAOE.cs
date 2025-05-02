@@ -42,12 +42,12 @@ public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscri
         float damage = owner.GetStat(StatName.ATK);
         foreach (var hitCollider in hitColliders)
         {
-            var enemy = EnemyManager.Instance.GetActiveEnemys(hitCollider);
-            if (enemy != null && !damagedEnemies.Contains(enemy))
-            {
-                enemy.onDamaged(owner, damage);
-                damagedEnemies.Add(enemy);
-            }
+            //var enemy = EnemyManager.Instance.GetActiveEnemys(hitCollider);
+            //if (enemy != null && !damagedEnemies.Contains(enemy))
+            //{
+            //    enemy.onDamaged(owner, damage);
+            //    damagedEnemies.Add(enemy);
+            //}
         }
     }
 

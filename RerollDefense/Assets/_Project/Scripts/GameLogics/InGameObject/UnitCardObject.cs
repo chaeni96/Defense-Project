@@ -306,7 +306,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         int newStarLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel) + 1;
         targetUnit.UpGradeUnitLevel(newStarLevel);
 
-        // 효과 적용
+        // TODO : 타겟 유닛 효과 이펙트 줘야함
         targetUnit.ApplyEffect(1.0f);
 
         // 코스트 사용
@@ -439,33 +439,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             if (oldController != null && !(oldController is MultiTileUnitController))
             {
-                // TODO : 멀티타일용 유닛오브젝트 만들면 이부분 꼭 빼기!!!!!!! 지금은 유닛 프리팹에 UnitController만 들어있어서 이렇게 한거임
-                // 기존 컴포넌트의 중요 데이터 보존
-                //SpriteRenderer unitSprite = oldController.unitSprite;
-                //SpriteRenderer unitBaseSprite = oldController.unitBaseSprite;
-                GameObject unitStarObject = oldController.unitStarObject;
-                Material enabledMaterial = oldController.enabledMaterial;
-                Material disabledMaterial = oldController.disabledMaterial;
-                Material deleteMaterial = oldController.deleteMaterial;
-                Material originalMaterial = oldController.originalMaterial;
-                LayerMask unitLayer = oldController.unitLayer;
-
-                // 새 MultiTileUnitController 추가
-                multiController = previewInstance.AddComponent<MultiTileUnitController>();
-
-                // 기존 데이터 복사
-                //multiController.unitSprite = unitSprite;
-                //multiController.unitBaseSprite = unitBaseSprite;
-                multiController.unitStarObject = unitStarObject;
-                multiController.enabledMaterial = enabledMaterial;
-                multiController.disabledMaterial = disabledMaterial;
-                multiController.deleteMaterial = deleteMaterial;
-                multiController.originalMaterial = originalMaterial;
-                multiController.unitLayer = unitLayer;
-
-                // 기존 컴포넌트 제거 (Initialize 전에 해야 함)
-                Destroy(oldController);
-
+             
                 // 초기화 및 UnitData 설정
                 multiController.Initialize();
                 multiController.InitializeUnitInfo(baseUnitBuildData.f_unitData, tileCardData);
@@ -727,7 +701,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 멀티타일 유닛 배치
         if (isMultiUnit && multiTileUnit != null)
         {
-            multiTileUnit.DestroyPreviewUnit();
             multiTileUnit.tilePosition = previousTilePosition;
             UnitManager.Instance.RegisterUnit(multiTileUnit);
 
@@ -780,11 +753,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             foreach (var pair in currentPreviews)
             {
                 var unitInstance = pair.Value;
-                unitInstance.DestroyPreviewUnit();
                 UnitManager.Instance.RegisterUnit(unitInstance);
             }
-
-
 
             TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
         }

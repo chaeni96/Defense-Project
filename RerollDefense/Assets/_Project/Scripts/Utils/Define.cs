@@ -23,17 +23,12 @@ public enum StatSubject
     EnemyCommon,    //적 유닛 전부 적용
 
     PlayerArcher,   //궁수류 플레이어 유닛
-    PlayerMage,     //마법사류 플레이어 유닛
-    PlayerBase,
-
-    EnemyNormal, // 일반 몬스터
-    EnemyFaster, // 스피드 빠른 일반 몬스터
-    EnemyBoss, //보스 몬스터
-
     PlayerSwordman,
     PlayerSpearman,
 
-    
+    EnemyArcher,
+    EnemySwordman,
+    EnemySpearman,
 
 }
 

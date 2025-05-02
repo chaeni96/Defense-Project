@@ -589,20 +589,19 @@ public class FullWindowInGameDlg : FullWindowBase
     public void OnClickStartBattleBtn()
     {
         // 모든 유닛을 UnitMoveToTargetState로 변경
-        List<UnitController> units = UnitManager.Instance.GetUnits();
+        List<UnitController> units = UnitManager.Instance.GetAllUnits();
 
         foreach (var unit in units)
         {
             // 유닛이 존재하고 공격 가능한 상태인지 확인
-            if (unit != null && unit.canAttack)
+            if (unit != null && unit.isActive)
             {
                 // UnitMoveToTargetState로 상태 전환
                 unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
+                unit.SaveOriginalUnitPos();
             }
         }
 
-
-        
         CameraController cameraController = Camera.main.GetComponent<CameraController>();
         if (cameraController != null)
         {
