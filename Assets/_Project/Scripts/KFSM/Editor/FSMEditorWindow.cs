@@ -21,7 +21,7 @@ namespace Kylin.FSM
         public Action OnSelectionCleared;
         public Dictionary<int, StateNode> StateNodes { get; } = new Dictionary<int, StateNode>();
         public StateNode AnyStateNode { get; private set; }
-        public EntryNode entryNode { get; private set; }
+        public EntryNode entryNode { get; set; }
         public FSMGraphView()
         {
             Debug.Log("FSM Graph View constructor called");
@@ -60,36 +60,34 @@ namespace Kylin.FSM
         }
         public void CreateEntryNode()
         {
+            // 기존 Entry 노드가 있으면 제거
             if (entryNode != null)
             {
-                Debug.Log("Entry 노드가 이미 존재함 - 생성 건너뜀");
-                return;
+                Debug.Log("기존 Entry 노드 제거");
+                RemoveElement(entryNode);
+                entryNode = null;
             }
 
+            // 새 Entry 노드 생성
             entryNode = new EntryNode();
             entryNode.SetPosition(new Rect(300, 300, 100, 80));
             AddElement(entryNode);
 
-            Debug.Log("Entry 노드 생성됨");
-
-            // 일반 노드(AnyState 제외)가 이미 있으면 ID가 가장 작은 노드에 연결
-            var regularNodes = StateNodes.Values
-                .OfType<StateNode>()
-                .Where(n => n.entry.Id != Transition.ANY_STATE)
-                .ToList();
-
-            if (regularNodes.Count > 0)
-            {
-                var initialNode = regularNodes.OrderBy(n => n.entry.Id).First();
-                ConnectEntryToState(initialNode.entry.Id);
-            }
+            Debug.Log("새 Entry 노드 생성됨");
         }
         public void ConnectEntryToState(int stateId)
         {
+            Debug.Log($"ConnectEntryToState 호출됨: stateId={stateId}");
+
             if (entryNode == null)
             {
-                Debug.LogError("Entry 노드가 없습니다");
-                return;
+                Debug.LogError("Entry 노드가 없습니다. 먼저 Entry 노드를 생성하세요.");
+                CreateEntryNode();
+                if (entryNode == null)
+                {
+                    Debug.LogError("Entry 노드 생성 실패");
+                    return;
+                }
             }
 
             if (!StateNodes.TryGetValue(stateId, out var targetNode))
@@ -98,40 +96,60 @@ namespace Kylin.FSM
                 return;
             }
 
-            // 이미 존재하는 Entry 연결 제거
-            var existingEdges = entryNode.OutputPort.connections.ToList();
-            foreach (var edge in existingEdges)
+            Debug.Log($"Entry → 상태 {stateId} 연결 시작");
+
+            try
             {
-                // Edge를 제거하기 전에 포트 연결 해제
-                edge.output.Disconnect(edge);
-                edge.input.Disconnect(edge);
+                // 기존 Entry 연결 모두 제거
+                var existingEdges = entryNode.OutputPort.connections.ToList();
+                foreach (var edge in existingEdges)
+                {
+                    if (edge.output != null)
+                        edge.output.Disconnect(edge);
 
-                // 그래프에서 엣지 제거
-                RemoveElement(edge);
+                    if (edge.input != null)
+                        edge.input.Disconnect(edge);
+
+                    RemoveElement(edge);
+                    Debug.Log("기존 Entry 연결 제거됨");
+                }
+
+                // 새 연결 생성
+                var entryEdge = new EntryTransitionEdge(entryNode.OutputPort, targetNode.inputPort);
+
+                // 포트에 연결
+                entryNode.OutputPort.Connect(entryEdge);
+                targetNode.inputPort.Connect(entryEdge);
+
+                // 그래프에 추가
+                AddElement(entryEdge);
+
+                // 초기 상태 ID 업데이트
+                entryNode.InitialStateId = stateId;
+
+                Debug.Log($"Entry가 상태 ID {stateId}에 성공적으로 연결됨");
             }
-
-            // 새 연결 생성
-            var entryEdge = new EntryTransitionEdge(entryNode.OutputPort, targetNode.inputPort);
-
-            // 포트에 연결
-            entryNode.OutputPort.Connect(entryEdge);
-            targetNode.inputPort.Connect(entryEdge);
-
-            // 그래프에 추가
-            AddElement(entryEdge);
-
-            // 초기 상태 ID 업데이트
-            entryNode.InitialStateId = stateId;
-
-            Debug.Log($"Entry가 상태 ID {stateId}에 연결됨");
+            catch (Exception ex)
+            {
+                Debug.LogError($"Entry 연결 중 오류 발생: {ex.Message}\n{ex.StackTrace}");
+            }
         }
         // AnyState 노드 생성 - 이미 존재하면 아무것도 하지 않음
         public void CreateAnyStateNode()
         {
+            // 기존 AnyState 노드가 있으면 제거
             if (AnyStateNode != null)
             {
-                Debug.Log("AnyState 노드가 이미 존재함 - 생성 건너뜀");
-                return;
+                Debug.Log("기존 AnyState 노드 제거");
+                RemoveElement(AnyStateNode);
+
+                // StateNodes 딕셔너리에서도 제거
+                if (StateNodes.ContainsKey(Transition.ANY_STATE))
+                {
+                    StateNodes.Remove(Transition.ANY_STATE);
+                }
+
+                AnyStateNode = null;
             }
 
             var entry = new StateEntry
@@ -152,7 +170,43 @@ namespace Kylin.FSM
 
             Debug.Log("AnyState 노드 생성됨");
         }
+        private void CleanupEntryConnections()
+        {
+            if (entryNode == null) return;
 
+            Debug.Log("Entry 연결 정리 시작");
+
+            // 기존 연결 모두 찾기
+            var existingEdges = entryNode.OutputPort.connections.ToList();
+
+            foreach (var edge in existingEdges)
+            {
+                // 포트 연결 해제
+                if (edge.output != null)
+                {
+                    edge.output.Disconnect(edge);
+                }
+
+                if (edge.input != null)
+                {
+                    edge.input.Disconnect(edge);
+                }
+
+                // 그래프에서 엣지 제거
+                RemoveElement(edge);
+                Debug.Log("기존 Entry 연결 제거됨");
+            }
+
+            // 출력 포트가 깨끗한지 확인
+            if (entryNode.OutputPort.connections.Count() > 0)
+            {
+                Debug.LogWarning($"Entry 출력 포트에 여전히 {entryNode.OutputPort.connections.Count()} 개의 연결이 있습니다!");
+            }
+            else
+            {
+                Debug.Log("Entry 출력 포트가 깔끔하게 정리되었습니다.");
+            }
+        }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
@@ -165,6 +219,15 @@ namespace Kylin.FSM
                 if (startPort.connections.Any())
                 {
                     return compatiblePorts; // 빈 리스트 반환
+                }
+            }
+
+            // EntryTransitionEdge가 드래그되는 경우 방지
+            foreach (var connection in startPort.connections)
+            {
+                if (connection is EntryTransitionEdge)
+                {
+                    return compatiblePorts; // 엔트리 트랜지션인 경우 드래그 방지
                 }
             }
 
@@ -275,7 +338,6 @@ namespace Kylin.FSM
         const string k_AssetPath = "Assets/_Project/AddressableResources/Remote/FSMData/FSMData.asset";
         const string k_ConstantsPath = "Assets/_Project/Scripts/KFSM/Generated/TransitionConstants.cs";
 
-        private bool _autoLoadData = false;
         private bool _anyStateCreated = false;
 
         // 현재 보여줄 요소 추적
@@ -465,9 +527,9 @@ namespace Kylin.FSM
                 new[] { "FSM Assets", "asset" });
 
             if (string.IsNullOrEmpty(path))
-                return; // User canceled
+                return; // 사용자가 취소함
 
-            // Convert to project path
+            // 프로젝트 경로로 변환
             if (path.StartsWith(Application.dataPath))
             {
                 path = "Assets" + path.Substring(Application.dataPath.Length);
@@ -480,37 +542,208 @@ namespace Kylin.FSM
                 return;
             }
 
-            // Extract FSM ID from asset name
+            // FSM ID 추출
             string assetName = System.IO.Path.GetFileNameWithoutExtension(path);
             _currentFsmId = assetName;
 
-            // Important: Clear everything first
-            if (_graphView != null)
-            {
-                _graphView.ClearSelection();
-                _graphView.DeleteElements(_graphView.edges.ToList());
-                _graphView.DeleteElements(_graphView.nodes.ToList());
-                _graphView.StateNodes.Clear();
-                _transitionEdges.Clear();
-            }
-            _currentSelectionType = SelectionType.None;
-            _currentSelectedItem = null;
-            ClearInspector();
+            // 중요: 그래프 요소 완전 초기화
+            ResetGraphView();
 
-            // Set loaded data
+            // 로드된 데이터 설정
             _originalAsset = loadedAsset;
             _dataAsset = CloneFSMDataAsset(loadedAsset);
             _dataObject = new SerializedObject(_dataAsset);
 
-            // Reset AnyState creation flag
+            // 초기 상태 ID 저장
+            initialStateId = loadedAsset.InitialStateId;
+            Debug.Log($"Loaded FSM Initial State ID: {initialStateId}");
+
+            // AnyState 생성 플래그 리셋
             _anyStateCreated = false;
 
-            // Refresh the graph completely
-            RefreshGraph(true);
+            // 그래프 완전 새로 구성
+            CreateNewGraph();
 
             Debug.Log($"Loaded FSM from: {path}");
         }
+        private void ClearEntireGraph()
+        {
+            if (_graphView == null)
+                return;
 
+            Debug.Log("그래프 완전 초기화 시작");
+
+            // 현재 선택 초기화
+            _graphView.ClearSelection();
+            _currentSelectionType = SelectionType.None;
+            _currentSelectedItem = null;
+            ClearInspector();
+
+            // 그래프 엘리먼트 제거를 위한 안전 복사본 만들기
+            var allElements = new List<GraphElement>();
+
+            // 먼저 모든 엣지 추가
+            allElements.AddRange(_graphView.edges.ToList());
+
+            // 그 다음 모든 노드 추가
+            allElements.AddRange(_graphView.nodes.ToList());
+
+            // 모든 엘리먼트 삭제 시도
+            _graphView.DeleteElements(allElements);
+
+            // Entry 노드 참조 초기화
+            _graphView.entryNode = null;
+
+            // 내부 컬렉션 초기화
+            _graphView.StateNodes.Clear();
+            _transitionEdges.Clear();
+
+            Debug.Log("그래프 완전 초기화 완료");
+        }
+        private void ResetGraphView()
+        {
+            if (_graphView == null)
+                return;
+
+            Debug.Log("그래프 완전 초기화 시작");
+
+            // 현재 선택 초기화
+            _graphView.ClearSelection();
+            _currentSelectionType = SelectionType.None;
+            _currentSelectedItem = null;
+            ClearInspector();
+
+            // 모든 엣지부터 제거 (노드보다 먼저 제거해야 함)
+            foreach (var edge in _graphView.edges.ToList())
+            {
+                _graphView.RemoveElement(edge);
+            }
+
+            // 모든 노드 제거 (Entry 노드 포함)
+            foreach (var node in _graphView.nodes.ToList())
+            {
+                _graphView.RemoveElement(node);
+            }
+
+            // Entry 노드 참조 명시적으로 초기화
+            if (_graphView.entryNode != null)
+            {
+                Debug.Log("Entry 노드 참조 초기화");
+                _graphView.entryNode = null;
+            }
+
+            // 내부 컬렉션 초기화
+            _graphView.StateNodes.Clear();
+            _transitionEdges.Clear();
+
+            Debug.Log("그래프 완전 초기화 완료");
+        }
+
+        // 새 그래프 생성을 위한 메서드
+        private void CreateNewGraph()
+        {
+            if (_graphView == null)
+                return;
+
+            Debug.Log("새 그래프 생성 시작");
+
+            // AnyState 노드 생성 - 항상 새로 생성하도록 수정
+            Debug.Log("AnyState 노드 생성 시작");
+            _graphView.CreateAnyStateNode();
+            _anyStateCreated = true;
+
+            // 데이터에 AnyState가 없으면 추가
+            if (!_dataAsset.StateEntries.Any(s => s.Id == Transition.ANY_STATE))
+            {
+                _dataAsset.StateEntries.Add(new StateEntry
+                {
+                    Id = Transition.ANY_STATE,
+                    stateTypeName = "AnyState",
+                    position = new Vector2(100, 100)
+                });
+                EditorUtility.SetDirty(_dataAsset);
+            }
+
+            // Entry 노드 생성
+            Debug.Log("Entry 노드 생성 시작");
+            _graphView.CreateEntryNode();
+
+            if (_graphView.entryNode == null)
+            {
+                Debug.LogError("Entry 노드 생성 실패!");
+                return;
+            }
+
+            // 상태 노드 생성
+            for (int i = 0; i < _dataAsset.StateEntries.Count; i++)
+            {
+                var entry = _dataAsset.StateEntries[i];
+
+                // 이미 생성된 AnyState는 건너뛰기
+                if (entry.Id == Transition.ANY_STATE)
+                {
+                    Debug.Log("AnyState 노드가 이미 존재함 - 생성 건너뜀");
+                    continue;
+                }
+
+                // 노드 생성
+                var node = new StateNode(entry, i);
+
+                // 위치와 크기 지정
+                node.SetPosition(new Rect(entry.position, new Vector2(150, 100)));
+
+                _graphView.AddElement(node);
+                _graphView.StateNodes[entry.Id] = node;
+
+                Debug.Log($"노드 생성됨: ID={entry.Id}, Type={entry.stateTypeName}");
+            }
+
+            // 트랜지션 엣지 생성
+            foreach (var transition in _dataAsset.Transitions)
+            {
+                CreateEdgeFromTransition(transition);
+            }
+
+            // Entry 노드 연결 처리
+            if (_graphView.entryNode != null)
+            {
+                var regularNodes = _graphView.StateNodes.Values
+                    .OfType<StateNode>()
+                    .Where(n => n.entry.Id != Transition.ANY_STATE)
+                    .ToList();
+
+                if (regularNodes.Count > 0)
+                {
+                    // 지정된 초기 상태 ID 또는 첫 번째 노드로 연결
+                    int targetId = initialStateId;
+                    if (targetId <= 0 || !regularNodes.Any(n => n.entry.Id == targetId))
+                    {
+                        targetId = regularNodes.OrderBy(n => n.entry.Id).First().entry.Id;
+                        Debug.Log($"초기 상태 ID({initialStateId})가 유효하지 않아 ID {targetId}를 사용");
+                    }
+                    else
+                    {
+                        Debug.Log($"저장된 초기 상태 ID {targetId} 사용");
+                    }
+
+                    // Entry 연결
+                    _graphView.ConnectEntryToState(targetId);
+
+                    // initialStateId 업데이트
+                    initialStateId = targetId;
+                }
+                else
+                {
+                    Debug.LogWarning("연결할 일반 노드가 없습니다.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Entry 노드가 null입니다!");
+            }
+
+            Debug.Log("새 그래프 생성 완료");
+        }
         // 4. New FSM - 새 FSM 생성
         private void CreateNewFSM()
         {
@@ -614,71 +847,6 @@ namespace Kylin.FSM
             });
         }
 
-        private void LoadFSMById(string id)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(id))
-                {
-                    Debug.LogWarning("Cannot load FSM: ID is empty");
-                    return;
-                }
-
-                // Find the original FSM data in the collection
-                FSMDataAsset originalData = _dataCollection.GetFSMDataById(id);
-
-                if (originalData == null)
-                {
-                    // If the data with this ID doesn't exist, create a new empty one but keep the ID
-                    _originalAsset = null;
-                    CreateEmptyAsset();
-
-                    // Update ID field (CreateEmptyAsset may change it)
-                    _fsmIdField.SetValueWithoutNotify(id);
-                    _currentFsmId = id;
-                }
-                else
-                {
-                    // Save original asset reference
-                    _originalAsset = originalData;
-
-                    // Create a deep clone of the original
-                    _dataAsset = CloneFSMDataAsset(originalData);
-                    _dataObject = new SerializedObject(_dataAsset);
-
-                    // Important: Reset any previous graph state
-                    _anyStateCreated = false;
-                    _graphView.ClearSelection();
-                    _currentSelectionType = SelectionType.None;
-                    _currentSelectedItem = null;
-
-                    // Clear all elements from the graph view before rebuilding
-                    if (_graphView != null)
-                    {
-                        // Remove all edges first to prevent errors
-                        _graphView.DeleteElements(_graphView.edges.ToList());
-                        // Then remove all nodes except AnyState
-                        _graphView.DeleteElements(_graphView.nodes.ToList());
-                        _graphView.StateNodes.Clear();
-                        _transitionEdges.Clear();
-                    }
-
-                    // Now rebuild the graph with the new data
-                    RefreshGraph(true);
-
-                    Debug.Log($"Successfully loaded FSM with ID: {id}");
-                }
-
-                // Save editor state
-                EditorPrefs.SetString("FSMEditor_LastFSMId", id);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to load FSM '{id}': {ex.Message}");
-                EditorUtility.DisplayDialog("Load Error",
-                    $"Failed to load FSM '{id}': {ex.Message}", "OK");
-            }
-        }
         private bool HasUnsavedChanges()
         {
             // If we don't have an original asset for comparison, check if this is a new FSM with changes
@@ -810,20 +978,7 @@ namespace Kylin.FSM
             // FSM 컬렉션 로드/생성
             LoadOrCreateCollection();
 
-            // 에디터 창 초기화
-            if (_autoLoadData)
-            {
-                // 마지막으로 작업한 FSM 로드
-                if (!string.IsNullOrWhiteSpace(_currentFsmId))
-                {
-                    LoadFSMById(_currentFsmId);
-                }
-            }
-            else
-            {
-                // 비어있는 FSM으로 시작
-                CreateEmptyAsset();
-            }
+            CreateEmptyAsset();
         }
         private void CreateEmptyAsset()
         {
@@ -927,31 +1082,22 @@ namespace Kylin.FSM
 
                 foreach (var element in changes.elementsToRemove)
                 {
+                    // EntryNode나 EntryTransitionEdge는 제거하지 않음
                     if (element is EntryNode || element is EntryTransitionEdge)
                     {
-                        // Entry 관련 요소는 삭제 방지 - keep 목록에 추가하지 않음
-                        Debug.Log("Entry 노드나 트랜지션은 삭제가 불가능합니다.");
                         remove.Add(element);
+                        Debug.Log("Entry 노드나 트랜지션은 삭제가 불가능합니다.");
                     }
                     else if (element is StateNode stateNode)
                     {
-                        // AnyState가 아닌 일반 상태 노드인 경우
-                        if (stateNode.entry.Id != Transition.ANY_STATE)
+                        // AnyState 처리 추가
+                        if (stateNode.entry.Id == Transition.ANY_STATE)
                         {
-                            // 이 노드가 현재 Entry와 연결된 노드인지 확인
-                            bool isEntryConnected = false;
-                            if (_graphView.entryNode != null)
-                            {
-                                foreach (var connection in _graphView.entryNode.OutputPort.connections)
-                                {
-                                    if (connection.input.node == stateNode)
-                                    {
-                                        isEntryConnected = true;
-                                        break;
-                                    }
-                                }
-                            }
-
+                            remove.Add(element);
+                            Debug.Log("AnyState 노드는 삭제가 불가능합니다.");
+                        }
+                        else
+                        {
                             // 일반 노드 삭제 처리
                             if (_graphView.StateNodes.ContainsKey(stateNode.entry.Id))
                             {
@@ -989,6 +1135,19 @@ namespace Kylin.FSM
                             }
 
                             // 이 노드가 Entry와 연결되어 있던 노드였다면, 새로운 초기 상태 자동 설정
+                            bool isEntryConnected = false;
+                            if (_graphView.entryNode != null)
+                            {
+                                foreach (var connection in _graphView.entryNode.OutputPort.connections)
+                                {
+                                    if (connection.input.node == stateNode)
+                                    {
+                                        isEntryConnected = true;
+                                        break;
+                                    }
+                                }
+                            }
+
                             if (isEntryConnected)
                             {
                                 // 삭제 후 남은 노드 중 ID가 가장 작은 일반 노드 찾기
@@ -1004,8 +1163,6 @@ namespace Kylin.FSM
                                         .OrderBy(n => n.entry.Id)
                                         .First();
                                     SetInitializeNode(newInitialNode.entry.Id);
-                                    // 새 노드에 Entry 연결
-                                    //_graphView.ConnectEntryToState(newInitialNode.Entry.Id);
 
                                     Debug.Log($"Entry 연결이 ID={newInitialNode.entry.Id} 노드로 자동 이동됨");
                                 }
@@ -1023,19 +1180,23 @@ namespace Kylin.FSM
 
                             keep.Add(element);
                         }
-                        else
-                        {
-                            // AnyState 노드는 삭제 불가
-                            remove.Add(element);
-                        }
                     }
                     else if (element is TransitionEdge transitionEdge)
                     {
-                        // 일반 트랜지션 삭제 처리
-                        if (_graphView.StateNodes.ContainsKey(transitionEdge.FromStateId))
+                        // 일반 트랜지션 또는 AnyState 트랜지션 처리
+                        TransitionEntry transitionToRemove = null;
+
+                        // AnyState에서 시작하는 트랜지션인지 확인
+                        bool isFromAnyState = transitionEdge.FromStateId == Transition.ANY_STATE;
+
+                        // 실제 트랜지션 데이터 찾기
+                        transitionToRemove = _dataAsset.Transitions.FirstOrDefault(
+                            t => t.FromStateId == transitionEdge.FromStateId &&
+                                 t.ToStateId == transitionEdge.ToStateId);
+
+                        if (transitionToRemove != null)
                         {
-                            // 관련 데이터에서 트랜지션 삭제
-                            RemoveTransitionEntry(transitionEdge.transitionData);
+                            RemoveTransitionEntry(transitionToRemove);
 
                             // 현재 선택된 항목이 삭제된 엣지라면 선택 초기화
                             if (_currentSelectionType == SelectionType.Edge &&
@@ -1055,6 +1216,10 @@ namespace Kylin.FSM
                             Debug.Log($"트랜지션 제거됨: FromID={transitionEdge.FromStateId}, ToID={transitionEdge.ToStateId}");
 
                             keep.Add(element);
+                        }
+                        else
+                        {
+                            remove.Add(element);
                         }
                     }
                     else
@@ -1081,7 +1246,11 @@ namespace Kylin.FSM
             foreach (var edge in existingEdges)
             {
                 // Edge를 제거하기 전에 포트 연결 해제
-                edge.output.Disconnect(edge);
+                if (edge.output != null)
+                {
+                    edge.output.Disconnect(edge);
+                }
+
                 if (edge.input != null)
                 {
                     edge.input.Disconnect(edge);
@@ -1266,26 +1435,45 @@ namespace Kylin.FSM
                 {
                     CreateEdgeFromTransition(transition);
                 }
-                var regularNodes = _graphView.StateNodes.Values
-            .OfType<StateNode>()
-            .Where(n => n.entry.Id != Transition.ANY_STATE)
-            .ToList();
 
-                if (regularNodes.Count > 0 && _graphView.entryNode != null)
+                Debug.Log($"Entry 연결 시도: initialStateId = {initialStateId}");
+                if (_graphView.entryNode != null)
                 {
-                    // ID가 가장 작은 노드 또는 지정된 초기 상태로 연결
-                    int targetId = initialStateId;
-                    if (targetId == 0 || !regularNodes.Any(n => n.entry.Id == targetId))
+                    var regularNodes = _graphView.StateNodes.Values
+                        .OfType<StateNode>()
+                        .Where(n => n.entry.Id != Transition.ANY_STATE)
+                        .ToList();
+
+                    if (regularNodes.Count > 0)
                     {
-                        targetId = regularNodes.OrderBy(n => n.entry.Id).First().entry.Id;
-                    }
+                        // 지정된 초기 상태 ID 또는 첫 번째 노드로 연결
+                        int targetId = initialStateId;
+                        if (targetId <= 0 || !regularNodes.Any(n => n.entry.Id == targetId))
+                        {
+                            targetId = regularNodes.OrderBy(n => n.entry.Id).First().entry.Id;
+                            Debug.Log($"초기 상태 ID({initialStateId})가 유효하지 않아 ID {targetId}를 사용");
+                        }
+                        else
+                        {
+                            Debug.Log($"저장된 초기 상태 ID {targetId} 사용");
+                        }
 
-                    _graphView.ConnectEntryToState(targetId);
+                        // Entry 연결 (내부에서 기존 연결 정리)
+                        _graphView.ConnectEntryToState(targetId);
+
+                        // initialStateId 업데이트
+                        initialStateId = targetId;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("연결할 일반 노드가 없습니다.");
+                        // 일반 노드가 없으면 기존 엔트리 연결 모두 삭제
+                        CleanupEntryTransitions();
+                    }
                 }
-                else if (_graphView.entryNode != null)
+                else
                 {
-                    // 일반 노드가 없을 경우 Entry 트랜지션 제거
-                    CleanupEntryTransitions();
+                    Debug.LogError("Entry 노드가 null입니다!");
                 }
             }
             else if (edgesToRefresh != null && edgesToRefresh.Count > 0)
