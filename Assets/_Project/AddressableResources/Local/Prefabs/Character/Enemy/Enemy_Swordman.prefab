@@ -3960,7 +3960,7 @@ Transform:
   m_GameObject: {fileID: 8548620470206162936}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 738540042763991066}
@@ -3986,14 +3986,9 @@ MonoBehaviour:
   fsmObj: {fileID: 2876986328044023446}
   subjects: 
   isEnemy: 0
-  spriteRenderer: {fileID: 0}
-  enemyCollider: {fileID: 0}
-  enemyType: 0
+  isActive: 0
   hpBar: {fileID: 2714087839050459189}
   hpBarCanvas: {fileID: 5069247774958341421}
-  pathRenderer: {fileID: 0}
-  attackTarget: {fileID: 0}
-  isAttackAnimationPlaying: 0
 --- !u!114 &2876986328044023446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4070,8 +4065,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolIndex: 0
   _bounds:
-    m_Center: {x: 1.2114961, y: 0.95164585, z: 0}
-    m_Extent: {x: 3.8197138, y: 4.036952, z: 0.005}
+    m_Center: {x: 1.2114961, y: 0.9516463, z: 0}
+    m_Extent: {x: 3.8197134, y: 4.036952, z: 0.005}
   _init: 1
   _autoBoundsMode: 1
   _sortingMode: 1

@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
 
         // X 좌표가 가장 큰 활성화된 유닛 찾기
         UnitController leadUnit = allUnits
-            .Where(unit => unit != null && unit.gameObject.activeSelf)
+            .Where(unit => unit != null && unit.isActive)
             .OrderByDescending(unit => unit.transform.position.x)
             .FirstOrDefault();
 

@@ -4045,7 +4045,7 @@ Transform:
   m_GameObject: {fileID: 8548620470206162936}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 738540042763991066}
@@ -4074,18 +4074,13 @@ MonoBehaviour:
   attackTimer: 0
   tilePosition: {x: 0, y: 0}
   attackType: 0
-  canAttack: 1
   starObjects: []
   unitType: 1
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
-  enabledMaterial: {fileID: 2100000, guid: d739ab8fcacbbff469b4ac8515602f45, type: 2}
-  disabledMaterial: {fileID: 2100000, guid: 3290c90e3080db449bf62dac4875c772, type: 2}
-  deleteMaterial: {fileID: 2100000, guid: 3ea0ab36c3513254d90aff3352c348c4, type: 2}
-  originalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  unitLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  isActive: 1
   isDragging: 0
+  originalPosition: {x: 0, y: 0, z: 0}
+  originalTilePosition: {x: 0, y: 0}
   isMultiUnit: 0
   hpBar: {fileID: 2714087839050459189}
   hpBarCanvas: {fileID: 5069247774958341421}
@@ -4165,8 +4160,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolIndex: 0
   _bounds:
-    m_Center: {x: 1.2114961, y: 0.95164585, z: 0}
-    m_Extent: {x: 3.8197138, y: 4.036952, z: 0.005}
+    m_Center: {x: 1.2114961, y: 0.9516463, z: 0}
+    m_Extent: {x: 3.8197134, y: 4.036952, z: 0.005}
   _init: 1
   _autoBoundsMode: 1
   _sortingMode: 1
