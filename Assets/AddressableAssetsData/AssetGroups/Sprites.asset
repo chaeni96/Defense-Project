@@ -17,16 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 6b8bda78cda09ce4295d55d40959d3ba
   m_SerializeEntries:
-  - m_GUID: 481555c8ddf57c9458462117a4528d61
-    m_Address: Enemy_Normal2
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0cfb3025af2847a4b94fcc1266a48523
-    m_Address: Enemy_Boss
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 251fc76857fcc0947acc3c1bf29dc78d
     m_Address: ItemIcon_Sword
     m_ReadOnly: 0

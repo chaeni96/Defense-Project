@@ -44,7 +44,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 합성 관련 변수
     private TileData mergeTargetTile = null;
     protected int originalStarLevel = 0;
-    private bool isShowingMergePreview = false;
+    protected bool isShowingMergePreview = false;
 
     //합성 불가할대 위치 변환 
     private UnitController swapTargetUnit = null;
@@ -314,9 +314,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         Vector2 currentTilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
 
-        // 타일맵 색상 업데이트
-        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0.1f));
-
         // 배치 가능 여부 확인
         canPlace = CheckPlacementPossibility(currentTilePos);
 
@@ -372,9 +369,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 쓰레기통 숨기기
         GameManager.Instance.HideTrashCan();
-
-        // 타일 색상 복원
-        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0));
 
         bool isSuccess = false;
 
@@ -781,8 +775,15 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public virtual void SetPreviewMaterial(bool canPlace)
     {
-        // 배치 가능할 때와 불가능할 때의 머테리얼 설정
-      
+        // 배치 가능 여부에 따라 타일 색상 변경
+        UnityEngine.Color tileColor = canPlace ? UnityEngine.Color.green : UnityEngine.Color.red;
+
+        // 알파값 조정 (반투명하게)
+        tileColor.a = 0.5f;
+
+        // 현재 유닛이 위치한 타일 색상 변경
+        TileMapManager.Instance.SetTileColor(tilePosition, tileColor);
+
     }
 
 

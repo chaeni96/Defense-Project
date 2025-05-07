@@ -164,7 +164,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         if (tilePos != previousTilePosition)
         {
-            TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0.1f));
+            // 이전 타일 색상 초기화
+            ResetPreviousTileColors();
 
             // 멀티타일 유닛 확인
             UnitController multiTileUnit = null;
@@ -346,9 +347,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         if (!isDragging) return;
 
-        //배치 타일 투명화
-        TileMapManager.Instance.SetAllTilesColor(new Color(1, 1, 1, 0));
-
         // 멀티타일 유닛 확인
         UnitController multiTileUnit = null;
         foreach (var pair in originalPreviews)
@@ -399,9 +397,45 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             UnitInstanceViewOut();
         }
 
+        ResetPreviousTileColors();
+
+
         isDragging = false;
 
         GameManager.Instance.CanclePrepareUseCost();
+    }
+
+    // 이전 타일 색상 초기화 메서드
+    private void ResetPreviousTileColors()
+    {
+        // 멀티타일 유닛인 경우
+        UnitController multiTileUnit = null;
+        foreach (var pair in originalPreviews)
+        {
+            if (pair.Value.isMultiUnit)
+            {
+                multiTileUnit = pair.Value;
+                break;
+            }
+        }
+
+        if (multiTileUnit != null && multiTileUnit is MultiTileUnitController multiController)
+        {
+            foreach (var offset in multiController.multiTilesOffset)
+            {
+                Vector2 tilePos = previousTilePosition + offset;
+                TileMapManager.Instance.SetTileColor(tilePos, Color.white);
+            }
+        }
+        else
+        {
+            // 일반 유닛인 경우
+            for (int i = 0; i < tileOffsets.Count; i++)
+            {
+                Vector2 tilePos = previousTilePosition + tileOffsets[i];
+                TileMapManager.Instance.SetTileColor(tilePos, Color.white);
+            }
+        }
     }
 
     // 프리뷰 인스턴스 생성: 각 타일 위치에 대한 프리뷰 유닛 생성
@@ -433,13 +467,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 (int)ObjectLayer.Player
             );
 
-            // UnitController를 MultiTileUnitController로 교체
-            UnitController oldController = previewInstance.GetComponent<UnitController>();
-            MultiTileUnitController multiController = null;
+            // 컨트롤러 가져오기 - 이제 이미 MultiTileUnitController가 있다고 가정
+            MultiTileUnitController multiController = previewInstance.GetComponent<MultiTileUnitController>();
 
-            if (oldController != null && !(oldController is MultiTileUnitController))
+            if (multiController != null)
             {
-             
                 // 초기화 및 UnitData 설정
                 multiController.Initialize();
                 multiController.InitializeUnitInfo(baseUnitBuildData.f_unitData, tileCardData);
@@ -451,20 +483,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     multiController.multiTilesOffset.Add(offset);
                 }
 
+                // 유일한 주 유닛이므로 키는 0만 사용
+                originalPreviews.Clear();
+                currentPreviews.Clear();
                 originalPreviews[0] = multiController;
                 currentPreviews[0] = multiController;
-            }
-            else if (oldController is MultiTileUnitController)
-            {
-                // 이미 MultiTileUnitController인 경우
-                multiController = (MultiTileUnitController)oldController;
-                originalPreviews[0] = multiController;
-                currentPreviews[0] = multiController;
-            }
 
-            // 다른 타일 위치에 확장 오브젝트 생성
-            if (multiController != null)
-            {
+                // 다른 타일 위치에 확장 오브젝트 생성
                 foreach (var offset in tileOffsets)
                 {
                     if (offset != Vector2.zero)
@@ -481,7 +506,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         TileExtensionObject extObject = extPreview.GetComponent<TileExtensionObject>();
                         if (extObject != null)
                         {
-                            // 변경된 Initialize 메서드 호출
+                            // 확장 오브젝트 초기화
                             extObject.Initialize(multiController, offset);
                             extensionPreviews[offset] = extObject;
 
@@ -491,6 +516,15 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     }
                 }
             }
+            else
+            {
+                Debug.LogError("MultiTileUnitController 컴포넌트를 찾을 수 없습니다.");
+                // 오류 처리
+                PoolingManager.Instance.ReturnObject(previewInstance);
+                return null;
+            }
+
+            return multiController;
         }
         else
         {
@@ -522,8 +556,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
         }
 
-        return originalPreviews[0];
+        return originalPreviews.Count > 0 ? originalPreviews[0] : null;
     }
+
 
     // 프리뷰 위치 업데이트: 현재 마우스 위치에 따라 프리뷰 위치 조정, 배치불가에 따라 머테리얼 변경
     private void UpdatePreviewInstancesPosition(Vector2 basePosition)
@@ -581,8 +616,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         Vector2 extTilePos = basePosition + offset;
                         Vector3 extWorldPos = TileMapManager.Instance.GetTileToWorldPosition(extTilePos);
                         extObj.transform.position = extWorldPos;
-                        //extObj.tileSprite.material = multiTileUnit.unitSprite.material;
-                        extObj.tileSprite.sortingOrder = 100;
                     }
                 }
             }
@@ -780,9 +813,19 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
     private void UnitInstanceViewOut()
     {
+        // 주 유닛 객체들 화면 밖으로 이동
         foreach (var instance in currentPreviews.Values)
         {
             instance.transform.position = new Vector3(3000f, 0f);
+        }
+
+        // 확장 타일 객체들도 화면 밖으로 이동
+        foreach (var extObj in extensionPreviews.Values)
+        {
+            if (extObj != null)
+            {
+                extObj.transform.position = new Vector3(3000f, 0f);
+            }
         }
     }
 
@@ -895,14 +938,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                         {
                             // 유닛 스프라이트 가져오기
                             GameObject tempUnit = PoolingManager.Instance.GetObject(buildData.f_unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey);
-                            UnitController unitController = tempUnit.GetComponent<UnitController>();
-
-                            //if (unitController != null && unitController.unitSprite != null)
-                            //{
-                            //    Sprite unitSprite = unitController.unitSprite.sprite;
-                            //    tileObject.InitUnitImage(unitSprite, false);
-                            //}
-
+                           
                             PoolingManager.Instance.ReturnObject(tempUnit);
                         }
                         else

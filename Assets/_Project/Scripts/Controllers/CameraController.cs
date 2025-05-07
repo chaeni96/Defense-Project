@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
                 return;
             }
 
-            // 가장 앞선 유닛 찾기
+            // 가장 앞선 유닛 찾기 -> 처음 배치된것과 실제로 달려나갈때 moveSpeed가 유닛마다 달라서 리드유닛이 달라질수있음
             FindLeadUnit();
 
             if (targetUnit != null)

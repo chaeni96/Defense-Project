@@ -18,7 +18,6 @@ public class MultiTileUnitController : UnitController
     public List<Vector2> multiTilesOffset = new List<Vector2>(); // 이 유닛이 차지하는 타일 위치들
 
     private TileData mergeTargetTile = null;
-    private bool isShowingMergePreview = false;
 
     // 확장 타일과 통신할 이벤트 정의
     public event System.Action<Vector3> OnPositionChanged;
@@ -54,28 +53,14 @@ public class MultiTileUnitController : UnitController
 
         Vector2 currentTilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
 
-        // 타일맵 색상 업데이트
-        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0.1f));
-
-        // 배치 가능 여부 확인
+        // 배치 가능 여부 확인 - 항상 먼저 체크
         canPlace = CheckPlacementPossibility(currentTilePos);
 
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
 
-        // 합성 가능 여부 확인
+        // 합성 가능 여부 확인 (배치 가능성과 별개로)
         bool canMerge = CanMergeWithTarget(tileData);
-
-        // 합성이 가능하면 canPlace를 true로 설정, 아니면 일반 배치 가능성 확인
-        if (canMerge)
-        {
-            canPlace = true;
-        }
-        else
-        {
-            // 배치 가능 여부 확인 (합성이 아닌 경우)
-            canPlace = CheckPlacementPossibility(currentTilePos);
-        }
 
         // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
         bool canUpdatePreview = currentTilePos != previousTilePosition || (canMerge != isShowingMergePreview);
@@ -129,10 +114,6 @@ public class MultiTileUnitController : UnitController
 
         // 프리뷰 머테리얼 설정
         SetPreviewMaterial(canPlace);
-
-        // 시각적 효과 (한 번만 실행)
-        //unitSprite.transform.DOKill();
-        //unitSprite.transform.DOPunchScale(Vector3.one * 0.8f, 0.3f, 4, 1);
     }
 
     // 드래그 위치 업데이트
@@ -153,11 +134,6 @@ public class MultiTileUnitController : UnitController
 
         isDragging = false;
 
-        // 쓰레기통 숨기기
-        GameManager.Instance.HideTrashCan();
-
-        // 타일 색상 복원
-        TileMapManager.Instance.SetAllTilesColor(new UnityEngine.Color(1, 1, 1, 0));
 
         bool isSuccess = false;
 

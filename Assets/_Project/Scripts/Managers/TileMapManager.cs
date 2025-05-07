@@ -89,7 +89,6 @@ public class TileMapManager : MonoBehaviour
         //tileMap 설치
         InstallTileMap(mapData);
 
-        SetAllTilesColor(new Color(1, 1, 1, 0));
     }
 
     public void InstallTileMap(D_MapData mapData)
@@ -160,8 +159,24 @@ public class TileMapManager : MonoBehaviour
     //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드
     public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> previewUnits)
     {
+        // 멀티타일 유닛 확인
+        bool isMultiTileUnit = false;
+        MultiTileUnitController multiTileUnit = null;
 
-        // 기본 검사 : 시작/끝타일과 겹치는지, tileMap안에 있는지 체크
+        if (previewUnits.Count == 1 && previewUnits.ContainsKey(0) && previewUnits[0].isMultiUnit)
+        {
+            isMultiTileUnit = true;
+            multiTileUnit = previewUnits[0] as MultiTileUnitController;
+        }
+
+        // 멀티타일 유닛의 경우 특별 처리
+        if (isMultiTileUnit && multiTileUnit != null)
+        {
+            // 멀티타일 유닛용 배치 가능 여부 확인
+            return CheckMultiTilePlacement(basePosition, multiTileUnit);
+        }
+
+        // 일반 유닛 처리 (기존 로직)
         for (int i = 0; i < tileOffsets.Count; i++)
         {
             Vector2 checkPosition = basePosition + tileOffsets[i];
@@ -170,7 +185,6 @@ public class TileMapManager : MonoBehaviour
             // 사용자 정의 좌표를 Unity 좌표로 변환하여 타일 존재 여부 확인
             Vector3Int unityPos = ConvertToUnityCoordinates(checkPosition);
 
- 
             if (tileData == null || !tileMap.HasTile(unityPos))
             {
                 return false;
@@ -179,11 +193,16 @@ public class TileMapManager : MonoBehaviour
             // 배치된 유닛이 있는 경우 타입 비교
             if (tileData?.placedUnit != null)
             {
+                // 인덱스가 Dictionary에 존재하는지 확인
+                if (!previewUnits.ContainsKey(i))
+                {
+                    return false;
+                }
 
                 var placedUnit = tileData.placedUnit;
                 var previewUnit = previewUnits[i];
 
-                // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 3성 미만
+                // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 5성 미만
                 bool canMerge = (previewUnit.unitType == placedUnit.unitType) &&
                                (previewUnit.GetStat(StatName.UnitStarLevel) == placedUnit.GetStat(StatName.UnitStarLevel)) &&
                                (placedUnit.GetStat(StatName.UnitStarLevel) < 5);
@@ -195,8 +214,65 @@ public class TileMapManager : MonoBehaviour
                 }
             }
         }
-            
+
         return true;
+    }
+
+    // 멀티타일 유닛의 배치 가능 여부 확인 (별도 메서드)
+    private bool CheckMultiTilePlacement(Vector2 basePosition, MultiTileUnitController multiTileUnit)
+    {
+        // 원래 위치의 타일들 임시 저장
+        List<TileData> originalTiles = new List<TileData>();
+
+        // 현재 멀티타일 유닛이 점유 중인 타일 임시로 사용 가능하게 설정
+        foreach (var offset in multiTileUnit.multiTilesOffset)
+        {
+            Vector2 originalPos = multiTileUnit.tilePosition + offset;
+            TileData tileData = GetTileData(originalPos);
+
+            if (tileData != null && tileData.placedUnit == multiTileUnit)
+            {
+                // 원래 상태 저장
+                originalTiles.Add(new TileData(originalPos)
+                {
+                    isAvailable = tileData.isAvailable,
+                    placedUnit = tileData.placedUnit
+                });
+
+                // 임시로 사용 가능하게 설정
+                tileData.isAvailable = true;
+                tileData.placedUnit = null;
+                SetTileData(tileData);
+            }
+        }
+
+        // 새 위치에 배치 가능한지 확인
+        bool canPlace = true;
+        foreach (var offset in multiTileUnit.multiTilesOffset)
+        {
+            Vector2 newPos = basePosition + offset;
+            TileData targetTile = GetTileData(newPos);
+
+            if (targetTile == null || !targetTile.isAvailable)
+            {
+                canPlace = false;
+                break;
+            }
+        }
+
+        // 원래 타일 상태 복원
+        foreach (var tile in originalTiles)
+        {
+            TileData existingTile = GetTileData(new Vector2(tile.tilePosX, tile.tilePosY));
+            if (existingTile != null)
+            {
+                existingTile.isAvailable = tile.isAvailable;
+                existingTile.placedUnit = tile.placedUnit;
+                SetTileData(existingTile);
+            }
+        }
+
+        return canPlace;
     }
 
 
@@ -226,6 +302,31 @@ public class TileMapManager : MonoBehaviour
             tileData.isAvailable = true;
             tileData.placedUnit = null;
             SetTileData(tileData);
+        }
+    }
+
+    // 단일 타일 색상 변경
+    public void SetTileColor(Vector2 tilePos, Color color)
+    {
+        Vector3Int position = ConvertToUnityCoordinates(tilePos);
+
+        if (tileMap.HasTile(position))
+        {
+            tileMap.SetTileFlags(position, TileFlags.None);
+            tileMap.SetColor(position, color);
+        }
+    }
+
+    // 타일맵 색상 초기화 (원래 색상으로 돌리기)
+    public void ResetTileColors()
+    {
+        foreach (var position in tileMap.cellBounds.allPositionsWithin)
+        {
+            if (tileMap.HasTile(position))
+            {
+                tileMap.SetTileFlags(position, TileFlags.None);
+                tileMap.SetColor(position, Color.white); // 기본 색상으로 초기화
+            }
         }
     }
 

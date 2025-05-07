@@ -17,12 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
-  - m_GUID: a34f01674b0d3194fb7b3a8b69edbbab
-    m_Address: Enemy_Normal
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9e7671da6a5cec46b3732af8d526900
     m_Address: PlayerCamp
     m_ReadOnly: 0
@@ -41,44 +35,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10e08e1a11a488a46af717e9c082812a
-    m_Address: Unit_Archer_1Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bf44b4a3b220b1b42a8ce9ff93bc8e1d
-    m_Address: Unit_Mage_1Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4733bd7e0ecda334c8e1b0da4ab0660c
-    m_Address: Unit_Base
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 82b35e6bf7964a5418a0de0cb5f50c15
-    m_Address: Unit_Archor2_1Star
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c023f9d1f357a8d4e920fa0603358a5c
-    m_Address: Enemy_Boss
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c5a041ec2a45cdb44b9ebddbdac20f59
     m_Address: ExplosionEffectObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3710fe131b1b54d499d981447247735d
-    m_Address: Enemy_Normal2
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -181,6 +139,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f21a12b30aae4db48b59586adb71f52d
     m_Address: Enemy_Swordman
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97a494d38b35c8a45896e9cee30e28e0
+    m_Address: Cat_Swordman_MultiTile
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
