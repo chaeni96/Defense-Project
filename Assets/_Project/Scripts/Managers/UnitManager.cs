@@ -14,7 +14,7 @@ public class UnitManager : MonoBehaviour
     private List<UnitController> units = new List<UnitController>();
 
     public event System.Action OnUnitDeath;
-
+    public event System.Action<int> OnUnitCountChanged;
     public static UnitManager Instance
     {
         get
@@ -73,7 +73,15 @@ public class UnitManager : MonoBehaviour
         {
             unit.isActive = true;
             units.Add(unit);
+
+            UpdateUnitCount();
         }
+    }
+
+    private void UpdateUnitCount()
+    {
+        int currentCount = GetAllUnits().Count; // 현재 배치된 유닛 수
+        OnUnitCountChanged?.Invoke(currentCount); // 이벤트 발생
     }
 
     // 가장 가까운 유닛 찾기
@@ -120,6 +128,7 @@ public class UnitManager : MonoBehaviour
 
             unit.isActive = false;
             units.Remove(unit);
+            UpdateUnitCount();
             PoolingManager.Instance.ReturnObject(unit.gameObject);
         }
     }

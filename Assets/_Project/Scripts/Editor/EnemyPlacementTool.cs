@@ -72,11 +72,6 @@ public class EnemyPlacementTool : EditorWindow
         {
             DrawEnemySelection();
 
-            // 에너미가 선택된 경우에만 이벤트 선택 UI 표시
-            if (!cells[selectedCell.y, selectedCell.x].isEmpty)
-            {
-                DrawEventSelection();
-            }
         }
         else
         {
@@ -361,135 +356,6 @@ public class EnemyPlacementTool : EditorWindow
         EditorGUILayout.EndScrollView();
     }
 
-    private void DrawEventSelection()
-    {
-        // 구분선
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-
-        // 이벤트 섹션 헤더
-        EditorGUILayout.LabelField("이벤트 설정", EditorStyles.boldLabel);
-
-        // 현재 설정된 이벤트 목록 표시
-        EditorGUILayout.LabelField("현재 이벤트:");
-
-        if (cells[selectedCell.y, selectedCell.x].events.Count == 0)
-        {
-            EditorGUILayout.HelpBox("할당된 이벤트가 없습니다.", MessageType.Info);
-        }
-        else
-        {
-            // 현재 할당된 이벤트 목록 표시
-            for (int i = 0; i < cells[selectedCell.y, selectedCell.x].events.Count; i++)
-            {
-                var eventData = cells[selectedCell.y, selectedCell.x].events[i];
-                EditorGUILayout.BeginHorizontal();
-
-                string eventType = eventData is D_SpawnEnemyEventData ? "스폰 이벤트" :
-                                   eventData is D_DropItemEventData ? "아이템 드롭 이벤트" : "기타 이벤트";
-
-                string triggerType = eventData.f_eventTriggerType.ToString();
-
-                EditorGUILayout.LabelField($"{i + 1}. {eventData.f_name}");
-                EditorGUILayout.LabelField($"[{eventType}]", GUILayout.Width(90));
-                EditorGUILayout.LabelField($"[{triggerType}]", GUILayout.Width(80));
-
-                if (GUILayout.Button("제거", GUILayout.Width(60)))
-                {
-                    cells[selectedCell.y, selectedCell.x].events.RemoveAt(i);
-                    break; // 리스트가 변경되었으므로 루프 종료
-                }
-
-                EditorGUILayout.EndHorizontal();
-            }
-        }
-
-        // 이벤트 검색 필드
-        EditorGUILayout.Space();
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label("이벤트 검색:", GUILayout.Width(70));
-        string eventSearchText = EditorGUILayout.TextField(GUI.tooltip);
-        EditorGUILayout.EndHorizontal();
-
-        // 새 이벤트 추가 섹션
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("이벤트 추가:");
-
-        // 이벤트 목록 스크롤 영역
-        eventScrollPosition = EditorGUILayout.BeginScrollView(eventScrollPosition, GUILayout.Height(150));
-
-        string searchLower = eventSearchText?.ToLower() ?? "";
-
-        // 스폰 이벤트 목록 표시
-        EditorGUILayout.LabelField("스폰 이벤트:", EditorStyles.boldLabel);
-        List<D_SpawnEnemyEventData> spawnEvents = new List<D_SpawnEnemyEventData>();
-        D_SpawnEnemyEventData.ForEachEntity(e => spawnEvents.Add(e));
-        spawnEvents.Sort((a, b) => a.f_name.CompareTo(b.f_name));
-
-        foreach (var spawnEvent in spawnEvents)
-        {
-            // 검색어 필터링
-            if (!string.IsNullOrEmpty(eventSearchText) && !spawnEvent.f_name.ToLower().Contains(searchLower))
-                continue;
-
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button(spawnEvent.f_name, GUILayout.Width(150)))
-            {
-                // 중복 검사
-                if (!cells[selectedCell.y, selectedCell.x].events.Contains(spawnEvent))
-                {
-                    cells[selectedCell.y, selectedCell.x].events.Add(spawnEvent);
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("이벤트 중복", "이미 추가된 이벤트입니다.", "확인");
-                }
-            }
-
-            EditorGUILayout.LabelField($"트리거: {spawnEvent.f_eventTriggerType}");
-            EditorGUILayout.LabelField($"적: {spawnEvent.f_enemy.f_name}, 수량: {spawnEvent.f_spawnCount}");
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        // 아이템 드롭 이벤트 목록 표시
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("아이템 드롭 이벤트:", EditorStyles.boldLabel);
-        List<D_DropItemEventData> dropEvents = new List<D_DropItemEventData>();
-        D_DropItemEventData.ForEachEntity(e => dropEvents.Add(e));
-        dropEvents.Sort((a, b) => a.f_name.CompareTo(b.f_name));
-
-        foreach (var dropEvent in dropEvents)
-        {
-            // 검색어 필터링
-            if (!string.IsNullOrEmpty(eventSearchText) && !dropEvent.f_name.ToLower().Contains(searchLower))
-                continue;
-
-            EditorGUILayout.BeginHorizontal();
-
-            if (GUILayout.Button(dropEvent.f_name, GUILayout.Width(150)))
-            {
-                // 중복 검사
-                if (!cells[selectedCell.y, selectedCell.x].events.Contains(dropEvent))
-                {
-                    cells[selectedCell.y, selectedCell.x].events.Add(dropEvent);
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("이벤트 중복", "이미 추가된 이벤트입니다.", "확인");
-                }
-            }
-
-            EditorGUILayout.LabelField($"트리거: {dropEvent.f_eventTriggerType}");
-            EditorGUILayout.LabelField($"아이템 드롭 이벤트 (개수: {dropEvent.f_count})");
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        EditorGUILayout.EndScrollView();
-    }
-
     private void LoadDataIfExists()
     {
         // 모든 셀 초기화
@@ -600,7 +466,7 @@ public class EnemyPlacementTool : EditorWindow
         }
 
         // 변경사항 저장
-        BGRepo.I.Save();
+        SaveLoadManager.Instance.SaveData();
 
         EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
     }

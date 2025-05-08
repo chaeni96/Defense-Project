@@ -1313,9 +1313,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0
+    y: 0.06756757
     width: 1
-    height: 1
+    height: 0.8648649
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 10
@@ -1981,7 +1981,6 @@ GameObject:
   - component: {fileID: 1934840172}
   - component: {fileID: 1934840171}
   - component: {fileID: 1934840174}
-  - component: {fileID: 1934840175}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2105,29 +2104,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934840169}
   m_Enabled: 1
---- !u!114 &1934840175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934840169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 1
-  m_AssetsPPU: 151
-  m_RefResolutionX: 1440
-  m_RefResolutionY: 2560
-  m_CropFrame: 2
-  m_GridSnapping: 0
-  m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
 --- !u!1 &1961065433
 GameObject:
   m_ObjectHideFlags: 0
