@@ -588,6 +588,12 @@ public class FullWindowInGameDlg : FullWindowBase
         // 모든 유닛을 UnitMoveToTargetState로 변경
         List<UnitController> units = UnitManager.Instance.GetAllUnits();
 
+        if (units.Count <= 0)
+        {
+            Debug.LogWarning("No unit controllers found!");
+            return;
+        }
+
         foreach (var unit in units)
         {
             // 유닛이 존재하고 공격 가능한 상태인지 확인
