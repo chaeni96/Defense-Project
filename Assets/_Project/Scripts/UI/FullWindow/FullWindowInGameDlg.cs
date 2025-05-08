@@ -39,7 +39,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     //[SerializeField] private List<Image> cardGradeImages;  // Inspector에서 firstCardGrade, secondCardGrade, thirdCardGrade 순서대로 할당
     [SerializeField] private TMP_Text progressWaveIndex; //진행중인 웨이브 인덱스
-    [SerializeField] private TMP_Text remainEnemyCount; //남은 enemy 수
+    [SerializeField] private TMP_Text placementUnitCount; //배치된 유닛 수
 
     //카드덱
     private List<GameObject> cardDecks;
@@ -75,8 +75,12 @@ public class FullWindowInGameDlg : FullWindowBase
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;  
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
-        StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
+        //StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
+        UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
         StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
+
+        UpdateWaveIndex(1);
+        UpdatePlacementCount(UnitManager.Instance.GetAllUnits().Count);
 
     }
 
@@ -84,11 +88,6 @@ public class FullWindowInGameDlg : FullWindowBase
     //관련 유아이 초기화
     private void InitializeAssociateUI()
     {
-
-        //cost 초기화
-        //CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-        //costUI.Initialize(GameManager.Instance.GetSystemStat(StatName.StoreLevel));
-
         //shopLevel 초기화
         shopLevel = GameManager.Instance.GetSystemStat(StatName.StoreLevel);
         shopLevelText.text = $"Shop Level : {shopLevel}";
@@ -166,11 +165,12 @@ public class FullWindowInGameDlg : FullWindowBase
     private void UpdateWaveIndex(int currentIndex, int subIndex = 0)
     {
 
-        progressWaveIndex.text = $"{GameManager.Instance.SelectedStageNumber} - {currentIndex}";
+        progressWaveIndex.text = currentIndex.ToString();
     }
-    private void UpdateRemainEnemyCount(int count)
+   
+    private void UpdatePlacementCount(int count)
     {
-        remainEnemyCount.text = count.ToString();
+        placementUnitCount.text = $"{ count} / {GameManager.Instance.GetSystemStat(StatName.UnitPlacementCount)}";
     }
 
 
@@ -531,10 +531,6 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             currentCards[deckIndex] = null;
             //emptyCardObjects[deckIndex].SetActive(true);
-
-            //빈 카드 덱에 새 카드 생성 로직 추가
-            D_TileCardData cardData = GetCardKeyBasedOnProbability();
-            CreateUnitCardWithData(cardDecks[deckIndex], deckIndex, cardData);
         }
     }
 
@@ -572,7 +568,8 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
-            StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
+            //StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
+            UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
             StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
             GameManager.Instance.OnCostUsed -= CostUse;
 

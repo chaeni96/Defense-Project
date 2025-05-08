@@ -104,7 +104,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
         starObjects.Clear();
 
-        float spacing = 0.4f;
+        float spacing = 0.8f;
         float totalWidth = (currentStarLevel - 1) * spacing;
         float startX = -totalWidth / 2f;
 

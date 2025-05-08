@@ -26,7 +26,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     //private WildCardSelectUI selectUI;
     private WaveInfoFloatingUI waveInfoUI;
-    private InGameCountdownUI countdownUI;
     private WaveFinishFloatingUI waveFinishUI;
 
     //웨이브 목록 관리
@@ -162,7 +161,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             nextAssignWave = null;
             isAssignWave = false;
             // 나머지 코드는 동일하게 실행
-            OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, waveList.Count);
             OnWaveStart?.Invoke();
             ShowWaveInfo();
             return;
@@ -190,7 +188,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private async void ShowWaveInfo()
     {
         waveInfoUI = await UIManager.Instance.ShowUI<WaveInfoFloatingUI>();
-        countdownUI = await UIManager.Instance.ShowUI<InGameCountdownUI>(); // 웨이브 시작 전 남은시간 보여주는 ui
 
         string waveText = $"Wave {currentWaveIndex + 1} Start!";
         string enemyInfo = currentWave.GetWaveInfoText(); // 웨이브 클래스에서 적 정보 가져오기
@@ -233,18 +230,18 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private async void ShowWaveFinishUI()
     {
-        // 웨이브 완료 UI 표시
-        waveFinishUI = await UIManager.Instance.ShowUI<WaveFinishFloatingUI>();
-        string waveFinishText = $"Wave {currentWaveIndex + 1} Finish!";
-        waveFinishUI.UpdateWaveInfo(waveFinishText);
-
-        // FadeOut 완료 대기
-        await waveFinishUI.WaitForFadeOut();
-        UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
-        waveFinishUI = null;
-
         if(!isAssignWave)
         {
+            // 웨이브 완료 UI 표시
+            waveFinishUI = await UIManager.Instance.ShowUI<WaveFinishFloatingUI>();
+            string waveFinishText = $"Wave {currentWaveIndex + 1} Finish!";
+            waveFinishUI.UpdateWaveInfo(waveFinishText);
+
+            // FadeOut 완료 대기
+            await waveFinishUI.WaitForFadeOut();
+            UIManager.Instance.CloseUI<WaveFinishFloatingUI>();
+            waveFinishUI = null;
+
             currentWaveIndex++;
         }
 
@@ -316,10 +313,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     {
         if (scheduleUID == currentWaveInfoScheduleUID)
         {
-            if (countdownUI != null)
-            {
-                countdownUI.UpdateCountdown(remainTime);
-            }
+           
         }
     }
   
@@ -366,11 +360,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
             TimeTableManager.Instance.RemoveTimeChangeTargetSubscriber(currentWaveInfoScheduleUID);
         }
 
-        if (countdownUI != null)
-        {
-            UIManager.Instance.CloseUI<InGameCountdownUI>();
-            countdownUI = null;
-        }
 
         if (waveFinishUI != null)
         {

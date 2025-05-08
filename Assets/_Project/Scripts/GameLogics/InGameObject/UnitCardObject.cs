@@ -387,7 +387,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             canPlace = TileMapManager.Instance.CanPlaceObject(previousTilePosition, tileOffsets, originalPreviews);
         }
 
-        if (hasDragged && canPlace)
+        if (hasDragged && canPlace && UnitManager.Instance.GetActiveUnitCount() < GameManager.Instance.GetSystemStat(StatName.UnitPlacementCount))
         {
             PlaceUnits();
         }

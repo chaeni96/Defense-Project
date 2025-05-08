@@ -58,10 +58,14 @@ public class SaveLoadManager : MonoBehaviour
 
     public void SaveData()
     {
-        byte[] bytes = BGRepo.I.Addons.Get<BGAddonSaveLoad>().Save(); 
+
+        BGRepo.I.Save();
+
+
+        byte[] bytes = BGRepo.I.Addons.Get<BGAddonSaveLoad>().Save();
+
         File.WriteAllBytes(SaveFilePath, bytes); // 파일에 저장
     }
-
     public void LoadData()
     {
         if(HasSavedFile)
@@ -79,5 +83,36 @@ public class SaveLoadManager : MonoBehaviour
     }
 
 
-  
+
+    // 디버그 전용 기능 - 런타임 저장 데이터를 에디터 데이터베이스에 적용
+    public void ApplySavedDataToEditor()
+    {
+        if (HasSavedFile)
+        {
+            var content = File.ReadAllBytes(SaveFilePath);
+
+            // 저장된 데이터 로드
+            BGRepo.I.Addons.Get<BGAddonSaveLoad>().Load(
+                new BGSaveLoadAddonLoadContext(
+                    new BGSaveLoadAddonLoadContext.LoadRequest(BGAddonSaveLoad.DefaultSettingsName, content))
+                {
+                    ReloadDatabase = true,
+                    FireAfterLoadEvents = true
+                }
+            );
+
+            // 현재 상태를 에디터 데이터베이스에 저장
+            BGRepo.I.Save();
+
+            Debug.Log("저장된 데이터가 에디터 데이터베이스에 적용되었습니다.");
+        }
+        else
+        {
+            Debug.LogWarning("저장된 파일을 찾을 수 없습니다: " + SaveFilePath);
+        }
+    }
+
+
+
+
 }
