@@ -5,7 +5,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public interface IEvent
 {
-    EventType GetEventType();
+    IngameEventType GetEventType();
 
     //이벤트 발동 또는 적용하는 대상, 이벤트 발동 위치(TODO : 필요없으면 인자값에서 빼기)
     void StartEvent(GameObject gameObject, Vector3 position);
@@ -23,7 +23,7 @@ public class SpawnEnemyEvent : IEvent
         data = eventData;
     }
 
-    public EventType GetEventType() => EventType.SpawnEnemy;
+    public IngameEventType GetEventType() => IngameEventType.SpawnEnemy;
 
     public void StartEvent(GameObject obj, Vector3 position)
     {
@@ -83,7 +83,7 @@ public class DropItemEvent : IEvent
 
     private FieldDropItemObject item;
 
-    public EventType GetEventType() => EventType.DropItem;
+    public IngameEventType GetEventType() => IngameEventType.DropItem;
     
     public DropItemEvent(D_DropItemEventData eventData)
     {

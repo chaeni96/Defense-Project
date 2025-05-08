@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 3682305195003988809}
   - component: {fileID: 3488437542530373966}
   m_Layer: 0
-  m_Name: Slot_Ear
+  m_Name: Slot_Skin_Ear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1921,7 +1921,7 @@ GameObject:
   - component: {fileID: 5625149739752294666}
   - component: {fileID: 581631147816636849}
   m_Layer: 0
-  m_Name: Slot_Tail
+  m_Name: Slot_Skin_Tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2005,7 +2005,7 @@ GameObject:
   - component: {fileID: 254072208116134487}
   - component: {fileID: 2037257116463142685}
   m_Layer: 0
-  m_Name: Slot_Head
+  m_Name: Slot_Skin_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2153,7 +2153,7 @@ GameObject:
   - component: {fileID: 6127282090999373264}
   - component: {fileID: 3551548782049605034}
   m_Layer: 0
-  m_Name: Slot_RightArm
+  m_Name: Slot_Skin_RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3328,7 +3328,7 @@ GameObject:
   - component: {fileID: 2035005086847998096}
   - component: {fileID: 6424282003103915619}
   m_Layer: 0
-  m_Name: Slot_LeftArm
+  m_Name: Slot_Skin_LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3443,7 +3443,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8662331587158974845}
-  - component: {fileID: 5974903699912134167}
   - component: {fileID: 5747223416929348838}
   - component: {fileID: 4739463452518123155}
   - component: {fileID: 9056778004169992680}
@@ -3473,28 +3472,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &5974903699912134167
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8548620470206162936}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations:
-  - {fileID: 0}
-  - {fileID: 7400000, guid: 17bb63557b99db14abc21fb5aa1b251a, type: 2}
-  - {fileID: 7400000, guid: 8378ac88791478f48b8d20b9e090afcb, type: 2}
-  - {fileID: 7400000, guid: f3c0949df3c496e4084efcb6b7974a6e, type: 2}
-  - {fileID: 7400000, guid: ca5be764b57e8dc4d9a74f4774a9b554, type: 2}
-  - {fileID: 7400000, guid: a2e7da7c4726f284ea3d67f3fd168e1f, type: 2}
-  - {fileID: 7400000, guid: 303d78e92374ad44ca521bd6d2b86f91, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!95 &5747223416929348838
 Animator:
   serializedVersion: 5
@@ -3528,7 +3505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50a00ab334c4fec4484c340ef2c7086e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _poolIndex: 1
+  _poolIndex: 0
   _bounds:
     m_Center: {x: 1.2115173, y: 0.95162964, z: 0}
     m_Extent: {x: 3.8197327, y: 4.036957, z: 0.1}

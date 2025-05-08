@@ -129,7 +129,7 @@ public enum WaveType
 }
 
 //이벤트 타입
-public enum EventType
+public enum IngameEventType
 {
     None,
     SpawnEnemy,
