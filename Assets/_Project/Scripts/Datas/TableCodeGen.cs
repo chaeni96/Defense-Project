@@ -122,6 +122,7 @@ public partial class D_TileCardData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_TileCardData() : base(MetaDefault) {}
 	private D_TileCardData(BGId id) : base(MetaDefault, id) {}
 	private D_TileCardData(BGMetaEntity meta) : base(meta) {}
@@ -219,6 +220,7 @@ public partial class D_LocalUserData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_LocalUserData() : base(MetaDefault) {}
 	private D_LocalUserData(BGId id) : base(MetaDefault, id) {}
 	private D_LocalUserData(BGMetaEntity meta) : base(meta) {}
@@ -340,6 +342,7 @@ public partial class D_UnitData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_UnitData() : base(MetaDefault) {}
 	private D_UnitData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitData(BGMetaEntity meta) : base(meta) {}
@@ -443,6 +446,7 @@ public partial class D_unitBuildData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_unitBuildData() : base(MetaDefault) {}
 	private D_unitBuildData(BGId id) : base(MetaDefault, id) {}
 	private D_unitBuildData(BGMetaEntity meta) : base(meta) {}
@@ -584,6 +588,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_UnitShopChanceData() : base(MetaDefault) {}
 	private D_UnitShopChanceData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitShopChanceData(BGMetaEntity meta) : base(meta) {}
@@ -691,6 +696,7 @@ public partial class D_ObjectPoolData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_ObjectPoolData() : base(MetaDefault) {}
 	private D_ObjectPoolData(BGId id) : base(MetaDefault, id) {}
 	private D_ObjectPoolData(BGMetaEntity meta) : base(meta) {}
@@ -786,6 +792,7 @@ public partial class D_WaveData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_WaveData() : base(MetaDefault) {}
 	private D_WaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveData(BGMetaEntity meta) : base(meta) {}
@@ -921,6 +928,7 @@ public partial class D_StageData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_StageData() : base(MetaDefault) {}
 	private D_StageData(BGId id) : base(MetaDefault, id) {}
 	private D_StageData(BGMetaEntity meta) : base(meta) {}
@@ -1030,6 +1038,7 @@ public partial class D_EnemyData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_EnemyData() : base(MetaDefault) {}
 	private D_EnemyData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyData(BGMetaEntity meta) : base(meta) {}
@@ -1149,6 +1158,7 @@ public partial class D_enemyGroup : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_enemyGroup() : base(MetaDefault) {}
 	private D_enemyGroup(BGId id) : base(MetaDefault, id) {}
 	private D_enemyGroup(BGMetaEntity meta) : base(meta) {}
@@ -1240,6 +1250,7 @@ public partial class D_TilePosData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_TilePosData() : base(MetaDefault) {}
 	private D_TilePosData(BGId id) : base(MetaDefault, id) {}
 	private D_TilePosData(BGMetaEntity meta) : base(meta) {}
@@ -1346,6 +1357,7 @@ public partial class D_ObstacleTileMapData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_ObstacleTileMapData() : base(MetaDefault) {}
 	private D_ObstacleTileMapData(BGId id) : base(MetaDefault, id) {}
 	private D_ObstacleTileMapData(BGMetaEntity meta) : base(meta) {}
@@ -1431,6 +1443,7 @@ public partial class D_MapData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_MapData() : base(MetaDefault) {}
 	private D_MapData(BGId id) : base(MetaDefault, id) {}
 	private D_MapData(BGMetaEntity meta) : base(meta) {}
@@ -1534,6 +1547,7 @@ public partial class D_SpecialTile : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_SpecialTile() : base(MetaDefault) {}
 	private D_SpecialTile(BGId id) : base(MetaDefault, id) {}
 	private D_SpecialTile(BGMetaEntity meta) : base(meta) {}
@@ -1652,6 +1666,7 @@ public partial class D_WildCardData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_WildCardData() : base(MetaDefault) {}
 	private D_WildCardData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardData(BGMetaEntity meta) : base(meta) {}
@@ -1759,6 +1774,7 @@ public partial class D_WaveTimeData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_WaveTimeData() : base(MetaDefault) {}
 	private D_WaveTimeData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveTimeData(BGMetaEntity meta) : base(meta) {}
@@ -1886,6 +1902,7 @@ public partial class D_BuffData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_BuffData() : base(MetaDefault) {}
 	private D_BuffData(BGId id) : base(MetaDefault, id) {}
 	private D_BuffData(BGMetaEntity meta) : base(meta) {}
@@ -2005,6 +2022,7 @@ public partial class D_buffEffects : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_buffEffects() : base(MetaDefault) {}
 	private D_buffEffects(BGId id) : base(MetaDefault, id) {}
 	private D_buffEffects(BGMetaEntity meta) : base(meta) {}
@@ -2099,6 +2117,7 @@ public partial class D_StatSubjectData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_StatSubjectData() : base(MetaDefault) {}
 	private D_StatSubjectData(BGId id) : base(MetaDefault, id) {}
 	private D_StatSubjectData(BGMetaEntity meta) : base(meta) {}
@@ -2210,6 +2229,7 @@ public partial class D_subjectStats : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_subjectStats() : base(MetaDefault) {}
 	private D_subjectStats(BGId id) : base(MetaDefault, id) {}
 	private D_subjectStats(BGMetaEntity meta) : base(meta) {}
@@ -2317,6 +2337,7 @@ public partial class D_EpisodeData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_EpisodeData() : base(MetaDefault) {}
 	private D_EpisodeData(BGId id) : base(MetaDefault, id) {}
 	private D_EpisodeData(BGMetaEntity meta) : base(meta) {}
@@ -2413,6 +2434,7 @@ public partial class D_NormalBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_NormalBattleWaveData() : base(MetaDefault) {}
 	private D_NormalBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_NormalBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2533,6 +2555,7 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_BossBattleWaveData() : base(MetaDefault) {}
 	private D_BossBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_BossBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2645,6 +2668,7 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_WildCardWaveData() : base(MetaDefault) {}
 	private D_WildCardWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2751,6 +2775,7 @@ public partial class D_HuntingSelectTimeWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_HuntingSelectTimeWaveData() : base(MetaDefault) {}
 	private D_HuntingSelectTimeWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingSelectTimeWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2850,6 +2875,7 @@ public partial class D_PrizeHuntingWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_PrizeHuntingWaveData() : base(MetaDefault) {}
 	private D_PrizeHuntingWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_PrizeHuntingWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2946,6 +2972,7 @@ public partial class D_EventEnemyWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_EventEnemyWaveData() : base(MetaDefault) {}
 	private D_EventEnemyWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_EventEnemyWaveData(BGMetaEntity meta) : base(meta) {}
@@ -3054,6 +3081,7 @@ public partial class D_ItemData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_ItemData() : base(MetaDefault) {}
 	private D_ItemData(BGId id) : base(MetaDefault, id) {}
 	private D_ItemData(BGMetaEntity meta) : base(meta) {}
@@ -3182,6 +3210,7 @@ public partial class D_HuntingOptionData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_HuntingOptionData() : base(MetaDefault) {}
 	private D_HuntingOptionData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingOptionData(BGMetaEntity meta) : base(meta) {}
@@ -3293,6 +3322,7 @@ public partial class D_huntingReward : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_huntingReward() : base(MetaDefault) {}
 	private D_huntingReward(BGId id) : base(MetaDefault, id) {}
 	private D_huntingReward(BGMetaEntity meta) : base(meta) {}
@@ -3407,6 +3437,7 @@ public partial class D_huntingRisk : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_huntingRisk() : base(MetaDefault) {}
 	private D_huntingRisk(BGId id) : base(MetaDefault, id) {}
 	private D_huntingRisk(BGMetaEntity meta) : base(meta) {}
@@ -3514,6 +3545,7 @@ public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_SpawnEnemyEventData() : base(MetaDefault) {}
 	private D_SpawnEnemyEventData(BGId id) : base(MetaDefault, id) {}
 	private D_SpawnEnemyEventData(BGMetaEntity meta) : base(meta) {}
@@ -3618,6 +3650,7 @@ public partial class D_DropItemEventData : BGEntity, D_EventDummyData
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_DropItemEventData() : base(MetaDefault) {}
 	private D_DropItemEventData(BGId id) : base(MetaDefault, id) {}
 	private D_DropItemEventData(BGMetaEntity meta) : base(meta) {}
@@ -3708,6 +3741,7 @@ public partial class D_SpriteData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_SpriteData() : base(MetaDefault) {}
 	private D_SpriteData(BGId id) : base(MetaDefault, id) {}
 	private D_SpriteData(BGMetaEntity meta) : base(meta) {}
@@ -3792,6 +3826,7 @@ public partial class D_DropItemData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_DropItemData() : base(MetaDefault) {}
 	private D_DropItemData(BGId id) : base(MetaDefault, id) {}
 	private D_DropItemData(BGMetaEntity meta) : base(meta) {}
@@ -3895,6 +3930,7 @@ public partial class D_itemList : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_itemList() : base(MetaDefault) {}
 	private D_itemList(BGId id) : base(MetaDefault, id) {}
 	private D_itemList(BGMetaEntity meta) : base(meta) {}
@@ -4009,6 +4045,7 @@ public partial class D_itemStats : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_itemStats() : base(MetaDefault) {}
 	private D_itemStats(BGId id) : base(MetaDefault, id) {}
 	private D_itemStats(BGMetaEntity meta) : base(meta) {}
@@ -4103,6 +4140,7 @@ public partial class D_EnemyPlacementData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_EnemyPlacementData() : base(MetaDefault) {}
 	private D_EnemyPlacementData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyPlacementData(BGMetaEntity meta) : base(meta) {}
@@ -4214,6 +4252,7 @@ public partial class D_cellData : BGEntity
 	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
 	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
 	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
 	private D_cellData() : base(MetaDefault) {}
 	private D_cellData(BGId id) : base(MetaDefault, id) {}
 	private D_cellData(BGMetaEntity meta) : base(meta) {}
@@ -4230,6 +4269,830 @@ public partial class D_cellData : BGEntity
 	public static D_cellData NewEntity(D_EnemyPlacementData owner) => (D_cellData) MetaDefault.NewEntity(owner);
 	public static D_cellData NewEntity(D_EnemyPlacementData owner, BGId entityId) => (D_cellData) MetaDefault.NewEntity(owner, entityId);
 	public static D_cellData NewEntity(D_EnemyPlacementData owner, Action<D_cellData> callback) => (D_cellData) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_cellData)entity)));
+}
+
+public partial class D_UnitAppearanceData : BGEntity
+{
+
+	public class Factory : BGEntity.EntityFactory
+	{
+		public BGEntity NewEntity(BGMetaEntity meta) => new D_UnitAppearanceData(meta);
+		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_UnitAppearanceData(meta, id);
+	}
+
+	public static class __Names
+	{
+		public const string Meta = "UnitAppearanceData";
+		public const string name = "name";
+		public const string SlotNeckFrontSpriteKey = "SlotNeckFrontSpriteKey";
+		public const string SlotNeckFrontTint = "SlotNeckFrontTint";
+		public const string SlotNeckFrontEnabled = "SlotNeckFrontEnabled";
+		public const string SlotNeckFrontACCSpriteKey = "SlotNeckFrontACCSpriteKey";
+		public const string SlotNeckFrontACCTint = "SlotNeckFrontACCTint";
+		public const string SlotNeckFrontACCEnabled = "SlotNeckFrontACCEnabled";
+		public const string SlotNeckBackSpriteKey = "SlotNeckBackSpriteKey";
+		public const string SlotNeckBackTint = "SlotNeckBackTint";
+		public const string SlotNeckBackEnabled = "SlotNeckBackEnabled";
+		public const string SlotBodySpriteKey = "SlotBodySpriteKey";
+		public const string SlotBodyTint = "SlotBodyTint";
+		public const string SlotBodyEnabled = "SlotBodyEnabled";
+		public const string SlotSkinHeadSpriteKey = "SlotSkinHeadSpriteKey";
+		public const string SlotSkinHeadTint = "SlotSkinHeadTint";
+		public const string SlotSkinHeadEnabled = "SlotSkinHeadEnabled";
+		public const string SlotPaternMiddleSpriteKey = "SlotPaternMiddleSpriteKey";
+		public const string SlotPaternMiddleTint = "SlotPaternMiddleTint";
+		public const string SlotPaternMiddleEnabled = "SlotPaternMiddleEnabled";
+		public const string SlotEyeSpriteKey = "SlotEyeSpriteKey";
+		public const string SlotEyeTint = "SlotEyeTint";
+		public const string SlotEyeEnabled = "SlotEyeEnabled";
+		public const string SlotNoseSpriteKey = "SlotNoseSpriteKey";
+		public const string SlotNoseTint = "SlotNoseTint";
+		public const string SlotNoseEnabled = "SlotNoseEnabled";
+		public const string SlotGlassesSpriteKey = "SlotGlassesSpriteKey";
+		public const string SlotGlassesTint = "SlotGlassesTint";
+		public const string SlotGlassesEnabled = "SlotGlassesEnabled";
+		public const string SlotSkinEarSpriteKey = "SlotSkinEarSpriteKey";
+		public const string SlotSkinEarTint = "SlotSkinEarTint";
+		public const string SlotSkinEarEnabled = "SlotSkinEarEnabled";
+		public const string SlotInnerEarSpriteKey = "SlotInnerEarSpriteKey";
+		public const string SlotInnerEarTint = "SlotInnerEarTint";
+		public const string SlotInnerEarEnabled = "SlotInnerEarEnabled";
+		public const string SlotFrontHatSpriteKey = "SlotFrontHatSpriteKey";
+		public const string SlotFrontHatTint = "SlotFrontHatTint";
+		public const string SlotFrontHatEnabled = "SlotFrontHatEnabled";
+		public const string SlotBackHatSpriteKey = "SlotBackHatSpriteKey";
+		public const string SlotBackHatTint = "SlotBackHatTint";
+		public const string SlotBackHatEnabled = "SlotBackHatEnabled";
+		public const string SlotSkinTailSpriteKey = "SlotSkinTailSpriteKey";
+		public const string SlotSkinTailTint = "SlotSkinTailTint";
+		public const string SlotSkinTailEnabled = "SlotSkinTailEnabled";
+		public const string SlotRightShoulderSpriteKey = "SlotRightShoulderSpriteKey";
+		public const string SlotRightShoulderTint = "SlotRightShoulderTint";
+		public const string SlotRightShoulderEnabled = "SlotRightShoulderEnabled";
+		public const string SlotSkinRightArmSpriteKey = "SlotSkinRightArmSpriteKey";
+		public const string SlotSkinRightArmTint = "SlotSkinRightArmTint";
+		public const string SlotSkinRightArmEnabled = "SlotSkinRightArmEnabled";
+		public const string SlotRightArmClothSpriteKey = "SlotRightArmClothSpriteKey";
+		public const string SlotRightArmClothTint = "SlotRightArmClothTint";
+		public const string SlotRightArmClothEnabled = "SlotRightArmClothEnabled";
+		public const string SlotWeaponArrowSpriteKey = "SlotWeaponArrowSpriteKey";
+		public const string SlotWeaponArrowTint = "SlotWeaponArrowTint";
+		public const string SlotWeaponArrowEnabled = "SlotWeaponArrowEnabled";
+		public const string SlotLeftShoulderSpriteKey = "SlotLeftShoulderSpriteKey";
+		public const string SlotLeftShoulderTint = "SlotLeftShoulderTint";
+		public const string SlotLeftShoulderEnabled = "SlotLeftShoulderEnabled";
+		public const string SlotSkinLeftArmSpriteKey = "SlotSkinLeftArmSpriteKey";
+		public const string SlotSkinLeftArmTint = "SlotSkinLeftArmTint";
+		public const string SlotSkinLeftArmEnabled = "SlotSkinLeftArmEnabled";
+		public const string SlotWeaponSpearSpriteKey = "SlotWeaponSpearSpriteKey";
+		public const string SlotWeaponSpearTint = "SlotWeaponSpearTint";
+		public const string SlotWeaponSpearEnabled = "SlotWeaponSpearEnabled";
+		public const string SlotWeaponSwordSpriteKey = "SlotWeaponSwordSpriteKey";
+		public const string SlotWeaponSwordTint = "SlotWeaponSwordTint";
+		public const string SlotWeaponSwordEnabled = "SlotWeaponSwordEnabled";
+		public const string SlotBowMiddleSpriteKey = "SlotBowMiddleSpriteKey";
+		public const string SlotBowMiddleTint = "SlotBowMiddleTint";
+		public const string SlotBowMiddleEnabled = "SlotBowMiddleEnabled";
+		public const string SlotBowTopSpriteKey = "SlotBowTopSpriteKey";
+		public const string SlotBowTopTint = "SlotBowTopTint";
+		public const string SlotBowTopEnabled = "SlotBowTopEnabled";
+		public const string SlotBowLineTopSpriteKey = "SlotBowLineTopSpriteKey";
+		public const string SlotBowLineTopTint = "SlotBowLineTopTint";
+		public const string SlotBowLineTopEnabled = "SlotBowLineTopEnabled";
+		public const string SlotBowBottomSpriteKey = "SlotBowBottomSpriteKey";
+		public const string SlotBowBottomTint = "SlotBowBottomTint";
+		public const string SlotBowBottomEnabled = "SlotBowBottomEnabled";
+		public const string SlotBowLineBottomSpriteKey = "SlotBowLineBottomSpriteKey";
+		public const string SlotBowLineBottomTint = "SlotBowLineBottomTint";
+		public const string SlotBowLineBottomEnabled = "SlotBowLineBottomEnabled";
+		public const string SlotLeftArmClothSpriteKey = "SlotLeftArmClothSpriteKey";
+		public const string SlotLeftArmClothTint = "SlotLeftArmClothTint";
+		public const string SlotLeftArmClothEnabled = "SlotLeftArmClothEnabled";
+		public const string SlotBeltSpriteKey = "SlotBeltSpriteKey";
+		public const string SlotBeltTint = "SlotBeltTint";
+		public const string SlotBeltEnabled = "SlotBeltEnabled";
+		public const string SlotLeftLegSpriteKey = "SlotLeftLegSpriteKey";
+		public const string SlotLeftLegTint = "SlotLeftLegTint";
+		public const string SlotLeftLegEnabled = "SlotLeftLegEnabled";
+		public const string SlotRightLegSpriteKey = "SlotRightLegSpriteKey";
+		public const string SlotRightLegTint = "SlotRightLegTint";
+		public const string SlotRightLegEnabled = "SlotRightLegEnabled";
+	}
+	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
+	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4729747390774859296UL,10352431840437797552UL), () => _metaDefault = null));
+	public static BansheeGz.BGDatabase.BGRepoEvents Events => BGRepo.I.Events;
+	public static int CountEntities => MetaDefault.CountEntities;
+	public System.String f_name
+	{
+		get => _f_name[Index];
+		set => _f_name[Index] = value;
+	}
+	public System.String f_SlotNeckFrontSpriteKey
+	{
+		get => _f_SlotNeckFrontSpriteKey[Index];
+		set => _f_SlotNeckFrontSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotNeckFrontTint
+	{
+		get => _f_SlotNeckFrontTint[Index];
+		set => _f_SlotNeckFrontTint[Index] = value;
+	}
+	public System.Boolean f_SlotNeckFrontEnabled
+	{
+		get => _f_SlotNeckFrontEnabled[Index];
+		set => _f_SlotNeckFrontEnabled[Index] = value;
+	}
+	public System.String f_SlotNeckFrontACCSpriteKey
+	{
+		get => _f_SlotNeckFrontACCSpriteKey[Index];
+		set => _f_SlotNeckFrontACCSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotNeckFrontACCTint
+	{
+		get => _f_SlotNeckFrontACCTint[Index];
+		set => _f_SlotNeckFrontACCTint[Index] = value;
+	}
+	public System.Boolean f_SlotNeckFrontACCEnabled
+	{
+		get => _f_SlotNeckFrontACCEnabled[Index];
+		set => _f_SlotNeckFrontACCEnabled[Index] = value;
+	}
+	public System.String f_SlotNeckBackSpriteKey
+	{
+		get => _f_SlotNeckBackSpriteKey[Index];
+		set => _f_SlotNeckBackSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotNeckBackTint
+	{
+		get => _f_SlotNeckBackTint[Index];
+		set => _f_SlotNeckBackTint[Index] = value;
+	}
+	public System.Boolean f_SlotNeckBackEnabled
+	{
+		get => _f_SlotNeckBackEnabled[Index];
+		set => _f_SlotNeckBackEnabled[Index] = value;
+	}
+	public System.String f_SlotBodySpriteKey
+	{
+		get => _f_SlotBodySpriteKey[Index];
+		set => _f_SlotBodySpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBodyTint
+	{
+		get => _f_SlotBodyTint[Index];
+		set => _f_SlotBodyTint[Index] = value;
+	}
+	public System.Boolean f_SlotBodyEnabled
+	{
+		get => _f_SlotBodyEnabled[Index];
+		set => _f_SlotBodyEnabled[Index] = value;
+	}
+	public System.String f_SlotSkinHeadSpriteKey
+	{
+		get => _f_SlotSkinHeadSpriteKey[Index];
+		set => _f_SlotSkinHeadSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotSkinHeadTint
+	{
+		get => _f_SlotSkinHeadTint[Index];
+		set => _f_SlotSkinHeadTint[Index] = value;
+	}
+	public System.Boolean f_SlotSkinHeadEnabled
+	{
+		get => _f_SlotSkinHeadEnabled[Index];
+		set => _f_SlotSkinHeadEnabled[Index] = value;
+	}
+	public System.String f_SlotPaternMiddleSpriteKey
+	{
+		get => _f_SlotPaternMiddleSpriteKey[Index];
+		set => _f_SlotPaternMiddleSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotPaternMiddleTint
+	{
+		get => _f_SlotPaternMiddleTint[Index];
+		set => _f_SlotPaternMiddleTint[Index] = value;
+	}
+	public System.Boolean f_SlotPaternMiddleEnabled
+	{
+		get => _f_SlotPaternMiddleEnabled[Index];
+		set => _f_SlotPaternMiddleEnabled[Index] = value;
+	}
+	public System.String f_SlotEyeSpriteKey
+	{
+		get => _f_SlotEyeSpriteKey[Index];
+		set => _f_SlotEyeSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotEyeTint
+	{
+		get => _f_SlotEyeTint[Index];
+		set => _f_SlotEyeTint[Index] = value;
+	}
+	public System.Boolean f_SlotEyeEnabled
+	{
+		get => _f_SlotEyeEnabled[Index];
+		set => _f_SlotEyeEnabled[Index] = value;
+	}
+	public System.String f_SlotNoseSpriteKey
+	{
+		get => _f_SlotNoseSpriteKey[Index];
+		set => _f_SlotNoseSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotNoseTint
+	{
+		get => _f_SlotNoseTint[Index];
+		set => _f_SlotNoseTint[Index] = value;
+	}
+	public System.Boolean f_SlotNoseEnabled
+	{
+		get => _f_SlotNoseEnabled[Index];
+		set => _f_SlotNoseEnabled[Index] = value;
+	}
+	public System.String f_SlotGlassesSpriteKey
+	{
+		get => _f_SlotGlassesSpriteKey[Index];
+		set => _f_SlotGlassesSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotGlassesTint
+	{
+		get => _f_SlotGlassesTint[Index];
+		set => _f_SlotGlassesTint[Index] = value;
+	}
+	public System.Boolean f_SlotGlassesEnabled
+	{
+		get => _f_SlotGlassesEnabled[Index];
+		set => _f_SlotGlassesEnabled[Index] = value;
+	}
+	public System.String f_SlotSkinEarSpriteKey
+	{
+		get => _f_SlotSkinEarSpriteKey[Index];
+		set => _f_SlotSkinEarSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotSkinEarTint
+	{
+		get => _f_SlotSkinEarTint[Index];
+		set => _f_SlotSkinEarTint[Index] = value;
+	}
+	public System.Boolean f_SlotSkinEarEnabled
+	{
+		get => _f_SlotSkinEarEnabled[Index];
+		set => _f_SlotSkinEarEnabled[Index] = value;
+	}
+	public System.String f_SlotInnerEarSpriteKey
+	{
+		get => _f_SlotInnerEarSpriteKey[Index];
+		set => _f_SlotInnerEarSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotInnerEarTint
+	{
+		get => _f_SlotInnerEarTint[Index];
+		set => _f_SlotInnerEarTint[Index] = value;
+	}
+	public System.Boolean f_SlotInnerEarEnabled
+	{
+		get => _f_SlotInnerEarEnabled[Index];
+		set => _f_SlotInnerEarEnabled[Index] = value;
+	}
+	public System.String f_SlotFrontHatSpriteKey
+	{
+		get => _f_SlotFrontHatSpriteKey[Index];
+		set => _f_SlotFrontHatSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotFrontHatTint
+	{
+		get => _f_SlotFrontHatTint[Index];
+		set => _f_SlotFrontHatTint[Index] = value;
+	}
+	public System.Boolean f_SlotFrontHatEnabled
+	{
+		get => _f_SlotFrontHatEnabled[Index];
+		set => _f_SlotFrontHatEnabled[Index] = value;
+	}
+	public System.String f_SlotBackHatSpriteKey
+	{
+		get => _f_SlotBackHatSpriteKey[Index];
+		set => _f_SlotBackHatSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBackHatTint
+	{
+		get => _f_SlotBackHatTint[Index];
+		set => _f_SlotBackHatTint[Index] = value;
+	}
+	public System.Boolean f_SlotBackHatEnabled
+	{
+		get => _f_SlotBackHatEnabled[Index];
+		set => _f_SlotBackHatEnabled[Index] = value;
+	}
+	public System.String f_SlotSkinTailSpriteKey
+	{
+		get => _f_SlotSkinTailSpriteKey[Index];
+		set => _f_SlotSkinTailSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotSkinTailTint
+	{
+		get => _f_SlotSkinTailTint[Index];
+		set => _f_SlotSkinTailTint[Index] = value;
+	}
+	public System.Boolean f_SlotSkinTailEnabled
+	{
+		get => _f_SlotSkinTailEnabled[Index];
+		set => _f_SlotSkinTailEnabled[Index] = value;
+	}
+	public System.String f_SlotRightShoulderSpriteKey
+	{
+		get => _f_SlotRightShoulderSpriteKey[Index];
+		set => _f_SlotRightShoulderSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotRightShoulderTint
+	{
+		get => _f_SlotRightShoulderTint[Index];
+		set => _f_SlotRightShoulderTint[Index] = value;
+	}
+	public System.Boolean f_SlotRightShoulderEnabled
+	{
+		get => _f_SlotRightShoulderEnabled[Index];
+		set => _f_SlotRightShoulderEnabled[Index] = value;
+	}
+	public System.String f_SlotSkinRightArmSpriteKey
+	{
+		get => _f_SlotSkinRightArmSpriteKey[Index];
+		set => _f_SlotSkinRightArmSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotSkinRightArmTint
+	{
+		get => _f_SlotSkinRightArmTint[Index];
+		set => _f_SlotSkinRightArmTint[Index] = value;
+	}
+	public System.Boolean f_SlotSkinRightArmEnabled
+	{
+		get => _f_SlotSkinRightArmEnabled[Index];
+		set => _f_SlotSkinRightArmEnabled[Index] = value;
+	}
+	public System.String f_SlotRightArmClothSpriteKey
+	{
+		get => _f_SlotRightArmClothSpriteKey[Index];
+		set => _f_SlotRightArmClothSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotRightArmClothTint
+	{
+		get => _f_SlotRightArmClothTint[Index];
+		set => _f_SlotRightArmClothTint[Index] = value;
+	}
+	public System.Boolean f_SlotRightArmClothEnabled
+	{
+		get => _f_SlotRightArmClothEnabled[Index];
+		set => _f_SlotRightArmClothEnabled[Index] = value;
+	}
+	public System.String f_SlotWeaponArrowSpriteKey
+	{
+		get => _f_SlotWeaponArrowSpriteKey[Index];
+		set => _f_SlotWeaponArrowSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotWeaponArrowTint
+	{
+		get => _f_SlotWeaponArrowTint[Index];
+		set => _f_SlotWeaponArrowTint[Index] = value;
+	}
+	public System.Boolean f_SlotWeaponArrowEnabled
+	{
+		get => _f_SlotWeaponArrowEnabled[Index];
+		set => _f_SlotWeaponArrowEnabled[Index] = value;
+	}
+	public System.String f_SlotLeftShoulderSpriteKey
+	{
+		get => _f_SlotLeftShoulderSpriteKey[Index];
+		set => _f_SlotLeftShoulderSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotLeftShoulderTint
+	{
+		get => _f_SlotLeftShoulderTint[Index];
+		set => _f_SlotLeftShoulderTint[Index] = value;
+	}
+	public System.Boolean f_SlotLeftShoulderEnabled
+	{
+		get => _f_SlotLeftShoulderEnabled[Index];
+		set => _f_SlotLeftShoulderEnabled[Index] = value;
+	}
+	public System.String f_SlotSkinLeftArmSpriteKey
+	{
+		get => _f_SlotSkinLeftArmSpriteKey[Index];
+		set => _f_SlotSkinLeftArmSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotSkinLeftArmTint
+	{
+		get => _f_SlotSkinLeftArmTint[Index];
+		set => _f_SlotSkinLeftArmTint[Index] = value;
+	}
+	public System.Boolean f_SlotSkinLeftArmEnabled
+	{
+		get => _f_SlotSkinLeftArmEnabled[Index];
+		set => _f_SlotSkinLeftArmEnabled[Index] = value;
+	}
+	public System.String f_SlotWeaponSpearSpriteKey
+	{
+		get => _f_SlotWeaponSpearSpriteKey[Index];
+		set => _f_SlotWeaponSpearSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotWeaponSpearTint
+	{
+		get => _f_SlotWeaponSpearTint[Index];
+		set => _f_SlotWeaponSpearTint[Index] = value;
+	}
+	public System.Boolean f_SlotWeaponSpearEnabled
+	{
+		get => _f_SlotWeaponSpearEnabled[Index];
+		set => _f_SlotWeaponSpearEnabled[Index] = value;
+	}
+	public System.String f_SlotWeaponSwordSpriteKey
+	{
+		get => _f_SlotWeaponSwordSpriteKey[Index];
+		set => _f_SlotWeaponSwordSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotWeaponSwordTint
+	{
+		get => _f_SlotWeaponSwordTint[Index];
+		set => _f_SlotWeaponSwordTint[Index] = value;
+	}
+	public System.Boolean f_SlotWeaponSwordEnabled
+	{
+		get => _f_SlotWeaponSwordEnabled[Index];
+		set => _f_SlotWeaponSwordEnabled[Index] = value;
+	}
+	public System.String f_SlotBowMiddleSpriteKey
+	{
+		get => _f_SlotBowMiddleSpriteKey[Index];
+		set => _f_SlotBowMiddleSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBowMiddleTint
+	{
+		get => _f_SlotBowMiddleTint[Index];
+		set => _f_SlotBowMiddleTint[Index] = value;
+	}
+	public System.Boolean f_SlotBowMiddleEnabled
+	{
+		get => _f_SlotBowMiddleEnabled[Index];
+		set => _f_SlotBowMiddleEnabled[Index] = value;
+	}
+	public System.String f_SlotBowTopSpriteKey
+	{
+		get => _f_SlotBowTopSpriteKey[Index];
+		set => _f_SlotBowTopSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBowTopTint
+	{
+		get => _f_SlotBowTopTint[Index];
+		set => _f_SlotBowTopTint[Index] = value;
+	}
+	public System.Boolean f_SlotBowTopEnabled
+	{
+		get => _f_SlotBowTopEnabled[Index];
+		set => _f_SlotBowTopEnabled[Index] = value;
+	}
+	public System.String f_SlotBowLineTopSpriteKey
+	{
+		get => _f_SlotBowLineTopSpriteKey[Index];
+		set => _f_SlotBowLineTopSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBowLineTopTint
+	{
+		get => _f_SlotBowLineTopTint[Index];
+		set => _f_SlotBowLineTopTint[Index] = value;
+	}
+	public System.Boolean f_SlotBowLineTopEnabled
+	{
+		get => _f_SlotBowLineTopEnabled[Index];
+		set => _f_SlotBowLineTopEnabled[Index] = value;
+	}
+	public System.String f_SlotBowBottomSpriteKey
+	{
+		get => _f_SlotBowBottomSpriteKey[Index];
+		set => _f_SlotBowBottomSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBowBottomTint
+	{
+		get => _f_SlotBowBottomTint[Index];
+		set => _f_SlotBowBottomTint[Index] = value;
+	}
+	public System.Boolean f_SlotBowBottomEnabled
+	{
+		get => _f_SlotBowBottomEnabled[Index];
+		set => _f_SlotBowBottomEnabled[Index] = value;
+	}
+	public System.String f_SlotBowLineBottomSpriteKey
+	{
+		get => _f_SlotBowLineBottomSpriteKey[Index];
+		set => _f_SlotBowLineBottomSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBowLineBottomTint
+	{
+		get => _f_SlotBowLineBottomTint[Index];
+		set => _f_SlotBowLineBottomTint[Index] = value;
+	}
+	public System.Boolean f_SlotBowLineBottomEnabled
+	{
+		get => _f_SlotBowLineBottomEnabled[Index];
+		set => _f_SlotBowLineBottomEnabled[Index] = value;
+	}
+	public System.String f_SlotLeftArmClothSpriteKey
+	{
+		get => _f_SlotLeftArmClothSpriteKey[Index];
+		set => _f_SlotLeftArmClothSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotLeftArmClothTint
+	{
+		get => _f_SlotLeftArmClothTint[Index];
+		set => _f_SlotLeftArmClothTint[Index] = value;
+	}
+	public System.Boolean f_SlotLeftArmClothEnabled
+	{
+		get => _f_SlotLeftArmClothEnabled[Index];
+		set => _f_SlotLeftArmClothEnabled[Index] = value;
+	}
+	public System.String f_SlotBeltSpriteKey
+	{
+		get => _f_SlotBeltSpriteKey[Index];
+		set => _f_SlotBeltSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBeltTint
+	{
+		get => _f_SlotBeltTint[Index];
+		set => _f_SlotBeltTint[Index] = value;
+	}
+	public System.Boolean f_SlotBeltEnabled
+	{
+		get => _f_SlotBeltEnabled[Index];
+		set => _f_SlotBeltEnabled[Index] = value;
+	}
+	public System.String f_SlotLeftLegSpriteKey
+	{
+		get => _f_SlotLeftLegSpriteKey[Index];
+		set => _f_SlotLeftLegSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotLeftLegTint
+	{
+		get => _f_SlotLeftLegTint[Index];
+		set => _f_SlotLeftLegTint[Index] = value;
+	}
+	public System.Boolean f_SlotLeftLegEnabled
+	{
+		get => _f_SlotLeftLegEnabled[Index];
+		set => _f_SlotLeftLegEnabled[Index] = value;
+	}
+	public System.String f_SlotRightLegSpriteKey
+	{
+		get => _f_SlotRightLegSpriteKey[Index];
+		set => _f_SlotRightLegSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotRightLegTint
+	{
+		get => _f_SlotRightLegTint[Index];
+		set => _f_SlotRightLegTint[Index] = value;
+	}
+	public System.Boolean f_SlotRightLegEnabled
+	{
+		get => _f_SlotRightLegEnabled[Index];
+		set => _f_SlotRightLegEnabled[Index] = value;
+	}
+	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
+	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5747305129318046422UL, 8466311968996001153UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNeckFrontSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotNeckFrontSpriteKey => _ufle12jhs77_f_SlotNeckFrontSpriteKey ?? (_ufle12jhs77_f_SlotNeckFrontSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5342154205522241166UL, 13930982754814050448UL), () => _ufle12jhs77_f_SlotNeckFrontSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotNeckFrontTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotNeckFrontTint => _ufle12jhs77_f_SlotNeckFrontTint ?? (_ufle12jhs77_f_SlotNeckFrontTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5594454117698348811UL, 11808312880583774604UL), () => _ufle12jhs77_f_SlotNeckFrontTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotNeckFrontEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotNeckFrontEnabled => _ufle12jhs77_f_SlotNeckFrontEnabled ?? (_ufle12jhs77_f_SlotNeckFrontEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5142337620564874329UL, 6539911539550214545UL), () => _ufle12jhs77_f_SlotNeckFrontEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNeckFrontACCSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotNeckFrontACCSpriteKey => _ufle12jhs77_f_SlotNeckFrontACCSpriteKey ?? (_ufle12jhs77_f_SlotNeckFrontACCSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4808165067657194745UL, 3136095969668931979UL), () => _ufle12jhs77_f_SlotNeckFrontACCSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotNeckFrontACCTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotNeckFrontACCTint => _ufle12jhs77_f_SlotNeckFrontACCTint ?? (_ufle12jhs77_f_SlotNeckFrontACCTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5114095798803177497UL, 3805594892821321888UL), () => _ufle12jhs77_f_SlotNeckFrontACCTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotNeckFrontACCEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotNeckFrontACCEnabled => _ufle12jhs77_f_SlotNeckFrontACCEnabled ?? (_ufle12jhs77_f_SlotNeckFrontACCEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5234592825778624923UL, 6524506844228775041UL), () => _ufle12jhs77_f_SlotNeckFrontACCEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNeckBackSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotNeckBackSpriteKey => _ufle12jhs77_f_SlotNeckBackSpriteKey ?? (_ufle12jhs77_f_SlotNeckBackSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5310330778278163020UL, 18104724647299502231UL), () => _ufle12jhs77_f_SlotNeckBackSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotNeckBackTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotNeckBackTint => _ufle12jhs77_f_SlotNeckBackTint ?? (_ufle12jhs77_f_SlotNeckBackTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5686241032068730460UL, 7474261415342725509UL), () => _ufle12jhs77_f_SlotNeckBackTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotNeckBackEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotNeckBackEnabled => _ufle12jhs77_f_SlotNeckBackEnabled ?? (_ufle12jhs77_f_SlotNeckBackEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5586570577227259578UL, 8769598488268749699UL), () => _ufle12jhs77_f_SlotNeckBackEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBodySpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBodySpriteKey => _ufle12jhs77_f_SlotBodySpriteKey ?? (_ufle12jhs77_f_SlotBodySpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4675378968753417014UL, 16002108847809233589UL), () => _ufle12jhs77_f_SlotBodySpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBodyTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBodyTint => _ufle12jhs77_f_SlotBodyTint ?? (_ufle12jhs77_f_SlotBodyTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5604497286296686331UL, 16146487369324355732UL), () => _ufle12jhs77_f_SlotBodyTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBodyEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBodyEnabled => _ufle12jhs77_f_SlotBodyEnabled ?? (_ufle12jhs77_f_SlotBodyEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5275059473778601417UL, 808450498003499706UL), () => _ufle12jhs77_f_SlotBodyEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinHeadSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinHeadSpriteKey => _ufle12jhs77_f_SlotSkinHeadSpriteKey ?? (_ufle12jhs77_f_SlotSkinHeadSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5045081690899316659UL, 2857714172404572324UL), () => _ufle12jhs77_f_SlotSkinHeadSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinHeadTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinHeadTint => _ufle12jhs77_f_SlotSkinHeadTint ?? (_ufle12jhs77_f_SlotSkinHeadTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5191781931153259743UL, 9933269517855168947UL), () => _ufle12jhs77_f_SlotSkinHeadTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinHeadEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinHeadEnabled => _ufle12jhs77_f_SlotSkinHeadEnabled ?? (_ufle12jhs77_f_SlotSkinHeadEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4700094984796146797UL, 4494705550477689496UL), () => _ufle12jhs77_f_SlotSkinHeadEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotPaternMiddleSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotPaternMiddleSpriteKey => _ufle12jhs77_f_SlotPaternMiddleSpriteKey ?? (_ufle12jhs77_f_SlotPaternMiddleSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4956587329259206885UL, 13971357755808543138UL), () => _ufle12jhs77_f_SlotPaternMiddleSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotPaternMiddleTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotPaternMiddleTint => _ufle12jhs77_f_SlotPaternMiddleTint ?? (_ufle12jhs77_f_SlotPaternMiddleTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5625049156326012530UL, 3407998057907329196UL), () => _ufle12jhs77_f_SlotPaternMiddleTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotPaternMiddleEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotPaternMiddleEnabled => _ufle12jhs77_f_SlotPaternMiddleEnabled ?? (_ufle12jhs77_f_SlotPaternMiddleEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5230623630422775983UL, 3464322534107001275UL), () => _ufle12jhs77_f_SlotPaternMiddleEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotEyeSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotEyeSpriteKey => _ufle12jhs77_f_SlotEyeSpriteKey ?? (_ufle12jhs77_f_SlotEyeSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5683628167674771563UL, 638668927975989382UL), () => _ufle12jhs77_f_SlotEyeSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotEyeTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotEyeTint => _ufle12jhs77_f_SlotEyeTint ?? (_ufle12jhs77_f_SlotEyeTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5553639539245840265UL, 12818389686349559221UL), () => _ufle12jhs77_f_SlotEyeTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotEyeEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotEyeEnabled => _ufle12jhs77_f_SlotEyeEnabled ?? (_ufle12jhs77_f_SlotEyeEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4955371675972633959UL, 16011166583717514909UL), () => _ufle12jhs77_f_SlotEyeEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNoseSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotNoseSpriteKey => _ufle12jhs77_f_SlotNoseSpriteKey ?? (_ufle12jhs77_f_SlotNoseSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5202540373549623968UL, 4239676691774015905UL), () => _ufle12jhs77_f_SlotNoseSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotNoseTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotNoseTint => _ufle12jhs77_f_SlotNoseTint ?? (_ufle12jhs77_f_SlotNoseTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4860526531426714264UL, 13913433772557307313UL), () => _ufle12jhs77_f_SlotNoseTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotNoseEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotNoseEnabled => _ufle12jhs77_f_SlotNoseEnabled ?? (_ufle12jhs77_f_SlotNoseEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5440128652116132740UL, 16906768101004544698UL), () => _ufle12jhs77_f_SlotNoseEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotGlassesSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotGlassesSpriteKey => _ufle12jhs77_f_SlotGlassesSpriteKey ?? (_ufle12jhs77_f_SlotGlassesSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5611126091102757541UL, 11007713946943992237UL), () => _ufle12jhs77_f_SlotGlassesSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotGlassesTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotGlassesTint => _ufle12jhs77_f_SlotGlassesTint ?? (_ufle12jhs77_f_SlotGlassesTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5210163422560330203UL, 12421276651937107628UL), () => _ufle12jhs77_f_SlotGlassesTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotGlassesEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotGlassesEnabled => _ufle12jhs77_f_SlotGlassesEnabled ?? (_ufle12jhs77_f_SlotGlassesEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4663310699130088237UL, 13466299638869637518UL), () => _ufle12jhs77_f_SlotGlassesEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinEarSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinEarSpriteKey => _ufle12jhs77_f_SlotSkinEarSpriteKey ?? (_ufle12jhs77_f_SlotSkinEarSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5473361601512076949UL, 12077385727910604712UL), () => _ufle12jhs77_f_SlotSkinEarSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinEarTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinEarTint => _ufle12jhs77_f_SlotSkinEarTint ?? (_ufle12jhs77_f_SlotSkinEarTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5271699409901628976UL, 16998318700298999484UL), () => _ufle12jhs77_f_SlotSkinEarTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinEarEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinEarEnabled => _ufle12jhs77_f_SlotSkinEarEnabled ?? (_ufle12jhs77_f_SlotSkinEarEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5165895466736589214UL, 9609990574138788760UL), () => _ufle12jhs77_f_SlotSkinEarEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotInnerEarSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotInnerEarSpriteKey => _ufle12jhs77_f_SlotInnerEarSpriteKey ?? (_ufle12jhs77_f_SlotInnerEarSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5152987111197157750UL, 2484085589990726036UL), () => _ufle12jhs77_f_SlotInnerEarSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotInnerEarTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotInnerEarTint => _ufle12jhs77_f_SlotInnerEarTint ?? (_ufle12jhs77_f_SlotInnerEarTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5487403816137232637UL, 15972738508677617286UL), () => _ufle12jhs77_f_SlotInnerEarTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotInnerEarEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotInnerEarEnabled => _ufle12jhs77_f_SlotInnerEarEnabled ?? (_ufle12jhs77_f_SlotInnerEarEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4913277315230529688UL, 7236934104885934506UL), () => _ufle12jhs77_f_SlotInnerEarEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotFrontHatSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotFrontHatSpriteKey => _ufle12jhs77_f_SlotFrontHatSpriteKey ?? (_ufle12jhs77_f_SlotFrontHatSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5295971255536951380UL, 3692568684789114796UL), () => _ufle12jhs77_f_SlotFrontHatSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotFrontHatTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotFrontHatTint => _ufle12jhs77_f_SlotFrontHatTint ?? (_ufle12jhs77_f_SlotFrontHatTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5197429840352786537UL, 1486135354838516367UL), () => _ufle12jhs77_f_SlotFrontHatTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotFrontHatEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotFrontHatEnabled => _ufle12jhs77_f_SlotFrontHatEnabled ?? (_ufle12jhs77_f_SlotFrontHatEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5165580490004435889UL, 13495570108394398118UL), () => _ufle12jhs77_f_SlotFrontHatEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBackHatSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBackHatSpriteKey => _ufle12jhs77_f_SlotBackHatSpriteKey ?? (_ufle12jhs77_f_SlotBackHatSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5742236893003748708UL, 3643631270596044731UL), () => _ufle12jhs77_f_SlotBackHatSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBackHatTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBackHatTint => _ufle12jhs77_f_SlotBackHatTint ?? (_ufle12jhs77_f_SlotBackHatTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4910605167854492139UL, 17331458538307527320UL), () => _ufle12jhs77_f_SlotBackHatTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBackHatEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBackHatEnabled => _ufle12jhs77_f_SlotBackHatEnabled ?? (_ufle12jhs77_f_SlotBackHatEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4856348146410613655UL, 11490805503936748678UL), () => _ufle12jhs77_f_SlotBackHatEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinTailSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinTailSpriteKey => _ufle12jhs77_f_SlotSkinTailSpriteKey ?? (_ufle12jhs77_f_SlotSkinTailSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4860169982843799711UL, 143914607497434806UL), () => _ufle12jhs77_f_SlotSkinTailSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinTailTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinTailTint => _ufle12jhs77_f_SlotSkinTailTint ?? (_ufle12jhs77_f_SlotSkinTailTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4850450920086922990UL, 3089025165612817827UL), () => _ufle12jhs77_f_SlotSkinTailTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinTailEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinTailEnabled => _ufle12jhs77_f_SlotSkinTailEnabled ?? (_ufle12jhs77_f_SlotSkinTailEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5225861280683831170UL, 14406464115147064501UL), () => _ufle12jhs77_f_SlotSkinTailEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotRightShoulderSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotRightShoulderSpriteKey => _ufle12jhs77_f_SlotRightShoulderSpriteKey ?? (_ufle12jhs77_f_SlotRightShoulderSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5196652602564948692UL, 168769067729309355UL), () => _ufle12jhs77_f_SlotRightShoulderSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotRightShoulderTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotRightShoulderTint => _ufle12jhs77_f_SlotRightShoulderTint ?? (_ufle12jhs77_f_SlotRightShoulderTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5375288987494190082UL, 7015149811186069391UL), () => _ufle12jhs77_f_SlotRightShoulderTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotRightShoulderEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotRightShoulderEnabled => _ufle12jhs77_f_SlotRightShoulderEnabled ?? (_ufle12jhs77_f_SlotRightShoulderEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5329414019183589185UL, 13149120598185806251UL), () => _ufle12jhs77_f_SlotRightShoulderEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinRightArmSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinRightArmSpriteKey => _ufle12jhs77_f_SlotSkinRightArmSpriteKey ?? (_ufle12jhs77_f_SlotSkinRightArmSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4968968388175458599UL, 11059346253695968435UL), () => _ufle12jhs77_f_SlotSkinRightArmSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinRightArmTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinRightArmTint => _ufle12jhs77_f_SlotSkinRightArmTint ?? (_ufle12jhs77_f_SlotSkinRightArmTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5060860187883700714UL, 16468495372648908702UL), () => _ufle12jhs77_f_SlotSkinRightArmTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinRightArmEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinRightArmEnabled => _ufle12jhs77_f_SlotSkinRightArmEnabled ?? (_ufle12jhs77_f_SlotSkinRightArmEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5419362321992128108UL, 4938344714039665538UL), () => _ufle12jhs77_f_SlotSkinRightArmEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotRightArmClothSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotRightArmClothSpriteKey => _ufle12jhs77_f_SlotRightArmClothSpriteKey ?? (_ufle12jhs77_f_SlotRightArmClothSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5260369735886034749UL, 14657902238633276061UL), () => _ufle12jhs77_f_SlotRightArmClothSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotRightArmClothTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotRightArmClothTint => _ufle12jhs77_f_SlotRightArmClothTint ?? (_ufle12jhs77_f_SlotRightArmClothTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5080448898210795134UL, 14535030106623077547UL), () => _ufle12jhs77_f_SlotRightArmClothTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotRightArmClothEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotRightArmClothEnabled => _ufle12jhs77_f_SlotRightArmClothEnabled ?? (_ufle12jhs77_f_SlotRightArmClothEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5548260254057144345UL, 14216579542052668595UL), () => _ufle12jhs77_f_SlotRightArmClothEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotWeaponArrowSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotWeaponArrowSpriteKey => _ufle12jhs77_f_SlotWeaponArrowSpriteKey ?? (_ufle12jhs77_f_SlotWeaponArrowSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4619904350930554080UL, 9296504731150432171UL), () => _ufle12jhs77_f_SlotWeaponArrowSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotWeaponArrowTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotWeaponArrowTint => _ufle12jhs77_f_SlotWeaponArrowTint ?? (_ufle12jhs77_f_SlotWeaponArrowTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5434956959963493062UL, 11709133160819472776UL), () => _ufle12jhs77_f_SlotWeaponArrowTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotWeaponArrowEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotWeaponArrowEnabled => _ufle12jhs77_f_SlotWeaponArrowEnabled ?? (_ufle12jhs77_f_SlotWeaponArrowEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5752182729128170678UL, 4883666700323591599UL), () => _ufle12jhs77_f_SlotWeaponArrowEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotLeftShoulderSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotLeftShoulderSpriteKey => _ufle12jhs77_f_SlotLeftShoulderSpriteKey ?? (_ufle12jhs77_f_SlotLeftShoulderSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5520416271617928568UL, 5359441182906725540UL), () => _ufle12jhs77_f_SlotLeftShoulderSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotLeftShoulderTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotLeftShoulderTint => _ufle12jhs77_f_SlotLeftShoulderTint ?? (_ufle12jhs77_f_SlotLeftShoulderTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5582043650781731969UL, 13894852274977707173UL), () => _ufle12jhs77_f_SlotLeftShoulderTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotLeftShoulderEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotLeftShoulderEnabled => _ufle12jhs77_f_SlotLeftShoulderEnabled ?? (_ufle12jhs77_f_SlotLeftShoulderEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5096523682731923879UL, 9108236162243143084UL), () => _ufle12jhs77_f_SlotLeftShoulderEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinLeftArmSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinLeftArmSpriteKey => _ufle12jhs77_f_SlotSkinLeftArmSpriteKey ?? (_ufle12jhs77_f_SlotSkinLeftArmSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5688995310405970622UL, 3665650157229360039UL), () => _ufle12jhs77_f_SlotSkinLeftArmSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinLeftArmTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinLeftArmTint => _ufle12jhs77_f_SlotSkinLeftArmTint ?? (_ufle12jhs77_f_SlotSkinLeftArmTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5677375557910171539UL, 12062650061047603378UL), () => _ufle12jhs77_f_SlotSkinLeftArmTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinLeftArmEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinLeftArmEnabled => _ufle12jhs77_f_SlotSkinLeftArmEnabled ?? (_ufle12jhs77_f_SlotSkinLeftArmEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5549067326041588988UL, 15200354503379809959UL), () => _ufle12jhs77_f_SlotSkinLeftArmEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotWeaponSpearSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotWeaponSpearSpriteKey => _ufle12jhs77_f_SlotWeaponSpearSpriteKey ?? (_ufle12jhs77_f_SlotWeaponSpearSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4758254464454016267UL, 8742066041653418672UL), () => _ufle12jhs77_f_SlotWeaponSpearSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotWeaponSpearTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotWeaponSpearTint => _ufle12jhs77_f_SlotWeaponSpearTint ?? (_ufle12jhs77_f_SlotWeaponSpearTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5124045371773023999UL, 7765352740901182359UL), () => _ufle12jhs77_f_SlotWeaponSpearTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotWeaponSpearEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotWeaponSpearEnabled => _ufle12jhs77_f_SlotWeaponSpearEnabled ?? (_ufle12jhs77_f_SlotWeaponSpearEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5722451678645433723UL, 5849687461890167955UL), () => _ufle12jhs77_f_SlotWeaponSpearEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotWeaponSwordSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotWeaponSwordSpriteKey => _ufle12jhs77_f_SlotWeaponSwordSpriteKey ?? (_ufle12jhs77_f_SlotWeaponSwordSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5326915489184900135UL, 3038763556241998469UL), () => _ufle12jhs77_f_SlotWeaponSwordSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotWeaponSwordTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotWeaponSwordTint => _ufle12jhs77_f_SlotWeaponSwordTint ?? (_ufle12jhs77_f_SlotWeaponSwordTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5646676638720911483UL, 5273979353805177746UL), () => _ufle12jhs77_f_SlotWeaponSwordTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotWeaponSwordEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotWeaponSwordEnabled => _ufle12jhs77_f_SlotWeaponSwordEnabled ?? (_ufle12jhs77_f_SlotWeaponSwordEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5164104306464523575UL, 14042439124967930536UL), () => _ufle12jhs77_f_SlotWeaponSwordEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBowMiddleSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBowMiddleSpriteKey => _ufle12jhs77_f_SlotBowMiddleSpriteKey ?? (_ufle12jhs77_f_SlotBowMiddleSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5125582497998935730UL, 7364116511920700548UL), () => _ufle12jhs77_f_SlotBowMiddleSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBowMiddleTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBowMiddleTint => _ufle12jhs77_f_SlotBowMiddleTint ?? (_ufle12jhs77_f_SlotBowMiddleTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5762052053831249412UL, 1165404178501390264UL), () => _ufle12jhs77_f_SlotBowMiddleTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBowMiddleEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBowMiddleEnabled => _ufle12jhs77_f_SlotBowMiddleEnabled ?? (_ufle12jhs77_f_SlotBowMiddleEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4674791169328631647UL, 14803745219295018131UL), () => _ufle12jhs77_f_SlotBowMiddleEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBowTopSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBowTopSpriteKey => _ufle12jhs77_f_SlotBowTopSpriteKey ?? (_ufle12jhs77_f_SlotBowTopSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5760468201619951525UL, 8412637983701368748UL), () => _ufle12jhs77_f_SlotBowTopSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBowTopTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBowTopTint => _ufle12jhs77_f_SlotBowTopTint ?? (_ufle12jhs77_f_SlotBowTopTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5022254376670984582UL, 16238655986351002301UL), () => _ufle12jhs77_f_SlotBowTopTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBowTopEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBowTopEnabled => _ufle12jhs77_f_SlotBowTopEnabled ?? (_ufle12jhs77_f_SlotBowTopEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5281289840866382525UL, 9581499864791065791UL), () => _ufle12jhs77_f_SlotBowTopEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBowLineTopSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBowLineTopSpriteKey => _ufle12jhs77_f_SlotBowLineTopSpriteKey ?? (_ufle12jhs77_f_SlotBowLineTopSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5720821240389095667UL, 10243884959685060741UL), () => _ufle12jhs77_f_SlotBowLineTopSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBowLineTopTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBowLineTopTint => _ufle12jhs77_f_SlotBowLineTopTint ?? (_ufle12jhs77_f_SlotBowLineTopTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4651744803391427406UL, 15710293484133011846UL), () => _ufle12jhs77_f_SlotBowLineTopTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBowLineTopEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBowLineTopEnabled => _ufle12jhs77_f_SlotBowLineTopEnabled ?? (_ufle12jhs77_f_SlotBowLineTopEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5256047647142377031UL, 9552533775897245064UL), () => _ufle12jhs77_f_SlotBowLineTopEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBowBottomSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBowBottomSpriteKey => _ufle12jhs77_f_SlotBowBottomSpriteKey ?? (_ufle12jhs77_f_SlotBowBottomSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5210660982191831287UL, 3536583655419933328UL), () => _ufle12jhs77_f_SlotBowBottomSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBowBottomTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBowBottomTint => _ufle12jhs77_f_SlotBowBottomTint ?? (_ufle12jhs77_f_SlotBowBottomTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5695310970874742801UL, 7992805168162486710UL), () => _ufle12jhs77_f_SlotBowBottomTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBowBottomEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBowBottomEnabled => _ufle12jhs77_f_SlotBowBottomEnabled ?? (_ufle12jhs77_f_SlotBowBottomEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5494017181016639519UL, 6800549545591699082UL), () => _ufle12jhs77_f_SlotBowBottomEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBowLineBottomSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBowLineBottomSpriteKey => _ufle12jhs77_f_SlotBowLineBottomSpriteKey ?? (_ufle12jhs77_f_SlotBowLineBottomSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5739707428157334113UL, 16282577590905477020UL), () => _ufle12jhs77_f_SlotBowLineBottomSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBowLineBottomTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBowLineBottomTint => _ufle12jhs77_f_SlotBowLineBottomTint ?? (_ufle12jhs77_f_SlotBowLineBottomTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5478549887373785364UL, 4369075848671391108UL), () => _ufle12jhs77_f_SlotBowLineBottomTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBowLineBottomEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBowLineBottomEnabled => _ufle12jhs77_f_SlotBowLineBottomEnabled ?? (_ufle12jhs77_f_SlotBowLineBottomEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5540216510147335296UL, 16625054475258968202UL), () => _ufle12jhs77_f_SlotBowLineBottomEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotLeftArmClothSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotLeftArmClothSpriteKey => _ufle12jhs77_f_SlotLeftArmClothSpriteKey ?? (_ufle12jhs77_f_SlotLeftArmClothSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5752064092952816181UL, 1541707444725087668UL), () => _ufle12jhs77_f_SlotLeftArmClothSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotLeftArmClothTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotLeftArmClothTint => _ufle12jhs77_f_SlotLeftArmClothTint ?? (_ufle12jhs77_f_SlotLeftArmClothTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4992936914880473424UL, 8915518874716327093UL), () => _ufle12jhs77_f_SlotLeftArmClothTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotLeftArmClothEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotLeftArmClothEnabled => _ufle12jhs77_f_SlotLeftArmClothEnabled ?? (_ufle12jhs77_f_SlotLeftArmClothEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5376580831140095147UL, 11493755996385672586UL), () => _ufle12jhs77_f_SlotLeftArmClothEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBeltSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBeltSpriteKey => _ufle12jhs77_f_SlotBeltSpriteKey ?? (_ufle12jhs77_f_SlotBeltSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4882591559488033436UL, 1938104361365437115UL), () => _ufle12jhs77_f_SlotBeltSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBeltTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBeltTint => _ufle12jhs77_f_SlotBeltTint ?? (_ufle12jhs77_f_SlotBeltTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4829955338676346770UL, 13397530570126028986UL), () => _ufle12jhs77_f_SlotBeltTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBeltEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBeltEnabled => _ufle12jhs77_f_SlotBeltEnabled ?? (_ufle12jhs77_f_SlotBeltEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5189358813185409705UL, 1827329320327847346UL), () => _ufle12jhs77_f_SlotBeltEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotLeftLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotLeftLegSpriteKey => _ufle12jhs77_f_SlotLeftLegSpriteKey ?? (_ufle12jhs77_f_SlotLeftLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5613442968508172530UL, 18365747261272792978UL), () => _ufle12jhs77_f_SlotLeftLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotLeftLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotLeftLegTint => _ufle12jhs77_f_SlotLeftLegTint ?? (_ufle12jhs77_f_SlotLeftLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4791595331704392413UL, 10096749021449120395UL), () => _ufle12jhs77_f_SlotLeftLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotLeftLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotLeftLegEnabled => _ufle12jhs77_f_SlotLeftLegEnabled ?? (_ufle12jhs77_f_SlotLeftLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4827768753290231820UL, 14584615817013437080UL), () => _ufle12jhs77_f_SlotLeftLegEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotRightLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotRightLegSpriteKey => _ufle12jhs77_f_SlotRightLegSpriteKey ?? (_ufle12jhs77_f_SlotRightLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5097732618701090516UL, 2272466789510784919UL), () => _ufle12jhs77_f_SlotRightLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotRightLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotRightLegTint => _ufle12jhs77_f_SlotRightLegTint ?? (_ufle12jhs77_f_SlotRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotRightLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotRightLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotRightLegEnabled => _ufle12jhs77_f_SlotRightLegEnabled ?? (_ufle12jhs77_f_SlotRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotRightLegEnabled = null));
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
+	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
+	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
+	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
+	private static readonly D_UnitShopChanceData.Factory _factory4_PFS = new D_UnitShopChanceData.Factory();
+	private static readonly D_ObjectPoolData.Factory _factory5_PFS = new D_ObjectPoolData.Factory();
+	private static readonly D_WaveData.Factory _factory6_PFS = new D_WaveData.Factory();
+	private static readonly D_StageData.Factory _factory7_PFS = new D_StageData.Factory();
+	private static readonly D_EnemyData.Factory _factory8_PFS = new D_EnemyData.Factory();
+	private static readonly D_enemyGroup.Factory _factory9_PFS = new D_enemyGroup.Factory();
+	private static readonly D_TilePosData.Factory _factory10_PFS = new D_TilePosData.Factory();
+	private static readonly D_ObstacleTileMapData.Factory _factory11_PFS = new D_ObstacleTileMapData.Factory();
+	private static readonly D_MapData.Factory _factory12_PFS = new D_MapData.Factory();
+	private static readonly D_SpecialTile.Factory _factory13_PFS = new D_SpecialTile.Factory();
+	private static readonly D_WildCardData.Factory _factory14_PFS = new D_WildCardData.Factory();
+	private static readonly D_WaveTimeData.Factory _factory15_PFS = new D_WaveTimeData.Factory();
+	private static readonly D_BuffData.Factory _factory16_PFS = new D_BuffData.Factory();
+	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
+	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
+	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
+	private static readonly D_NormalBattleWaveData.Factory _factory21_PFS = new D_NormalBattleWaveData.Factory();
+	private static readonly D_BossBattleWaveData.Factory _factory22_PFS = new D_BossBattleWaveData.Factory();
+	private static readonly D_WildCardWaveData.Factory _factory23_PFS = new D_WildCardWaveData.Factory();
+	private static readonly D_HuntingSelectTimeWaveData.Factory _factory24_PFS = new D_HuntingSelectTimeWaveData.Factory();
+	private static readonly D_PrizeHuntingWaveData.Factory _factory25_PFS = new D_PrizeHuntingWaveData.Factory();
+	private static readonly D_EventEnemyWaveData.Factory _factory26_PFS = new D_EventEnemyWaveData.Factory();
+	private static readonly D_ItemData.Factory _factory27_PFS = new D_ItemData.Factory();
+	private static readonly D_HuntingOptionData.Factory _factory28_PFS = new D_HuntingOptionData.Factory();
+	private static readonly D_huntingReward.Factory _factory29_PFS = new D_huntingReward.Factory();
+	private static readonly D_huntingRisk.Factory _factory30_PFS = new D_huntingRisk.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory31_PFS = new D_SpawnEnemyEventData.Factory();
+	private static readonly D_DropItemEventData.Factory _factory32_PFS = new D_DropItemEventData.Factory();
+	private static readonly D_SpriteData.Factory _factory33_PFS = new D_SpriteData.Factory();
+	private static readonly D_DropItemData.Factory _factory34_PFS = new D_DropItemData.Factory();
+	private static readonly D_itemList.Factory _factory35_PFS = new D_itemList.Factory();
+	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
+	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
+	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
+	private D_UnitAppearanceData() : base(MetaDefault) {}
+	private D_UnitAppearanceData(BGId id) : base(MetaDefault, id) {}
+	private D_UnitAppearanceData(BGMetaEntity meta) : base(meta) {}
+	private D_UnitAppearanceData(BGMetaEntity meta, BGId id) : base(meta, id) {}
+	public static D_UnitAppearanceData FindEntity(Predicate<D_UnitAppearanceData> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
+	public static List<D_UnitAppearanceData> FindEntities(Predicate<D_UnitAppearanceData> filter, List<D_UnitAppearanceData> result=null, Comparison<D_UnitAppearanceData> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
+	public static void ForEachEntity(Action<D_UnitAppearanceData> action, Predicate<D_UnitAppearanceData> filter=null, Comparison<D_UnitAppearanceData> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
+	public static D_UnitAppearanceData GetEntity(BGId entityId) => (D_UnitAppearanceData) MetaDefault.GetEntity(entityId);
+	public static D_UnitAppearanceData GetEntity(int index) => (D_UnitAppearanceData) MetaDefault[index];
+	public static D_UnitAppearanceData GetEntity(string entityName) => (D_UnitAppearanceData) MetaDefault.GetEntity(entityName);
+	public static D_UnitAppearanceData NewEntity() => (D_UnitAppearanceData) MetaDefault.NewEntity();
+	public static D_UnitAppearanceData NewEntity(BGId entityId) => (D_UnitAppearanceData) MetaDefault.NewEntity(entityId);
+	public static D_UnitAppearanceData NewEntity(Action<D_UnitAppearanceData> callback) => (D_UnitAppearanceData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_UnitAppearanceData)entity)));
 }
 
 public partial interface D_WaveDummyData  : BGAbstractEntityI
