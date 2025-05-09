@@ -152,6 +152,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     }
 
     // 드래그 중: 프리뷰 위치 업데이트 및 배치 가능 여부 표시
+    // 드래그 중: 프리뷰 위치 업데이트 및 배치 가능 여부 표시
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
@@ -209,15 +210,39 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             }
             else
             {
-                // 일반 유닛 처리 (기존 코드)
-                canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, originalPreviews);
+                // 일반 유닛(싱글 타일) 처리
+                // 배치하려는 위치에 멀티타일 유닛이 있는지 확인
+                bool hasMultiTileUnitAtTarget = false;
+
+                for (int i = 0; i < tileOffsets.Count; i++)
+                {
+                    Vector2 checkPosition = tilePos + tileOffsets[i];
+                    TileData tileData = TileMapManager.Instance.GetTileData(checkPosition);
+
+                    if (tileData?.placedUnit != null && tileData.placedUnit.isMultiUnit)
+                    {
+                        // 싱글 타일과 멀티 타일 간의 합성 방지
+                        hasMultiTileUnitAtTarget = true;
+                        break;
+                    }
+                }
+
+                if (hasMultiTileUnitAtTarget)
+                {
+                    // 멀티타일 유닛 위에는 배치 불가
+                    canPlace = false;
+                }
+                else
+                {
+                    // 일반 유닛 처리 (기존 코드)
+                    canPlace = TileMapManager.Instance.CanPlaceObject(tilePos, tileOffsets, originalPreviews);
+                }
             }
 
             UpdatePreviewInstancesPosition(tilePos);
             previousTilePosition = tilePos;
         }
     }
-
 
     // 대형 유닛의 배치 가능 여부 확인 메서드 추가
     private bool CheckMultiTilePlacement(Vector2 basePosition, UnitController multiTileUnit)

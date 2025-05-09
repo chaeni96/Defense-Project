@@ -62,12 +62,15 @@ public class EnemyManager : MonoBehaviour
         OnEnemyDeath?.Invoke();
     }
 
-    public void SpawnEnemy(D_EnemyData enemyData, Vector2 spawnPos, List<D_EventDummyData> events = null)
+    public void SpawnEnemy(D_EnemyData enemyData, Vector2 spawnPos)
     {
         GameObject enemyObj = PoolingManager.Instance.GetObject(enemyData.f_ObjectPoolKey.f_PoolObjectAddressableKey, spawnPos, (int)ObjectLayer.Enemy);
 
         if (enemyObj != null)
         {
+            //enemyData에서 event 가지고 오기 
+            List<D_EventDummyData> events = enemyData.f_evnets;   
+
             Enemy enemy = enemyObj.GetComponent<Enemy>();
             enemy.transform.position = spawnPos;
             enemy.Initialize();

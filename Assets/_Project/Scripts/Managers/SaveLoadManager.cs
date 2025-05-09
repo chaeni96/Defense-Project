@@ -58,10 +58,6 @@ public class SaveLoadManager : MonoBehaviour
 
     public void SaveData()
     {
-
-        BGRepo.I.Save();
-
-
         byte[] bytes = BGRepo.I.Addons.Get<BGAddonSaveLoad>().Save();
 
         File.WriteAllBytes(SaveFilePath, bytes); // 파일에 저장

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 
 public class FieldDropItemObject : MonoBehaviour
 {
@@ -12,29 +13,29 @@ public class FieldDropItemObject : MonoBehaviour
     [SerializeField] private float autoCollectDelay = 0.5f;     // 떨어진 후 자동 수집까지 대기 시간
     [SerializeField] private float flySpeed = 10f;              // 날아가는 속도
     [SerializeField] private Ease flyEase = Ease.InExpo;        // 날아가는 이징
-    [SerializeField] private float scaleDownDuration = 0.5f;    // 크기 줄어드는 시간
-
-    [SerializeField] private Material itemTraolMat;
 
     // 튕김 효과 관련 변수들
-     private float initialBounceHeight = 1f;  // 첫 튕김 높이
-     private float bounceDuration = 0.15f;      // 튕김 지속 시간
-     private float fallDuration = 0.1f;         // 떨어지는 지속 시간
-     private Ease bounceEase = Ease.OutQuad;    // 튕김 이징
-     private Ease fallEase = Ease.InQuad;       // 떨어짐 이징
-     private int bounceCount = 2;               // 튕김 횟수
-     private float bounceReduction = 0.3f;      // 튕김 높이 감소 비율
+    private float initialBounceHeight = 1.5f;  // 첫 튕김 높이
+    private float bounceDuration = 0.15f;      // 튕김 지속 시간
+    private float fallDuration = 0.1f;         // 떨어지는 지속 시간
+    private Ease bounceEase = Ease.OutQuad;    // 튕김 이징
+    private Ease fallEase = Ease.InQuad;       // 떨어짐 이징
+    private int bounceCount = 2;               // 튕김 횟수
+    private float bounceReduction = 0.3f;      // 튕김 높이 감소 비율
 
     // 두둥실 떠다니는 효과 관련 변수들
-     private float floatHeight = 0.15f;          // 떠다니는 높이
-     private float floatDuration = 1f;        // 떠다니는 주기
-     private Ease floatEase = Ease.InOutSine;   // 떠다니는 이징
+    private float floatHeight = 0.15f;          // 떠다니는 높이
+    private float floatDuration = 1f;        // 떠다니는 주기
+    private Ease floatEase = Ease.InOutSine;   // 떠다니는 이징
 
     private AsyncOperationHandle<Sprite> sprite;
     private Vector3 finalPosition;                              // 최종 위치 저장용
     private Sequence floatingSequence;                          // 떠다니는 시퀀스 저장용
 
     private D_ItemData itemData;
+
+    [SerializeField] private GameObject fieldDropItemIconPrefab;  // 인스펙터에서 할당할 프리팹
+
 
     private void Awake()
     {
@@ -88,13 +89,13 @@ public class FieldDropItemObject : MonoBehaviour
         float randomX;
         if (isRight)
         {
-            // 오른쪽 방향 (1.0 ~ 1.5)
-            randomX = Random.Range(0.3f, 1f);
+            // 오른쪽 방향 (0.3 ~ 1.0)
+            randomX = Random.Range(0.5f, 1.4f);
         }
         else
         {
-            // 왼쪽 방향 (-1.5 ~ -1.0)
-            randomX = Random.Range(-0.3f, -1f);
+            // 왼쪽 방향 (-1.0 ~ -0.3)
+            randomX = Random.Range(-0.5f, -1.4f);
         }
 
         Vector3 bounceOffset = new Vector3(randomX, 0, 0);
@@ -179,7 +180,6 @@ public class FieldDropItemObject : MonoBehaviour
             .SetEase(floatEase)
         );
 
-
         // 수직 움직임 애니메이션 무한 반복
         floatingSequence.SetLoops(-1, LoopType.Restart);
 
@@ -203,88 +203,135 @@ public class FieldDropItemObject : MonoBehaviour
             floatingSequence.Kill();
         }
 
-        // 아이템 타입에 따른 목표 위치 결정
-        Vector3 targetPosition = GetTargetPositionByItemType();
-
-        // 날아가는 애니메이션 시퀀스 생성
-        Sequence collectSequence = DOTween.Sequence();
-
-        // 먼저 약간 위로 올라가는 효과 (아이템이 움직이기 시작함을 표시)
-        collectSequence.Append(
-        transform.DOMove(transform.position + Vector3.up * 0.3f, 0.1f)
-        .SetEase(Ease.OutQuad)
-        .OnComplete(() => {
-         // 위로 올라가는 효과가 완료되었을 때 머티리얼 변경
-             if (itemTraolMat != null && itemIcon != null)
-            {
-             itemIcon.material = itemTraolMat;
-            }
-        })
-    );
-
-        // 타겟으로 날아감
-        float distance = Vector3.Distance(transform.position, targetPosition);
-        float duration = distance / flySpeed;  // 속도에 따른 시간 계산
-
-        collectSequence.Append(
-            transform.DOMove(targetPosition, duration)
-            .SetEase(flyEase)
-        );
-
-        // 동시에 줄어드는 효과
-        collectSequence.Join(
-            transform.DOScale(Vector3.zero, scaleDownDuration)
-            .SetEase(Ease.InBack)
-            .SetDelay(duration - scaleDownDuration)  // 도착 직전에 줄어들기 시작
-        );
-
-        // 수집 완료 후 오브젝트 제거
-        collectSequence.OnComplete(() => {
-            // 아이템 수집 성공 이벤트 발생 가능
+        // 아이템 타입에 따른 UI 타겟 가져오기
+        RectTransform targetUI = GetTargetUI();
+        if (targetUI == null)
+        {
+            Debug.LogWarning("타겟 UI를 찾을 수 없습니다.");
             OnItemCollected();
-
-            // 게임 오브젝트 제거
             Destroy(gameObject);
-        });
+            return;
+        }
 
-        // 시퀀스 실행
-        collectSequence.Play();
+        // 현재 월드 위치를 스크린 좌표로 변환
+        Vector3 screenPos = GameManager.Instance.mainCamera.WorldToScreenPoint(transform.position);
+
+        // 프리팹 인스턴스화
+        GameObject uiItemObject = null;
+        if (fieldDropItemIconPrefab != null)
+        {
+            // 프리팹 생성
+            uiItemObject = Instantiate(fieldDropItemIconPrefab, UIManager.Instance.fieldUICanvas.transform);
+
+            // UI 위치 설정
+            RectTransform rectTransform = uiItemObject.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.position = screenPos;
+
+                // 프리팹 내의 이미지 컴포넌트 찾기
+                Image uiImage = uiItemObject.GetComponentInChildren<Image>();
+                if (uiImage != null && itemIcon != null && itemIcon.sprite != null)
+                {
+                    // 스프라이트 복사
+                    uiImage.sprite = itemIcon.sprite;
+                    uiImage.color = itemIcon.color;
+                }
+
+                // 타겟 UI의 스크린 위치 가져오기
+                Vector3[] corners = new Vector3[4];
+                targetUI.GetWorldCorners(corners);
+                Vector3 targetPos = (corners[0] + corners[1] + corners[2] + corners[3]) / 4;
+
+                // 날아가는 애니메이션 시퀀스 생성
+                Sequence collectSequence = DOTween.Sequence();
+
+                // 약간 위로 올라가는 효과
+                collectSequence.Append(
+                    rectTransform.DOMove(screenPos + new Vector3(0, 30, 0), 0.1f)
+                    .SetEase(Ease.OutQuad)
+                );
+
+                // 타겟으로 날아감
+                float distance = Vector3.Distance(rectTransform.position, targetPos);
+                float duration = distance / (flySpeed * 50f); // UI 스케일에 맞게 속도 조정
+
+                collectSequence.Append(
+                    rectTransform.DOMove(targetPos, duration)
+                    .SetEase(flyEase)
+                );
+
+                // 수집 완료 후 오브젝트 제거
+                collectSequence.OnComplete(() => {
+                    // 아이템 수집 성공 이벤트 발생
+                    OnItemCollected();
+
+                    // UI 오브젝트 제거
+                    Destroy(uiItemObject);
+                });
+
+                // 시퀀스 실행
+                collectSequence.Play();
+            }
+        }
+
+        // 원본 필드 아이템 비활성화 (애니메이션이 끝날 때 제거)
+        gameObject.SetActive(false);
+        Destroy(gameObject, 2f); // 안전하게 2초 후 제거
     }
 
 
-    // 타입별 목표 위치 반환
-    private Vector3 GetTargetPositionByItemType()
+    // 아이템 타입에 따른 타겟 UI 가져오기
+    private RectTransform GetTargetUI()
     {
-        // UI 캔버스 월드 위치를 기반으로 인벤토리의 해당 아이템 슬롯 위치를 계산
-        // 실제 구현시 UI 캔버스와 슬롯 위치를 참조해야 함
+        FullWindowInGameDlg inGameUI = UIManager.Instance.GetUI<FullWindowInGameDlg>();
+        if (inGameUI == null)
+        {
+            Debug.LogWarning("FullWindowInGameDlg를 찾을 수 없습니다.");
+            return null;
+        }
 
-        // 임시 화면 위치 (실제로는 UI 캔버스의 월드 위치를 가져와야 함)
-
+        // 아이템 타입에 따라 적절한 타겟 UI 반환
         if (itemData.f_type == ItemType.Currency)
         {
-
-            return new Vector3(-2.82f, -6f, 0);
-
+            if (inGameUI.currencyTabButton != null)
+            {
+                return inGameUI.currencyTabButton.GetComponent<RectTransform>();
+            }
+            else
+            {
+                Debug.LogWarning("currencyTabButton이 null입니다.");
+            }
         }
-        else if(itemData.f_type == ItemType.Equipment_Item)
+        else if (itemData.f_type == ItemType.Equipment_Item)
         {
-            return new Vector3(-2.16f, -6f, 0);
+            if (inGameUI.equipmentTabButton != null)
+            {
+                return inGameUI.equipmentTabButton.GetComponent<RectTransform>();
+            }
+            else
+            {
+                Debug.LogWarning("equipmentTabButton이 null입니다.");
+            }
         }
 
-        return new Vector3(0, 0, 0);
+        // 기본값으로 화면 중앙을 나타내는 RectTransform 반환
+        GameObject centerObj = new GameObject("ScreenCenter");
+        RectTransform centerRect = centerObj.AddComponent<RectTransform>();
+        centerRect.position = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        centerObj.transform.SetParent(UIManager.Instance.fieldUICanvas.transform);
 
-      
+        // 이 임시 오브젝트는 사용 후 제거하기 위해 지연 삭제 설정
+        Destroy(centerObj, 1f);
+
+        return centerRect;
     }
 
     // 아이템 수집 완료 시 호출
     private void OnItemCollected()
     {
-
         Debug.Log($"{itemData.f_type} 타입 아이템 수집 완료!");
-
         InventoryManager.Instance.OnFieldItemCollected(itemData);
-
-        // TODO: 이벤트 시스템이나 GameManager를 통해 아이템 수집 알림
     }
 
     public void PlayBounceAnimationImmediate(Vector3 startPosition)
@@ -292,7 +339,6 @@ public class FieldDropItemObject : MonoBehaviour
         transform.position = startPosition;
         PlayBounceAnimation();
     }
-
 
     private void OnDestroy()
     {

@@ -203,6 +203,29 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 특정 타입의 UI가지고오기
+    /// </summary>
+    /// <typeparam name="T">가져올 UI의 타입</typeparam>
+    /// <returns>찾은 UI 인스턴스, 없으면 null</returns>
+    public T GetUI<T>() where T : UIBase
+    {
+        Type uiType = typeof(T);
+
+        // 캐시된 UI가 있는 경우
+        if (uiCache.TryGetValue(uiType, out UIBase cachedUI))
+        {
+            T uiInstance = (T)cachedUI;
+            if (uiInstance.gameObject.activeSelf)
+            {
+                return uiInstance;
+            }
+        }
+
+        // 캐시에 없거나 활성화되지 않은 경우 null 반환
+        return null;
+    }
+
 
 
     public async void InitUIForScene(SceneKind nextSceneKind)

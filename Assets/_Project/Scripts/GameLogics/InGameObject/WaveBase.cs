@@ -212,11 +212,11 @@ public class NormalBattleWave : BattleWaveBase
         normalWaveData = data;
 
         // 해당 맵 ID에 대한 배치 데이터 로드
-        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == normalWaveData.f_mapId);
+        placementData = normalWaveData.f_placeEnemyMapData;
 
         if (placementData == null)
         {
-            Debug.LogError($"맵 {placementData.f_mapID} 에너미 배치 데이터가 없습니다!");
+            Debug.LogError($"맵 {placementData.f_name} 에너미 배치 데이터가 없습니다!");
         }
 
     }
@@ -252,7 +252,7 @@ public class NormalBattleWave : BattleWaveBase
             // 그리드 좌표를 게임 월드 좌표로 변환
             Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos);
             isSpawnDone = true;
         }
     }
@@ -339,7 +339,7 @@ public class BossBattleWave : BattleWaveBase
             // 그리드 좌표를 게임 월드 좌표로 변환
             Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos);
             isSpawnDone = true;
         }
     }
@@ -370,6 +370,8 @@ public class BossBattleWave : BattleWaveBase
 
 public class EventEnemyWave : BattleWaveBase
 {
+
+    private bool isEquip; 
     private D_EventEnemyWaveData eventEnemyWaveData;
 
     private D_EnemyPlacementData placementData;
@@ -382,7 +384,7 @@ public class EventEnemyWave : BattleWaveBase
         eventEnemyWaveData = data;
 
         // 해당 맵 ID에 대한 배치 데이터 로드
-        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == eventEnemyWaveData.f_mapId);
+        placementData = eventEnemyWaveData.f_placeEnemyMapData;
 
         if (placementData == null)
         {
@@ -422,7 +424,7 @@ public class EventEnemyWave : BattleWaveBase
             // 그리드 좌표를 게임 월드 좌표로 변환
             Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
-            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos, cellData.f_events);
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos);
             isSpawnDone = true;
         }
     }
@@ -444,6 +446,8 @@ public class EventEnemyWave : BattleWaveBase
     {
         //버튼 클릭했을때 에너미 상태변경 
     }
+
+  
 }
 
 public class WildcardWave : WaveBase//, ITimeChangeSubscriber, IScheduleCompleteSubscriber
@@ -634,7 +638,7 @@ public class PrizeHuntingWave : BattleWaveBase
         if (selectedOption.f_spawnEnemy != null && selectedOption.f_spawnEnemy.f_ObjectPoolKey != null)
         {
             //TODO : 지금은 데이터에서 spawnPos로 가져오고 있는데 서포트 에너미도 등장시킬거면 에너미 배치 데이터 사용
-            EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy, selectedOption.f_spawnPos, null);
+            EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy, selectedOption.f_spawnPos);
 
             // 보상/위험 요소 적용 (필요한 경우)
             ApplyRewardsAndRisks();

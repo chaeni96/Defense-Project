@@ -8,6 +8,7 @@ using Kylin.FSM;
 public class EnemyPlacementTool : EditorWindow
 {
     private int mapId = 0;
+    private string mapName;
     private Vector2 mainScrollPosition; // 전체 창에 대한 스크롤 위치
     private Vector2 enemyScrollPosition; // 에너미 목록 스크롤 위치
     private Vector2 eventScrollPosition; // 이벤트 목록 스크롤 위치
@@ -41,7 +42,7 @@ public class EnemyPlacementTool : EditorWindow
         }
 
         // 기존 데이터 불러오기
-        //LoadDataIfExists();
+        LoadDataIfExists();
     }
 
     private void OnGUI()
@@ -101,6 +102,9 @@ public class EnemyPlacementTool : EditorWindow
         mapId = EditorGUILayout.IntField(mapId);
         EditorGUILayout.EndHorizontal();
 
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("MapName:", GUILayout.Width(60));
+        mapName = EditorGUILayout.TextField(mapName);
         EditorGUILayout.Space(10);
 
         if (GUILayout.Button("Load Map"))
@@ -371,6 +375,7 @@ public class EnemyPlacementTool : EditorWindow
         // BGDatabase에서 맵 데이터 불러오기
         D_EnemyPlacementData placement = D_EnemyPlacementData.FindEntity(p => p.f_mapID == mapId);
 
+        mapName = placement.f_name;
         if (placement != null)
         {
             foreach (var cellData in placement.f_cellData)
@@ -381,13 +386,6 @@ public class EnemyPlacementTool : EditorWindow
                 if (x >= 0 && x < 12 && y >= 0 && y < 10)
                 {
                     cells[y, x].enemy = cellData.f_enemy;
-
-                    // ViewRelationMultiple로 설정된 이벤트 데이터 로드
-                    if (cellData.f_events != null)
-                    {
-                        // f_events는 ViewRelationMultiple 필드로, 실제 DB에 저장된 이벤트 데이터 목록
-                        cells[y, x].events = new List<D_EventDummyData>(cellData.f_events);
-                    }
                 }
             }
 
@@ -408,7 +406,7 @@ public class EnemyPlacementTool : EditorWindow
         if (placement == null)
         {
             placement = D_EnemyPlacementData.NewEntity();
-            placement.f_name = "Map_" + mapId;
+            placement.f_name = mapName;
             placement.f_mapID = mapId;
         }
         else
@@ -452,8 +450,6 @@ public class EnemyPlacementTool : EditorWindow
                             // 현재 셀의 이벤트 목록 복사
                             List<D_EventDummyData> eventsList = new List<D_EventDummyData>(cells[y, x].events);
 
-                            // 셀 데이터의 events 필드에 설정
-                            cellData.f_events = eventsList;
                         }
                         catch (System.Exception e)
                         {
@@ -466,7 +462,7 @@ public class EnemyPlacementTool : EditorWindow
         }
 
         // 변경사항 저장
-        SaveLoadManager.Instance.SaveData();
+        BGRepo.I.Save();
 
         EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
     }
