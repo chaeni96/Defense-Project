@@ -26,6 +26,8 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    // 추가: 장비 시스템 참조
+    private IEquipmentSystem equipmentSystem;
 
     private void Awake()
     {
@@ -37,9 +39,14 @@ public class InventoryManager : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
-        }
 
-     
+            // 장비 시스템 생성 및 초기화
+            GameObject equipSysObj = new GameObject("EquipmentSystem");
+            equipSysObj.transform.SetParent(transform);
+            EquipmentSystem equipSys = equipSysObj.AddComponent<EquipmentSystem>();
+            equipSys.Initialize(this);
+            equipmentSystem = equipSys;
+        }
     }
 
     // 인벤토리 아이템 목록 (아이템 ID와 수량)
@@ -47,9 +54,6 @@ public class InventoryManager : MonoBehaviour
 
     // 아이템 데이터 캐시 (BGId -> ItemData)
     private Dictionary<BGId, D_ItemData> itemDataCache = new Dictionary<BGId, D_ItemData>();
-
-    // 장착 중인 아이템 (유닛 ID -> 아이템 ID 목록) -> 나중에 유닛에 장착하면서 추가할 부분
-    //private Dictionary<BGId, List<BGId>> equippedItems = new Dictionary<BGId, List<BGId>>();
 
 
     // 인벤토리 변경 이벤트
@@ -66,12 +70,10 @@ public class InventoryManager : MonoBehaviour
         // 인벤토리 데이터 초기화
         inventoryItemCounts.Clear();
         itemDataCache.Clear();
-        //equippedItems.Clear();
 
         // 인벤토리 변경 이벤트 발생
         OnInventoryChanged?.Invoke();
     }
-
 
     // 아이템 추가
     public void AddItem(BGId itemId, D_ItemData itemData)
@@ -109,78 +111,34 @@ public class InventoryManager : MonoBehaviour
         AddItem(itemId, itemData);
     }
 
-    // 아이템 제거
-    public bool RemoveItem(BGId itemId)
+    // 아이템 데이터 가져오기
+    public D_ItemData GetItemDataById(BGId itemId)
     {
-        if (itemId == null) return false;
+        if (itemId == null) return null;
 
-        // 인벤토리에 아이템이 있는지 확인
-        if (inventoryItemCounts.TryGetValue(itemId, out int count))
+        if (itemDataCache.TryGetValue(itemId, out D_ItemData itemData))
         {
-            // 아이템 수량이 1 이상이면 1 감소
-            if (count > 0)
-            {
-                inventoryItemCounts[itemId]--;
-
-                // 수량이 0이 되면 인벤토리에서 제거
-                if (inventoryItemCounts[itemId] <= 0)
-                {
-                    inventoryItemCounts.Remove(itemId);
-                    // 아이템 데이터 캐시는 유지 (나중에 다시 사용할 수 있음)
-                }
-
-                // 인벤토리 변경 이벤트 발생
-                OnInventoryChanged?.Invoke();
-
-                D_ItemData itemData = itemDataCache[itemId];
-                Debug.Log($"아이템 '{itemData.f_name}'이(가) 인벤토리에서 제거되었습니다. 남은 수량: {(inventoryItemCounts.ContainsKey(itemId) ? inventoryItemCounts[itemId] : 0)}");
-
-                return true;
-            }
+            return itemData;
         }
 
-        return false;
+        return null;
     }
 
 
-    // 모든 인벤토리 아이템 가져오기
-    public Dictionary<BGId, D_ItemData> GetAllItems()
+    // 장비 시스템 가져오기
+    public IEquipmentSystem GetEquipmentSystem()
     {
-        Dictionary<BGId, D_ItemData> result = new Dictionary<BGId, D_ItemData>();
-
-        foreach (var pair in inventoryItemCounts)
-        {
-            if (itemDataCache.TryGetValue(pair.Key, out D_ItemData itemData))
-            {
-                result[pair.Key] = itemData;
-            }
-        }
-
-        return result;
+        return equipmentSystem;
     }
 
-    // 아이템 갯수 가져오기
-    public int GetItemCount(BGId itemId)
-    {
-        if (itemId == null) return 0;
-
-        if (inventoryItemCounts.TryGetValue(itemId, out int count))
-        {
-            return count;
-        }
-
-        return 0;
-    }
-
-
-     // 필드 아이템 수집 완료 처리 (FieldDropItemObject에서 호출)
+    // 필드 아이템 수집 완료 처리 (FieldDropItemObject에서 호출)
     public void OnFieldItemCollected(D_ItemData item)
     {
         if (item != null)
         {
             // 인벤토리에 추가
             AddItem(item);
-            
+
             // 아이템 수집 이벤트 발생
             OnItemCollected?.Invoke(item);
         }
@@ -190,13 +148,13 @@ public class InventoryManager : MonoBehaviour
     public void RefreshInventoryUI(Transform slotParent, GameObject emptySlotPrefab)
     {
         if (slotParent == null || emptySlotPrefab == null) return;
-        
+
         // 모든 자식 오브젝트 제거
         foreach (Transform child in slotParent)
         {
             Destroy(child.gameObject);
         }
-        
+
         // 인벤토리 아이템에 따라 슬롯 생성
         foreach (var pair in inventoryItemCounts)
         {
@@ -207,7 +165,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     GameObject slotObj = Instantiate(emptySlotPrefab, slotParent);
                     SlotItemObject slotScript = slotObj.GetComponent<SlotItemObject>();
-                    
+
                     if (slotScript != null)
                     {
                         slotScript.InitializeSlot(pair.Key, itemData);
@@ -216,4 +174,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
+
+
+   
 }

@@ -152,7 +152,7 @@ public enum EventTriggerType
 public enum ItemType
 {
     Currency,
-    Equipment_Item, //세분화 시켜야함 -> weapon, armor...
+    Equipment_Item,
 }
 
 public enum ItemGrade

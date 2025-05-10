@@ -65,8 +65,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
-        //ChangeState(new UnitIdleState());
-
     }
 
     public override BasicObject GetTarget()
@@ -225,6 +223,39 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         {
             attackTimer = 0;
         }
+    }
+
+    public void ModifyStat(StatName statName, int value, float multiply)
+    {
+        // 현재 스탯이 있으면 값 수정
+        if (currentStats.TryGetValue(statName, out var currentStat))
+        {
+            currentStat.value += value;
+            currentStat.multiply *= multiply;
+        }
+        // 없으면 새 스탯 추가
+        else
+        {
+            currentStats[statName] = new StatStorage
+            {
+                statName = statName,
+                value = value,
+                multiply = multiply
+            };
+        }
+
+        // 스탯 변경에 따른 효과 적용 (HP 바 업데이트 등)
+        if (statName == StatName.CurrentHp || statName == StatName.MaxHP)
+        {
+            UpdateHpBar();
+        }
+        else if (statName == StatName.AttackSpeed)
+        {
+            attackTimer = 0;
+        }
+
+        // 기타 필요한 효과
+        ApplyEffect();
     }
 
 
@@ -650,10 +681,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         swapTargetUnit = tileData.placedUnit;
         isSwapping = true;
 
-        // 교환 대상 유닛에 시각적 효과 적용
-        //swapTargetUnit.unitSprite.transform.DOPunchScale(Vector3.one * 0.5f, 0.3f, 3, 0.7f);
-        //swapTargetUnit.unitBaseSprite.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 3, 0.7f);
-
         // 현재 드래그 중인 유닛의 위치를 교환 대상 유닛 위치로 설정
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
         targetPosition.z = -0.1f;
@@ -782,7 +809,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         tileColor.a = 0.5f;
 
         // 현재 유닛이 위치한 타일 색상 변경
-        TileMapManager.Instance.SetTileColor(tilePosition, tileColor);
+        //TileMapManager.Instance.SetTileColor(tilePosition, tileColor);
 
     }
 
