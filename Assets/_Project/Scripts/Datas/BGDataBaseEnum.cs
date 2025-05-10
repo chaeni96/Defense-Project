@@ -10,6 +10,16 @@ namespace BGDatabaseEnum
         Game,
     }
 
+    // TODO 김윤하 : Grade Enum 통일 해야하나..?
+    public enum Grade
+    {
+        Normal,
+        Rare,
+        Epic,
+        Legendary,
+        Mythic,
+    }
+
 
     public enum UnitGrade
     {
