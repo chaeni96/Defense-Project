@@ -21,6 +21,7 @@ public class FullWindowInGameDlg : FullWindowBase
     
     public Button currencyTabButton; // 재화 탭 버튼
     public Button equipmentTabButton; // 장비 탭 버튼
+    public Button characterInfoTabButton; //캐릭터 인포 탭 버튼
 
     //[SerializeField] private GameObject CostGauge;  
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
@@ -54,18 +55,25 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private Button startBattleBtn;
     [SerializeField] private Transform inventorySlotParent; // 인벤토리 슬롯이 생성될 부모 Transform
     [SerializeField] private GameObject slotItemPrefab; // 슬롯 프리팹
+    
     [SerializeField] private GameObject currencyBtnBG;
-
     [SerializeField] private GameObject currencyPanel;
     [SerializeField] private GameObject currencyBG;
+
     [SerializeField] private GameObject equipmentPanel;
     [SerializeField] private GameObject equipmentBG;
     [SerializeField] private GameObject equipmentBtnBG;
+
+
+    [SerializeField] private GameObject characterPanel;
+    [SerializeField] private GameObject characterBG;
+    [SerializeField] private GameObject characterBtnBG;
 
     [SerializeField] private Color unselectedTabColor = new Color(106f / 255f, 106f / 255f, 106f / 255f);
 
     private Color currencyTabOriginColor;
     private Color equipTabOriginColor;
+    private Color characterTabOriginColor;
 
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
@@ -94,6 +102,9 @@ public class FullWindowInGameDlg : FullWindowBase
 
         currencyTabOriginColor = currencyTabButton.GetComponent<Image>().color;
         equipTabOriginColor = equipmentTabButton.GetComponent<Image>().color;
+
+        characterTabOriginColor = characterInfoTabButton.GetComponent<Image>().color;
+
         OnCurrencyTabClicked();
 
     }
@@ -128,16 +139,24 @@ public class FullWindowInGameDlg : FullWindowBase
     {
         // 패널 활성화/비활성화
         currencyPanel.SetActive(true);
-        equipmentPanel.SetActive(false);
         currencyBG.SetActive(true);
-        equipmentBG.SetActive(false);
         currencyBtnBG.SetActive(true);
+        
+        
+        equipmentPanel.SetActive(false);
+        equipmentBG.SetActive(false);
         equipmentBtnBG.SetActive(false);
+
+        characterPanel.SetActive(false);
+        characterBG.SetActive(false);
+        characterBtnBG.SetActive(false);
+
 
         if (currencyTabButton.GetComponent<Image>() != null && equipmentTabButton.GetComponent<Image>() != null)
         {
             currencyTabButton.GetComponent<Image>().color =  currencyTabOriginColor;
             equipmentTabButton.GetComponent<Image>().color = unselectedTabColor;
+            characterInfoTabButton.GetComponent<Image>().color = unselectedTabColor;
         }
 
     }
@@ -147,16 +166,52 @@ public class FullWindowInGameDlg : FullWindowBase
     {
         // 패널 활성화/비활성화
         currencyPanel.SetActive(false);
-        equipmentPanel.SetActive(true);
         currencyBG.SetActive(false);
-        equipmentBG.SetActive(true);
         currencyBtnBG.SetActive(false);
+        
+        equipmentPanel.SetActive(true);
+        equipmentBG.SetActive(true);
         equipmentBtnBG.SetActive(true);
- 
+
+        characterPanel.SetActive(false);
+        characterBG.SetActive(false);
+        characterBtnBG.SetActive(false);
+
+
         if (currencyTabButton.GetComponent<Image>() != null && equipmentTabButton.GetComponent<Image>() != null)
         {
             currencyTabButton.GetComponent<Image>().color = unselectedTabColor;
             equipmentTabButton.GetComponent<Image>().color = equipTabOriginColor;
+            characterInfoTabButton.GetComponent<Image>().color = unselectedTabColor;
+
+        }
+
+    }
+
+
+    // 캐릭터 인포 탭 클릭 이벤트 처리
+    public void OnCharacterInfoTabClicked()
+    {
+        // 패널 활성화/비활성화
+        currencyPanel.SetActive(false);
+        currencyBG.SetActive(false);
+        currencyBtnBG.SetActive(false);
+
+        equipmentPanel.SetActive(false);
+        equipmentBG.SetActive(false);
+        equipmentBtnBG.SetActive(false);
+
+        characterPanel.SetActive(true);
+        characterBG.SetActive(true);
+        characterBtnBG.SetActive(true);
+
+
+        if (currencyTabButton.GetComponent<Image>() != null && equipmentTabButton.GetComponent<Image>() != null)
+        {
+            currencyTabButton.GetComponent<Image>().color = unselectedTabColor;
+            equipmentTabButton.GetComponent<Image>().color = unselectedTabColor;
+            characterInfoTabButton.GetComponent<Image>().color = characterTabOriginColor;
+
         }
 
     }
