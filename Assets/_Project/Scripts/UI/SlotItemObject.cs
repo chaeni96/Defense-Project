@@ -16,8 +16,6 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private D_ItemData itemData;
     private AsyncOperationHandle<Sprite> spriteHandle;
 
-    private int slotIndex = -1;
-
     // 드래그 앤 드롭 관련 변수
     private Transform originalParent;
     private Vector3 originalPosition;
@@ -42,8 +40,6 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         itemId = id;
         itemData = item;
-
-        slotIndex = -1;       // 일반 슬롯은 인덱스 없음
 
         // 아이콘 설정
         if (itemIcon != null && item.f_iconImage != null)
@@ -136,18 +132,15 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             UnitController unit = tileData.placedUnit;
 
-            // 최대 슬롯 수 확인
-            int maxSlots = (int)unit.GetStat(StatName.UnitInventoryCount);
-
-            // 빈 슬롯 찾아 장착
-            for (int i = 0; i < maxSlots; i++)
+            //슬롯에 장착
+            if (equipmentSystem.IsSlotAvailable(unit, 0))
             {
-                if (equipmentSystem.IsSlotAvailable(unit, i))
-                {
-                    equipmentSystem.EquipItem(unit, itemData, i);
-                    Debug.Log($"아이템이 유닛 {unit.name}의 슬롯 {i}에 장착되었습니다.");
-                    return true;
-                }
+                equipmentSystem.EquipItem(unit, itemData, 0);
+                unit.EquipItemSlot(itemIcon.sprite);
+                
+                gameObject.SetActive(false);
+                Debug.Log($"아이템이 유닛 {unit.name}의 슬롯에 장착되었습니다.");
+                return true;
             }
         }
 

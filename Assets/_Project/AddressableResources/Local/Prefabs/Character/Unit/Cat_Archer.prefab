@@ -4104,6 +4104,7 @@ MonoBehaviour:
   starObjects: []
   unitType: 1
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
+  itemSlotObject: {fileID: 4730087103346790637, guid: c124354d2ecc309448b13cdb256da66f, type: 3}
   isActive: 1
   isDragging: 0
   originalPosition: {x: 0, y: 0, z: 0}

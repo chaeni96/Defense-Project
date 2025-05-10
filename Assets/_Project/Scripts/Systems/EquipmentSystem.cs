@@ -40,7 +40,6 @@ public class EquipmentSystem : MonoBehaviour, IEquipmentSystem
         BGId unitId = unit.unitData.Id;
         BGId itemId = item.Id;
 
-        // 유닛에 대한 슬롯 맵 초기화
         if (!equippedItems.ContainsKey(unitId))
         {
             equippedItems[unitId] = new Dictionary<int, BGId>();
@@ -209,8 +208,9 @@ public class EquipmentSystem : MonoBehaviour, IEquipmentSystem
 
         if (!equippedItems.ContainsKey(unitId) || !equippedItems[unitId].ContainsKey(slotIndex))
         {
-            // 슬롯이 비어있음
-            return slotIndex >= 0 && slotIndex < unit.GetStat(StatName.UnitInventoryCount);
+            // 슬롯이 비어있음, 지금은 1칸만 사용해서 상수 1로 하지만 StatName.UnitInventoryCount로 해도됨
+            //return slotIndex >= 0 && slotIndex < unit.GetStat(StatName.UnitInventoryCount);
+            return slotIndex >= 0 && slotIndex < 1;
         }
 
         // 슬롯이 이미 사용 중

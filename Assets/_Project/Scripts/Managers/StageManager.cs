@@ -262,6 +262,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
                 // 타일맵에 있던 원래 위치로 돌아가기
                 unit.ReturnToOriginalPosition();
+                unit.itemSlotObject.gameObject.SetActive(true);
             }
 
             // 적 오브젝트 비활성화

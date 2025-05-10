@@ -662,6 +662,7 @@ public class FullWindowInGameDlg : FullWindowBase
                 // UnitMoveToTargetState로 상태 전환
                 unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
                 unit.SaveOriginalUnitPos();
+                unit.itemSlotObject.gameObject.SetActive(false);
             }
         }
 

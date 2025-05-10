@@ -30,6 +30,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public UnitType unitType;
 
     public GameObject unitStarObject;
+    public GameObject itemSlotObject;
 
     public bool isActive = true;
 
@@ -102,7 +103,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
         starObjects.Clear();
 
-        float spacing = 0.8f;
+        float spacing = 1.5f;
         float totalWidth = (currentStarLevel - 1) * spacing;
         float startX = -totalWidth / 2f;
 
@@ -199,6 +200,25 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void SaveOriginalUnitPos()
     {
         originalPosition = transform.position;
+
+    }
+
+
+    public void EquipItemSlot(Sprite itemIcon)
+    {
+        if(itemSlotObject == null)
+        {
+            Debug.LogError("unitItemSlotObject을 UnitController에 바인딩 해주세요");
+        }
+
+
+
+        itemSlotObject = Instantiate(itemSlotObject, transform);
+
+        UnitItemSlotObject itemSlot = itemSlotObject.GetComponent<UnitItemSlotObject>();    
+        itemSlot.InitItemIcon(itemIcon);
+
+
 
     }
 
