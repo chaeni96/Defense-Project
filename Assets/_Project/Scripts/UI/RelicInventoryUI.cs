@@ -53,7 +53,9 @@ public class RelicInventoryUI : FloatingPopupBase
         {
             var parent = GetParentByGrade(item);
             var itemComponent = Instantiate(relicItemComponent, parent);
-            itemComponent.SetData(new RelicItemDataParam(item.f_name, item.f_grade, item.f_description), OnClickRelicItem);
+            itemComponent.SetData(
+                new RelicItemDataParam(item.f_name, item.f_level, item.f_exp, item.f_grade, item.f_description),
+                OnClickRelicItem);
         }
         
         return;
