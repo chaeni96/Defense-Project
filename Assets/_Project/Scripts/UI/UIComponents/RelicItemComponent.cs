@@ -3,7 +3,7 @@ using BGDatabaseEnum;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DefenseProject.Scripts.UI.UIComponents
+namespace AutoBattle.Scripts.UI.UIComponents
 {
     public class RelicItemComponent : MonoBehaviour
     {

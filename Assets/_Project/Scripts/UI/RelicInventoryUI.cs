@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using AutoBattle.Scripts.UI.UIComponents;
 using BGDatabaseEnum;
-using DefenseProject.Scripts.UI.UIComponents;
 using TMPro;
 using UnityEngine;
 
