@@ -3,7 +3,7 @@ using AutoBattle.Scripts.UI.UIComponents;
 using BGDatabaseEnum;
 using UnityEngine;
 
-[UIInfo("RelicInventoryUI", "RelicInventoryUI", false)]
+[UIInfo("RelicInventoryUI", "RelicInventoryUI", true)]
 
 public class RelicInventoryUI : FloatingPopupBase
 {
@@ -25,11 +25,6 @@ public class RelicInventoryUI : FloatingPopupBase
         InitializeRelicItemUI();
     }
 
-    public void InitLobbyDlg(FullWindowLobbyDlg lobby)
-    {
-        lobbyDlg = lobby;
-    }
-
     public override void HideUI()
     {
         base.HideUI();
@@ -38,7 +33,6 @@ public class RelicInventoryUI : FloatingPopupBase
     public void OnClickCancelBtn()
     {
         UIManager.Instance.CloseUI<RelicInventoryUI>();
-        lobbyDlg.SwitchToCampPanel();
     }
 
     private void InitializeRelicItemUI()
