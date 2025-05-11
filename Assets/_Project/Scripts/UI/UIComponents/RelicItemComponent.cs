@@ -1,4 +1,5 @@
 using System;
+using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace AutoBattle.Scripts.UI.UIComponents
         [SerializeField] private Slider relicExpSlider;
         [SerializeField] private TMP_Text relicExpText;
         
+        private BGId relicId;
         private string relicName;
         private int relicLevel;
         private int relicExp;
@@ -24,19 +26,20 @@ namespace AutoBattle.Scripts.UI.UIComponents
         
         private Action<RelicItemDataParam> onClickCallback;
         
-        public void SetData(RelicItemDataParam param, Action<RelicItemDataParam> onClickCallback)
+        public void SetData(RelicItemDataParam param, Action<RelicItemDataParam> onClickAction)
         {
+            relicId = param.RelicId;
             relicName = param.RelicName;
             relicGrade = param.RelicGrade;
             relicDescription = param.RelicDescription;
-            this.onClickCallback = onClickCallback;
+            onClickCallback = onClickAction;
             
             UpdateUI();
         }
 
         public void OnClickRelicItemComponent()
         {
-            onClickCallback?.Invoke(new RelicItemDataParam(relicName, relicLevel, relicExp, relicGrade, relicDescription));
+            onClickCallback?.Invoke(new RelicItemDataParam(relicId, relicName, relicLevel, relicExp, relicGrade, relicDescription));
         }
 
         private void UpdateUI()
@@ -53,14 +56,16 @@ namespace AutoBattle.Scripts.UI.UIComponents
 
     public class RelicItemDataParam
     {
+        public BGId RelicId;
         public string RelicName;
         public int RelicLevel;
         public int RelicExp;
         public Grade RelicGrade;
         public string RelicDescription;
         
-        public RelicItemDataParam(string relicName, int relicLevel, int relicExp, Grade relicGrade, string relicDescription)
+        public RelicItemDataParam(BGId relicId, string relicName, int relicLevel, int relicExp, Grade relicGrade, string relicDescription)
         {
+            RelicId = relicId;
             RelicName = relicName;
             RelicLevel = relicLevel;
             RelicExp = relicExp;

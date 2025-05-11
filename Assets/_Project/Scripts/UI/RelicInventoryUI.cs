@@ -1,6 +1,6 @@
+using AutoBattle.Scripts.UI;
 using AutoBattle.Scripts.UI.UIComponents;
 using BGDatabaseEnum;
-using TMPro;
 using UnityEngine;
 
 [UIInfo("RelicInventoryUI", "RelicInventoryUI", false)]
@@ -15,10 +15,6 @@ public class RelicInventoryUI : FloatingPopupBase
     [SerializeField] private Transform epicRelicItemParent;
     [SerializeField] private Transform legendaryRelicItemParent;
     [SerializeField] private Transform mythicRelicItemParent;
-    
-    [Header("Relic Description")]
-    [SerializeField] private TMP_Text currentSelectedRelicName;
-    [SerializeField] private TMP_Text currentSelectedRelicDescription;
     
     private FullWindowLobbyDlg lobbyDlg;
 
@@ -54,7 +50,7 @@ public class RelicInventoryUI : FloatingPopupBase
             var parent = GetParentByGrade(item);
             var itemComponent = Instantiate(relicItemComponent, parent);
             itemComponent.SetData(
-                new RelicItemDataParam(item.f_name, item.f_level, item.f_exp, item.f_grade, item.f_description),
+                new RelicItemDataParam(item.Id, item.f_name, item.f_level, item.f_exp, item.f_grade, item.f_description),
                 OnClickRelicItem);
         }
         
@@ -75,9 +71,10 @@ public class RelicInventoryUI : FloatingPopupBase
         }
     }
 
-    private void OnClickRelicItem(RelicItemDataParam param)
+    private async void OnClickRelicItem(RelicItemDataParam param)
     {
-        currentSelectedRelicName.text = $"º±≈√ : {param.RelicName}";
-        currentSelectedRelicDescription.text = param.RelicDescription;
+        var popup = await UIManager.Instance.ShowUI<RelicItemInfoPopup>();
+        popup.InitializeUI();
+        popup.SetData(param);
     }
 }
