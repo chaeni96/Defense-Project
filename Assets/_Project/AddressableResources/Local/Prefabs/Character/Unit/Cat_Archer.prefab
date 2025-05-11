@@ -4112,6 +4112,7 @@ MonoBehaviour:
   isMultiUnit: 0
   hpBar: {fileID: 2714087839050459189}
   hpBarCanvas: {fileID: 5069247774958341421}
+  itemSlotPrefab: {fileID: 4730087103346790637, guid: c124354d2ecc309448b13cdb256da66f, type: 3}
 --- !u!114 &2876986328044023446
 MonoBehaviour:
   m_ObjectHideFlags: 0

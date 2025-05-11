@@ -58,6 +58,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
+
+    // 아이템 슬롯 프리팹 참조 (인스펙터에서 할당 필요)
+    [SerializeField] private GameObject itemSlotPrefab;
+
+    // 아이템 슬롯 컴포넌트 캐싱
+    private UnitItemSlotObject itemSlotComponent;
+
+
     // UnitController.cs에 추가
     public static event System.Action<UnitController> OnUnitClicked;
 
@@ -68,6 +76,30 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
+
+        // 아이템 슬롯 초기화
+        InitializeItemSlot();
+    }
+
+    private void InitializeItemSlot()
+    {
+        // 기존 아이템 슬롯이 있으면 삭제
+        if (itemSlotObject != null)
+        {
+            Destroy(itemSlotObject);
+        }
+
+        // 새 아이템 슬롯 생성 및 비활성화
+        if (itemSlotPrefab != null)
+        {
+            itemSlotObject = Instantiate(itemSlotPrefab, transform);
+            itemSlotComponent = itemSlotObject.GetComponent<UnitItemSlotObject>();
+            itemSlotPrefab.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("itemSlotPrefab is not assigned to UnitController");
+        }
     }
 
     public override BasicObject GetTarget()
@@ -197,6 +229,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
             isMultiUnit = tileCard.f_isMultiTileUinit;
         }
+
+        if (itemSlotObject != null)
+        {
+            itemSlotObject.SetActive(false);
+        }
     }
 
     public void SaveOriginalUnitPos()
@@ -208,19 +245,23 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public void EquipItemSlot(Sprite itemIcon)
     {
-        if(itemSlotObject == null)
+        if (itemSlotObject == null || itemSlotComponent == null)
         {
-            Debug.LogError("unitItemSlotObject을 UnitController에 바인딩 해주세요");
+            // 아이템 슬롯이 없거나 컴포넌트가 없는 경우 초기화
+            InitializeItemSlot();
+
+            if (itemSlotObject == null || itemSlotComponent == null)
+            {
+                Debug.LogError("Failed to initialize itemSlotObject or itemSlotComponent");
+                return;
+            }
         }
 
+        // 아이템 아이콘 설정
+        itemSlotComponent.InitItemIcon(itemIcon);
 
-
-        itemSlotObject = Instantiate(itemSlotObject, transform);
-
-        UnitItemSlotObject itemSlot = itemSlotObject.GetComponent<UnitItemSlotObject>();    
-        itemSlot.InitItemIcon(itemIcon);
-
-
+        // 아이템 슬롯 활성화
+        itemSlotObject.SetActive(true);
 
     }
 
@@ -595,7 +636,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-
+    public void UnequipItemSlot()
+    {
+        if (itemSlotObject != null)
+        {
+            // 아이템 슬롯 오브젝트 비활성화
+            itemSlotObject.SetActive(false);
+        }
+    }
 
 
     // 합성 프리뷰 초기화

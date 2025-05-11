@@ -92,6 +92,7 @@ public class CharacterInfo : MonoBehaviour
         IEquipmentSystem equipSystem = InventoryManager.Instance.GetEquipmentSystem();
         if (equipSystem != null)
         {
+            unequipBtn.interactable = true;
             equipData = equipSystem.GetEquippedItem(clickUnit);
 
             if (equipData != null)
@@ -189,10 +190,14 @@ public class CharacterInfo : MonoBehaviour
         if (equipSystem != null && equipData != null)
         {
             // 장비 해제
-            equipSystem.UnequipItem(clickUnit);
+            bool success = equipSystem.UnequipItem(clickUnit);
 
-            // UI 업데이트
-            ShowUnitInfo(clickUnit);
+            if (success)
+            {
+                // UI 업데이트
+                ShowUnitInfo(clickUnit);
+
+            }
         }
     }
 

@@ -175,6 +175,14 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    public void ReturnItemToInventory(BGId itemId, D_ItemData itemData)
+    {
+        if (itemId == null || itemData == null) return;
 
-   
+        // 아이템을 인벤토리에 추가
+        AddItem(itemId, itemData);
+
+        // AddItem 메서드에서 이미 OnInventoryChanged 이벤트를 발생시킴
+    }
+
 }

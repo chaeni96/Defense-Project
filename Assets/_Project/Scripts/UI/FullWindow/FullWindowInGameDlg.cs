@@ -147,15 +147,22 @@ public class FullWindowInGameDlg : FullWindowBase
         currencyPanel.SetActive(true);
         currencyBG.SetActive(true);
         currencyBtnBG.SetActive(true);
-        
-        
-        equipmentPanel.SetActive(false);
-        equipmentBG.SetActive(false);
-        equipmentBtnBG.SetActive(false);
 
-        characterPanel.SetActive(false);
-        characterBG.SetActive(false);
-        characterBtnBG.SetActive(false);
+
+        if (equipmentPanel != null)
+        {
+            equipmentPanel.SetActive(false);
+            equipmentBG.SetActive(false);
+            equipmentBtnBG.SetActive(false);
+        }
+
+        if (characterPanel != null)
+        {
+            characterPanel.SetActive(false);
+            characterBG.SetActive(false);
+            characterBtnBG.SetActive(false);
+        }
+
 
 
         if (characterInfo != null)
@@ -174,17 +181,27 @@ public class FullWindowInGameDlg : FullWindowBase
     public void OnEquipmentTabClicked()
     {
         // 패널 활성화/비활성화
-        currencyPanel.SetActive(false);
-        currencyBG.SetActive(false);
-        currencyBtnBG.SetActive(false);
+
+        if (currencyPanel != null)
+        {
+            currencyPanel.SetActive(false);
+            currencyBG.SetActive(false);
+            currencyBtnBG.SetActive(false);
+        }
+
+        if (characterPanel != null)
+        {
+            characterPanel.SetActive(false);
+            characterBG.SetActive(false);
+            characterBtnBG.SetActive(false);
+        }
+        
         
         equipmentPanel.SetActive(true);
         equipmentBG.SetActive(true);
         equipmentBtnBG.SetActive(true);
 
-        characterPanel.SetActive(false);
-        characterBG.SetActive(false);
-        characterBtnBG.SetActive(false);
+  
 
         if (characterInfo != null)
             characterInfo.HideCharacterInfo();
@@ -204,13 +221,19 @@ public class FullWindowInGameDlg : FullWindowBase
     public void OnCharacterInfoTabClicked()
     {
         // 패널 활성화/비활성화
-        currencyPanel.SetActive(false);
-        currencyBG.SetActive(false);
-        currencyBtnBG.SetActive(false);
-
-        equipmentPanel.SetActive(false);
-        equipmentBG.SetActive(false);
-        equipmentBtnBG.SetActive(false);
+        if(currencyPanel != null)
+        {
+            currencyPanel.SetActive(false);
+            currencyBG.SetActive(false);
+            currencyBtnBG.SetActive(false);
+        }
+       
+        if(equipmentPanel != null)
+        {
+            equipmentPanel.SetActive(false);
+            equipmentBG.SetActive(false);
+            equipmentBtnBG.SetActive(false);
+        }
 
         characterPanel.SetActive(true);
         characterBG.SetActive(true);

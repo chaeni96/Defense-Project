@@ -104,6 +104,12 @@ public class EquipmentSystem : MonoBehaviour, IEquipmentSystem
         {
             // 유닛에서 아이템 스탯 제거
             ApplyItemStatsToUnit(unit, itemData, false);
+
+            // 아이템을 인벤토리로 반환
+            inventoryManager.ReturnItemToInventory(itemId, itemData);
+
+            // 유닛의 아이템 슬롯 비활성화
+            unit.UnequipItemSlot();
         }
 
         // 장착 목록에서 제거

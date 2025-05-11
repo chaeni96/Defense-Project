@@ -298,7 +298,7 @@ public class BossBattleWave : BattleWaveBase
         bossWaveData = data;
 
         // 해당 맵 ID에 대한 배치 데이터 로드
-        placementData = D_EnemyPlacementData.FindEntity(p => p.f_mapID == bossWaveData.f_mapId);
+        placementData = bossWaveData.f_placeEnemyMapData;
 
         if (placementData == null)
         {
