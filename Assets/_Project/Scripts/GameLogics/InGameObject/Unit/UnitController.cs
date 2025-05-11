@@ -58,6 +58,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
+    // UnitController.cs에 추가
+    public static event System.Action<UnitController> OnUnitClicked;
 
     public override void Initialize()
     {
@@ -331,6 +333,10 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (!isActive) return;
+
+        // 드래그 시작 전에 클릭 이벤트 발생
+        OnUnitClicked?.Invoke(this);
+
 
         isDragging = true;
         hasDragged = false; // 드래그 시작 시 초기화

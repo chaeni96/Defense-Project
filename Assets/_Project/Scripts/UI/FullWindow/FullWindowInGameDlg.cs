@@ -43,6 +43,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     [SerializeField] private TMP_Text progressWaveIndex; //진행중인 웨이브 인덱스
     [SerializeField] private TMP_Text placementUnitCount; //배치된 유닛 수
+    [SerializeField] private TMP_Text invenCount; //인벤토리 슬롯 수
 
     //카드덱
     private List<GameObject> cardDecks;
@@ -75,6 +76,8 @@ public class FullWindowInGameDlg : FullWindowBase
     private Color equipTabOriginColor;
     private Color characterTabOriginColor;
 
+    [SerializeField] private CharacterInfo characterInfo;
+
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
     {
@@ -91,9 +94,8 @@ public class FullWindowInGameDlg : FullWindowBase
         InitializeInventoryUI();
 
         //이벤트 구독
-        GameManager.Instance.OnCostUsed += OnCostUsed;  
+        GameManager.Instance.OnCostUsed += OnCostUsed;
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
-        //StageManager.Instance.OnEnemyCountChanged += UpdateRemainEnemyCount;
         UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
         StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
 
@@ -105,8 +107,12 @@ public class FullWindowInGameDlg : FullWindowBase
 
         characterTabOriginColor = characterInfoTabButton.GetComponent<Image>().color;
 
+        
         OnCurrencyTabClicked();
 
+        characterInfo.InitilazeCharacterInfo();
+
+        characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
     }
 
 
@@ -119,7 +125,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
         UpdateText();
 
-        GameManager.Instance.OnCostUsed += CostUse;
+        GameManager.Instance.OnCostAdd += CostUse;
   
     }
 
@@ -152,6 +158,9 @@ public class FullWindowInGameDlg : FullWindowBase
         characterBtnBG.SetActive(false);
 
 
+        if (characterInfo != null)
+            characterInfo.HideCharacterInfo();
+
         if (currencyTabButton.GetComponent<Image>() != null && equipmentTabButton.GetComponent<Image>() != null)
         {
             currencyTabButton.GetComponent<Image>().color =  currencyTabOriginColor;
@@ -177,6 +186,8 @@ public class FullWindowInGameDlg : FullWindowBase
         characterBG.SetActive(false);
         characterBtnBG.SetActive(false);
 
+        if (characterInfo != null)
+            characterInfo.HideCharacterInfo();
 
         if (currencyTabButton.GetComponent<Image>() != null && equipmentTabButton.GetComponent<Image>() != null)
         {
@@ -249,7 +260,7 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
-    private void CostUse(int usedCost)
+    private void CostUse()
     {
         UpdateText();
     }
@@ -618,6 +629,7 @@ public class FullWindowInGameDlg : FullWindowBase
 
     private void OnCostUsed(int amount)
     {
+        CostUse();
         UpdateShopLevelUI();  // 코스트가 변경될 때마다 버튼 상태 업데이트
 
 
@@ -676,10 +688,9 @@ public class FullWindowInGameDlg : FullWindowBase
         {
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
-            //StageManager.Instance.OnEnemyCountChanged -= UpdateRemainEnemyCount;
             UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
             StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
-            GameManager.Instance.OnCostUsed -= CostUse;
+            GameManager.Instance.OnCostAdd -= CostUse;
 
             // 탭 버튼 이벤트 리스너 제거
             if (currencyTabButton != null)
@@ -687,6 +698,13 @@ public class FullWindowInGameDlg : FullWindowBase
 
             if (equipmentTabButton != null)
                 equipmentTabButton.onClick.RemoveListener(OnEquipmentTabClicked);
+
+            if(characterInfo != null)
+            {
+
+                characterInfo.OnSwitchToCharacterTab -= OnCharacterInfoTabClicked;
+                characterInfo.ClearCharacterInfo();
+            }
 
         }
     }
