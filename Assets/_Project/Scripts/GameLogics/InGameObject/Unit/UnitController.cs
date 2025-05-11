@@ -11,7 +11,7 @@ using System.IO;
 using Unity.VisualScripting;
 
 
-public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
 {
     [HideInInspector]
     public float attackTimer = 0f;  // 타이머 추가
@@ -364,21 +364,26 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
+    public virtual void OnPointerClick(PointerEventData eventData)
+    {
+        // 클릭 이벤트만 처리
+        if (!hasDragged)
+        {
+            OnUnitClicked?.Invoke(this);
+        }
+    }
+
     // 드래그 시작 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (!isActive) return;
-
-        // 드래그 시작 전에 클릭 이벤트 발생
-        OnUnitClicked?.Invoke(this);
-
 
         isDragging = true;
         hasDragged = false; // 드래그 시작 시 초기화
         originalPosition = transform.position;
         originalTilePosition = tilePosition;
 
-        // 현재 별 레벨 저장
+        // 현재 별 레벨을 최신 상태로 저장
         originalStarLevel = (int)GetStat(StatName.UnitStarLevel);
 
         // 합성 관련 변수 초기화
@@ -458,9 +463,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         if (!isDragging) return;
 
         isDragging = false;
-
-        // 쓰레기통 숨기기
-        GameManager.Instance.HideTrashCan();
 
         bool isSuccess = false;
 
@@ -667,11 +669,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 }
             }
 
-            // 내 유닛을 원래 레벨로 복원
-            if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
-            {
-                UpGradeUnitLevel(originalStarLevel);
-            }
+            // 내 유닛을 원래 레벨로 복원 (시각적으로만)
+            UpdateStarDisplay(originalStarLevel);
 
             isShowingMergePreview = false;
             mergeTargetTile = null;
@@ -697,9 +696,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         if (isMultiUnit || targetUnit.isMultiUnit)
             return false;
 
+        int currentStarLevel = (int)GetStat(StatName.UnitStarLevel);
+        int targetStarLevel = (int)targetUnit.GetStat(StatName.UnitStarLevel);
+
         return unitType == targetUnit.unitType &&
-               originalStarLevel == targetUnit.GetStat(StatName.UnitStarLevel) &&
-               targetUnit.GetStat(StatName.UnitStarLevel) < 5;
+               currentStarLevel == targetStarLevel &&
+               targetStarLevel < 5;
     }
 
     // 합성 프리뷰 표시
@@ -715,9 +717,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             star.SetActive(false);
         }
 
-        // 내 유닛을 업그레이드된 레벨로 표시
-        int newStarLevel = originalStarLevel + 1;
-        UpGradeUnitLevel(newStarLevel);
+        // 현재 레벨을 기준으로 새 레벨 계산
+        int currentStarLevel = (int)GetStat(StatName.UnitStarLevel);
+        int newStarLevel = currentStarLevel + 1;
+
+        // 임시로 표시용 레벨 변경 (실제 값은 변경 안함)
+        UpdateStarDisplay(newStarLevel);
 
         // 중요: 드래그 중인 유닛을 정확히 합성 대상 유닛 위에 배치
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
@@ -808,7 +813,20 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 타겟 유닛 업그레이드
         UnitController targetUnit = mergeTargetTile.placedUnit;
-        int newStarLevel = originalStarLevel + 1;
+
+        // 현재 레벨을 기준으로 새 레벨 계산 (originalStarLevel 대신)
+        int currentStarLevel = (int)GetStat(StatName.UnitStarLevel);
+        int targetStarLevel = (int)targetUnit.GetStat(StatName.UnitStarLevel);
+
+        // 동일 레벨 확인 (안전장치)
+        if (currentStarLevel != targetStarLevel)
+        {
+            Debug.LogWarning("합성하려는 유닛의 레벨이 일치하지 않습니다: " + currentStarLevel + " vs " + targetStarLevel);
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        int newStarLevel = currentStarLevel + 1;
         targetUnit.UpGradeUnitLevel(newStarLevel);
 
         // 효과 적용
@@ -835,6 +853,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 새로운 StarLevel 설정
         currentStats[StatName.UnitStarLevel].value = value;
 
+        // originalStarLevel도 업데이트 - 중요 추가 사항
+        originalStarLevel = value;
+
         // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
         foreach (var stat in currentStats)
         {
@@ -855,7 +876,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 stat.Value.value = Mathf.RoundToInt(baseStats[stat.Key].value * multiplier);
             }
         }
-   
 
         UpdateStarDisplay();
     }

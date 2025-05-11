@@ -203,11 +203,15 @@ public class TileMapManager : MonoBehaviour
                 var placedUnit = tileData.placedUnit;
                 var previewUnit = previewUnits[i];
 
+                // 현재 스탯에서 직접 레벨 가져오기
+                int previewLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
+                int placedLevel = (int)placedUnit.GetStat(StatName.UnitStarLevel);
+
                 // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 5성 미만
                 bool canMerge = (previewUnit.unitType == placedUnit.unitType) &&
-                               (previewUnit.GetStat(StatName.UnitStarLevel) == placedUnit.GetStat(StatName.UnitStarLevel)) &&
-                                (placedUnit.GetStat(StatName.UnitStarLevel) < 5) &&
-                                (previewUnit.isMultiUnit == placedUnit.isMultiUnit);
+                      (previewLevel == placedLevel) &&
+                      (placedLevel < 5) &&
+                      (previewUnit.isMultiUnit == placedUnit.isMultiUnit);
 
                 // 합성 불가능하면 배치 불가
                 if (!canMerge)

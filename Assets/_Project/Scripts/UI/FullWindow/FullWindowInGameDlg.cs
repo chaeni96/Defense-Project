@@ -10,7 +10,7 @@ using DG.Tweening;
 using static UnityEditor.PlayerSettings;
 
 
-[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
+[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", false)]
 public class FullWindowInGameDlg : FullWindowBase
 {
     public GameObject firstCardDeck;
@@ -132,11 +132,11 @@ public class FullWindowInGameDlg : FullWindowBase
     // InitializeUI 메서드에 추가
     private void InitializeInventoryUI()
     {
-
-        InventoryManager.Instance.LoadInventory();
         // 인벤토리 매니저의 이벤트 구독
         InventoryManager.Instance.OnInventoryChanged += RefreshInventoryUI;
-        InventoryManager.Instance.OnItemCollected += OnItemCollected;
+        InventoryManager.Instance.OnItemCountUpdate += OnUpdateSlotCount;
+
+        InventoryManager.Instance.LoadInventory();
     }
 
 
@@ -262,9 +262,13 @@ public class FullWindowInGameDlg : FullWindowBase
         
     }
 
-    // 아이템 수집 이벤트 처리
-    private void OnItemCollected(D_ItemData item)
+    // 아이템 개수 업데이트
+    private void OnUpdateSlotCount(int count)
     {
+        // 인벤토리 슬롯 수 업데이트
+
+        invenCount.text = $"{count} / {GameManager.Instance.GetSystemStat(StatName.InventoryCount)}";
+
         //RefreshInventoryUI();
     }
 
@@ -674,7 +678,7 @@ public class FullWindowInGameDlg : FullWindowBase
     public override void HideUI()
     {
         //TODO: hide애니메이션 추가했을때 주석 해제
-        //base.HideUI();
+        base.HideUI();
 
         CleanUp();
 
@@ -707,7 +711,7 @@ public class FullWindowInGameDlg : FullWindowBase
             UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
             StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
             GameManager.Instance.OnCostAdd -= CostUse;
-
+            InventoryManager.Instance.OnItemCountUpdate -= OnUpdateSlotCount;
             // 탭 버튼 이벤트 리스너 제거
             if (currencyTabButton != null)
                 currencyTabButton.onClick.RemoveListener(OnCurrencyTabClicked);

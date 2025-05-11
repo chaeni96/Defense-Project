@@ -685,11 +685,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 var tileData = TileMapManager.Instance.GetTileData(previewPosition);
                 var currentPreview = currentPreviews[i];
 
-                // 합성 로직
+                int previewLevel = (int)currentPreview.GetStat(StatName.UnitStarLevel);
+                int placedLevel = (int)(tileData?.placedUnit?.GetStat(StatName.UnitStarLevel) ?? 0);
+
                 if (tileData?.placedUnit != null &&
                     currentPreview.unitType == tileData.placedUnit.unitType &&
-                    currentPreview.GetStat(StatName.UnitStarLevel) == tileData.placedUnit.GetStat(StatName.UnitStarLevel) &&
-                    tileData.placedUnit.GetStat(StatName.UnitStarLevel) < 5)
+                    previewLevel == placedLevel &&
+                    placedLevel < 5)
                 {
                     // 합성 로직 코드...
                     foreach (var star in tileData.placedUnit.starObjects)
@@ -824,9 +826,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
             value = cardCost * -1, // 음수로 소모
             multiply = 1f
         });
-
-        // enemy path 업데이트
-        //EnemyManager.Instance.UpdateEnemiesPath();
 
         // 사용된 카드 제거 -> 이벤트 통해서
         OnCardUsed?.Invoke(transform.parent.gameObject);
@@ -1023,6 +1022,8 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     {
         ClearTileImages(); // 타일 이미지 제거
         CancelPlacement();
+
+
 
         originalPreviews.Clear();
         currentPreviews.Clear();
