@@ -109,21 +109,33 @@ public abstract class BattleWaveBase : WaveBase
             // 에너미가 모두 죽었는지 체크 - 실제 존재하는 활성화된 적 객체로 확인
             bool allEnemiesDead = EnemyManager.Instance.GetActiveEnemyCount() <= 0;
 
-            // 모든 유닛이 죽었는지 체크
-            bool allUnitsDead = UnitManager.Instance.GetActiveUnitCount() <= 0;
+            // 공격 가능한 유닛이 죽었는지 체크
+            bool allAttackableUnitsDead = true;
 
-            if (allEnemiesDead && !allUnitsDead)
+            List<UnitController> units = UnitManager.Instance.GetAllUnits();
+            foreach (var unit in units)
             {
-                // 유닛이 살아있고 에너미가 모두 죽으면 승리
+                if (unit != null && unit.isActive && unit.canAttack)
+                {
+                    // 공격 가능한 유닛이 하나라도 살아있으면
+                    allAttackableUnitsDead = false;
+                    break;
+                }
+            }
+
+            // 이제 allUnitsDead가 아닌 allAttackableUnitsDead로 판단
+            if (allEnemiesDead && !allAttackableUnitsDead)
+            {
+                // 공격 가능한 유닛이 살아있고 에너미가 모두 죽으면 승리
                 if (battleResult == BattleResult.None)
                 {
                     battleResult = BattleResult.Victory;
                     OnBattleVictory();
                 }
             }
-            else if (allUnitsDead && !allEnemiesDead)
+            else if (allAttackableUnitsDead && !allEnemiesDead)
             {
-                // 유닛이 모두 죽고 에너미가 살아있으면 패배
+                // 공격 가능한 유닛이 모두 죽고 에너미가 살아있으면 패배
                 if (battleResult == BattleResult.None)
                 {
                     battleResult = BattleResult.Defeat;

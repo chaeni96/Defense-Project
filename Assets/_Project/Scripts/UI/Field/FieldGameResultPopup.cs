@@ -25,6 +25,7 @@ public class FieldGameResultPopup : PopupBase
 
     public void OnResultButton()
     {
+        UIManager.Instance.CloseUI<FullWindowInGameDlg>();
         GameManager.Instance.ChangeState(new GameLobbyState());
     }
 

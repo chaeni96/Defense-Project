@@ -32,6 +32,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public GameObject unitStarObject;
     [HideInInspector] public GameObject itemSlotObject;
 
+    public bool canAttack = true; 
     public bool isActive = true;
 
     // 드래그 앤 드롭을 위한 변수 추가
@@ -228,6 +229,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         {
             itemSlotObject.SetActive(false);
         }
+
+        CheckAttackAvailability();
     }
 
     public void SaveOriginalUnitPos()
@@ -363,6 +366,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             attackTimer = 0f;  // 타이머 리셋
         }
     }
+    public void CheckAttackAvailability()
+    {
+
+        // y가 9보다 크면 공격 불가
+        canAttack = tilePosition.y < 9;
+
+    }
+
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
@@ -494,6 +505,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             ResetPreviewStates();
             ReturnToOriginalPosition();
         }
+
+        CheckAttackAvailability();
     }
 
     protected virtual void PerformSwap()

@@ -52,6 +52,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void InitializeManager()
     {
+
+
         CleanUp();
         uiCache = new Dictionary<Type, UIBase>();
     }

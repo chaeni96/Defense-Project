@@ -10,7 +10,7 @@ using DG.Tweening;
 using static UnityEditor.PlayerSettings;
 
 
-[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", false)]
+[UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
 public class FullWindowInGameDlg : FullWindowBase
 {
     public GameObject firstCardDeck;
@@ -677,11 +677,9 @@ public class FullWindowInGameDlg : FullWindowBase
 
     public override void HideUI()
     {
-        //TODO: hide애니메이션 추가했을때 주석 해제
-        base.HideUI();
-
         CleanUp();
 
+        base.HideUI();
     }
 
 
@@ -747,10 +745,28 @@ public class FullWindowInGameDlg : FullWindowBase
             return;
         }
 
+        // 공격 가능한 유닛 수 확인
+        int attackableUnitsCount = 0;
+
+        foreach (var unit in units)
+        {
+            if (unit != null && unit.isActive && unit.canAttack)
+            {
+                attackableUnitsCount++;
+            }
+        }
+
+        // 공격 가능한 유닛이 없으면 메시지 표시하고 리턴
+        if (attackableUnitsCount <= 0)
+        {
+            Debug.LogWarning("공격 가능한 유닛이 없습니다!");
+            return;
+        }
+
         foreach (var unit in units)
         {
             // 유닛이 존재하고 공격 가능한 상태인지 확인
-            if (unit != null && unit.isActive)
+            if (unit != null && unit.isActive && unit.canAttack)
             {
                 // UnitMoveToTargetState로 상태 전환
                 unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);

@@ -107,6 +107,7 @@ public class GamePauseState : GameState
     public void ReturnToLobby()
     {
         GameManager.Instance.ClearGameScene();
+        UIManager.Instance.CloseUI<FullWindowInGameDlg>();
         GameManager.Instance.ChangeState(new GameLobbyState()); 
     }
 }
