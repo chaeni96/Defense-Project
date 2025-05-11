@@ -30,9 +30,23 @@ namespace AutoBattle.Scripts.UI.UIComponents
         {
             relicId = param.RelicId;
             relicName = param.RelicName;
+            relicLevel = param.RelicLevel;
+            relicExp = param.RelicExp;
             relicGrade = param.RelicGrade;
             relicDescription = param.RelicDescription;
             onClickCallback = onClickAction;
+            
+            UpdateUI();
+        }
+
+        public void UpdateData(RelicItemDataParam param)
+        {
+            relicId = param.RelicId;
+            relicName = param.RelicName;
+            relicLevel = param.RelicLevel;
+            relicExp = param.RelicExp;
+            relicGrade = param.RelicGrade;
+            relicDescription = param.RelicDescription;
             
             UpdateUI();
         }
@@ -48,7 +62,10 @@ namespace AutoBattle.Scripts.UI.UIComponents
 
             if (relicDimObject.activeSelf == false)
             {
-                relicExpSlider.value = (float)relicExp / 2;
+                var currentRelic = D_RelicItemData.GetEntity(relicId);
+                var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic);
+                
+                relicExpSlider.value = expData.f_maxExp == 0 ? 0 : (float)relicExp / expData.f_maxExp;
                 relicExpText.text = $"{relicExp} / 2";
             }
         }
