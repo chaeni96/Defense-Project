@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using BGDatabaseEnum;
 
 namespace AutoBattle.Scripts.Utils
@@ -21,6 +24,29 @@ namespace AutoBattle.Scripts.Utils
                 default:
                     return "Unknown";
             }
+        }
+        
+        public static T RandomRatePick<T>(
+            this IEnumerable<T> list,
+            Func<T, decimal> selector)
+        {
+            decimal sum = list.Sum(selector);
+
+            Random random = new System.Random();
+            decimal randomValue = Convert.ToDecimal(random.NextDouble()) * sum;
+
+            foreach (T item in list)
+            {
+                decimal rate = selector(item);
+                if (rate > randomValue)
+                {
+                    return item;
+                }
+
+                randomValue -= rate;
+            }
+
+            return default(T);
         }
     }
 }
