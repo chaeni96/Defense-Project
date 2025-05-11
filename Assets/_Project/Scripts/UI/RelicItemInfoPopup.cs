@@ -21,8 +21,9 @@ namespace AutoBattle.Scripts.UI
         [SerializeField] private Slider relicExpSlider;
         [SerializeField] private TMP_Text relicExpText;
         [SerializeField] private TMP_Text relicLevelText;
-        
-        [Header("Relic Upgrade Info")]
+
+        [Header("Relic Upgrade Info")] 
+        [SerializeField] private GameObject relicUpgradeDimButton;
         [SerializeField] private TMP_Text relicUpgradeCostText;
         
         [Header("Etc")]
@@ -48,7 +49,7 @@ namespace AutoBattle.Scripts.UI
 
         public void OnClickUpgradeButton()
         {
-            
+            Debug.Log("Upgrade button clicked");
         }
         
         public void OnClickRightButton()
@@ -90,6 +91,8 @@ namespace AutoBattle.Scripts.UI
             relicExpSlider.value = (float)relicItemDataParam.RelicExp / 2;
             relicGradeText.text = $"{CommonUtil.GetGradeName(relicItemDataParam.RelicGrade)}";
             relicGradeLabelImage.color = GetColorByGrade(relicItemDataParam.RelicGrade);
+
+            relicUpgradeDimButton.SetActive(relicItemDataParam.RelicLevel <= 0);
 
             return;
             // ===================================================================
