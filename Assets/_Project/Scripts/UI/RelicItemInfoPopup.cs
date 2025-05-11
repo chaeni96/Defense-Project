@@ -35,11 +35,6 @@ namespace AutoBattle.Scripts.UI
         
         private RelicItemDataParam relicItemDataParam;
         
-        public override void InitializeUI()
-        {
-            base.InitializeUI();
-        }
-        
         public void SetData(RelicItemDataParam param)
         {
             relicItemDataParam = param;
@@ -86,9 +81,14 @@ namespace AutoBattle.Scripts.UI
         {
             relicNameText.text = relicItemDataParam.RelicName;
             relicDescriptionText.text = relicItemDataParam.RelicDescription;
+            
             relicLevelText.text = $"Lv. {relicItemDataParam.RelicLevel}";
-            relicExpText.text = $"{relicItemDataParam.RelicExp} / 2";
+            
+            var currentRelic = D_RelicItemData.GetEntity(relicItemDataParam.RelicId);
+            var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic);
+            relicExpText.text = currentRelic.f_level <= 0 ? "¾øÀ½" : $"{relicItemDataParam.RelicExp} / {expData.f_maxExp}";
             relicExpSlider.value = (float)relicItemDataParam.RelicExp / 2;
+            
             relicGradeText.text = $"{CommonUtil.GetGradeName(relicItemDataParam.RelicGrade)}";
             relicGradeLabelImage.color = GetColorByGrade(relicItemDataParam.RelicGrade);
 
