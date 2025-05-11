@@ -65,6 +65,9 @@ public class EventManager : MonoBehaviour
     // 이벤트 트리거
     public void TriggerEvent(GameObject obj, EventTriggerType triggerType, Vector3 position)
     {
+        // null 체크 추가
+        if (obj == null) return;
+
         if (objectEvents.TryGetValue(obj, out var events))
         {
             foreach (var eventPair in events)

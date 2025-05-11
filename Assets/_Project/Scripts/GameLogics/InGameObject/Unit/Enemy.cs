@@ -16,6 +16,9 @@ public class Enemy : BasicObject
     [SerializeField] private Slider hpBar;  // Inspector에서 할당
     [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
 
+    private bool isDead = false;
+
+
     private D_EnemyData enemyData;
 
     public Action OnUpdateDistanceCheck;
@@ -153,6 +156,9 @@ public class Enemy : BasicObject
 
     public void onDamaged(BasicObject attacker, float damage = 0)
     {
+        // 이미 죽었다면 데미지 처리 중단
+        if (isDead) return;
+
         if (attacker != null)
         {
             //attacker의 공격력 
@@ -166,12 +172,15 @@ public class Enemy : BasicObject
 
         if (GetStat(StatName.CurrentHp) <= 0)
         {
+            isDead = true;
             OnDead();
         }
     }
 
     public void OnDead()
     {
+        if (isDead == false) return;
+
         // 이벤트 매니저를 통해 OnDeath 이벤트 트리거
         EventManager.Instance.TriggerEvent(gameObject, EventTriggerType.OnDeath, transform.position);
 

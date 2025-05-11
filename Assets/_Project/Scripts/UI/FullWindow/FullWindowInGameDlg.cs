@@ -257,12 +257,6 @@ public class FullWindowInGameDlg : FullWindowBase
             return;
         }
 
-        // 모든 자식 오브젝트 제거
-        foreach (Transform child in inventorySlotParent)
-        {
-            Destroy(child.gameObject);
-        }
-
 
         InventoryManager.Instance.RefreshInventoryUI(inventorySlotParent, slotItemPrefab);
         
@@ -271,7 +265,7 @@ public class FullWindowInGameDlg : FullWindowBase
     // 아이템 수집 이벤트 처리
     private void OnItemCollected(D_ItemData item)
     {
-        RefreshInventoryUI();
+        //RefreshInventoryUI();
     }
 
 
