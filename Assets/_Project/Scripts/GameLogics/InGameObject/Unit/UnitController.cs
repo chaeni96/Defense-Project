@@ -30,7 +30,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public UnitType unitType;
 
     public GameObject unitStarObject;
-    public GameObject itemSlotObject;
+    [HideInInspector] public GameObject itemSlotObject;
 
     public bool isActive = true;
 
@@ -83,23 +83,14 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     private void InitializeItemSlot()
     {
-        // 기존 아이템 슬롯이 있으면 삭제
-        if (itemSlotObject != null)
-        {
-            Destroy(itemSlotObject);
-        }
-
         // 새 아이템 슬롯 생성 및 비활성화
         if (itemSlotPrefab != null)
         {
             itemSlotObject = Instantiate(itemSlotPrefab, transform);
             itemSlotComponent = itemSlotObject.GetComponent<UnitItemSlotObject>();
-            itemSlotPrefab.SetActive(false);
+            itemSlotObject.SetActive(false);
         }
-        else
-        {
-            Debug.LogError("itemSlotPrefab is not assigned to UnitController");
-        }
+      
     }
 
     public override BasicObject GetTarget()
@@ -574,15 +565,28 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public virtual void DeleteUnit()
     {
-     
+
+        // 장착된 아이템이 있다면 인벤토리로 반환
+        IEquipmentSystem equipSystem = InventoryManager.Instance?.GetEquipmentSystem();
+        if (equipSystem != null)
+        {
+            // 슬롯 인덱스 0의 아이템을 가져옴
+            D_ItemData equipItem = equipSystem.GetEquippedItem(this);
+
+            // 아이템이 있다면 해제하고 인벤토리로 반환 (UnequipItem 메서드 내에서 인벤토리 반환을 처리함)
+            if (equipItem != null)
+            {
+                equipSystem.UnequipItem(this);
+            }
+        }
+
         // 기존 단일 타일 로직
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
-     
 
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
 
-        //코스트 정산
+        // 코스트 정산
         int refundCost = 0;
 
         if (unitType == UnitType.Base)

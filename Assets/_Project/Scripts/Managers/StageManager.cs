@@ -262,7 +262,26 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
                 // 타일맵에 있던 원래 위치로 돌아가기
                 unit.ReturnToOriginalPosition();
-                unit.itemSlotObject.gameObject.SetActive(true);
+
+                // 장착된 아이템이 있는지 확인 후 아이템 슬롯 활성화
+                if (unit.itemSlotObject != null)
+                {
+                    // 장비 시스템에서 해당 유닛에 장착된 아이템이 있는지 확인
+                    IEquipmentSystem equipSystem = InventoryManager.Instance.GetEquipmentSystem();
+                    if (equipSystem != null)
+                    {
+                        D_ItemData equippedItem = equipSystem.GetEquippedItem(unit);
+                        // 장착된 아이템이 있을 경우에만 아이템 슬롯 활성화
+                        unit.itemSlotObject.gameObject.SetActive(equippedItem != null);
+                    }
+                    else
+                    {
+                        // 장비 시스템을 찾을 수 없는 경우 슬롯 비활성화
+                        unit.itemSlotObject.gameObject.SetActive(false);
+                    }
+                }
+
+
             }
 
             // 적 오브젝트 비활성화

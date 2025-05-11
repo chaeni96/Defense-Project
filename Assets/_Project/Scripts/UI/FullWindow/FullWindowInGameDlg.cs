@@ -189,19 +189,18 @@ public class FullWindowInGameDlg : FullWindowBase
             currencyBtnBG.SetActive(false);
         }
 
+        equipmentPanel.SetActive(true);
+        equipmentBG.SetActive(true);
+        equipmentBtnBG.SetActive(true);
+
+
         if (characterPanel != null)
         {
             characterPanel.SetActive(false);
             characterBG.SetActive(false);
             characterBtnBG.SetActive(false);
         }
-        
-        
-        equipmentPanel.SetActive(true);
-        equipmentBG.SetActive(true);
-        equipmentBtnBG.SetActive(true);
 
-  
 
         if (characterInfo != null)
             characterInfo.HideCharacterInfo();
@@ -758,7 +757,11 @@ public class FullWindowInGameDlg : FullWindowBase
                 // UnitMoveToTargetState로 상태 전환
                 unit.fsmObj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
                 unit.SaveOriginalUnitPos();
-                unit.itemSlotObject.gameObject.SetActive(false);
+                if(unit.itemSlotObject != null)
+                {
+                    unit.itemSlotObject.gameObject.SetActive(false);
+                }
+                
             }
         }
 
