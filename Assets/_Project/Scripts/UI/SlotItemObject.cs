@@ -13,6 +13,7 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private GameObject equippedIndicator;
 
     private BGId itemId;
+    private string uniqueItemId; // 아이템 인스턴스의 고유 ID
     private D_ItemData itemData;
     private AsyncOperationHandle<Sprite> spriteHandle;
 
@@ -34,12 +35,13 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         equipmentSystem = InventoryManager.Instance.GetEquipmentSystem();
     }
 
-    public void InitializeSlot(BGId id, D_ItemData item)
+    public void InitializeSlot(BGId id, D_ItemData item, string uniqueId = null)
     {
         if (item == null) return;
 
         itemId = id;
         itemData = item;
+        uniqueItemId = uniqueId ?? System.Guid.NewGuid().ToString();
 
         // 아이콘 설정
         if (itemIcon != null && item.f_iconImage != null)
@@ -135,10 +137,15 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             //슬롯에 장착
             if (equipmentSystem.IsSlotAvailable(unit, 0))
             {
-                equipmentSystem.EquipItem(unit, itemData, 0);
+                // 고유 ID 전달
+                equipmentSystem.EquipItem(unit, itemData, 0, uniqueItemId);
                 unit.EquipItemSlot(itemIcon.sprite);
-                
-                gameObject.SetActive(false);
+                // 인벤토리에서 아이템 제거
+                InventoryManager.Instance.RemoveItem(itemId);
+
+                // 이제 오브젝트를 안전하게 파괴할 수 있습니다
+                Destroy(gameObject);
+
                 Debug.Log($"아이템이 유닛 {unit.name}의 슬롯에 장착되었습니다.");
                 return true;
             }

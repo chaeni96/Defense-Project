@@ -65,6 +65,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 아이템 슬롯 컴포넌트 캐싱
     private UnitItemSlotObject itemSlotComponent;
 
+    // 유닛 인스턴스별 고유 ID 추가
+    public string uniqueId { get; private set; }
 
     // UnitController.cs에 추가
     public static event System.Action<UnitController> OnUnitClicked;
@@ -76,7 +78,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
         hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
-
+        // 고유 ID 생성 (System.Guid 사용)
+        uniqueId = System.Guid.NewGuid().ToString();
         // 아이템 슬롯 초기화
         InitializeItemSlot();
     }
@@ -565,18 +568,17 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public virtual void DeleteUnit()
     {
-
         // 장착된 아이템이 있다면 인벤토리로 반환
         IEquipmentSystem equipSystem = InventoryManager.Instance?.GetEquipmentSystem();
         if (equipSystem != null)
         {
-            // 슬롯 인덱스 0의 아이템을 가져옴
-            D_ItemData equipItem = equipSystem.GetEquippedItem(this);
+            // 아이템을 가져오되 인벤토리에 자동 반환하지 않음
+            D_ItemData equipItem = equipSystem.GetAndRemoveEquippedItem(this);
 
-            // 아이템이 있다면 해제하고 인벤토리로 반환 (UnequipItem 메서드 내에서 인벤토리 반환을 처리함)
+            // 아이템이 있다면 인벤토리에 수동으로 반환
             if (equipItem != null)
             {
-                equipSystem.UnequipItem(this);
+                InventoryManager.Instance.AddItem(equipItem);
             }
         }
 
@@ -607,8 +609,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         });
     }
 
-// 배치 가능한지 확인
- protected virtual bool CheckPlacementPossibility(Vector2 targetPos)
+    // 배치 가능한지 확인
+    protected virtual bool CheckPlacementPossibility(Vector2 targetPos)
     {
         {
             // 기존 단일 타일 로직

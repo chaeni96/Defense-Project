@@ -189,15 +189,17 @@ public class CharacterInfo : MonoBehaviour
         IEquipmentSystem equipSystem = InventoryManager.Instance.GetEquipmentSystem();
         if (equipSystem != null && equipData != null)
         {
-            // 장비 해제
-            bool success = equipSystem.UnequipItem(clickUnit);
+            // 장비 해제하되 자동 반환되지 않도록 GetAndRemoveEquippedItem 사용
+            D_ItemData itemData = equipSystem.GetAndRemoveEquippedItem(clickUnit);
 
-            if (success)
+            // 직접 인벤토리에 추가
+            if (itemData != null)
             {
-                // UI 업데이트
-                ShowUnitInfo(clickUnit);
-
+                InventoryManager.Instance.AddItem(itemData);
             }
+
+            // UI 업데이트
+            ShowUnitInfo(clickUnit);
         }
     }
 
