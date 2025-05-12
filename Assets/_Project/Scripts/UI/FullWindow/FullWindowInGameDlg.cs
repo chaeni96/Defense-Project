@@ -17,13 +17,11 @@ public class FullWindowInGameDlg : FullWindowBase
     public GameObject secondCardDeck;
     public GameObject thirdCardDeck;
     public GameObject forthCardDeck;
-
     
     public Button currencyTabButton; // 재화 탭 버튼
     public Button equipmentTabButton; // 장비 탭 버튼
     public Button characterInfoTabButton; //캐릭터 인포 탭 버튼
 
-    //[SerializeField] private GameObject CostGauge;  
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
     [SerializeField] private TMP_Text currentCostText;
@@ -45,18 +43,12 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private TMP_Text placementUnitCount; //배치된 유닛 수
     [SerializeField] private TMP_Text invenCount; //인벤토리 슬롯 수
 
-    //카드덱
-    private List<GameObject> cardDecks;
-    private List<UnitCardObject> currentCards;
-
-    public float checkCooldown = 1f;
-    private int shopLevel;
-    private int shopUpgradeCost;
 
     [SerializeField] private Button startBattleBtn;
     [SerializeField] private Transform inventorySlotParent; // 인벤토리 슬롯이 생성될 부모 Transform
     [SerializeField] private GameObject slotItemPrefab; // 슬롯 프리팹
     
+    [SerializeField] private Color unselectedTabColor = new Color(106f / 255f, 106f / 255f, 106f / 255f);
     [SerializeField] private GameObject currencyBtnBG;
     [SerializeField] private GameObject currencyPanel;
     [SerializeField] private GameObject currencyBG;
@@ -70,13 +62,19 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private GameObject characterBG;
     [SerializeField] private GameObject characterBtnBG;
 
-    [SerializeField] private Color unselectedTabColor = new Color(106f / 255f, 106f / 255f, 106f / 255f);
+    [SerializeField] private CharacterInfo characterInfo;
+
+    //카드덱
+    private List<GameObject> cardDecks;
+    private List<UnitCardObject> currentCards;
+
+    private int shopLevel;
+    private int shopUpgradeCost;
 
     private Color currencyTabOriginColor;
     private Color equipTabOriginColor;
     private Color characterTabOriginColor;
 
-    [SerializeField] private CharacterInfo characterInfo;
 
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
@@ -85,34 +83,27 @@ public class FullWindowInGameDlg : FullWindowBase
 
         base.InitializeUI();
 
-        
-        InitializeAssociateUI();
+        currencyTabOriginColor = currencyTabButton.GetComponent<Image>().color;
+        equipTabOriginColor = equipmentTabButton.GetComponent<Image>().color;
+        characterTabOriginColor = characterInfoTabButton.GetComponent<Image>().color;
 
+        InitializeAssociateUI();
         InitializeCardDecks();
         UpdateShopLevelUI();
-
         InitializeInventoryUI();
+        UpdateWaveIndex(1);
+        UpdatePlacementCount(UnitManager.Instance.GetAllUnits().Count);
+        OnCurrencyTabClicked();
+
+        characterInfo.InitilazeCharacterInfo();
 
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
         UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
         StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
-
-        UpdateWaveIndex(1);
-        UpdatePlacementCount(UnitManager.Instance.GetAllUnits().Count);
-
-        currencyTabOriginColor = currencyTabButton.GetComponent<Image>().color;
-        equipTabOriginColor = equipmentTabButton.GetComponent<Image>().color;
-
-        characterTabOriginColor = characterInfoTabButton.GetComponent<Image>().color;
-
-        
-        OnCurrencyTabClicked();
-
-        characterInfo.InitilazeCharacterInfo();
-
         characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
+
     }
 
 
@@ -577,14 +568,10 @@ public class FullWindowInGameDlg : FullWindowBase
             if (currentCards[i] != null)
             {
                 // UnitCardObject 삭제
+                currentCards[i].CleanUp();
                 Destroy(currentCards[i].gameObject);
                 currentCards[i] = null;
             }
-
-            //cardGradeImages[i].color = Color.white;
-
-            // UnitCard_Empty 활성화
-           // emptyCardObjects[i].SetActive(true);
         }
             // 새 카드 덱 생성
             CheckAndFillCardDecks();

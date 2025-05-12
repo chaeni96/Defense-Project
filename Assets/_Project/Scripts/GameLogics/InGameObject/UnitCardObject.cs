@@ -347,6 +347,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         OnCardUsed?.Invoke(transform.parent.gameObject);
 
         // 프리뷰 객체 정리
+        foreach (var instance in originalPreviews.Values)
+        {
+            PoolingManager.Instance.ReturnObject(instance.gameObject);
+        }
+
+
+        // 프리뷰 객체 정리
         foreach (var instance in currentPreviews.Values)
         {
             PoolingManager.Instance.ReturnObject(instance.gameObject);
@@ -818,7 +825,11 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
             TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, currentPreviews);
         }
-
+        if (rtSource != null)
+        {
+            PoolingManager.Instance.ReturnObject(rtSource.gameObject);
+            rtSource = null;
+        }
         // 코스트 사용
         StatManager.Instance.BroadcastStatChange(StatSubject.System, new StatStorage
         {
@@ -829,6 +840,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         // 사용된 카드 제거 -> 이벤트 통해서
         OnCardUsed?.Invoke(transform.parent.gameObject);
+
 
         originalPreviews.Clear();
         currentPreviews.Clear();
@@ -859,7 +871,13 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 기존 프리뷰 반환 코드 유지
         foreach (var instance in currentPreviews.Values)
         {
-            instance.transform.position = new Vector3(3000f, 0f);
+            if(instance!= null)
+            {
+                PoolingManager.Instance.ReturnObject(instance.gameObject);
+            }
+            //instance.transform.position = new Vector3(3000f, 0f);
+
+
         }
 
         // 확장 오브젝트 프리뷰도 반환
@@ -1018,17 +1036,12 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
     }
 
-    private void CleanUp()
+    public void CleanUp()
     {
         ClearTileImages(); // 타일 이미지 제거
         CancelPlacement();
 
-
-
-        originalPreviews.Clear();
-        currentPreviews.Clear();
         activeImageIndices.Clear();
-        extensionPreviews.Clear();
 
         // 이벤트 구독 해제
         GameManager.Instance.OnCostAdd -= OnCostChanged;

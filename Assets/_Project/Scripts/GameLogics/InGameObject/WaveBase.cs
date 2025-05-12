@@ -59,6 +59,12 @@ public abstract class BattleWaveBase : WaveBase
     //떨어진 아이템 회수, 저금통 이자 지급, 전투 종료 연출 출력 시간
     protected float interestDelay = 0.6f; //일단 0.6초
 
+
+    protected float gridSize = 1f; // 그리드 한 칸의 크기
+
+    protected Vector2 centerOffset = new Vector2(18f, 0f); //배치할곳 -> 데이터로 빼두기 
+
+
     public BattleWaveBase(D_WaveDummyData data) : base(data)
     {
         // 초기 상태 설정
@@ -215,9 +221,7 @@ public class NormalBattleWave : BattleWaveBase
     private D_NormalBattleWaveData normalWaveData;
 
     private D_EnemyPlacementData placementData;
-    private float gridSize = 0.55f; // 그리드 한 칸의 크기
-
-    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
+  
 
     public NormalBattleWave(D_NormalBattleWaveData data) : base(data)
     {
@@ -243,16 +247,16 @@ public class NormalBattleWave : BattleWaveBase
     /// </summary>
     public override string GetWaveInfoText()
     {
-        string waveInfo = "일반 전투 웨이브\n";
+        string waveInfo = "일반 전투 웨이브\n 모든 적을 처치해주세요!";
 
-        var groupedEnemies = placementData.f_cellData
-                                .GroupBy(cell => cell.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, Count = g.Count() });
+        //var groupedEnemies = placementData.f_cellData
+        //                        .GroupBy(cell => cell.f_enemy.f_name)
+        //                        .Select(g => new { Name = g.Key, Count = g.Count() });
 
-        foreach (var group in groupedEnemies)
-        {
-            waveInfo += $"{group.Name} x{group.Count}\n";
-        }
+        //foreach (var group in groupedEnemies)
+        //{
+        //    waveInfo += $"{group.Name} x{group.Count}\n";
+        //}
 
         return waveInfo;
     }
@@ -301,9 +305,7 @@ public class BossBattleWave : BattleWaveBase
     private D_BossBattleWaveData bossWaveData;
 
     private D_EnemyPlacementData placementData;
-    private float gridSize = 0.55f; // 그리드 한 칸의 크기
-
-    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
+ 
 
     public BossBattleWave(D_BossBattleWaveData data) : base(data)
     {
@@ -330,16 +332,16 @@ public class BossBattleWave : BattleWaveBase
     public override string GetWaveInfoText()
     {
 
-        string waveInfo = "보스 전투 웨이브\n";
+        string waveInfo = "보스 전투 웨이브\n 모든 적을 처치해주세요!";
 
-        var groupedEnemies = placementData.f_cellData
-                                .GroupBy(cell => cell.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, Count = g.Count() });
+        //var groupedEnemies = placementData.f_cellData
+        //                        .GroupBy(cell => cell.f_enemy.f_name)
+        //                        .Select(g => new { Name = g.Key, Count = g.Count() });
 
-        foreach (var group in groupedEnemies)
-        {
-            waveInfo += $"{group.Name} x{group.Count}\n";
-        }
+        //foreach (var group in groupedEnemies)
+        //{
+        //    waveInfo += $"{group.Name} x{group.Count}\n";
+        //}
 
         return waveInfo;
     }
@@ -387,9 +389,7 @@ public class EventEnemyWave : BattleWaveBase
     private D_EventEnemyWaveData eventEnemyWaveData;
 
     private D_EnemyPlacementData placementData;
-    private float gridSize = 0.55f; // 그리드 한 칸의 크기
 
-    private Vector2 centerOffset = new Vector2(10.18f, 1.83f); //배치할곳 -> 데이터로 빼두기 
 
     public EventEnemyWave(D_EventEnemyWaveData data) : base(data)
     {
@@ -415,16 +415,16 @@ public class EventEnemyWave : BattleWaveBase
     /// </summary>
     public override string GetWaveInfoText()
     {
-        string waveInfo = "보물 에너미 등장 웨이브\n";
+        string waveInfo = "보물 에너미 등장 웨이브\n 에너미를 처치하고 아이템을 얻으세요!";
 
-        var groupedEnemies = placementData.f_cellData
-                                .GroupBy(cell => cell.f_enemy.f_name)
-                                .Select(g => new { Name = g.Key, Count = g.Count() });
+        //var groupedEnemies = placementData.f_cellData
+        //                        .GroupBy(cell => cell.f_enemy.f_name)
+        //                        .Select(g => new { Name = g.Key, Count = g.Count() });
 
-        foreach (var group in groupedEnemies)
-        {
-            waveInfo += $"{group.Name} x{group.Count}\n";
-        }
+        //foreach (var group in groupedEnemies)
+        //{
+        //    waveInfo += $"{group.Name} x{group.Count}\n";
+        //}
 
         return waveInfo;
     }

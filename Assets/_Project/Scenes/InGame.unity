@@ -337,9 +337,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothSpeed: 3
   originalPosition: {x: 0, y: 0, z: 0}
-  stopX: 6.01
+  stopX: 9
   stopDistance: 0.1
-  leadOffset: 2
+  leadOffset: 3
 --- !u!1 &545611163
 GameObject:
   m_ObjectHideFlags: 0

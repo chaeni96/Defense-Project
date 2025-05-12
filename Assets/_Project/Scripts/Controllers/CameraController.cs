@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float smoothSpeed = 3f; // 카메라 이동 부드러움 정도
     [SerializeField] private Vector3 originalPosition; // 초기 카메라 위치
-    [SerializeField] private float stopX = 20f; // 카메라가 멈출 X 좌표 (킬존)
+    [SerializeField] private float stopX = 11f; // 카메라가 멈출 X 좌표 (킬존)
     [SerializeField] private float stopDistance = 0.1f; // 도착했다고 판단할 거리
     [SerializeField] private float leadOffset = 2f; // 유닛보다 얼마나 앞서 있을지 (X축 거리)
 

@@ -1,6 +1,8 @@
 using BansheeGz.BGDatabase;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -10,7 +12,6 @@ using UnityEngine.UI;
 public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private Image itemIcon;
-    [SerializeField] private GameObject equippedIndicator;
 
     private BGId itemId;
     private string uniqueItemId; // 아이템 인스턴스의 고유 ID
@@ -22,12 +23,15 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private Vector3 originalPosition;
     private bool isDragging = false;
 
+    
     // 이벤트
     public delegate void ItemDroppedHandler(D_ItemData item);
     public event ItemDroppedHandler OnItemDropped;
 
     // 장비 시스템 참조
     private IEquipmentSystem equipmentSystem;
+
+
 
     private void Awake()
     {
@@ -168,5 +172,18 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             Addressables.Release(spriteHandle);
         }
+    }
+
+    public async void OnClickIcon()
+    {
+        ItemDescToolTip itemDescToolTip = await UIManager.Instance.ShowUI<ItemDescToolTip>();
+
+        // 원래 위치에서 오른쪽으로 조금 이동된 위치 설정
+        Vector3 tooltipPosition = transform.position;
+        tooltipPosition.x += 93f;
+        itemDescToolTip.transform.position = tooltipPosition;
+
+        itemDescToolTip.InitializeItemDescUI(itemData);
+        
     }
 }

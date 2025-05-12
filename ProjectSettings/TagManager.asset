@@ -57,3 +57,6 @@ TagManager:
   - name: Effect
     uniqueID: 3344823679
     locked: 0
+  - name: TooltipUI
+    uniqueID: 3359611435
+    locked: 0

@@ -7,12 +7,11 @@ using Kylin.FSM;
 
 public class EnemyPlacementTool : EditorWindow
 {
-    private int mapId = 0;
+    private int mapId = 0; // 자동으로 설정될 예정
     private string mapName;
     private Vector2 mainScrollPosition; // 전체 창에 대한 스크롤 위치
     private Vector2 enemyScrollPosition; // 에너미 목록 스크롤 위치
-    private Vector2 eventScrollPosition; // 이벤트 목록 스크롤 위치
-    private EnemyCell[,] cells = new EnemyCell[10, 12]; // 10x12 그리드
+    private EnemyCell[,] cells = new EnemyCell[8, 8]; // 7x7 그리드
     private Vector2Int selectedCell = new Vector2Int(-1, -1);
 
     // 셀 데이터 클래스
@@ -33,16 +32,37 @@ public class EnemyPlacementTool : EditorWindow
     private void OnEnable()
     {
         // 셀 초기화
-        for (int y = 0; y < 10; y++)
+        for (int y = 0; y < 8; y++)
         {
-            for (int x = 0; x < 12; x++)
+            for (int x = 0; x < 8; x++)
             {
                 cells[y, x] = new EnemyCell();
             }
         }
 
-        // 기존 데이터 불러오기
-        LoadDataIfExists();
+        // 자동으로 다음 사용 가능한 MapID 찾기
+        FindNextAvailableMapId();
+    }
+
+    // 다음 사용 가능한 MapID를 찾는 메서드
+    private void FindNextAvailableMapId()
+    {
+        int highestMapId = -1;
+
+        // BGDatabase에서 모든 EnemyPlacementData 불러와서 최대 mapID 찾기
+        List<D_EnemyPlacementData> allPlacements = new List<D_EnemyPlacementData>();
+        D_EnemyPlacementData.ForEachEntity(p => allPlacements.Add(p));
+
+        foreach (var placement in allPlacements)
+        {
+            if (placement.f_mapID > highestMapId)
+            {
+                highestMapId = placement.f_mapID;
+            }
+        }
+
+        // 다음 MapID 설정 (최소값은 0)
+        mapId = highestMapId + 1;
     }
 
     private void OnGUI()
@@ -52,7 +72,7 @@ public class EnemyPlacementTool : EditorWindow
 
         EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
 
-        // 왼쪽 패널 - MapID 입력 영역
+        // 왼쪽 패널 - 맵 정보 영역
         DrawLeftPanel();
 
         // 약간의 공간 추가
@@ -72,7 +92,6 @@ public class EnemyPlacementTool : EditorWindow
         if (selectedCell.x >= 0 && selectedCell.y >= 0)
         {
             DrawEnemySelection();
-
         }
         else
         {
@@ -97,25 +116,48 @@ public class EnemyPlacementTool : EditorWindow
         GUILayout.Label("Enemy Placement Tool", EditorStyles.boldLabel);
         EditorGUILayout.Space(20);
 
+        // 다음 MapID 표시 (수정 불가)
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Map ID:", GUILayout.Width(60));
-        mapId = EditorGUILayout.IntField(mapId);
+        EditorGUILayout.LabelField("다음 Map ID:", GUILayout.Width(80));
+        EditorGUILayout.LabelField(mapId.ToString(), EditorStyles.boldLabel);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("MapName:", GUILayout.Width(60));
+
+        // 맵 이름 입력 필드
+        EditorGUILayout.LabelField("Map Name:", GUILayout.Width(80));
         mapName = EditorGUILayout.TextField(mapName);
+
         EditorGUILayout.Space(10);
 
-        if (GUILayout.Button("Load Map"))
-        {
-            LoadDataIfExists();
-        }
-
+        // 저장 버튼 (이전 Load 버튼 제거)
         EditorGUILayout.Space();
-        if (GUILayout.Button("Save Data"))
+        if (GUILayout.Button("새 맵 저장하기"))
         {
-            SaveData();
+            if (string.IsNullOrEmpty(mapName))
+            {
+                EditorUtility.DisplayDialog("경고", "맵 이름을 입력해주세요.", "확인");
+            }
+            else
+            {
+                SaveData();
+
+                // 저장 후 맵 초기화 및 다음 맵 ID 설정
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        cells[y, x].enemy = null;
+                        cells[y, x].events.Clear();
+                    }
+                }
+
+                // 다음 사용 가능한 MapID 다시 찾기
+                FindNextAvailableMapId();
+
+                // 맵 이름 초기화 (선택적)
+                mapName = "";
+            }
         }
 
         // 추가 도구 버튼들
@@ -125,9 +167,9 @@ public class EnemyPlacementTool : EditorWindow
         {
             if (EditorUtility.DisplayDialog("초기화 확인", "모든 셀의 데이터를 초기화하시겠습니까?", "예", "아니오"))
             {
-                for (int y = 0; y < 10; y++)
+                for (int y = 0; y < 8; y++)
                 {
-                    for (int x = 0; x < 12; x++)
+                    for (int x = 0; x < 8; x++)
                     {
                         cells[y, x].enemy = null;
                         cells[y, x].events.Clear();
@@ -145,17 +187,17 @@ public class EnemyPlacementTool : EditorWindow
 
         // 이 부분이 중요합니다 - 그리드를 그리기 위한 영역을 미리 확보
         float cellSize = 40f; // 셀 크기
-        Rect layoutRect = GUILayoutUtility.GetRect(12 * cellSize + 40, 10 * cellSize + 60);
+        Rect layoutRect = GUILayoutUtility.GetRect(8 * cellSize + 40, 8 * cellSize + 60);
 
         // 그리드의 시작 위치를 layoutRect 기준으로 설정
-        Rect gridRect = new Rect(layoutRect.x + 30, layoutRect.y + 20, cellSize * 12, cellSize * 10);
+        Rect gridRect = new Rect(layoutRect.x + 30, layoutRect.y + 20, cellSize * 8, cellSize * 8);
 
         // 그리드 배경 (흰색)
         EditorGUI.DrawRect(gridRect, Color.white);
 
-        for (int y = 0; y < 10; y++)
+        for (int y = 0; y < 8; y++)
         {
-            for (int x = 0; x < 12; x++)
+            for (int x = 0; x < 8; x++)
             {
                 Rect cellRect = new Rect(gridRect.x + x * cellSize, gridRect.y + y * cellSize, cellSize, cellSize);
 
@@ -272,13 +314,13 @@ public class EnemyPlacementTool : EditorWindow
         axisStyle.fontStyle = FontStyle.Bold;
         axisStyle.alignment = TextAnchor.MiddleCenter;
 
-        for (int x = 0; x < 12; x++)
+        for (int x = 0; x < 8; x++)
         {
             Rect labelRect = new Rect(gridRect.x + x * cellSize, gridRect.y - 20, cellSize, 20);
             EditorGUI.LabelField(labelRect, x.ToString(), axisStyle);
         }
 
-        for (int y = 0; y < 10; y++)
+        for (int y = 0; y < 8; y++)
         {
             Rect labelRect = new Rect(gridRect.x - 20, gridRect.y + y * cellSize, 20, cellSize);
             EditorGUI.LabelField(labelRect, y.ToString(), axisStyle);
@@ -360,80 +402,17 @@ public class EnemyPlacementTool : EditorWindow
         EditorGUILayout.EndScrollView();
     }
 
-    private void LoadDataIfExists()
-    {
-        // 모든 셀 초기화
-        for (int y = 0; y < 10; y++)
-        {
-            for (int x = 0; x < 12; x++)
-            {
-                cells[y, x].enemy = null;
-                cells[y, x].events.Clear();
-            }
-        }
-
-        // BGDatabase에서 맵 데이터 불러오기
-        D_EnemyPlacementData placement = D_EnemyPlacementData.FindEntity(p => p.f_mapID == mapId);
-
-        mapName = placement.f_name;
-        if (placement != null)
-        {
-            foreach (var cellData in placement.f_cellData)
-            {
-                int x = (int)cellData.f_position.x;
-                int y = (int)cellData.f_position.y;
-
-                if (x >= 0 && x < 12 && y >= 0 && y < 10)
-                {
-                    cells[y, x].enemy = cellData.f_enemy;
-                }
-            }
-
-            EditorUtility.DisplayDialog("로드 완료", $"맵 ID {mapId}의 에너미 배치 데이터를 불러왔습니다.", "확인");
-        }
-        else
-        {
-            EditorUtility.DisplayDialog("알림", $"맵 ID {mapId}에 대한 데이터가 없습니다. 새로운 맵을 생성합니다.", "확인");
-        }
-    }
-
     private void SaveData()
     {
-        // 기존 데이터가 있는지 확인
-        D_EnemyPlacementData placement = D_EnemyPlacementData.FindEntity(p => p.f_mapID == mapId);
+        // 새 엔티티 생성
+        D_EnemyPlacementData placement = D_EnemyPlacementData.NewEntity();
+        placement.f_name = mapName; // 사용자가 입력한 이름 사용
+        placement.f_mapID = mapId;  // 자동으로 설정된 다음 맵 ID 사용
 
-        // 없으면 새로 생성
-        if (placement == null)
+        // 셀 데이터 추가
+        for (int y = 0; y < 8; y++)
         {
-            placement = D_EnemyPlacementData.NewEntity();
-            placement.f_name = mapName;
-            placement.f_mapID = mapId;
-        }
-        else
-        {
-            // 다른 mapId를 가진 모든 엔티티 찾기
-            List<D_EnemyPlacementData> allPlacements = new List<D_EnemyPlacementData>();
-            D_EnemyPlacementData.ForEachEntity(p => allPlacements.Add(p));
-
-            // 현재 맵과 관련된 엔티티만 추출
-            List<D_EnemyPlacementData> toRemove = allPlacements.FindAll(p => p.f_mapID == mapId);
-
-            // 모든 관련 엔티티 삭제하고 새로 생성
-            foreach (var p in toRemove)
-            {
-                p.Delete();
-            }
-
-            // 새 엔티티 생성
-            placement = D_EnemyPlacementData.NewEntity();
-            placement.f_name = "Map_" + mapId;
-            placement.f_mapID = mapId;
-        }
-
-        // 새로운 셀 데이터 추가
-        for (int y = 0; y < 10; y++)
-        {
-            for (int x = 0; x < 12; x++)
+            for (int x = 0; x < 8; x++)
             {
                 if (cells[y, x] != null && !cells[y, x].isEmpty)
                 {
@@ -449,7 +428,6 @@ public class EnemyPlacementTool : EditorWindow
                         {
                             // 현재 셀의 이벤트 목록 복사
                             List<D_EventDummyData> eventsList = new List<D_EventDummyData>(cells[y, x].events);
-
                         }
                         catch (System.Exception e)
                         {
@@ -464,6 +442,6 @@ public class EnemyPlacementTool : EditorWindow
         // 변경사항 저장
         BGRepo.I.Save();
 
-        EditorUtility.DisplayDialog("저장 완료", $"맵 ID {mapId}의 에너미 배치 데이터가 저장되었습니다.", "확인");
+        EditorUtility.DisplayDialog("저장 완료", $"맵 '{mapName}'이(가) 맵 ID {mapId}로 저장되었습니다.", "확인");
     }
 }

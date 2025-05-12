@@ -34,13 +34,13 @@ MonoBehaviour:
       StringValue: (665.71,699.2805,649.2805)
     - Name: moveSpeed
       Type: 1
-      StringValue: 1.5
+      StringValue: 2.5
     - Name: unitTargetPos
       Type: 1
-      StringValue: 4.65
+      StringValue: 4
     - Name: enemyTargetPos
       Type: 1
-      StringValue: 7.38
+      StringValue: 14
     - Name: stopDistance
       Type: 1
       StringValue: 0.1
