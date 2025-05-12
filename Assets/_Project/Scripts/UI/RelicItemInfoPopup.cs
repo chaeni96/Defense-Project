@@ -1,6 +1,9 @@
+using System;
 using AutoBattle.Scripts.UI.UIComponents;
 using AutoBattle.Scripts.Utils;
+using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
+using BGDatabaseEnum.DataController;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +29,10 @@ namespace AutoBattle.Scripts.UI
         [SerializeField] private GameObject relicUpgradeDimButton;
         [SerializeField] private TMP_Text relicUpgradeCostText;
         
+        [Header("Equip Button")]
+        [SerializeField] private Button equipButton;
+        [SerializeField] private TMP_Text equipButtonText;
+        
         [Header("Etc")]
         [SerializeField] private Color normalColor;
         [SerializeField] private Color rareColor;
@@ -34,12 +41,19 @@ namespace AutoBattle.Scripts.UI
         [SerializeField] private Color mythicColor;
         
         private RelicItemDataParam relicItemDataParam;
+
+        private event Action<BGId> onClickEquipButton;
         
         public void SetData(RelicItemDataParam param)
         {
             relicItemDataParam = param;
             
             UpdateUI();
+        }
+
+        public void SetOnClickEquipButtonAction(Action<BGId> action)
+        {
+            onClickEquipButton = action;
         }
 
         public void OnClickUpgradeButton()
@@ -58,8 +72,7 @@ namespace AutoBattle.Scripts.UI
             
             var nextRelic = D_RelicItemData.GetNextRelicItemData(currentRelic);
 
-            SetData(new RelicItemDataParam(nextRelic.Id, nextRelic.f_name, nextRelic.f_level, nextRelic.f_exp,
-                nextRelic.f_grade, nextRelic.f_description));
+            SetData(new RelicItemDataParam(nextRelic.Id, nextRelic.f_name, nextRelic.f_grade, nextRelic.f_description));
         }
         
         public void OnClickLeftButton()
@@ -73,8 +86,37 @@ namespace AutoBattle.Scripts.UI
             
             var previousRelic = D_RelicItemData.GetPreviousRelicItemData(currentRelic);
 
-            SetData(new RelicItemDataParam(previousRelic.Id, previousRelic.f_name, previousRelic.f_level, previousRelic.f_exp,
-                previousRelic.f_grade, previousRelic.f_description));
+            SetData(new RelicItemDataParam(previousRelic.Id, previousRelic.f_name, previousRelic.f_grade, previousRelic.f_description));
+        }
+        
+        // 장착 버튼 클릭 이벤트
+        public void OnClickEquipButton()
+        {
+            BGId relicId = relicItemDataParam.RelicId;
+    
+            // 이미 장착된 유물인지 확인
+            if (RelicDataController.Instance.IsRelicEquipped(relicId))
+            {
+                // 이미 장착된 경우 장착 해제
+                RelicDataController.Instance.UnequipRelic(relicId);
+                UpdateEquipButtonText(false);
+            }
+            else
+            {
+                onClickEquipButton?.Invoke(relicId);
+            }
+    
+            // 팝업 닫기
+            OnClickClose();
+        }
+
+        // 장착 버튼 텍스트 업데이트
+        private void UpdateEquipButtonText(bool isEquipped)
+        {
+            if (equipButtonText != null)
+            {
+                equipButtonText.text = isEquipped ? "해제" : "장착";
+            }
         }
 
         private void UpdateUI()
@@ -84,15 +126,16 @@ namespace AutoBattle.Scripts.UI
             
             relicLevelText.text = $"Lv. {relicItemDataParam.RelicLevel}";
             
-            var currentRelic = D_RelicItemData.GetEntity(relicItemDataParam.RelicId);
-            var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic);
-            relicExpText.text = currentRelic.f_level <= 0 ? "없음" : $"{relicItemDataParam.RelicExp} / {expData.f_maxExp}";
-            relicExpSlider.value = (float)relicItemDataParam.RelicExp / 2;
+            var currentRelic = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicItemDataParam.RelicId);
+            relicExpText.text = currentRelic == null ? "없음" : $"{relicItemDataParam.RelicExp} / {D_RelicItemExpData.GetRelicItemExpData(currentRelic.f_level).f_maxExp}";
+            relicExpSlider.value = currentRelic == null ? 0 : (float)relicItemDataParam.RelicExp / D_RelicItemExpData.GetRelicItemExpData(currentRelic.f_level).f_maxExp;
             
             relicGradeText.text = $"{CommonUtil.GetGradeName(relicItemDataParam.RelicGrade)}";
             relicGradeLabelImage.color = GetColorByGrade(relicItemDataParam.RelicGrade);
 
             relicUpgradeDimButton.SetActive(relicItemDataParam.RelicLevel <= 0);
+            
+            UpdateEquipButtonText(currentRelic != null && currentRelic.f_isEquiped);
 
             return;
             // ===================================================================
@@ -108,6 +151,11 @@ namespace AutoBattle.Scripts.UI
                     _ => Color.white
                 };
             }
+        }
+
+        private void OnDisable()
+        {
+            onClickEquipButton = null;
         }
     }
 }

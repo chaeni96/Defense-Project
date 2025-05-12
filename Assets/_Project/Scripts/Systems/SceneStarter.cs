@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using BGDatabaseEnum.DataController;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -43,6 +45,7 @@ public class SceneStarter : MonoBehaviour
         if (scenekind == SceneKind.Lobby)
         {
             // 로비 초기화 작업이 있다면 여기서 수행
+            RelicDataController.Instance.Initialize();
         }
         if (scenekind == SceneKind.InGame)
         {
@@ -92,4 +95,18 @@ public class SceneStarter : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            var all = D_U_RelicData.FindEntities(data => true);
+
+            foreach (var a in all)
+            {
+                a.Delete();
+            }
+            
+            SaveLoadManager.Instance.SaveData();
+        }
+    }
 }

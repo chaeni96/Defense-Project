@@ -10,7 +10,18 @@ public partial class D_RelicItemData
     
     public static List<D_RelicItemData> GetOwnedRelicItems() 
     {
-        return D_RelicItemData.FindEntities(data => data.f_level > 0);
+        List<D_RelicItemData> relicItems = new List<D_RelicItemData>();
+        
+        D_RelicItemData.ForEachEntity(data =>
+        {
+            var relicItem = D_U_RelicData.GetEntity(data.Id);
+            if (relicItem != null && relicItem.f_level > 0)
+            {
+                relicItems.Add(data);
+            }
+        });
+
+        return relicItems;
     }
 
     public static D_RelicItemData GetNextRelicItemData(D_RelicItemData currentRelicItem)
