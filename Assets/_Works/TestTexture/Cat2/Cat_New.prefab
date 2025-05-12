@@ -1145,7 +1145,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 33
   m_Sprite: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3429,7 +3429,7 @@ MonoBehaviour:
   OnEntityChange:
     m_PersistentCalls:
       m_Calls: []
-  entityIdString: 9ltBriZPJkGtXixfoUElMA
+  entityIdString: lyqgYAp1eUW1JPlPGWfsEQ
   metaIdString: IFZ3UDFwo0GwAr3K6Dmrjw
   initWithFirst: 0
 --- !u!1 &8555104715775212689
