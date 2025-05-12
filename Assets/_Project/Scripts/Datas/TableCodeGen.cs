@@ -4453,12 +4453,12 @@ public partial class D_UnitAppearanceData : BGEntity
 		public const string SlotBeltSpriteKey = "SlotBeltSpriteKey";
 		public const string SlotBeltTint = "SlotBeltTint";
 		public const string SlotBeltEnabled = "SlotBeltEnabled";
-		public const string SlotLeftLegSpriteKey = "SlotLeftLegSpriteKey";
-		public const string SlotLeftLegTint = "SlotLeftLegTint";
-		public const string SlotLeftLegEnabled = "SlotLeftLegEnabled";
-		public const string SlotRightLegSpriteKey = "SlotRightLegSpriteKey";
-		public const string SlotRightLegTint = "SlotRightLegTint";
-		public const string SlotRightLegEnabled = "SlotRightLegEnabled";
+		public const string SlotSkinLeftLegSpriteKey = "SlotSkinLeftLegSpriteKey";
+		public const string SlotSkinLeftLegTint = "SlotSkinLeftLegTint";
+		public const string SlotSkinLeftLegEnabled = "SlotSkinLeftLegEnabled";
+		public const string SlotSkinRightLegSpriteKey = "SlotSkinRightLegSpriteKey";
+		public const string SlotSkinRightLegTint = "SlotSkinRightLegTint";
+		public const string SlotSkinRightLegEnabled = "SlotSkinRightLegEnabled";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4729747390774859296UL,10352431840437797552UL), () => _metaDefault = null));
@@ -4904,35 +4904,35 @@ public partial class D_UnitAppearanceData : BGEntity
 		get => _f_SlotBeltEnabled[Index];
 		set => _f_SlotBeltEnabled[Index] = value;
 	}
-	public System.String f_SlotLeftLegSpriteKey
+	public System.String f_SlotSkinLeftLegSpriteKey
 	{
-		get => _f_SlotLeftLegSpriteKey[Index];
-		set => _f_SlotLeftLegSpriteKey[Index] = value;
+		get => _f_SlotSkinLeftLegSpriteKey[Index];
+		set => _f_SlotSkinLeftLegSpriteKey[Index] = value;
 	}
-	public UnityEngine.Color f_SlotLeftLegTint
+	public UnityEngine.Color f_SlotSkinLeftLegTint
 	{
-		get => _f_SlotLeftLegTint[Index];
-		set => _f_SlotLeftLegTint[Index] = value;
+		get => _f_SlotSkinLeftLegTint[Index];
+		set => _f_SlotSkinLeftLegTint[Index] = value;
 	}
-	public System.Boolean f_SlotLeftLegEnabled
+	public System.Boolean f_SlotSkinLeftLegEnabled
 	{
-		get => _f_SlotLeftLegEnabled[Index];
-		set => _f_SlotLeftLegEnabled[Index] = value;
+		get => _f_SlotSkinLeftLegEnabled[Index];
+		set => _f_SlotSkinLeftLegEnabled[Index] = value;
 	}
-	public System.String f_SlotRightLegSpriteKey
+	public System.String f_SlotSkinRightLegSpriteKey
 	{
-		get => _f_SlotRightLegSpriteKey[Index];
-		set => _f_SlotRightLegSpriteKey[Index] = value;
+		get => _f_SlotSkinRightLegSpriteKey[Index];
+		set => _f_SlotSkinRightLegSpriteKey[Index] = value;
 	}
-	public UnityEngine.Color f_SlotRightLegTint
+	public UnityEngine.Color f_SlotSkinRightLegTint
 	{
-		get => _f_SlotRightLegTint[Index];
-		set => _f_SlotRightLegTint[Index] = value;
+		get => _f_SlotSkinRightLegTint[Index];
+		set => _f_SlotSkinRightLegTint[Index] = value;
 	}
-	public System.Boolean f_SlotRightLegEnabled
+	public System.Boolean f_SlotSkinRightLegEnabled
 	{
-		get => _f_SlotRightLegEnabled[Index];
-		set => _f_SlotRightLegEnabled[Index] = value;
+		get => _f_SlotSkinRightLegEnabled[Index];
+		set => _f_SlotSkinRightLegEnabled[Index] = value;
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5747305129318046422UL, 8466311968996001153UL), () => _ufle12jhs77_f_name = null));
@@ -5110,18 +5110,18 @@ public partial class D_UnitAppearanceData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBeltTint => _ufle12jhs77_f_SlotBeltTint ?? (_ufle12jhs77_f_SlotBeltTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4829955338676346770UL, 13397530570126028986UL), () => _ufle12jhs77_f_SlotBeltTint = null));
 	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBeltEnabled;
 	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBeltEnabled => _ufle12jhs77_f_SlotBeltEnabled ?? (_ufle12jhs77_f_SlotBeltEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5189358813185409705UL, 1827329320327847346UL), () => _ufle12jhs77_f_SlotBeltEnabled = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotLeftLegSpriteKey;
-	public static BansheeGz.BGDatabase.BGFieldString _f_SlotLeftLegSpriteKey => _ufle12jhs77_f_SlotLeftLegSpriteKey ?? (_ufle12jhs77_f_SlotLeftLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5613442968508172530UL, 18365747261272792978UL), () => _ufle12jhs77_f_SlotLeftLegSpriteKey = null));
-	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotLeftLegTint;
-	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotLeftLegTint => _ufle12jhs77_f_SlotLeftLegTint ?? (_ufle12jhs77_f_SlotLeftLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4791595331704392413UL, 10096749021449120395UL), () => _ufle12jhs77_f_SlotLeftLegTint = null));
-	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotLeftLegEnabled;
-	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotLeftLegEnabled => _ufle12jhs77_f_SlotLeftLegEnabled ?? (_ufle12jhs77_f_SlotLeftLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4827768753290231820UL, 14584615817013437080UL), () => _ufle12jhs77_f_SlotLeftLegEnabled = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotRightLegSpriteKey;
-	public static BansheeGz.BGDatabase.BGFieldString _f_SlotRightLegSpriteKey => _ufle12jhs77_f_SlotRightLegSpriteKey ?? (_ufle12jhs77_f_SlotRightLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5097732618701090516UL, 2272466789510784919UL), () => _ufle12jhs77_f_SlotRightLegSpriteKey = null));
-	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotRightLegTint;
-	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotRightLegTint => _ufle12jhs77_f_SlotRightLegTint ?? (_ufle12jhs77_f_SlotRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotRightLegTint = null));
-	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotRightLegEnabled;
-	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotRightLegEnabled => _ufle12jhs77_f_SlotRightLegEnabled ?? (_ufle12jhs77_f_SlotRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotRightLegEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinLeftLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinLeftLegSpriteKey => _ufle12jhs77_f_SlotSkinLeftLegSpriteKey ?? (_ufle12jhs77_f_SlotSkinLeftLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5613442968508172530UL, 18365747261272792978UL), () => _ufle12jhs77_f_SlotSkinLeftLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinLeftLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinLeftLegTint => _ufle12jhs77_f_SlotSkinLeftLegTint ?? (_ufle12jhs77_f_SlotSkinLeftLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4791595331704392413UL, 10096749021449120395UL), () => _ufle12jhs77_f_SlotSkinLeftLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinLeftLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinLeftLegEnabled => _ufle12jhs77_f_SlotSkinLeftLegEnabled ?? (_ufle12jhs77_f_SlotSkinLeftLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4827768753290231820UL, 14584615817013437080UL), () => _ufle12jhs77_f_SlotSkinLeftLegEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinRightLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinRightLegSpriteKey => _ufle12jhs77_f_SlotSkinRightLegSpriteKey ?? (_ufle12jhs77_f_SlotSkinRightLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5097732618701090516UL, 2272466789510784919UL), () => _ufle12jhs77_f_SlotSkinRightLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinRightLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinRightLegTint => _ufle12jhs77_f_SlotSkinRightLegTint ?? (_ufle12jhs77_f_SlotSkinRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotSkinRightLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinRightLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinRightLegEnabled => _ufle12jhs77_f_SlotSkinRightLegEnabled ?? (_ufle12jhs77_f_SlotSkinRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotSkinRightLegEnabled = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

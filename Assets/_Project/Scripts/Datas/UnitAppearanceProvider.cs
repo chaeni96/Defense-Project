@@ -65,6 +65,10 @@ public class UnitAppearanceProvider : MonoBehaviour
                 if (sp != null) sr.sprite = sp;
             }
 
+            if (spriteKey == null)
+            {
+                sr.sprite = null;
+            }
             // Tint
             if (propTint != null)
             {
