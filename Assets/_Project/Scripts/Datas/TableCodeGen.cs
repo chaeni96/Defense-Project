@@ -129,6 +129,7 @@ public partial class D_TileCardData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_TileCardData() : base(MetaDefault) {}
 	private D_TileCardData(BGId id) : base(MetaDefault, id) {}
 	private D_TileCardData(BGMetaEntity meta) : base(meta) {}
@@ -230,6 +231,7 @@ public partial class D_LocalUserData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_LocalUserData() : base(MetaDefault) {}
 	private D_LocalUserData(BGId id) : base(MetaDefault, id) {}
 	private D_LocalUserData(BGMetaEntity meta) : base(meta) {}
@@ -355,6 +357,7 @@ public partial class D_UnitData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_UnitData() : base(MetaDefault) {}
 	private D_UnitData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitData(BGMetaEntity meta) : base(meta) {}
@@ -462,6 +465,7 @@ public partial class D_unitBuildData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_unitBuildData() : base(MetaDefault) {}
 	private D_unitBuildData(BGId id) : base(MetaDefault, id) {}
 	private D_unitBuildData(BGMetaEntity meta) : base(meta) {}
@@ -607,6 +611,7 @@ public partial class D_UnitShopChanceData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_UnitShopChanceData() : base(MetaDefault) {}
 	private D_UnitShopChanceData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitShopChanceData(BGMetaEntity meta) : base(meta) {}
@@ -718,6 +723,7 @@ public partial class D_ObjectPoolData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_ObjectPoolData() : base(MetaDefault) {}
 	private D_ObjectPoolData(BGId id) : base(MetaDefault, id) {}
 	private D_ObjectPoolData(BGMetaEntity meta) : base(meta) {}
@@ -817,6 +823,7 @@ public partial class D_WaveData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_WaveData() : base(MetaDefault) {}
 	private D_WaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveData(BGMetaEntity meta) : base(meta) {}
@@ -956,6 +963,7 @@ public partial class D_StageData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_StageData() : base(MetaDefault) {}
 	private D_StageData(BGId id) : base(MetaDefault, id) {}
 	private D_StageData(BGMetaEntity meta) : base(meta) {}
@@ -1068,6 +1076,7 @@ public partial class D_EnemyData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_EnemyData() : base(MetaDefault) {}
 	private D_EnemyData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyData(BGMetaEntity meta) : base(meta) {}
@@ -1191,6 +1200,7 @@ public partial class D_enemyGroup : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_enemyGroup() : base(MetaDefault) {}
 	private D_enemyGroup(BGId id) : base(MetaDefault, id) {}
 	private D_enemyGroup(BGMetaEntity meta) : base(meta) {}
@@ -1286,6 +1296,7 @@ public partial class D_TilePosData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_TilePosData() : base(MetaDefault) {}
 	private D_TilePosData(BGId id) : base(MetaDefault, id) {}
 	private D_TilePosData(BGMetaEntity meta) : base(meta) {}
@@ -1396,6 +1407,7 @@ public partial class D_ObstacleTileMapData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_ObstacleTileMapData() : base(MetaDefault) {}
 	private D_ObstacleTileMapData(BGId id) : base(MetaDefault, id) {}
 	private D_ObstacleTileMapData(BGMetaEntity meta) : base(meta) {}
@@ -1485,6 +1497,7 @@ public partial class D_MapData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_MapData() : base(MetaDefault) {}
 	private D_MapData(BGId id) : base(MetaDefault, id) {}
 	private D_MapData(BGMetaEntity meta) : base(meta) {}
@@ -1592,6 +1605,7 @@ public partial class D_SpecialTile : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_SpecialTile() : base(MetaDefault) {}
 	private D_SpecialTile(BGId id) : base(MetaDefault, id) {}
 	private D_SpecialTile(BGMetaEntity meta) : base(meta) {}
@@ -1714,6 +1728,7 @@ public partial class D_WildCardData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_WildCardData() : base(MetaDefault) {}
 	private D_WildCardData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardData(BGMetaEntity meta) : base(meta) {}
@@ -1825,6 +1840,7 @@ public partial class D_WaveTimeData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_WaveTimeData() : base(MetaDefault) {}
 	private D_WaveTimeData(BGId id) : base(MetaDefault, id) {}
 	private D_WaveTimeData(BGMetaEntity meta) : base(meta) {}
@@ -1956,6 +1972,7 @@ public partial class D_BuffData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_BuffData() : base(MetaDefault) {}
 	private D_BuffData(BGId id) : base(MetaDefault, id) {}
 	private D_BuffData(BGMetaEntity meta) : base(meta) {}
@@ -2079,6 +2096,7 @@ public partial class D_buffEffects : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_buffEffects() : base(MetaDefault) {}
 	private D_buffEffects(BGId id) : base(MetaDefault, id) {}
 	private D_buffEffects(BGMetaEntity meta) : base(meta) {}
@@ -2177,6 +2195,7 @@ public partial class D_StatSubjectData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_StatSubjectData() : base(MetaDefault) {}
 	private D_StatSubjectData(BGId id) : base(MetaDefault, id) {}
 	private D_StatSubjectData(BGMetaEntity meta) : base(meta) {}
@@ -2292,6 +2311,7 @@ public partial class D_subjectStats : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_subjectStats() : base(MetaDefault) {}
 	private D_subjectStats(BGId id) : base(MetaDefault, id) {}
 	private D_subjectStats(BGMetaEntity meta) : base(meta) {}
@@ -2403,6 +2423,7 @@ public partial class D_EpisodeData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_EpisodeData() : base(MetaDefault) {}
 	private D_EpisodeData(BGId id) : base(MetaDefault, id) {}
 	private D_EpisodeData(BGMetaEntity meta) : base(meta) {}
@@ -2511,6 +2532,7 @@ public partial class D_NormalBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_NormalBattleWaveData() : base(MetaDefault) {}
 	private D_NormalBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_NormalBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2635,6 +2657,7 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_BossBattleWaveData() : base(MetaDefault) {}
 	private D_BossBattleWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_BossBattleWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2751,6 +2774,7 @@ public partial class D_WildCardWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_WildCardWaveData() : base(MetaDefault) {}
 	private D_WildCardWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_WildCardWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2861,6 +2885,7 @@ public partial class D_HuntingSelectTimeWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_HuntingSelectTimeWaveData() : base(MetaDefault) {}
 	private D_HuntingSelectTimeWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingSelectTimeWaveData(BGMetaEntity meta) : base(meta) {}
@@ -2964,6 +2989,7 @@ public partial class D_PrizeHuntingWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_PrizeHuntingWaveData() : base(MetaDefault) {}
 	private D_PrizeHuntingWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_PrizeHuntingWaveData(BGMetaEntity meta) : base(meta) {}
@@ -3064,6 +3090,7 @@ public partial class D_EventEnemyWaveData : BGEntity, D_WaveDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_EventEnemyWaveData() : base(MetaDefault) {}
 	private D_EventEnemyWaveData(BGId id) : base(MetaDefault, id) {}
 	private D_EventEnemyWaveData(BGMetaEntity meta) : base(meta) {}
@@ -3176,6 +3203,7 @@ public partial class D_ItemData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_ItemData() : base(MetaDefault) {}
 	private D_ItemData(BGId id) : base(MetaDefault, id) {}
 	private D_ItemData(BGMetaEntity meta) : base(meta) {}
@@ -3308,6 +3336,7 @@ public partial class D_HuntingOptionData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_HuntingOptionData() : base(MetaDefault) {}
 	private D_HuntingOptionData(BGId id) : base(MetaDefault, id) {}
 	private D_HuntingOptionData(BGMetaEntity meta) : base(meta) {}
@@ -3423,6 +3452,7 @@ public partial class D_huntingReward : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_huntingReward() : base(MetaDefault) {}
 	private D_huntingReward(BGId id) : base(MetaDefault, id) {}
 	private D_huntingReward(BGMetaEntity meta) : base(meta) {}
@@ -3541,6 +3571,7 @@ public partial class D_huntingRisk : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_huntingRisk() : base(MetaDefault) {}
 	private D_huntingRisk(BGId id) : base(MetaDefault, id) {}
 	private D_huntingRisk(BGMetaEntity meta) : base(meta) {}
@@ -3652,6 +3683,7 @@ public partial class D_SpawnEnemyEventData : BGEntity, D_EventDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_SpawnEnemyEventData() : base(MetaDefault) {}
 	private D_SpawnEnemyEventData(BGId id) : base(MetaDefault, id) {}
 	private D_SpawnEnemyEventData(BGMetaEntity meta) : base(meta) {}
@@ -3760,6 +3792,7 @@ public partial class D_DropItemEventData : BGEntity, D_EventDummyData
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_DropItemEventData() : base(MetaDefault) {}
 	private D_DropItemEventData(BGId id) : base(MetaDefault, id) {}
 	private D_DropItemEventData(BGMetaEntity meta) : base(meta) {}
@@ -3854,6 +3887,7 @@ public partial class D_SpriteData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_SpriteData() : base(MetaDefault) {}
 	private D_SpriteData(BGId id) : base(MetaDefault, id) {}
 	private D_SpriteData(BGMetaEntity meta) : base(meta) {}
@@ -3942,6 +3976,7 @@ public partial class D_DropItemData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_DropItemData() : base(MetaDefault) {}
 	private D_DropItemData(BGId id) : base(MetaDefault, id) {}
 	private D_DropItemData(BGMetaEntity meta) : base(meta) {}
@@ -4049,6 +4084,7 @@ public partial class D_itemList : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_itemList() : base(MetaDefault) {}
 	private D_itemList(BGId id) : base(MetaDefault, id) {}
 	private D_itemList(BGMetaEntity meta) : base(meta) {}
@@ -4167,6 +4203,7 @@ public partial class D_itemStats : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_itemStats() : base(MetaDefault) {}
 	private D_itemStats(BGId id) : base(MetaDefault, id) {}
 	private D_itemStats(BGMetaEntity meta) : base(meta) {}
@@ -4268,6 +4305,7 @@ public partial class D_EnemyPlacementData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_EnemyPlacementData() : base(MetaDefault) {}
 	private D_EnemyPlacementData(BGId id) : base(MetaDefault, id) {}
 	private D_EnemyPlacementData(BGMetaEntity meta) : base(meta) {}
@@ -4375,6 +4413,7 @@ public partial class D_cellData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_cellData() : base(MetaDefault) {}
 	private D_cellData(BGId id) : base(MetaDefault, id) {}
 	private D_cellData(BGMetaEntity meta) : base(meta) {}
@@ -4493,15 +4532,12 @@ public partial class D_UnitAppearanceData : BGEntity
 		public const string SlotBeltSpriteKey = "SlotBeltSpriteKey";
 		public const string SlotBeltTint = "SlotBeltTint";
 		public const string SlotBeltEnabled = "SlotBeltEnabled";
-		public const string SlotSkinLeftLegSpriteKey = "SlotSkinLeftLegSpriteKey";
-		public const string SlotSkinLeftLegTint = "SlotSkinLeftLegTint";
-		public const string SlotSkinLeftLegEnabled = "SlotSkinLeftLegEnabled";
-		public const string SlotSkinRightLegSpriteKey = "SlotSkinRightLegSpriteKey";
-		public const string SlotSkinRightLegTint = "SlotSkinRightLegTint";
-		public const string SlotSkinRightLegEnabled = "SlotSkinRightLegEnabled";
-		public const string SlotBodyLayeredSpriteKey = "SlotBodyLayeredSpriteKey";
-		public const string SlotBodyLayeredTint = "SlotBodyLayeredTint";
-		public const string SlotBodyLayeredEnabled = "SlotBodyLayeredEnabled";
+		public const string SlotLeftLegSpriteKey = "SlotLeftLegSpriteKey";
+		public const string SlotLeftLegTint = "SlotLeftLegTint";
+		public const string SlotLeftLegEnabled = "SlotLeftLegEnabled";
+		public const string SlotRightLegSpriteKey = "SlotRightLegSpriteKey";
+		public const string SlotRightLegTint = "SlotRightLegTint";
+		public const string SlotRightLegEnabled = "SlotRightLegEnabled";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4729747390774859296UL,10352431840437797552UL), () => _metaDefault = null));
@@ -4947,50 +4983,35 @@ public partial class D_UnitAppearanceData : BGEntity
 		get => _f_SlotBeltEnabled[Index];
 		set => _f_SlotBeltEnabled[Index] = value;
 	}
-	public System.String f_SlotSkinLeftLegSpriteKey
+	public System.String f_SlotLeftLegSpriteKey
 	{
-		get => _f_SlotSkinLeftLegSpriteKey[Index];
-		set => _f_SlotSkinLeftLegSpriteKey[Index] = value;
+		get => _f_SlotLeftLegSpriteKey[Index];
+		set => _f_SlotLeftLegSpriteKey[Index] = value;
 	}
-	public UnityEngine.Color f_SlotSkinLeftLegTint
+	public UnityEngine.Color f_SlotLeftLegTint
 	{
-		get => _f_SlotSkinLeftLegTint[Index];
-		set => _f_SlotSkinLeftLegTint[Index] = value;
+		get => _f_SlotLeftLegTint[Index];
+		set => _f_SlotLeftLegTint[Index] = value;
 	}
-	public System.Boolean f_SlotSkinLeftLegEnabled
+	public System.Boolean f_SlotLeftLegEnabled
 	{
-		get => _f_SlotSkinLeftLegEnabled[Index];
-		set => _f_SlotSkinLeftLegEnabled[Index] = value;
+		get => _f_SlotLeftLegEnabled[Index];
+		set => _f_SlotLeftLegEnabled[Index] = value;
 	}
-	public System.String f_SlotSkinRightLegSpriteKey
+	public System.String f_SlotRightLegSpriteKey
 	{
-		get => _f_SlotSkinRightLegSpriteKey[Index];
-		set => _f_SlotSkinRightLegSpriteKey[Index] = value;
+		get => _f_SlotRightLegSpriteKey[Index];
+		set => _f_SlotRightLegSpriteKey[Index] = value;
 	}
-	public UnityEngine.Color f_SlotSkinRightLegTint
+	public UnityEngine.Color f_SlotRightLegTint
 	{
-		get => _f_SlotSkinRightLegTint[Index];
-		set => _f_SlotSkinRightLegTint[Index] = value;
+		get => _f_SlotRightLegTint[Index];
+		set => _f_SlotRightLegTint[Index] = value;
 	}
-	public System.Boolean f_SlotSkinRightLegEnabled
+	public System.Boolean f_SlotRightLegEnabled
 	{
-		get => _f_SlotSkinRightLegEnabled[Index];
-		set => _f_SlotSkinRightLegEnabled[Index] = value;
-	}
-	public System.String f_SlotBodyLayeredSpriteKey
-	{
-		get => _f_SlotBodyLayeredSpriteKey[Index];
-		set => _f_SlotBodyLayeredSpriteKey[Index] = value;
-	}
-	public UnityEngine.Color f_SlotBodyLayeredTint
-	{
-		get => _f_SlotBodyLayeredTint[Index];
-		set => _f_SlotBodyLayeredTint[Index] = value;
-	}
-	public System.Boolean f_SlotBodyLayeredEnabled
-	{
-		get => _f_SlotBodyLayeredEnabled[Index];
-		set => _f_SlotBodyLayeredEnabled[Index] = value;
+		get => _f_SlotRightLegEnabled[Index];
+		set => _f_SlotRightLegEnabled[Index] = value;
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5747305129318046422UL, 8466311968996001153UL), () => _ufle12jhs77_f_name = null));
@@ -5168,24 +5189,18 @@ public partial class D_UnitAppearanceData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBeltTint => _ufle12jhs77_f_SlotBeltTint ?? (_ufle12jhs77_f_SlotBeltTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4829955338676346770UL, 13397530570126028986UL), () => _ufle12jhs77_f_SlotBeltTint = null));
 	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBeltEnabled;
 	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBeltEnabled => _ufle12jhs77_f_SlotBeltEnabled ?? (_ufle12jhs77_f_SlotBeltEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5189358813185409705UL, 1827329320327847346UL), () => _ufle12jhs77_f_SlotBeltEnabled = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinLeftLegSpriteKey;
-	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinLeftLegSpriteKey => _ufle12jhs77_f_SlotSkinLeftLegSpriteKey ?? (_ufle12jhs77_f_SlotSkinLeftLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5613442968508172530UL, 18365747261272792978UL), () => _ufle12jhs77_f_SlotSkinLeftLegSpriteKey = null));
-	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinLeftLegTint;
-	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinLeftLegTint => _ufle12jhs77_f_SlotSkinLeftLegTint ?? (_ufle12jhs77_f_SlotSkinLeftLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4791595331704392413UL, 10096749021449120395UL), () => _ufle12jhs77_f_SlotSkinLeftLegTint = null));
-	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinLeftLegEnabled;
-	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinLeftLegEnabled => _ufle12jhs77_f_SlotSkinLeftLegEnabled ?? (_ufle12jhs77_f_SlotSkinLeftLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4827768753290231820UL, 14584615817013437080UL), () => _ufle12jhs77_f_SlotSkinLeftLegEnabled = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotSkinRightLegSpriteKey;
-	public static BansheeGz.BGDatabase.BGFieldString _f_SlotSkinRightLegSpriteKey => _ufle12jhs77_f_SlotSkinRightLegSpriteKey ?? (_ufle12jhs77_f_SlotSkinRightLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5097732618701090516UL, 2272466789510784919UL), () => _ufle12jhs77_f_SlotSkinRightLegSpriteKey = null));
-	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotSkinRightLegTint;
-	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinRightLegTint => _ufle12jhs77_f_SlotSkinRightLegTint ?? (_ufle12jhs77_f_SlotSkinRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotSkinRightLegTint = null));
-	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinRightLegEnabled;
-	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinRightLegEnabled => _ufle12jhs77_f_SlotSkinRightLegEnabled ?? (_ufle12jhs77_f_SlotSkinRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotSkinRightLegEnabled = null));
-	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBodyLayeredSpriteKey;
-	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBodyLayeredSpriteKey => _ufle12jhs77_f_SlotBodyLayeredSpriteKey ?? (_ufle12jhs77_f_SlotBodyLayeredSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5007822453841690899UL, 9060140399396913043UL), () => _ufle12jhs77_f_SlotBodyLayeredSpriteKey = null));
-	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBodyLayeredTint;
-	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBodyLayeredTint => _ufle12jhs77_f_SlotBodyLayeredTint ?? (_ufle12jhs77_f_SlotBodyLayeredTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5532571251718315471UL, 12301502688301119121UL), () => _ufle12jhs77_f_SlotBodyLayeredTint = null));
-	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBodyLayeredEnabled;
-	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBodyLayeredEnabled => _ufle12jhs77_f_SlotBodyLayeredEnabled ?? (_ufle12jhs77_f_SlotBodyLayeredEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5123336010607495968UL, 14104263391890150272UL), () => _ufle12jhs77_f_SlotBodyLayeredEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotLeftLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotLeftLegSpriteKey => _ufle12jhs77_f_SlotLeftLegSpriteKey ?? (_ufle12jhs77_f_SlotLeftLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5613442968508172530UL, 18365747261272792978UL), () => _ufle12jhs77_f_SlotLeftLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotLeftLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotLeftLegTint => _ufle12jhs77_f_SlotLeftLegTint ?? (_ufle12jhs77_f_SlotLeftLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4791595331704392413UL, 10096749021449120395UL), () => _ufle12jhs77_f_SlotLeftLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotLeftLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotLeftLegEnabled => _ufle12jhs77_f_SlotLeftLegEnabled ?? (_ufle12jhs77_f_SlotLeftLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4827768753290231820UL, 14584615817013437080UL), () => _ufle12jhs77_f_SlotLeftLegEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotRightLegSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotRightLegSpriteKey => _ufle12jhs77_f_SlotRightLegSpriteKey ?? (_ufle12jhs77_f_SlotRightLegSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5097732618701090516UL, 2272466789510784919UL), () => _ufle12jhs77_f_SlotRightLegSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotRightLegTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotRightLegTint => _ufle12jhs77_f_SlotRightLegTint ?? (_ufle12jhs77_f_SlotRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotRightLegTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotRightLegEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotRightLegEnabled => _ufle12jhs77_f_SlotRightLegEnabled ?? (_ufle12jhs77_f_SlotRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotRightLegEnabled = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
@@ -5229,6 +5244,7 @@ public partial class D_UnitAppearanceData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_UnitAppearanceData() : base(MetaDefault) {}
 	private D_UnitAppearanceData(BGId id) : base(MetaDefault, id) {}
 	private D_UnitAppearanceData(BGMetaEntity meta) : base(meta) {}
@@ -5259,7 +5275,9 @@ public partial class D_RelicItemData : BGEntity
 		public const string name = "name";
 		public const string grade = "grade";
 		public const string description = "description";
+		public const string iconKey = "iconKey";
 		public const string weight = "weight";
+		public const string relicEffectStats = "relicEffectStats";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5404625967158913304UL,837077006495389113UL), () => _metaDefault = null));
@@ -5280,19 +5298,29 @@ public partial class D_RelicItemData : BGEntity
 		get => _f_description[Index];
 		set => _f_description[Index] = value;
 	}
+	public System.String f_iconKey
+	{
+		get => _f_iconKey[Index];
+		set => _f_iconKey[Index] = value;
+	}
 	public System.Int32 f_weight
 	{
 		get => _f_weight[Index];
 		set => _f_weight[Index] = value;
 	}
+	public List<D_relicEffectStats> f_relicEffectStats => BGCodeGenUtils.GetNested<D_relicEffectStats>(_f_relicEffectStats, Index);
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4834907298664724887UL, 1424096019842688923UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_grade;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_grade => _ufle12jhs77_f_grade ?? (_ufle12jhs77_f_grade = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5642289905546444568UL, 17886521111471611069UL), () => _ufle12jhs77_f_grade = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_description;
 	public static BansheeGz.BGDatabase.BGFieldString _f_description => _ufle12jhs77_f_description ?? (_ufle12jhs77_f_description = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4778569268336196462UL, 16451492356158214581UL), () => _ufle12jhs77_f_description = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_iconKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_iconKey => _ufle12jhs77_f_iconKey ?? (_ufle12jhs77_f_iconKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4832745489745237267UL, 10589478735377749656UL), () => _ufle12jhs77_f_iconKey = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_weight;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_weight => _ufle12jhs77_f_weight ?? (_ufle12jhs77_f_weight = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5413424780765687051UL, 11152910017750424987UL), () => _ufle12jhs77_f_weight = null));
+	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_relicEffectStats;
+	public static BansheeGz.BGDatabase.BGFieldNested _f_relicEffectStats => _ufle12jhs77_f_relicEffectStats ?? (_ufle12jhs77_f_relicEffectStats = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(4613752386046436313UL, 8717278151075819141UL), () => _ufle12jhs77_f_relicEffectStats = null));
 	public List<Alias_rifegrt_U_RelicData> RelatedU_RelicDataListUsingrelicDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_U_RelicData>(Alias_rifegrt_U_RelicData._f_relicData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
@@ -5337,6 +5365,7 @@ public partial class D_RelicItemData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_RelicItemData() : base(MetaDefault) {}
 	private D_RelicItemData(BGId id) : base(MetaDefault, id) {}
 	private D_RelicItemData(BGMetaEntity meta) : base(meta) {}
@@ -5436,6 +5465,7 @@ public partial class D_RelicItemExpData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_RelicItemExpData() : base(MetaDefault) {}
 	private D_RelicItemExpData(BGId id) : base(MetaDefault, id) {}
 	private D_RelicItemExpData(BGMetaEntity meta) : base(meta) {}
@@ -5559,6 +5589,7 @@ public partial class D_U_RelicData : BGEntity
 	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
 	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
 	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
 	private D_U_RelicData() : base(MetaDefault) {}
 	private D_U_RelicData(BGId id) : base(MetaDefault, id) {}
 	private D_U_RelicData(BGMetaEntity meta) : base(meta) {}
@@ -5572,6 +5603,125 @@ public partial class D_U_RelicData : BGEntity
 	public static D_U_RelicData NewEntity() => (D_U_RelicData) MetaDefault.NewEntity();
 	public static D_U_RelicData NewEntity(BGId entityId) => (D_U_RelicData) MetaDefault.NewEntity(entityId);
 	public static D_U_RelicData NewEntity(Action<D_U_RelicData> callback) => (D_U_RelicData) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_U_RelicData)entity)));
+}
+
+public partial class D_relicEffectStats : BGEntity
+{
+
+	public class Factory : BGEntity.EntityFactory
+	{
+		public BGEntity NewEntity(BGMetaEntity meta) => new D_relicEffectStats(meta);
+		public BGEntity NewEntity(BGMetaEntity meta, BGId id) => new D_relicEffectStats(meta, id);
+	}
+
+	public static class __Names
+	{
+		public const string Meta = "relicEffectStats";
+		public const string name = "name";
+		public const string RelicItemData = "RelicItemData";
+		public const string statName = "statName";
+		public const string statValue = "statValue";
+		public const string statMultiply = "statMultiply";
+	}
+	private static BansheeGz.BGDatabase.BGMetaNested _metaDefault;
+	public static BansheeGz.BGDatabase.BGMetaNested MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaNested>(new BGId(4944072432764290566UL,10462472536048681352UL), () => _metaDefault = null));
+	public static BansheeGz.BGDatabase.BGRepoEvents Events => BGRepo.I.Events;
+	public static int CountEntities => MetaDefault.CountEntities;
+	public System.String f_name
+	{
+		get => _f_name[Index];
+		set => _f_name[Index] = value;
+	}
+	public D_RelicItemData f_RelicItemData
+	{
+		get => (D_RelicItemData) _f_RelicItemData[Index];
+		set => _f_RelicItemData[Index] = value;
+	}
+	public StatName f_statName
+	{
+		get => (StatName) _f_statName.GetStoredValue(Index);
+		set => _f_statName.SetStoredValue(Index, (System.Int32) value);
+	}
+	public System.Int32 f_statValue
+	{
+		get => _f_statValue[Index];
+		set => _f_statValue[Index] = value;
+	}
+	public System.Single f_statMultiply
+	{
+		get => _f_statMultiply[Index];
+		set => _f_statMultiply[Index] = value;
+	}
+	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
+	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5223031934980397134UL, 4576142552651109272UL), () => _ufle12jhs77_f_name = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_RelicItemData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_RelicItemData => _ufle12jhs77_f_RelicItemData ?? (_ufle12jhs77_f_RelicItemData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5092347086866585601UL, 4793597855850262699UL), () => _ufle12jhs77_f_RelicItemData = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_statName;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_statName => _ufle12jhs77_f_statName ?? (_ufle12jhs77_f_statName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5393627718939416682UL, 10829328687771977623UL), () => _ufle12jhs77_f_statName = null));
+	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_statValue;
+	public static BansheeGz.BGDatabase.BGFieldInt _f_statValue => _ufle12jhs77_f_statValue ?? (_ufle12jhs77_f_statValue = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5366941210506013348UL, 14132828906290349492UL), () => _ufle12jhs77_f_statValue = null));
+	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_statMultiply;
+	public static BansheeGz.BGDatabase.BGFieldFloat _f_statMultiply => _ufle12jhs77_f_statMultiply ?? (_ufle12jhs77_f_statMultiply = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(4709322796591046471UL, 7436037072970100124UL), () => _ufle12jhs77_f_statMultiply = null));
+	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
+	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
+	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
+	private static readonly D_unitBuildData.Factory _factory3_PFS = new D_unitBuildData.Factory();
+	private static readonly D_UnitShopChanceData.Factory _factory4_PFS = new D_UnitShopChanceData.Factory();
+	private static readonly D_ObjectPoolData.Factory _factory5_PFS = new D_ObjectPoolData.Factory();
+	private static readonly D_WaveData.Factory _factory6_PFS = new D_WaveData.Factory();
+	private static readonly D_StageData.Factory _factory7_PFS = new D_StageData.Factory();
+	private static readonly D_EnemyData.Factory _factory8_PFS = new D_EnemyData.Factory();
+	private static readonly D_enemyGroup.Factory _factory9_PFS = new D_enemyGroup.Factory();
+	private static readonly D_TilePosData.Factory _factory10_PFS = new D_TilePosData.Factory();
+	private static readonly D_ObstacleTileMapData.Factory _factory11_PFS = new D_ObstacleTileMapData.Factory();
+	private static readonly D_MapData.Factory _factory12_PFS = new D_MapData.Factory();
+	private static readonly D_SpecialTile.Factory _factory13_PFS = new D_SpecialTile.Factory();
+	private static readonly D_WildCardData.Factory _factory14_PFS = new D_WildCardData.Factory();
+	private static readonly D_WaveTimeData.Factory _factory15_PFS = new D_WaveTimeData.Factory();
+	private static readonly D_BuffData.Factory _factory16_PFS = new D_BuffData.Factory();
+	private static readonly D_buffEffects.Factory _factory17_PFS = new D_buffEffects.Factory();
+	private static readonly D_StatSubjectData.Factory _factory18_PFS = new D_StatSubjectData.Factory();
+	private static readonly D_subjectStats.Factory _factory19_PFS = new D_subjectStats.Factory();
+	private static readonly D_EpisodeData.Factory _factory20_PFS = new D_EpisodeData.Factory();
+	private static readonly D_NormalBattleWaveData.Factory _factory21_PFS = new D_NormalBattleWaveData.Factory();
+	private static readonly D_BossBattleWaveData.Factory _factory22_PFS = new D_BossBattleWaveData.Factory();
+	private static readonly D_WildCardWaveData.Factory _factory23_PFS = new D_WildCardWaveData.Factory();
+	private static readonly D_HuntingSelectTimeWaveData.Factory _factory24_PFS = new D_HuntingSelectTimeWaveData.Factory();
+	private static readonly D_PrizeHuntingWaveData.Factory _factory25_PFS = new D_PrizeHuntingWaveData.Factory();
+	private static readonly D_EventEnemyWaveData.Factory _factory26_PFS = new D_EventEnemyWaveData.Factory();
+	private static readonly D_ItemData.Factory _factory27_PFS = new D_ItemData.Factory();
+	private static readonly D_HuntingOptionData.Factory _factory28_PFS = new D_HuntingOptionData.Factory();
+	private static readonly D_huntingReward.Factory _factory29_PFS = new D_huntingReward.Factory();
+	private static readonly D_huntingRisk.Factory _factory30_PFS = new D_huntingRisk.Factory();
+	private static readonly D_SpawnEnemyEventData.Factory _factory31_PFS = new D_SpawnEnemyEventData.Factory();
+	private static readonly D_DropItemEventData.Factory _factory32_PFS = new D_DropItemEventData.Factory();
+	private static readonly D_SpriteData.Factory _factory33_PFS = new D_SpriteData.Factory();
+	private static readonly D_DropItemData.Factory _factory34_PFS = new D_DropItemData.Factory();
+	private static readonly D_itemList.Factory _factory35_PFS = new D_itemList.Factory();
+	private static readonly D_itemStats.Factory _factory36_PFS = new D_itemStats.Factory();
+	private static readonly D_EnemyPlacementData.Factory _factory37_PFS = new D_EnemyPlacementData.Factory();
+	private static readonly D_cellData.Factory _factory38_PFS = new D_cellData.Factory();
+	private static readonly D_UnitAppearanceData.Factory _factory39_PFS = new D_UnitAppearanceData.Factory();
+	private static readonly D_RelicItemData.Factory _factory40_PFS = new D_RelicItemData.Factory();
+	private static readonly D_RelicItemExpData.Factory _factory41_PFS = new D_RelicItemExpData.Factory();
+	private static readonly D_U_RelicData.Factory _factory42_PFS = new D_U_RelicData.Factory();
+	private static readonly D_relicEffectStats.Factory _factory43_PFS = new D_relicEffectStats.Factory();
+	private D_relicEffectStats() : base(MetaDefault) {}
+	private D_relicEffectStats(BGId id) : base(MetaDefault, id) {}
+	private D_relicEffectStats(BGMetaEntity meta) : base(meta) {}
+	private D_relicEffectStats(BGMetaEntity meta, BGId id) : base(meta, id) {}
+	public static D_relicEffectStats FindEntity(Predicate<D_relicEffectStats> filter) => BGCodeGenUtils.FindEntity(MetaDefault, filter);
+	public static List<D_relicEffectStats> FindEntities(Predicate<D_relicEffectStats> filter, List<D_relicEffectStats> result=null, Comparison<D_relicEffectStats> sort=null) => BGCodeGenUtils.FindEntities(MetaDefault, filter, result, sort);
+	public static void ForEachEntity(Action<D_relicEffectStats> action, Predicate<D_relicEffectStats> filter=null, Comparison<D_relicEffectStats> sort=null) => BGCodeGenUtils.ForEachEntity(MetaDefault, action, filter, sort);
+	public static D_relicEffectStats GetEntity(BGId entityId) => (D_relicEffectStats) MetaDefault.GetEntity(entityId);
+	public static D_relicEffectStats GetEntity(int index) => (D_relicEffectStats) MetaDefault[index];
+	public static D_relicEffectStats GetEntity(string entityName) => (D_relicEffectStats) MetaDefault.GetEntity(entityName);
+	public static D_relicEffectStats NewEntity() => (D_relicEffectStats) MetaDefault.NewEntity();
+	public static D_relicEffectStats NewEntity(BGId entityId) => (D_relicEffectStats) MetaDefault.NewEntity(entityId);
+	public static D_relicEffectStats NewEntity(Action<D_relicEffectStats> callback) => (D_relicEffectStats) MetaDefault.NewEntity(new BGMetaEntity.NewEntityContext(entity => callback((D_relicEffectStats)entity)));
+	public static D_relicEffectStats NewEntity(D_RelicItemData owner) => (D_relicEffectStats) MetaDefault.NewEntity(owner);
+	public static D_relicEffectStats NewEntity(D_RelicItemData owner, BGId entityId) => (D_relicEffectStats) MetaDefault.NewEntity(owner, entityId);
+	public static D_relicEffectStats NewEntity(D_RelicItemData owner, Action<D_relicEffectStats> callback) => (D_relicEffectStats) MetaDefault.NewEntity(owner, new BGMetaEntity.NewEntityContext(entity => callback((D_relicEffectStats)entity)));
 }
 
 public partial interface D_WaveDummyData  : BGAbstractEntityI
