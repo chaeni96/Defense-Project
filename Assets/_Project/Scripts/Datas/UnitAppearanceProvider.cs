@@ -126,11 +126,12 @@ public class UnitAppearanceProvider : MonoBehaviour
                 propTint.SetValue(entity, sr.color);
             }
 
-            if (propEn != null)
+            if (propEn != null || propSprite == null)
             {
-                propEn.SetValue(entity, sr.enabled);
-                }
+                bool srEnabled = (sr.enabled != false && propSprite != null);
+                propEn.SetValue(entity, srEnabled);
             }
+        }
 
         // 실제 DB에 commit
         
@@ -178,7 +179,8 @@ public class UnitAppearanceProvider : MonoBehaviour
 
             if (propEn != null)
             {
-                propEn.SetValue(entity, sr.enabled);
+                bool srEnabled = (sr.enabled != false && propSprite != null);
+                propEn.SetValue(entity, srEnabled);
             }
         }
 

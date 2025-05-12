@@ -4459,6 +4459,9 @@ public partial class D_UnitAppearanceData : BGEntity
 		public const string SlotSkinRightLegSpriteKey = "SlotSkinRightLegSpriteKey";
 		public const string SlotSkinRightLegTint = "SlotSkinRightLegTint";
 		public const string SlotSkinRightLegEnabled = "SlotSkinRightLegEnabled";
+		public const string SlotBodyLayeredSpriteKey = "SlotBodyLayeredSpriteKey";
+		public const string SlotBodyLayeredTint = "SlotBodyLayeredTint";
+		public const string SlotBodyLayeredEnabled = "SlotBodyLayeredEnabled";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4729747390774859296UL,10352431840437797552UL), () => _metaDefault = null));
@@ -4934,6 +4937,21 @@ public partial class D_UnitAppearanceData : BGEntity
 		get => _f_SlotSkinRightLegEnabled[Index];
 		set => _f_SlotSkinRightLegEnabled[Index] = value;
 	}
+	public System.String f_SlotBodyLayeredSpriteKey
+	{
+		get => _f_SlotBodyLayeredSpriteKey[Index];
+		set => _f_SlotBodyLayeredSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotBodyLayeredTint
+	{
+		get => _f_SlotBodyLayeredTint[Index];
+		set => _f_SlotBodyLayeredTint[Index] = value;
+	}
+	public System.Boolean f_SlotBodyLayeredEnabled
+	{
+		get => _f_SlotBodyLayeredEnabled[Index];
+		set => _f_SlotBodyLayeredEnabled[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5747305129318046422UL, 8466311968996001153UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNeckFrontSpriteKey;
@@ -5122,6 +5140,12 @@ public partial class D_UnitAppearanceData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotSkinRightLegTint => _ufle12jhs77_f_SlotSkinRightLegTint ?? (_ufle12jhs77_f_SlotSkinRightLegTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(4916857178119155026UL, 11390727439753094018UL), () => _ufle12jhs77_f_SlotSkinRightLegTint = null));
 	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotSkinRightLegEnabled;
 	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotSkinRightLegEnabled => _ufle12jhs77_f_SlotSkinRightLegEnabled ?? (_ufle12jhs77_f_SlotSkinRightLegEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5624144061850545791UL, 11935806104187325867UL), () => _ufle12jhs77_f_SlotSkinRightLegEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotBodyLayeredSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotBodyLayeredSpriteKey => _ufle12jhs77_f_SlotBodyLayeredSpriteKey ?? (_ufle12jhs77_f_SlotBodyLayeredSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5007822453841690899UL, 9060140399396913043UL), () => _ufle12jhs77_f_SlotBodyLayeredSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotBodyLayeredTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBodyLayeredTint => _ufle12jhs77_f_SlotBodyLayeredTint ?? (_ufle12jhs77_f_SlotBodyLayeredTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5532571251718315471UL, 12301502688301119121UL), () => _ufle12jhs77_f_SlotBodyLayeredTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBodyLayeredEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBodyLayeredEnabled => _ufle12jhs77_f_SlotBodyLayeredEnabled ?? (_ufle12jhs77_f_SlotBodyLayeredEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5123336010607495968UL, 14104263391890150272UL), () => _ufle12jhs77_f_SlotBodyLayeredEnabled = null));
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();
