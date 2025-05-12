@@ -111,7 +111,6 @@ public class FullWindowLobbyDlg : FullWindowBase
         // inventoryUI.InitLobbyDlg(this);
 
         var popup = await UIManager.Instance.ShowUI<RelicInventoryUI>();
-        popup.InitializeUI();
 
     }
     // 애니메이션 없는 패널 전환용 메서드

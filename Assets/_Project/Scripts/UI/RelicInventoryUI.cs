@@ -115,7 +115,6 @@ public class RelicInventoryUI : FloatingPopupBase
     private async void OnClickRelicItem(RelicItemDataParam param)
     {
         var popup = await UIManager.Instance.ShowUI<RelicItemInfoPopup>();
-        popup.InitializeUI();
         popup.SetData(param);
     }
 
