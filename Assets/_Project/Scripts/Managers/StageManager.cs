@@ -18,7 +18,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private Transform tileMapGrid;
 
     private D_StageData currentStage;
-    private int currentWaveIndex = 0;
+    public int currentWaveIndex = 0;
 
     //웨이브 관련 설명창
     private int currentWaveInfoScheduleUID = -1;
@@ -81,6 +81,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         CleanUp();
         placedMap = map;
         tileMapGrid = grid;
+    }
+
+    public List<WaveBase> GetWaveList()
+    {
+        return new List<WaveBase>(waveList); // 복사본 반환으로 안전하게 처리
     }
 
     public void StartStage(int stageNumber)
