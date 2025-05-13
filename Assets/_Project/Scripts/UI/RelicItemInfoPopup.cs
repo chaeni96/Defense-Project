@@ -1,4 +1,5 @@
 using System;
+using AutoBattle.Scripts.Managers;
 using AutoBattle.Scripts.UI.UIComponents;
 using AutoBattle.Scripts.Utils;
 using BansheeGz.BGDatabase;
@@ -32,6 +33,7 @@ namespace AutoBattle.Scripts.UI
         [Header("Equip Button")]
         [SerializeField] private Button equipButton;
         [SerializeField] private TMP_Text equipButtonText;
+        [SerializeField] private GameObject equipDimObject;
         
         [Header("Etc")]
         [SerializeField] private Color normalColor;
@@ -115,12 +117,14 @@ namespace AutoBattle.Scripts.UI
         {
             if (equipButtonText != null)
             {
-                equipButtonText.text = isEquipped ? "해제" : "장착";
+                equipButtonText.text = isEquipped ? "해제" : relicItemDataParam.RelicLevel > 0 ? "장착" : "미보유";
             }
         }
 
         private void UpdateUI()
         {
+            relicIconImage.sprite = AtlasManager.Instance.GetItemIcon(relicItemDataParam.IconKey);
+            
             relicNameText.text = relicItemDataParam.RelicName;
             relicDescriptionText.text = relicItemDataParam.RelicDescription;
             
@@ -135,6 +139,7 @@ namespace AutoBattle.Scripts.UI
 
             relicUpgradeDimButton.SetActive(relicItemDataParam.RelicLevel <= 0);
             
+            equipDimObject.SetActive(relicItemDataParam.RelicLevel <= 0);
             UpdateEquipButtonText(currentRelic != null && currentRelic.f_isEquiped);
 
             return;

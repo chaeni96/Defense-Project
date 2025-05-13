@@ -7,7 +7,6 @@ using BGDatabaseEnum.DataController;
 using UnityEngine;
 
 [UIInfo("RelicInventoryUI", "RelicInventoryUI", true)]
-
 public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
 {
     [SerializeField] private RelicItemComponent relicItemComponent;
