@@ -79,8 +79,6 @@ public class SceneStarter : MonoBehaviour
         PoolingManager.Instance.InitializeManager();
         UnitManager.Instance.InitializeManager();
         EnemyManager.Instance.InitializeMnanager();
-        ProjectileManager.Instance.InitializeManager();
-
 
         StageManager.Instance.InitializeManager(placedTileMap, tileMapGrid);
         StatManager.Instance.InitializeManager();

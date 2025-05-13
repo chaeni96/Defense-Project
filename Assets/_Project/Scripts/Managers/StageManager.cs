@@ -305,13 +305,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
 
         }
-        //전투 웨이브인 경우에는 살아남은 유닛들은 원래 있던 자리로 돌아가야됨
-
-        // 진행 중인 모든 투사체 제거
-        ProjectileManager.Instance.CleanUp();
-
-        // 진행중인 모든 스킬 제거
-        AttackSkillManager.Instance.CleanUp();
 
     }
 
