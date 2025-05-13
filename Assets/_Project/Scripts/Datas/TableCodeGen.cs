@@ -5685,6 +5685,7 @@ public partial class D_relicEffectStats : BGEntity
 		public const string Meta = "relicEffectStats";
 		public const string name = "name";
 		public const string RelicItemData = "RelicItemData";
+		public const string statSubjectType = "statSubjectType";
 		public const string statName = "statName";
 		public const string statValue = "statValue";
 		public const string statMultiply = "statMultiply";
@@ -5702,6 +5703,11 @@ public partial class D_relicEffectStats : BGEntity
 	{
 		get => (D_RelicItemData) _f_RelicItemData[Index];
 		set => _f_RelicItemData[Index] = value;
+	}
+	public StatSubject f_statSubjectType
+	{
+		get => (StatSubject) _f_statSubjectType.GetStoredValue(Index);
+		set => _f_statSubjectType.SetStoredValue(Index, (System.Int32) value);
 	}
 	public StatName f_statName
 	{
@@ -5722,6 +5728,8 @@ public partial class D_relicEffectStats : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5223031934980397134UL, 4576142552651109272UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_RelicItemData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_RelicItemData => _ufle12jhs77_f_RelicItemData ?? (_ufle12jhs77_f_RelicItemData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5092347086866585601UL, 4793597855850262699UL), () => _ufle12jhs77_f_RelicItemData = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_statSubjectType;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_statSubjectType => _ufle12jhs77_f_statSubjectType ?? (_ufle12jhs77_f_statSubjectType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4830075542361683907UL, 1168416848081713593UL), () => _ufle12jhs77_f_statSubjectType = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_statName;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_statName => _ufle12jhs77_f_statName ?? (_ufle12jhs77_f_statName = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5393627718939416682UL, 10829328687771977623UL), () => _ufle12jhs77_f_statName = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_statValue;
