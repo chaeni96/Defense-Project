@@ -6,7 +6,6 @@ using Alias_rifegrt_SpecialTile = D_SpecialTile;
 using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_EnemyData = D_EnemyData;
 using Alias_rifegrt_enemyGroup = D_enemyGroup;
-using Alias_rifegrt_BossBattleWaveData = D_BossBattleWaveData;
 using Alias_rifegrt_HuntingOptionData = D_HuntingOptionData;
 using Alias_rifegrt_SpawnEnemyEventData = D_SpawnEnemyEventData;
 using Alias_rifegrt_cellData = D_cellData;
@@ -18,6 +17,7 @@ using Alias_rifegrt_HuntingSelectTimeWaveData = D_HuntingSelectTimeWaveData;
 using Alias_rifegrt_ItemData = D_ItemData;
 using Alias_rifegrt_DropItemEventData = D_DropItemEventData;
 using Alias_rifegrt_NormalBattleWaveData = D_NormalBattleWaveData;
+using Alias_rifegrt_BossBattleWaveData = D_BossBattleWaveData;
 using Alias_rifegrt_EventEnemyWaveData = D_EventEnemyWaveData;
 using Alias_rifegrt_U_RelicData = D_U_RelicData;
 
@@ -1036,8 +1036,7 @@ public partial class D_EnemyData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _ufle12jhs77_f_evnets;
 	public static BansheeGz.BGDatabase.BGFieldViewRelationMultiple _f_evnets => _ufle12jhs77_f_evnets ?? (_ufle12jhs77_f_evnets = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldViewRelationMultiple>(MetaDefault, new BGId(5494723654661476776UL, 16053045210241367169UL), () => _ufle12jhs77_f_evnets = null));
 	public List<Alias_rifegrt_enemyGroup> RelatedenemyGroupListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_enemyGroup>(Alias_rifegrt_enemyGroup._f_enemy, Id);
-	public List<Alias_rifegrt_BossBattleWaveData> RelatedBossBattleWaveDataListUsingbossEnemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_BossBattleWaveData>(Alias_rifegrt_BossBattleWaveData._f_bossEnemy, Id);
-	public List<Alias_rifegrt_HuntingOptionData> RelatedHuntingOptionDataListUsingspawnEnemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingOptionData>(Alias_rifegrt_HuntingOptionData._f_spawnEnemy, Id);
+	public List<Alias_rifegrt_HuntingOptionData> RelatedHuntingOptionDataListUsingf_bossEnemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingOptionData>(Alias_rifegrt_HuntingOptionData._f_f_bossEnemy, Id);
 	public List<Alias_rifegrt_SpawnEnemyEventData> RelatedSpawnEnemyEventDataListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpawnEnemyEventData>(Alias_rifegrt_SpawnEnemyEventData._f_enemy, Id);
 	public List<Alias_rifegrt_cellData> RelatedcellDataListUsingenemyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_cellData>(Alias_rifegrt_cellData._f_enemy, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
@@ -2583,9 +2582,6 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 		public const string Meta = "BossBattleWaveData";
 		public const string name = "name";
 		public const string waveType = "waveType";
-		public const string bossEnemy = "bossEnemy";
-		public const string bossHp = "bossHp";
-		public const string startDelay = "startDelay";
 		public const string placeEnemyMapData = "placeEnemyMapData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
@@ -2602,21 +2598,6 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 		get => (WaveType) _f_waveType.GetStoredValue(Index);
 		set => _f_waveType.SetStoredValue(Index, (System.Int32) value);
 	}
-	public D_EnemyData f_bossEnemy
-	{
-		get => (D_EnemyData) _f_bossEnemy[Index];
-		set => _f_bossEnemy[Index] = value;
-	}
-	public System.Int32 f_bossHp
-	{
-		get => _f_bossHp[Index];
-		set => _f_bossHp[Index] = value;
-	}
-	public System.Single f_startDelay
-	{
-		get => _f_startDelay[Index];
-		set => _f_startDelay[Index] = value;
-	}
 	public D_EnemyPlacementData f_placeEnemyMapData
 	{
 		get => (D_EnemyPlacementData) _f_placeEnemyMapData[Index];
@@ -2626,12 +2607,6 @@ public partial class D_BossBattleWaveData : BGEntity, D_WaveDummyData
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4648556790777620570UL, 10818428577091893122UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_waveType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_waveType => _ufle12jhs77_f_waveType ?? (_ufle12jhs77_f_waveType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5305157338052161875UL, 13104404023960258490UL), () => _ufle12jhs77_f_waveType = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_bossEnemy;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_bossEnemy => _ufle12jhs77_f_bossEnemy ?? (_ufle12jhs77_f_bossEnemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5398663689755495180UL, 17581176995848287386UL), () => _ufle12jhs77_f_bossEnemy = null));
-	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_bossHp;
-	public static BansheeGz.BGDatabase.BGFieldInt _f_bossHp => _ufle12jhs77_f_bossHp ?? (_ufle12jhs77_f_bossHp = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(5583733647517555600UL, 2947613467864531370UL), () => _ufle12jhs77_f_bossHp = null));
-	private static BansheeGz.BGDatabase.BGFieldFloat _ufle12jhs77_f_startDelay;
-	public static BansheeGz.BGDatabase.BGFieldFloat _f_startDelay => _ufle12jhs77_f_startDelay ?? (_ufle12jhs77_f_startDelay = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldFloat>(MetaDefault, new BGId(5089286857605021011UL, 15989192875252017323UL), () => _ufle12jhs77_f_startDelay = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_placeEnemyMapData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_placeEnemyMapData => _ufle12jhs77_f_placeEnemyMapData ?? (_ufle12jhs77_f_placeEnemyMapData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5132672095488613186UL, 1754262872269661342UL), () => _ufle12jhs77_f_placeEnemyMapData = null));
 	public List<Alias_rifegrt_StageData> RelatedStageDataListUsingWaveDummyDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_StageData>(Alias_rifegrt_StageData._f_WaveDummyData, Id);
@@ -3261,11 +3236,12 @@ public partial class D_HuntingOptionData : BGEntity
 		public const string name = "name";
 		public const string title = "title";
 		public const string description = "description";
-		public const string spawnEnemy = "spawnEnemy";
 		public const string huntingReward = "huntingReward";
 		public const string huntingRisk = "huntingRisk";
 		public const string prizeHuntingData = "prizeHuntingData";
 		public const string spawnPos = "spawnPos";
+		public const string enemyPlacementData = "enemyPlacementData";
+		public const string f_bossEnemy = "f_bossEnemy";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5381664928725939677UL,3173302106784987041UL), () => _metaDefault = null));
@@ -3286,11 +3262,6 @@ public partial class D_HuntingOptionData : BGEntity
 		get => _f_description[Index];
 		set => _f_description[Index] = value;
 	}
-	public D_EnemyData f_spawnEnemy
-	{
-		get => (D_EnemyData) _f_spawnEnemy[Index];
-		set => _f_spawnEnemy[Index] = value;
-	}
 	public List<D_huntingReward> f_huntingReward => BGCodeGenUtils.GetNested<D_huntingReward>(_f_huntingReward, Index);
 	public List<D_huntingRisk> f_huntingRisk => BGCodeGenUtils.GetNested<D_huntingRisk>(_f_huntingRisk, Index);
 	public D_PrizeHuntingWaveData f_prizeHuntingData
@@ -3303,14 +3274,22 @@ public partial class D_HuntingOptionData : BGEntity
 		get => _f_spawnPos[Index];
 		set => _f_spawnPos[Index] = value;
 	}
+	public D_EnemyPlacementData f_enemyPlacementData
+	{
+		get => (D_EnemyPlacementData) _f_enemyPlacementData[Index];
+		set => _f_enemyPlacementData[Index] = value;
+	}
+	public D_EnemyData f_f_bossEnemy
+	{
+		get => (D_EnemyData) _f_f_bossEnemy[Index];
+		set => _f_f_bossEnemy[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5632793469073674763UL, 15312157263250495362UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_title;
 	public static BansheeGz.BGDatabase.BGFieldString _f_title => _ufle12jhs77_f_title ?? (_ufle12jhs77_f_title = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4879348127332380067UL, 1588136262267987901UL), () => _ufle12jhs77_f_title = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_description;
 	public static BansheeGz.BGDatabase.BGFieldString _f_description => _ufle12jhs77_f_description ?? (_ufle12jhs77_f_description = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5562242753916143619UL, 15882605752197836984UL), () => _ufle12jhs77_f_description = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_spawnEnemy;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_spawnEnemy => _ufle12jhs77_f_spawnEnemy ?? (_ufle12jhs77_f_spawnEnemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5045409566211158908UL, 9253219390523044537UL), () => _ufle12jhs77_f_spawnEnemy = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_huntingReward;
 	public static BansheeGz.BGDatabase.BGFieldNested _f_huntingReward => _ufle12jhs77_f_huntingReward ?? (_ufle12jhs77_f_huntingReward = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldNested>(MetaDefault, new BGId(5278750313338539653UL, 116098376903985325UL), () => _ufle12jhs77_f_huntingReward = null));
 	private static BansheeGz.BGDatabase.BGFieldNested _ufle12jhs77_f_huntingRisk;
@@ -3319,6 +3298,10 @@ public partial class D_HuntingOptionData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_prizeHuntingData => _ufle12jhs77_f_prizeHuntingData ?? (_ufle12jhs77_f_prizeHuntingData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5691757458297165726UL, 10460524771639610559UL), () => _ufle12jhs77_f_prizeHuntingData = null));
 	private static BansheeGz.BGDatabase.BGFieldVector2 _ufle12jhs77_f_spawnPos;
 	public static BansheeGz.BGDatabase.BGFieldVector2 _f_spawnPos => _ufle12jhs77_f_spawnPos ?? (_ufle12jhs77_f_spawnPos = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldVector2>(MetaDefault, new BGId(5555439235514337841UL, 7273929562188176290UL), () => _ufle12jhs77_f_spawnPos = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_enemyPlacementData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_enemyPlacementData => _ufle12jhs77_f_enemyPlacementData ?? (_ufle12jhs77_f_enemyPlacementData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5672601516441379600UL, 17889683329104221832UL), () => _ufle12jhs77_f_enemyPlacementData = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_f_bossEnemy;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_f_bossEnemy => _ufle12jhs77_f_f_bossEnemy ?? (_ufle12jhs77_f_f_bossEnemy = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(5078834057317552151UL, 592127793131485582UL), () => _ufle12jhs77_f_f_bossEnemy = null));
 	public List<Alias_rifegrt_HuntingSelectTimeWaveData> RelatedHuntingSelectTimeWaveDataListUsinghuntingOptionsRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingSelectTimeWaveData>(Alias_rifegrt_HuntingSelectTimeWaveData._f_huntingOptions, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
@@ -4298,6 +4281,7 @@ public partial class D_EnemyPlacementData : BGEntity
 	public List<Alias_rifegrt_NormalBattleWaveData> RelatedNormalBattleWaveDataListUsingplaceEnemyMapDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_NormalBattleWaveData>(Alias_rifegrt_NormalBattleWaveData._f_placeEnemyMapData, Id);
 	public List<Alias_rifegrt_BossBattleWaveData> RelatedBossBattleWaveDataListUsingplaceEnemyMapDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_BossBattleWaveData>(Alias_rifegrt_BossBattleWaveData._f_placeEnemyMapData, Id);
 	public List<Alias_rifegrt_EventEnemyWaveData> RelatedEventEnemyWaveDataListUsingplaceEnemyMapDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EventEnemyWaveData>(Alias_rifegrt_EventEnemyWaveData._f_placeEnemyMapData, Id);
+	public List<Alias_rifegrt_HuntingOptionData> RelatedHuntingOptionDataListUsingenemyPlacementDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_HuntingOptionData>(Alias_rifegrt_HuntingOptionData._f_enemyPlacementData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

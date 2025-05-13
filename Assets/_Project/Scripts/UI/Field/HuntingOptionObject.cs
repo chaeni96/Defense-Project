@@ -30,7 +30,7 @@ public class HuntingOptionObject : MonoBehaviour
     {
         optionData = data;
         onOptionClicked = callback;
-        enemyNameText.text = data.f_spawnEnemy.Name;
+        enemyNameText.text = data.f_f_bossEnemy.Name;
 
         // TODO: 프리뷰 이미지 로드 -> RT 렌더러로 가지고오기
         //LoadEnemyPreviewImage();
@@ -47,10 +47,10 @@ public class HuntingOptionObject : MonoBehaviour
         }
 
         // 프리뷰 이미지 주소 키가 유효한지 확인
-        if (!string.IsNullOrEmpty(optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey))
+        if (!string.IsNullOrEmpty(optionData.f_f_bossEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey))
         {
             // 비동기로 이미지 로드
-            imageLoadHandle = Addressables.LoadAssetAsync<Sprite>(optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
+            imageLoadHandle = Addressables.LoadAssetAsync<Sprite>(optionData.f_f_bossEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
             imageLoadHandle.Completed += handle =>
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
@@ -59,7 +59,7 @@ public class HuntingOptionObject : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"프리뷰 이미지 로드 실패: {optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey}");
+                    Debug.LogWarning($"프리뷰 이미지 로드 실패: {optionData.f_f_bossEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey}");
                 }
             };
         }

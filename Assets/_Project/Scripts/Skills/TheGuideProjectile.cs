@@ -20,7 +20,7 @@ public class TheGuideProjectile : TheDefaultProjectile
         hasTarget = target != null;
     }
 
-    private void Update()
+    protected  override void Update()
     {
         if (owner == null)
         {

@@ -48,7 +48,7 @@ public class TheDefaultProjectile : SkillBase
         gameObject.SetActive(true);
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         if (owner == null)
         {
@@ -72,7 +72,14 @@ public class TheDefaultProjectile : SkillBase
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 소유자가 아닌지 확인
+        if (owner == null)
+        {
+            DestroySkill();
+            return;
+        }
+
         if (collision.gameObject == owner.gameObject) return;
+
 
         // 적 레이어 확인
         BasicObject hitObject = collision.GetComponent<BasicObject>();

@@ -60,7 +60,12 @@ public class AttackState : StateBase
     public override void OnUpdate()
     {
         // CharacterFSMObject Ȯ��
-        if (characterFSM == null) return;
+        if(characterFSM == null || characterFSM.basicObject == null)
+         {
+            // FSM 객체가 파괴된 경우 업데이트 중지
+            Controller?.RegisterTrigger(Trigger.AttackFinished);
+            return;
+        }
 
         // �ִϸ��̼� ������ ���� �������� �ʾҴٸ�
         if (!animLengthChecked)
@@ -85,32 +90,34 @@ public class AttackState : StateBase
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
             //��ų�� ������ ��� ������ ����
-            if(skillAddressableKey == null)
+            if(string.IsNullOrWhiteSpace(skillAddressableKey))
             {
                 ApplyDamage();
             }
             else
             {
-
-                // Ÿ�� ���� ���
-                Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
-
-                //��ų ����
-                GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, characterFSM.transform.position, (int)ObjectLayer.IgnoereRayCast);
-
-
-                // ����ü �ʱ�ȭ
-                SkillBase projectile = skillObj.GetComponent<SkillBase>();
-                if (projectile != null)
+                if (!string.IsNullOrEmpty(skillAddressableKey))
                 {
-                    projectile.Initialize(characterFSM.basicObject);
-                    projectile.Fire(
-                        characterFSM.basicObject,
-                        characterFSM.CurrentTarget.transform.position,
-                        targetDirection,
-                        characterFSM.CurrentTarget
+                    // Ÿ�� ���� ���
+                    Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
 
-                    );
+                    //��ų ����
+                    GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, characterFSM.transform.position, (int)ObjectLayer.IgnoereRayCast);
+
+
+                    // ����ü �ʱ�ȭ
+                    SkillBase projectile = skillObj.GetComponent<SkillBase>();
+                    if (projectile != null)
+                    {
+                        projectile.Initialize(characterFSM.basicObject);
+                        projectile.Fire(
+                            characterFSM.basicObject,
+                            characterFSM.CurrentTarget.transform.position,
+                            targetDirection,
+                            characterFSM.CurrentTarget
+
+                        );
+                    }
                 }
             }
 

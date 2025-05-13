@@ -600,34 +600,13 @@ public class PrizeHuntingWave : BattleWaveBase
     private D_PrizeHuntingWaveData prizeHuntingData;
     private D_HuntingOptionData selectedOption;
 
+    private D_EnemyPlacementData placementData;
+
     public PrizeHuntingWave(D_PrizeHuntingWaveData data, D_HuntingOptionData option) : base(data)
     {
         prizeHuntingData = data;
         selectedOption = option;
-    }
-
-    private void ApplyRewardsAndRisks()
-    {
-        // 선택한 옵션의 보상과 위험 요소 적용
-        // 실제 구현은 게임 시스템에 따라 다름
-
-        // 보상 적용
-        if (selectedOption.f_huntingReward != null && selectedOption.f_huntingReward.Count > 0)
-        {
-            foreach (var reward in selectedOption.f_huntingReward)
-            {
-                // 예: StatManager.ApplyStat(reward.f_statName, reward.f_value, reward.f_valueMultiply * prizeHuntingData.f_rewardMuliply);
-            }
-        }
-
-        // 위험 요소 적용
-        if (selectedOption.f_huntingRisk != null && selectedOption.f_huntingRisk.Count > 0)
-        {
-            foreach (var risk in selectedOption.f_huntingRisk)
-            {
-                // 예: StatManager.ApplyStat(risk.f_statName, risk.f_value, risk.f_valueMultiply);
-            }
-        }
+        placementData = selectedOption.f_enemyPlacementData;
     }
 
 
@@ -646,25 +625,35 @@ public class PrizeHuntingWave : BattleWaveBase
 
     protected override void SpawnWaveEnemies()
     {
-        // 선택된 옵션의 현상금 사냥꾼 스폰
-        if (selectedOption.f_spawnEnemy != null && selectedOption.f_spawnEnemy.f_ObjectPoolKey != null)
+        foreach (var cellData in placementData.f_cellData)
         {
-            //TODO : 지금은 데이터에서 spawnPos로 가져오고 있는데 서포트 에너미도 등장시킬거면 에너미 배치 데이터 사용
-            EnemyManager.Instance.SpawnEnemy(selectedOption.f_spawnEnemy, selectedOption.f_spawnPos);
 
-            // 보상/위험 요소 적용 (필요한 경우)
-            ApplyRewardsAndRisks();
-        }
-        else
-        {
-            Debug.LogError("현상금 사냥꾼 오브젝트 풀 키가 없음");
-        }
+            // 그리드 좌표를 게임 월드 좌표로 변환
+            Vector2 worldPos = ConvertGridToWorldPosition(cellData.f_position);
 
+            EnemyManager.Instance.SpawnEnemy(cellData.f_enemy, worldPos);
+            isSpawnDone = true;
+        }
     }
+
+    // 그리드 좌표를 월드 좌표로 변환하는 함수
+    private Vector2 ConvertGridToWorldPosition(Vector2 gridPos)
+    {
+        float gridCenterX = 0f;
+        float gridCenterY = 5f;
+
+        // 중앙을 기준으로 좌표 계산
+        float xPos = (gridPos.x - gridCenterX) * gridSize + centerOffset.x;
+        float yPos = (gridCenterY - gridPos.y) * gridSize + centerOffset.y;
+
+        return new Vector2(xPos, yPos);
+    }
+
 
     protected override int CalculateTotalEnemies()
     {
-        return 1;
+        return placementData != null ? placementData.f_cellData.Count : 0;
+
     }
 
     protected override void OnStartWaveButtonClicked()

@@ -406,7 +406,7 @@ public class EnemyPlacementTool : EditorWindow
     {
         // 새 엔티티 생성
         D_EnemyPlacementData placement = D_EnemyPlacementData.NewEntity();
-        placement.f_name = mapName; // 사용자가 입력한 이름 사용
+        placement.f_name = mapName + mapId; // 사용자가 입력한 이름 사용
         placement.f_mapID = mapId;  // 자동으로 설정된 다음 맵 ID 사용
 
         // 셀 데이터 추가
