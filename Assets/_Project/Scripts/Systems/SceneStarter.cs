@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using AutoBattle.Scripts.Managers;
 using BGDatabaseEnum.DataController;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -46,6 +45,7 @@ public class SceneStarter : MonoBehaviour
         {
             // 로비 초기화 작업이 있다면 여기서 수행
             RelicDataController.Instance.Initialize();
+            AtlasManager.Instance.Initialize();
         }
         if (scenekind == SceneKind.InGame)
         {
