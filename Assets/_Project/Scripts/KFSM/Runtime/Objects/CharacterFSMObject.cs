@@ -86,38 +86,6 @@ namespace Kylin.FSM
         }
 
 
-        // 애니메이션 이벤트로 호출될 메서드
-        public void OnAttackHit()
-        {
-            if (basicObject != null && CurrentTarget != null)
-            {
-                if (CurrentTarget.isEnemy)
-                {
-                    var enemyObj = CurrentTarget.GetComponent<Enemy>();
-                    if (enemyObj != null)
-                    {
-                        // 데미지 계산 및 적용만 담당
-                        float damage = basicObject.GetStat(StatName.ATK);
-                        enemyObj.onDamaged(basicObject, damage);
-                    }
-                }
-                else
-                {
-                    var enemyObj = CurrentTarget.GetComponent<UnitController>();
-
-                    if (enemyObj != null)
-                    {
-                        // 데미지 계산 및 적용만 담당
-                        float damage = basicObject.GetStat(StatName.ATK);
-                        enemyObj.onDamaged(basicObject, damage);
-                    }
-                }
-
-                
-            }
-        }
-
-
         public void FinishBattleWinAnimation()
         {
             isFinished = true;

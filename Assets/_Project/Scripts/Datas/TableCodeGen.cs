@@ -266,7 +266,8 @@ public partial class D_UnitData : BGEntity
 		public const string StatSubject = "StatSubject";
 		public const string SkillAttackType = "SkillAttackType";
 		public const string UnitPoolingKey = "UnitPoolingKey";
-		public const string SkillPoolingKey = "SkillPoolingKey";
+		public const string fsmId = "fsmId";
+		public const string skillData = "skillData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5098187849243670608UL,7590059858118427043UL), () => _metaDefault = null));
@@ -297,10 +298,15 @@ public partial class D_UnitData : BGEntity
 		get => (D_ObjectPoolData) _f_UnitPoolingKey[Index];
 		set => _f_UnitPoolingKey[Index] = value;
 	}
-	public D_ObjectPoolData f_SkillPoolingKey
+	public System.String f_fsmId
 	{
-		get => (D_ObjectPoolData) _f_SkillPoolingKey[Index];
-		set => _f_SkillPoolingKey[Index] = value;
+		get => _f_fsmId[Index];
+		set => _f_fsmId[Index] = value;
+	}
+	public D_SkillData f_skillData
+	{
+		get => (D_SkillData) _f_skillData[Index];
+		set => _f_skillData[Index] = value;
 	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4978381386621882592UL, 9377071611302703509UL), () => _ufle12jhs77_f_name = null));
@@ -312,8 +318,10 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SkillAttackType => _ufle12jhs77_f_SkillAttackType ?? (_ufle12jhs77_f_SkillAttackType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5274816935596477599UL, 15588288739445877685UL), () => _ufle12jhs77_f_SkillAttackType = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_UnitPoolingKey;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitPoolingKey => _ufle12jhs77_f_UnitPoolingKey ?? (_ufle12jhs77_f_UnitPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4766850798404632622UL, 6480570574369079984UL), () => _ufle12jhs77_f_UnitPoolingKey = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_SkillPoolingKey;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_SkillPoolingKey => _ufle12jhs77_f_SkillPoolingKey ?? (_ufle12jhs77_f_SkillPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4721613304390874734UL, 7492828072908847792UL), () => _ufle12jhs77_f_SkillPoolingKey = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_fsmId;
+	public static BansheeGz.BGDatabase.BGFieldString _f_fsmId => _ufle12jhs77_f_fsmId ?? (_ufle12jhs77_f_fsmId = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5002854245621455623UL, 3297439355615264898UL), () => _ufle12jhs77_f_fsmId = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_skillData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_skillData => _ufle12jhs77_f_skillData ?? (_ufle12jhs77_f_skillData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4882784158429547313UL, 8731413070078458273UL), () => _ufle12jhs77_f_skillData = null));
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	public List<Alias_rifegrt_SpecialTile> RelatedSpecialTileListUsingspecialObjectRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpecialTile>(Alias_rifegrt_SpecialTile._f_specialObject, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
@@ -683,7 +691,6 @@ public partial class D_ObjectPoolData : BGEntity
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SceneType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SceneType => _ufle12jhs77_f_SceneType ?? (_ufle12jhs77_f_SceneType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5559553276269621835UL, 2058884527795876747UL), () => _ufle12jhs77_f_SceneType = null));
 	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingUnitPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_UnitPoolingKey, Id);
-	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingSkillPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_SkillPoolingKey, Id);
 	public List<Alias_rifegrt_EnemyData> RelatedEnemyDataListUsingObjectPoolKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EnemyData>(Alias_rifegrt_EnemyData._f_ObjectPoolKey, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
@@ -5809,6 +5816,7 @@ public partial class D_SkillData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldInt _f_initalSize => _ufle12jhs77_f_initalSize ?? (_ufle12jhs77_f_initalSize = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4704729361873333330UL, 7680011544076814766UL), () => _ufle12jhs77_f_initalSize = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_addressableKey;
 	public static BansheeGz.BGDatabase.BGFieldString _f_addressableKey => _ufle12jhs77_f_addressableKey ?? (_ufle12jhs77_f_addressableKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5444465267898499911UL, 7200366453917525176UL), () => _ufle12jhs77_f_addressableKey = null));
+	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingskillDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_skillData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

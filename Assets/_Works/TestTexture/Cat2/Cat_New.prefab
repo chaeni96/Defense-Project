@@ -3424,8 +3424,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolIndex: 0
   _bounds:
-    m_Center: {x: 0, y: 1.396759, z: 0}
-    m_Extent: {x: 2.4732666, y: 3.2389832, z: 0.1}
+    m_Center: {x: 0, y: 1.0588989, z: 0}
+    m_Extent: {x: 2.4732666, y: 2.901123, z: 0.1}
   _init: 1
   _autoBoundsMode: 1
   _sortingMode: 1
