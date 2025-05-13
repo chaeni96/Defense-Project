@@ -50,45 +50,75 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 1ad736f077c1ab244a9f7342dcb8b745, type: 3}
+  - {fileID: 21300000, guid: 1f4d4df00c65d494e9f45d33938eefb6, type: 3}
+  - {fileID: 21300000, guid: b8b1a6914beb5de409366dde5bb7b875, type: 3}
   - {fileID: 21300000, guid: 15fc42a24f0200344bd45ccac81dd063, type: 3}
   - {fileID: 21300000, guid: ad0b6ef28a0369641879a259d8767b59, type: 3}
   - {fileID: 21300000, guid: 836f5373b2242874bbffa1449f2d8f18, type: 3}
   - {fileID: 21300000, guid: 212eee832f2ff6d4ca2021b7087e2388, type: 3}
   - {fileID: 21300000, guid: 0f08ad93511f1924ca54c6ee0a22f6ab, type: 3}
+  - {fileID: 21300000, guid: 1cc13914d7abf3845895ff2ee5088c34, type: 3}
+  - {fileID: 21300000, guid: 08ff3405ffd87f24d836329fe781d44b, type: 3}
+  - {fileID: 21300000, guid: c9648c656e0640a4d93344c34dc55f4d, type: 3}
   - {fileID: 21300000, guid: 30a35485f1212934e95addaec0d1d2c2, type: 3}
-  - {fileID: 21300000, guid: 879d9295320c8ea4bae23436aca051b3, type: 3}
+  - {fileID: 21300000, guid: 1e5820d5f08af0f4bb2629eb9cd948c4, type: 3}
   - {fileID: 21300000, guid: 35cf3606c8603a345a9afa1963116a8f, type: 3}
   - {fileID: 21300000, guid: ae13e0d6f207c2c4aa7d25ff89c938ee, type: 3}
   - {fileID: 21300000, guid: 90028e18582d9c040a8374b9a1d1033f, type: 3}
+  - {fileID: 21300000, guid: b6160e3861fc7ea40845696d222546fa, type: 3}
+  - {fileID: 21300000, guid: b4ea71c864c8ed248a964c880a075125, type: 3}
+  - {fileID: 21300000, guid: b31728996d302124b9c97d4bf8d0a03a, type: 3}
   - {fileID: 21300000, guid: 5c887eb97286ca04fa562db3633a5cb6, type: 3}
-  - {fileID: 21300000, guid: 111ed2ea0afcf004c839a4c0109c18ce, type: 3}
+  - {fileID: 21300000, guid: 4cdd346a9451ee14eb0bbdc14e74c57d, type: 3}
+  - {fileID: 21300000, guid: 13d332fa17f151c4381fe7f640de1043, type: 3}
+  - {fileID: 21300000, guid: fa8d430b392e20e4b81178dfe46201be, type: 3}
   - {fileID: 21300000, guid: 547d733bfc0e01d479407020c944267e, type: 3}
   - {fileID: 21300000, guid: d2dc69dcc12a49144baaeeaeeff2ee11, type: 3}
   - {fileID: 21300000, guid: 1b103efc754f34f498355007799101aa, type: 3}
   - {fileID: 21300000, guid: 9f6f771d27b7a314abb3be1b9f9d8f61, type: 3}
+  - {fileID: 21300000, guid: b6eda35d4094e4a448bd9afd8b44a7aa, type: 3}
   - {fileID: 21300000, guid: 6de8045db5a722f459667c8a9c29ce1c, type: 3}
+  - {fileID: 21300000, guid: ef0d8afdeb682264eb0dd17f9239346e, type: 3}
   - {fileID: 21300000, guid: da29e07e645aa8e4193345284ec6d3d6, type: 3}
+  - {fileID: 21300000, guid: e8e0b7fe0bb94bb46803c0fc0d35eee4, type: 3}
+  - {fileID: 21300000, guid: 0ac8879f23b76c040b2360a490b3fdce, type: 3}
   - {fileID: 21300000, guid: 0d9372efd6be05240be54425d7b6985c, type: 3}
   - {fileID: 21300000, guid: 77df55ff1dff6f846b4d811aa7554a15, type: 3}
   m_PackedSpriteNamesToIndex:
+  - wings_left
+  - hairband_2
+  - hair_5
   - nose
   - body
   - left_arm_cloth
   - right_arm_cloth
   - left_arm_
+  - dog hair
+  - top_7
+  - tail_2
   - right_leg
-  - beard_right
+  - hair_8_back
   - right_arm
   - top
   - face
+  - top_8
+  - top_9
+  - right_arm_cloth_6
   - eye
-  - beard_left
+  - eye_1
+  - hairband
+  - eye_2
   - ear_inner
   - top_1
   - _glasses
   - left_leg
+  - wings_right
   - face_pattern
+  - top_4
   - tail
+  - left_arm_cloth_6
+  - hair_8_front
   - face_2
   - ear_default
   m_RenderDataMap: {}
