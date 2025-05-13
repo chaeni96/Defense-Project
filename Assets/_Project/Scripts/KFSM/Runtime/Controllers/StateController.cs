@@ -44,10 +44,12 @@ namespace Kylin.FSM
 
             var fsmScope = DependencyInjector.CreateScope();
             fsmScope.RegisterInstance(typeof(StateController), this);
-            fsmScope.RegisterInstance(typeof(FSMObjectBase), _ownerObject);
+            fsmScope.RegisterInstance(typeof(CharacterFSMObject), _ownerObject);
+
             // ���� �ʱ�ȭ
             foreach (var s in states)
             {
+                //DependencyInjector.InjectWithScope(s, fsmScope);
                 s?.Initialize(fsmScope);
             }
 

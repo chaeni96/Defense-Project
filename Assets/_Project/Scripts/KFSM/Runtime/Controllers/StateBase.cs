@@ -19,12 +19,8 @@ namespace Kylin.FSM
         internal void Initialize(IScope fsmScope)
         {
             this.fsmScope = fsmScope;
-            using (fsmScope)
-            {
-                fsmScope.Resolve<FSMObjectBase>();
-                
-                Inject();
-            }
+            
+            Inject();
         }
 
         public virtual void OnEnter() { }
@@ -32,7 +28,7 @@ namespace Kylin.FSM
         public virtual void OnExit() { }
         public void Inject()
         {
-            DependencyInjector.Inject(this);
+            DependencyInjector.InjectWithScope(this, fsmScope);
         }
     }
 }

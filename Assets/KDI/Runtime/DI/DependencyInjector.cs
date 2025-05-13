@@ -39,7 +39,47 @@ namespace Kylin.LWDI
                 }
             }
         }
-        
+        public static void InjectWithScope<T>(T target, IScope scope) where T : IInjectable
+        {
+            var fields = target.GetType().GetFields(
+                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var field in fields)
+            {
+                if (field.GetCustomAttribute<InjectAttribute>() != null)
+                {
+                    var fieldType = field.FieldType;
+                    try
+                    {
+                        // 현재 스코프에서 먼저 검사
+                        object instance = null;
+                
+                        if (scope != null && scope is Scope scopeImpl)
+                        {
+                            instance = scopeImpl.TryGetInstance(fieldType);
+                        }
+                
+                        // 스코프에 없으면 컨테이너에서 해결
+                        if (instance == null)
+                        {
+                            instance = Container.Resolve(fieldType);
+                        }
+                
+                        field.SetValue(target, instance);
+                
+                        // ViewModel 참조 카운트 관리
+                        if (instance is BaseViewModel viewModel)
+                        {
+                            viewModel.AddReference();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[DI Error] 필드 '{field.Name}'에 '{fieldType.Name}' 주입 실패: {ex.Message}");
+                    }
+                }
+            }
+        }
         // 인스턴스 등록 확장 메서드
         public static void RegisterInstance<T>(T instance) where T : class, IDependencyObject
         {

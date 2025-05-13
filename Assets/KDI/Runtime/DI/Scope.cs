@@ -74,5 +74,24 @@ namespace Kylin.LWDI
             
             _container.PopScope(this);
         }
+        public object TryGetInstance(Type type)
+        {
+            if (_scopedInstances.TryGetValue(type, out var instance))
+                return instance;
+    
+            // 등록된 타입 중에서 해당 타입을 구현/상속하는 것 찾기
+            if (type.IsInterface || type.IsAbstract)
+            {
+                foreach (var entry in _scopedInstances)
+                {
+                    if (type.IsAssignableFrom(entry.Key))
+                    {
+                        return entry.Value;
+                    }
+                }
+            }
+    
+            return null;
+        }
     }
 }

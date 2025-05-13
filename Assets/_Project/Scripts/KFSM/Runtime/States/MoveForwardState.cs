@@ -12,7 +12,6 @@ namespace Kylin.FSM
         [SerializeField] private float stopDistance = 0.1f;
         [SerializeField] private float moveSpeed;
         private Transform transform;
-        //private CharacterFSMObject characterFSM;
         private Vector3 targetPosition;
         private bool checkInit;
         [Inject] protected StateController Controller;
@@ -21,6 +20,7 @@ namespace Kylin.FSM
         {
 
             Debug.Log("MoveForwardState : State Enter!!");
+            transform = characterFSM.transform;
 
             if (characterFSM == null) return;
 
