@@ -121,6 +121,7 @@ namespace BGDatabaseEnum.DataController
                 if (prevEquippedRelic != null)
                 {
                     prevEquippedRelic.f_isEquiped = false;
+                    prevEquippedRelic.f_equipedSlotIndex = -1;
                     NotifyToSubscriber(
                         new RelicStateChangeEvent(equippedRelics[slotIndex], RelicStateEventType.UnEquip));
                 }
@@ -152,6 +153,7 @@ namespace BGDatabaseEnum.DataController
 
             // 장착 해제
             relicData.f_isEquiped = false;
+            relicData.f_equipedSlotIndex = -1;
 
             // 장착 리스트에서 제거
             for (int i = 0; i < equippedRelics.Count; i++)
