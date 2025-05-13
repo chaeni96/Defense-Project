@@ -83,7 +83,42 @@ public class AttackState : StateBase
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
             // 데미지 적용
-            ApplyDamage();
+
+            //스킬이 없으면 즉시 데미지 적용
+            if(characterFSM.basicObject.skillData == null)
+            {
+                ApplyDamage();
+            }
+            else
+            {
+
+          
+
+                // 타겟 방향 계산
+                Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
+
+                // 투사체 생성
+
+                GameObject projectileObj = PoolingManager.Instance.GetObject(characterFSM.basicObject.skillData.f_addressableKey, Owner.transform.position, (int)ObjectLayer.IgnoereRayCast);
+
+
+                // 투사체 초기화
+                SkillBase projectile = projectileObj.GetComponent<SkillBase>();
+                if (projectile != null)
+                {
+                    projectile.Initialize(characterFSM.basicObject);
+                    projectile.Fire(
+                        characterFSM.basicObject,
+                        characterFSM.CurrentTarget.transform.position,
+                        targetDirection,
+                        characterFSM.CurrentTarget
+
+                    );
+                }
+
+            }
+
+
             damageApplied = true;
         }
 
@@ -166,7 +201,7 @@ public class AttackState : StateBase
                 {
                     // 데미지 계산 및 적용
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                    enemyObj.onDamaged(characterFSM.basicObject, damage);
+                    enemyObj.OnDamaged(characterFSM.basicObject, damage);
                 }
             }
             else
@@ -176,7 +211,7 @@ public class AttackState : StateBase
                 {
                     // 데미지 계산 및 적용
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                    unitObj.onDamaged(characterFSM.basicObject, damage);
+                    unitObj.OnDamaged(characterFSM.basicObject, damage);
                 }
             }
         }

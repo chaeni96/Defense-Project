@@ -3,40 +3,23 @@ using static UnityEngine.GraphicsBuffer;
 
 public class TheProjectile : SkillBase
 {
-    public Enemy target { get; private set; }
-
-    public float storedSpeed; // 발사 시점의 속도 저장
-    public float storedDamage; // 발사 시점의 공격력 저장
 
 
-    public override void Initialize(UnitController unit)
+
+    public override void Initialize(BasicObject unit)
     {
         base.Initialize(unit);
-        // 발사 시점의 스탯 저장
-        if (owner != null)
-        {
-            storedSpeed = owner.GetStat(StatName.ProjectileSpeed);
-            storedDamage = owner.GetStat(StatName.ATK);
-        }
 
-
-        ProjectileManager.Instance.RegisterProjectile(this);
     }
 
-    public override void Fire(Vector3 targetPosition)
+    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
     {
-        //target = EnemyManager.Instance.GetEnemyAtPosition(targetPosition);
-
-        //if (target == null) return;
-
-        //transform.position = owner.transform.position;
-        //soundEffect.PlaySound();
+      
     }
 
-    public override void CleanUp()
+    public override void DestroySkill()
     {
         owner = null;
-        target = null;
     }
 
 }

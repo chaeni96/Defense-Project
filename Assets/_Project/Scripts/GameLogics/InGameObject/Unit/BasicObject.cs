@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class BasicObject : MonoBehaviour, IStatSubscriber
 {
@@ -20,9 +22,14 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     //구독중인 
     public List<StatSubject> subjects = new List<StatSubject>();
 
-
-
     public bool isEnemy = false;
+    public bool isActive = false;
+
+    [SerializeField] protected Slider hpBar;  // Inspector에서 할당
+    [SerializeField] protected Canvas hpBarCanvas;  // Inspector에서 할당
+    protected bool isDead = false;
+
+    public D_SkillData skillData;
 
 
     public virtual void Initialize()
@@ -30,6 +37,21 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         foreach (var subject in subjects)
         {
             StatManager.Instance.Subscribe(this, subject);
+        }
+
+        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
+
+        UpdateHpBar();
+    }
+
+    protected void UpdateHpBar()
+    {
+        float currentHp = GetStat(StatName.CurrentHp);
+        float maxHp = GetStat(StatName.MaxHP);
+
+        if (hpBar != null && maxHp > 0)
+        {
+            hpBar.value = currentHp / maxHp;
         }
     }
 
@@ -72,6 +94,35 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     }
 
 
+    public void OnDamaged(BasicObject attacker, float damage = 0)
+    {
+        // 이미 죽었다면 데미지 처리 중단
+        if (isDead) return;
+
+        if (attacker != null)
+        {
+            //attacker의 공격력 
+            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
+            {
+                hpStat.value -= (int)damage;
+                UpdateHpBar();
+                //HitEffect();
+            }
+        }
+
+        if (GetStat(StatName.CurrentHp) <= 0)
+        {
+            isDead = true;
+            OnDead();
+        }
+    }
+
+
+
+    public virtual void OnDead()
+    {
+
+    }
 
     public virtual BasicObject GetTarget()
     {

@@ -161,6 +161,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffb261751d09f5d40a89af9300df9719
+    m_Address: TheDefaultProjectile
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c541b23800400244bba97b26daf4434e
+    m_Address: TargetBaseAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca4b8120d23cfcc44b65cfa7be51b15e
+    m_Address: Assets/_Project/AddressableResources/Local/Prefabs/AttackSkill/TheGuideProjectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:

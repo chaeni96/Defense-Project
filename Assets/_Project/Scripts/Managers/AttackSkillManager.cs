@@ -80,7 +80,7 @@ public class AttackSkillManager : MonoBehaviour
         {
             var skill = skillObj.GetComponent<SkillBase>();
             skill.Initialize(unit);
-            skill.Fire(targetPos);
+            //skill.Fire(targetPos);
 
             // Projectile이 아닌 스킬 오브젝트만 등록 -> ProjectTile은 ProjectileManager 통해서 관리
             if (unit.attackType != SkillAttackType.Projectile)
@@ -97,7 +97,7 @@ public class AttackSkillManager : MonoBehaviour
         for (int i = activeSkillObjects.Count - 1; i >= 0; i--)
         {
             SkillBase skillObject = activeSkillObjects[i];
-            skillObject.CleanUp();
+            skillObject.DestroySkill();
             PoolingManager.Instance.ReturnObject(skillObject.gameObject);
             activeSkillObjects.RemoveAt(i);
         }

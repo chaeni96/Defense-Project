@@ -11,14 +11,6 @@ using static UnityEngine.CullingGroup;
 
 public class Enemy : BasicObject
 {
-    public bool isActive = false;
-
-    [SerializeField] private Slider hpBar;  // Inspector에서 할당
-    [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
-
-    private bool isDead = false;
-
-
     private D_EnemyData enemyData;
 
     public Action OnUpdateDistanceCheck;
@@ -26,9 +18,7 @@ public class Enemy : BasicObject
     {
 
         base.Initialize();
-        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
-
-        UpdateHpBar();
+       
 
         isEnemy = true;
         // X 스케일을 -1배 곱해서 좌우 반전
@@ -137,16 +127,7 @@ public class Enemy : BasicObject
         }
     }
 
-    private void UpdateHpBar()
-    {
-        float currentHp = GetStat(StatName.CurrentHp);
-        float maxHp = GetStat(StatName.MaxHP);
-
-        if (hpBar != null && maxHp > 0)
-        {
-            hpBar.value = currentHp / maxHp;
-        }
-    }
+   
 
     // 상태 변경 메서드
     public void SetActive(bool active)
@@ -154,30 +135,9 @@ public class Enemy : BasicObject
         isActive = active;
     }
 
-    public void onDamaged(BasicObject attacker, float damage = 0)
-    {
-        // 이미 죽었다면 데미지 처리 중단
-        if (isDead) return;
+ 
 
-        if (attacker != null)
-        {
-            //attacker의 공격력 
-            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
-            {
-                hpStat.value -= (int)damage;
-                UpdateHpBar();
-                //HitEffect();
-            }
-        }
-
-        if (GetStat(StatName.CurrentHp) <= 0)
-        {
-            isDead = true;
-            OnDead();
-        }
-    }
-
-    public void OnDead()
+    public override void OnDead()
     {
         if (isDead == false) return;
 
