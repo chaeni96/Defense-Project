@@ -182,10 +182,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
     public event System.Action<int> OnCostUsePrePare; // 코스트 사용 이벤트
     public event System.Action OnCostUsePrePareCancle; // 코스트 사용 이벤트
 
-    //인게임 내 오브젝트 삭제(쓰레기통) 관련 코드 
-    private string trashCanAddressableKey = "TrashCanObject";
-    private TrashCanObject trashCanInstance;
-
 
     //test용
 
@@ -446,32 +442,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         playerCamp.transform.position = campPosition;
     }
 
-    // 쓰레기통 표시
-    public void ShowTrashCan()
-    {
-        if (trashCanInstance != null)
-        {
-            trashCanInstance.Show();
-        }
-    }
-
-    // 쓰레기통 숨기기
-    public void HideTrashCan()
-    {
-        if (trashCanInstance != null)
-        {
-            trashCanInstance.Hide();
-        }
-    }
-
-    // 쓰레기통 위에 있는지 확인
-    public bool IsOverTrashCan(Vector3 position)
-    {
-        return trashCanInstance != null && trashCanInstance.IsPositionOver(position);
-    }
-
-
-
     public void ClearGameScene()
     {
         // 유닛과 적 상태 변경
@@ -486,14 +456,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         {
             enemy.SetActive(false);
         }
-
-
-
-        // 진행 중인 모든 투사체 제거
-        ProjectileManager.Instance.CleanUp();
-
-        // 진행중인 모든 스킬 제거
-        AttackSkillManager.Instance.CleanUp();  
 
         UnitManager.Instance.CleanUp();
         EnemyManager.Instance.CleanUp();
