@@ -1,13 +1,14 @@
 using System;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
+using BGDatabaseEnum.DataController;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace AutoBattle.Scripts.UI.UIComponents
 {
-    public class RelicItemComponent : MonoBehaviour
+    public class RelicItemComponent : MonoBehaviour, IRelicStateChangeSubscriber
     {
         [SerializeField] private Image relicActiveIcon;
         [SerializeField] private Image relicInactiveIcon;
@@ -26,6 +27,27 @@ namespace AutoBattle.Scripts.UI.UIComponents
         
         private Action<RelicItemDataParam> onClickCallback;
         
+        public void OnRelicStateChange(RelicStateChangeEvent relicStateChangeEvent)
+        {
+            if (relicStateChangeEvent.TargetRelicId != relicId) return;
+
+            switch (relicStateChangeEvent.EventType)
+            {
+                case RelicStateEventType.Add:
+                    break;
+                case RelicStateEventType.LevelUp:
+                    break;
+                case RelicStateEventType.Equip:
+                    break;
+                case RelicStateEventType.UnEquip:
+                    break;
+            }
+            
+            var currentRelic = D_RelicItemData.FindEntity(data => data.Id == relicId);
+            
+            UpdateData(new RelicItemDataParam(currentRelic.Id, currentRelic.Name, currentRelic.f_grade, currentRelic.f_description));
+        }
+        
         public void SetData(RelicItemDataParam param, Action<RelicItemDataParam> onClickAction)
         {
             relicId = param.RelicId;
@@ -39,7 +61,12 @@ namespace AutoBattle.Scripts.UI.UIComponents
             UpdateUI();
         }
 
-        public void UpdateData(RelicItemDataParam param)
+        public void OnClickRelicItemComponent()
+        {
+            onClickCallback?.Invoke(new RelicItemDataParam(relicId, relicName, relicGrade, relicDescription));
+        }
+
+        private void UpdateData(RelicItemDataParam param)
         {
             relicId = param.RelicId;
             relicName = param.RelicName;
@@ -51,22 +78,17 @@ namespace AutoBattle.Scripts.UI.UIComponents
             UpdateUI();
         }
 
-        public void OnClickRelicItemComponent()
-        {
-            onClickCallback?.Invoke(new RelicItemDataParam(relicId, relicName, relicLevel, relicExp, relicGrade, relicDescription));
-        }
-
         private void UpdateUI()
         {
             relicDimObject.SetActive(relicLevel <= 0);
 
             if (relicDimObject.activeSelf == false)
             {
-                var currentRelic = D_RelicItemData.GetEntity(relicId);
-                var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic);
+                var currentRelic = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicId);
+                var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic.f_level);
                 
                 relicExpSlider.value = expData.f_maxExp == 0 ? 0 : (float)relicExp / expData.f_maxExp;
-                relicExpText.text = $"{relicExp} / 2";
+                relicExpText.text = $"{relicExp} / {expData.f_maxExp}";
             }
         }
     }
@@ -80,12 +102,14 @@ namespace AutoBattle.Scripts.UI.UIComponents
         public Grade RelicGrade;
         public string RelicDescription;
         
-        public RelicItemDataParam(BGId relicId, string relicName, int relicLevel, int relicExp, Grade relicGrade, string relicDescription)
+        public RelicItemDataParam(BGId relicId, string relicName, Grade relicGrade, string relicDescription)
         {
+            var userRelicData = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicId);
+            
             RelicId = relicId;
             RelicName = relicName;
-            RelicLevel = relicLevel;
-            RelicExp = relicExp;
+            RelicLevel = userRelicData?.f_level ?? 0;
+            RelicExp = userRelicData?.f_exp ?? 0;
             RelicGrade = relicGrade;
             RelicDescription = relicDescription;
         }

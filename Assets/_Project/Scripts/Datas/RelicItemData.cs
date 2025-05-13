@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BansheeGz.BGDatabase;
 using UnityEngine;
 
 public partial class D_RelicItemData
@@ -8,9 +9,46 @@ public partial class D_RelicItemData
         return D_RelicItemData.FindEntities(data => true);
     }
     
+    public static List<StatStorage> GetRelicEffectStats(BGId relicId)
+    {
+        var relicItem = GetEntity(relicId);
+        if (relicItem == null)
+        {
+            Debug.LogError($"Relic item with ID {relicId} not found.");
+            return null;
+        }
+
+        var relicEffectStats = new List<StatStorage>();
+        
+        foreach (var effect in relicItem.f_relicEffectStats)
+        {
+            var statStorage = new StatStorage()
+            {
+                statName = effect.f_statName,
+                value = effect.f_statValue,
+                multiply = effect.f_statMultiply,
+            };
+            
+            relicEffectStats.Add(statStorage);
+        }
+
+        return relicEffectStats;
+    }
+    
     public static List<D_RelicItemData> GetOwnedRelicItems() 
     {
-        return D_RelicItemData.FindEntities(data => data.f_level > 0);
+        List<D_RelicItemData> relicItems = new List<D_RelicItemData>();
+        
+        D_RelicItemData.ForEachEntity(data =>
+        {
+            var relicItem = D_U_RelicData.GetEntity(data.Id);
+            if (relicItem != null && relicItem.f_level > 0)
+            {
+                relicItems.Add(data);
+            }
+        });
+
+        return relicItems;
     }
 
     public static D_RelicItemData GetNextRelicItemData(D_RelicItemData currentRelicItem)

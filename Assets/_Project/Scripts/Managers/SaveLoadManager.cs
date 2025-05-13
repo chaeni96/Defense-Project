@@ -64,6 +64,8 @@ public class SaveLoadManager : MonoBehaviour
     }
     public void LoadData()
     {
+        Debug.Log("Persistent data path: " + Application.persistentDataPath);
+        
         if(HasSavedFile)
         {
             var content = File.ReadAllBytes(SaveFilePath);

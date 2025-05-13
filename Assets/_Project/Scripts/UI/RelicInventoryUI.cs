@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using AutoBattle.Scripts.UI;
 using AutoBattle.Scripts.UI.UIComponents;
 using AutoBattle.Scripts.Utils;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
+using BGDatabaseEnum.DataController;
 using UnityEngine;
 
 [UIInfo("RelicInventoryUI", "RelicInventoryUI", true)]
 
-public class RelicInventoryUI : FloatingPopupBase
+public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
 {
     [SerializeField] private RelicItemComponent relicItemComponent;
 
@@ -19,15 +19,20 @@ public class RelicInventoryUI : FloatingPopupBase
     [SerializeField] private Transform legendaryRelicItemParent;
     [SerializeField] private Transform mythicRelicItemParent;
     
+    [Header("Equipped Relic Slots")]
+    [SerializeField] private RelicEquipSlotComponent[] relicEquipSlots;
+    
     private FullWindowLobbyDlg lobbyDlg;
     
-    private Dictionary<BGId, RelicItemComponent> relicItemComponentDic = new();
-
+    // 현재 장착 모드에서 선택된 유물 ID
+    private BGId selectedRelicForEquip = BGId.Empty;
+    
     public override void InitializeUI()
     {
         base.InitializeUI();
 
         InitializeRelicItemUI();
+        InitializeEquipSlots();
     }
 
     public override void HideUI()
@@ -47,42 +52,24 @@ public class RelicInventoryUI : FloatingPopupBase
 
         if (result != null)
         {
-            var relicItemExpData = D_RelicItemExpData.GetRelicItemExpData(result);
-            
-            if(relicItemExpData == null) return;
-            
-            result.f_exp += 1;
-
-            if (result.f_exp >= relicItemExpData.f_maxExp)
-            {
-                result.f_level += 1;
-                result.f_exp = 0;
-            }
-
-            UpdateRelicItemComponent(result.Id);
+            RelicDataController.Instance.AddRelicItem(result);
         }
     }
 
     private void InitializeRelicItemUI()
     {
-        foreach (var componentPair in relicItemComponentDic)
-        {
-            Destroy(componentPair.Value.gameObject);
-        }
-        
-        relicItemComponentDic.Clear();
-        
         var list = D_RelicItemData.GetAllRelicItems();
         
         foreach (var item in list)
         {
             var parent = GetParentByGrade(item);
             var itemComponent = Instantiate(relicItemComponent, parent);
+
             itemComponent.SetData(
-                new RelicItemDataParam(item.Id, item.f_name, item.f_level, item.f_exp, item.f_grade, item.f_description),
+                new RelicItemDataParam(item.Id, item.f_name, item.f_grade, item.f_description),
                 OnClickRelicItem);
             
-            relicItemComponentDic.Add(item.Id, itemComponent);
+            RelicDataController.Instance.AddSubscriber(itemComponent);
         }
         
         return;
@@ -101,14 +88,53 @@ public class RelicInventoryUI : FloatingPopupBase
             };
         }
     }
-
-    private void UpdateRelicItemComponent(BGId id)
+    
+    private void InitializeEquipSlots()
     {
-        if (relicItemComponentDic.TryGetValue(id, out var component))
+        if (relicEquipSlots == null || relicEquipSlots.Length == 0)
         {
-            var relicItemData = D_RelicItemData.GetEntity(id);
-            component.UpdateData(new RelicItemDataParam(relicItemData.Id, relicItemData.f_name, relicItemData.f_level,
-                relicItemData.f_exp, relicItemData.f_grade, relicItemData.f_description));
+            Debug.LogWarning("Relic equip slots are not set up!");
+            return;
+        }
+    
+        // 각 슬롯 초기화
+        for (int i = 0; i < relicEquipSlots.Length; i++)
+        {
+            if (relicEquipSlots[i] != null)
+            {
+                relicEquipSlots[i].Initialize(i);
+                RelicDataController.Instance.AddSubscriber(relicEquipSlots[i]);
+            }
+        }
+    }
+    
+    // 장착 모드 활성화
+    private void ActivateEquipMode(BGId relicId)
+    {
+        selectedRelicForEquip = relicId;
+        
+        // 모든 장착 슬롯의 인디케이터 활성화
+        foreach (var slot in relicEquipSlots)
+        {
+            if (slot != null)
+            {
+                slot.ActivateIndicator(true);
+            }
+        }
+    }
+
+    // 장착 모드 비활성화
+    public void DeactivateEquipMode()
+    {
+        selectedRelicForEquip = BGId.Empty;
+        
+        // 모든 장착 슬롯의 인디케이터 비활성화
+        foreach (var slot in relicEquipSlots)
+        {
+            if (slot != null)
+            {
+                slot.ActivateIndicator(false);
+            }
         }
     }
 
@@ -116,21 +142,40 @@ public class RelicInventoryUI : FloatingPopupBase
     {
         var popup = await UIManager.Instance.ShowUI<RelicItemInfoPopup>();
         popup.SetData(param);
+        popup.SetOnClickEquipButtonAction(ActivateEquipMode);
+    }
+    
+    // 유물 장착 처리
+    public void EquipRelicToSlot(int slotIndex)
+    {
+        if (selectedRelicForEquip == BGId.Empty)
+            return;
+    
+        // 유물 장착 처리
+        RelicDataController.Instance.EquipRelic(selectedRelicForEquip, slotIndex);
+    
+        // 장착 모드 비활성화
+        DeactivateEquipMode();
     }
 
+    public void OnRelicStateChange(RelicStateChangeEvent relicStateChangeEvent)
+    {
+        switch (relicStateChangeEvent.EventType)
+        {
+            case RelicStateEventType.Equip:
+                break;
+            case RelicStateEventType.UnEquip:
+                break;
+        }
+    }
+    
+#if UNITY_EDITOR
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-            var allRelicItems = D_RelicItemData.GetAllRelicItems();
-
-            foreach (var relicItemData in allRelicItems)
-            {
-                relicItemData.f_level = 0;
-                relicItemData.f_exp = 0;
-            }
-            
             SaveLoadManager.Instance.SaveData();
         }
     }
+#endif
 }
