@@ -53,7 +53,6 @@ public class GamePlayState : GameState
     {
         //매개변수로 현재 스테이지 던져야됨
         GameManager.Instance.gameState = "Gema Play!";
-        GameManager.Instance.InitializeTrashCan();
        
     }
 
@@ -445,14 +444,6 @@ public class GameManager : MonoBehaviour, IStatSubscriber
 
         Vector3 campPosition = TileMapManager.Instance.GetTileToWorldPosition(endTile);
         playerCamp.transform.position = campPosition;
-    }
-
-    // 쓰레기통 초기화 (게임 시작 시 호출)
-    public void InitializeTrashCan()
-    {
-        var obj =  ResourceManager.Instance.Instantiate(trashCanAddressableKey);
-        trashCanInstance = obj.GetComponent<TrashCanObject>();
-        trashCanInstance.InitializeTrashCan();
     }
 
     // 쓰레기통 표시

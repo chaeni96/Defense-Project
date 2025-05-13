@@ -5,6 +5,8 @@ using Kylin.FSM;
 [FSMContextFolder("Create/State/Attack")]
 public class AttackState : StateBase
 {
+    [SerializeField] private string skillAddressableKey;
+
     private float targetCheckInterval = 0.2f; // 타겟 및 범위 체크 주기
     private float lastTargetCheckTime = 0f;
     private CharacterFSMObject characterFSM;
@@ -21,8 +23,8 @@ public class AttackState : StateBase
     private float animCheckTimer = 0f; // 애니메이션 체크 타이머
 
     // 애니메이션 관련 상수
-    private const float DAMAGE_TIMING_RATIO = 0.5f; // 애니메이션의 40% 지점에서 데미지 적용
-    private const int LAYER_INDEX = 0; // 기본 애니메이션 레이어
+    private const float DAMAGE_TIMING_RATIO = 0.4f;
+    private const int LAYER_INDEX = 0; 
 
     public override void OnEnter()
     {
@@ -79,31 +81,25 @@ public class AttackState : StateBase
         // 공격 타이머 업데이트
         attackTimer += Time.deltaTime;
 
-        // 데미지 적용 시점에 도달했고 아직 데미지를 적용하지 않았다면
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
-            // 데미지 적용
-
             //스킬이 없으면 즉시 데미지 적용
-            if(characterFSM.basicObject.skillData == null)
+            if(skillAddressableKey == null)
             {
                 ApplyDamage();
             }
             else
             {
 
-          
-
                 // 타겟 방향 계산
                 Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
 
-                // 투사체 생성
-
-                GameObject projectileObj = PoolingManager.Instance.GetObject(characterFSM.basicObject.skillData.f_addressableKey, Owner.transform.position, (int)ObjectLayer.IgnoereRayCast);
+                //스킬 생성
+                GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, characterFSM.transform.position, (int)ObjectLayer.IgnoereRayCast);
 
 
                 // 투사체 초기화
-                SkillBase projectile = projectileObj.GetComponent<SkillBase>();
+                SkillBase projectile = skillObj.GetComponent<SkillBase>();
                 if (projectile != null)
                 {
                     projectile.Initialize(characterFSM.basicObject);
@@ -115,9 +111,7 @@ public class AttackState : StateBase
 
                     );
                 }
-
             }
-
 
             damageApplied = true;
         }
@@ -148,7 +142,6 @@ public class AttackState : StateBase
         {
             lastTargetCheckTime = Time.time;
 
-            // 타겟 유효한지 확인
             if (!IsTargetValid())
             {
                 return;
@@ -157,7 +150,6 @@ public class AttackState : StateBase
             // 공격 범위 체크
             if (!IsTargetInRange())
             {
-                // 타겟이 공격 범위를 벗어났으면 추격 상태로
                 Controller.RegisterTrigger(Trigger.TargetMiss);
                 return;
             }
@@ -177,16 +169,8 @@ public class AttackState : StateBase
             // 현재 재생 중인 클립의 길이 가져오기
             attackAnimationLength = clipInfo[0].clip.length;
             damageApplyTime = attackAnimationLength * DAMAGE_TIMING_RATIO;
-
-            Debug.Log($"현재 공격 애니메이션 길이:{clipInfo[0].clip.name} {attackAnimationLength:F2}초, 데미지 적용 시점: {damageApplyTime:F2}초");
         }
-        else
-        {
-            // 클립 정보를 못 찾은 경우 - 기본값 사용
-            attackAnimationLength = 1.0f; // 기본값
-            damageApplyTime = 0.4f; // 기본값
-            Debug.LogWarning("현재 재생 중인 애니메이션 클립을 찾지 못했습니다. 기본값 사용");
-        }
+        
     }
 
     // 데미지 적용 메서드
@@ -254,8 +238,7 @@ public class AttackState : StateBase
             return true; // 새 타겟이 있음
         }
 
-        // 타겟이 비활성화되었는지 확인 (죽었거나 풀에 반환됨)
-        if (!target.gameObject.activeSelf)
+        if (!target.isActive)
         {
             // 타겟이 죽었으면 새 타겟 찾기
             characterFSM.UpdateTarget();
@@ -270,28 +253,6 @@ public class AttackState : StateBase
                 // 새 타겟이 있으면 Chase 상태로
                 Controller.RegisterTrigger(Trigger.TargetMiss);
                 return false;
-            }
-        }
-
-        // 타겟의 체력 확인 (추가됨)
-        if (target.GetStat(StatName.CurrentHp) <= 0)
-        {
-            // 타겟이 죽었으면 새 타겟 찾기
-            characterFSM.UpdateTarget();
-            if (characterFSM.CurrentTarget == null)
-            {
-                // 새 타겟도 없으면 상태 전환
-                Controller.RegisterTrigger(Trigger.AttackFinished);
-                return false;
-            }
-            else
-            {
-                // 새 타겟이 있지만 현재 타겟과 다르면 Chase 상태로
-                if (characterFSM.CurrentTarget != target)
-                {
-                    Controller.RegisterTrigger(Trigger.TargetMiss);
-                    return false;
-                }
             }
         }
 

@@ -31,7 +31,6 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     public D_SkillData skillData;
 
-
     public virtual void Initialize()
     {
         foreach (var subject in subjects)

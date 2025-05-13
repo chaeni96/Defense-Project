@@ -4097,9 +4097,10 @@ MonoBehaviour:
   animator: {fileID: 5747223416929348838}
   fsmObj: {fileID: 2876986328044023446}
   subjects: 
+  isEnemy: 0
+  isActive: 1
   hpBar: {fileID: 2714087839050459189}
   hpBarCanvas: {fileID: 5069247774958341421}
-  isEnemy: 0
   attackTimer: 0
   tilePosition: {x: 0, y: 0}
   attackType: 0
@@ -4108,7 +4109,6 @@ MonoBehaviour:
   unitStarObject: {fileID: 7829479634598562869, guid: 2420e5125781d774987fb6bae1a57e86, type: 3}
   itemSlotObject: {fileID: 4730087103346790637, guid: c124354d2ecc309448b13cdb256da66f, type: 3}
   canAttack: 1
-  isActive: 1
   isDragging: 0
   originalPosition: {x: 0, y: 0, z: 0}
   originalTilePosition: {x: 0, y: 0}
@@ -4127,7 +4127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataCollection: {fileID: 11400000, guid: 5273f65290b95ef41b4ac4fa1a75ef24, type: 2}
-  fsmId: testUnitFSM
+  fsmId: CatArcherFSM
   animator: {fileID: 5747223416929348838}
   isEnemy: 0
   isFinished: 0

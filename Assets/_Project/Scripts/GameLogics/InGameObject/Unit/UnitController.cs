@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.IO;
 using Unity.VisualScripting;
+using Kylin.FSM;
 
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
@@ -138,8 +139,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
 
         skillData = unit.f_skillData;
-        attackType = unitData.f_SkillAttackType;
         unitType = unitData.f_UnitType;
+
+ 
 
         // 기존 스탯들 초기화
         baseStats.Clear();

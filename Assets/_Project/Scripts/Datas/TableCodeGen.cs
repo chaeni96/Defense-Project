@@ -264,7 +264,6 @@ public partial class D_UnitData : BGEntity
 		public const string name = "name";
 		public const string UnitType = "UnitType";
 		public const string StatSubject = "StatSubject";
-		public const string SkillAttackType = "SkillAttackType";
 		public const string UnitPoolingKey = "UnitPoolingKey";
 		public const string fsmId = "fsmId";
 		public const string skillData = "skillData";
@@ -288,11 +287,6 @@ public partial class D_UnitData : BGEntity
 		get => BGCodeGenUtils.EnumListGet<StatSubject>(_f_StatSubject, Index);
 		set => BGCodeGenUtils.EnumListSet<StatSubject>(_f_StatSubject, Index, value);
 	}
-	public BGDatabaseEnum.SkillAttackType f_SkillAttackType
-	{
-		get => (BGDatabaseEnum.SkillAttackType) _f_SkillAttackType.GetStoredValue(Index);
-		set => _f_SkillAttackType.SetStoredValue(Index, (System.Int32) value);
-	}
 	public D_ObjectPoolData f_UnitPoolingKey
 	{
 		get => (D_ObjectPoolData) _f_UnitPoolingKey[Index];
@@ -314,8 +308,6 @@ public partial class D_UnitData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_UnitType => _ufle12jhs77_f_UnitType ?? (_ufle12jhs77_f_UnitType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4766701231171255779UL, 8920734757428101046UL), () => _ufle12jhs77_f_UnitType = null));
 	private static BansheeGz.BGDatabase.BGFieldEnumList _ufle12jhs77_f_StatSubject;
 	public static BansheeGz.BGDatabase.BGFieldEnumList _f_StatSubject => _ufle12jhs77_f_StatSubject ?? (_ufle12jhs77_f_StatSubject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnumList>(MetaDefault, new BGId(5195431396154430378UL, 4516171086743362447UL), () => _ufle12jhs77_f_StatSubject = null));
-	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SkillAttackType;
-	public static BansheeGz.BGDatabase.BGFieldEnum _f_SkillAttackType => _ufle12jhs77_f_SkillAttackType ?? (_ufle12jhs77_f_SkillAttackType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5274816935596477599UL, 15588288739445877685UL), () => _ufle12jhs77_f_SkillAttackType = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_UnitPoolingKey;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitPoolingKey => _ufle12jhs77_f_UnitPoolingKey ?? (_ufle12jhs77_f_UnitPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4766850798404632622UL, 6480570574369079984UL), () => _ufle12jhs77_f_UnitPoolingKey = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_fsmId;

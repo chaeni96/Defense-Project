@@ -973,8 +973,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                     // 해당 위치에 유닛 데이터가 있는지 확인
                     if (unitPositionMap.TryGetValue(gridPos, out var buildData))
                     {
-                        // 유닛이 null이거나 SkillAttackType이 None이면 Base로 처리
-                        bool isBase = (buildData.f_unitData == null || buildData.f_unitData.f_SkillAttackType == SkillAttackType.None);
+                        bool isBase = (buildData.f_unitData == null);
 
                         if (!isBase)
                         {
