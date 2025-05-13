@@ -1,3 +1,4 @@
+using AutoBattle.Scripts.Managers;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum.DataController;
 using UnityEngine;
@@ -13,9 +14,6 @@ namespace AutoBattle.Scripts.UI.UIComponents
         [SerializeField] private Image relicIconImage;
 
         [SerializeField] private GameObject indicaterObject;
-        
-        [Header("Test")]
-        [SerializeField] private Sprite relicIcon;
         
         private int slotIndex;
         private BGId equippedRelicId = BGId.Empty;
@@ -75,7 +73,7 @@ namespace AutoBattle.Scripts.UI.UIComponents
             if (relicIconImage != null)
             {
                 // 아이콘 로딩 로직 (프로젝트에 맞게 수정 필요)
-                relicIconImage.sprite = relicIcon;
+                relicIconImage.sprite = AtlasManager.Instance.GetItemIcon(relicItemData.f_iconKey);
             }
         }
         

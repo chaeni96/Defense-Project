@@ -2,10 +2,11 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kylin.LWDI;
 using UnityEngine;
 namespace Kylin.FSM
 {
-    public class StateController //»ç½Ç»ó FSMÀÇ ½ÇÃ¼?ÀÓ
+    public class StateController : IDependencyObject //ï¿½ï¿½Ç»ï¿½ FSMï¿½ï¿½ ï¿½ï¿½Ã¼?ï¿½ï¿½
     {
         private Dictionary<int, StateBase> _states;
         //private StateBase[] _states;
@@ -20,7 +21,7 @@ namespace Kylin.FSM
 
         private HashSet<IFSMSubscriber> subscribers = new();
 
-        private FSMObjectBase _ownerObject; // ¼ÒÀ¯ÀÚ GameObject - ÀÌ°Íµµ ¹Ù²ã¾ßµÊ
+        private FSMObjectBase _ownerObject; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GameObject - ï¿½Ì°Íµï¿½ ï¿½Ù²ï¿½ßµï¿½
 
 
         public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, FSMObjectBase owner)
@@ -41,8 +42,16 @@ namespace Kylin.FSM
 
             _ownerObject = owner;
 
-            // »óÅÂ ÃÊ±âÈ­
-            foreach (var s in states) s?.Initialize(this, _ownerObject);
+            var fsmScope = DependencyInjector.CreateScope();
+            fsmScope.RegisterInstance(typeof(StateController), this);
+            fsmScope.RegisterInstance(typeof(CharacterFSMObject), _ownerObject);
+
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+            foreach (var s in states)
+            {
+                //DependencyInjector.InjectWithScope(s, fsmScope);
+                s?.Initialize(fsmScope);
+            }
 
             ChangeState(initialStateId);
         }
@@ -64,7 +73,7 @@ namespace Kylin.FSM
                 sub.SetTrigger(trig);
             }
             TryTransition();
-            _eventMask = 0; // ÀÌº¥Æ®¼º Æ®¸®°Å¸¸ ÀÏÈ¸¼º
+            _eventMask = 0; // ï¿½Ìºï¿½Æ®ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½È¸ï¿½ï¿½
         }
 
         public void AddPersistentTrigger(Trigger trig)
@@ -81,14 +90,14 @@ namespace Kylin.FSM
         private void TryTransition()
         {
             var mask = _persistentMask | _eventMask;
-            // ÇöÀç »óÅÂ ¸®½ºÆ® + AnyState ¸®½ºÆ®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® + AnyState ï¿½ï¿½ï¿½ï¿½Æ®
             var list = _transitionsByState.TryGetValue(_currentStateId, out var cs)
                 ? cs : Array.Empty<Transition>();
 
             _transitionsByState.TryGetValue(Transition.ANY_STATE, out var any);
             //var any = _transitionsByState[Transition.ANY_STATE];
 
-            // »óÅÂº° ÀüÈ¯
+            // ï¿½ï¿½ï¿½Âºï¿½ ï¿½ï¿½È¯
             for (int i = 0; i < list.Length; i++)
             {
                 var t = list[i];
@@ -98,7 +107,7 @@ namespace Kylin.FSM
                     return;
                 }
             }
-            // AnyState ÀüÈ¯
+            // AnyState ï¿½ï¿½È¯
             if(any != null)
             {
                 for (int i = 0; i < any.Length; i++)

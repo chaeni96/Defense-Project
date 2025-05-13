@@ -1,3 +1,5 @@
+using Kylin.LWDI;
+
 namespace Kylin.FSM
 {
     using UnityEngine;
@@ -10,15 +12,15 @@ namespace Kylin.FSM
         [SerializeField] private float stopDistance = 0.1f;
         [SerializeField] private float moveSpeed;
         private Transform transform;
-        private CharacterFSMObject characterFSM;
         private Vector3 targetPosition;
         private bool checkInit;
+        [Inject] protected StateController Controller;
+        [Inject] protected CharacterFSMObject characterFSM;
         public override void OnEnter()
         {
 
             Debug.Log("MoveForwardState : State Enter!!");
-            transform = Owner.transform;
-            characterFSM = Owner as CharacterFSMObject;
+            transform = characterFSM.transform;
 
             if (characterFSM == null) return;
 
@@ -36,56 +38,56 @@ namespace Kylin.FSM
 
                 if (characterFSM.isEnemy)
                 {
-                    // ¿¡³Ê¹Ì´Â ¿ÞÂÊ¿¡ ÀÖ´Â Å³Á¸À¸·Î ÀÌµ¿
+                    // ï¿½ï¿½ï¿½Ê¹Ì´ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Ö´ï¿½ Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
                     killZoneX = enemyTargetPos;
                 }
                 else
                 {
-                    // À¯´ÖÀº ¿À¸¥ÂÊ¿¡ ÀÖ´Â Å³Á¸À¸·Î ÀÌµ¿
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Ö´ï¿½ Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
                     killZoneX = unitTargetPos;
                 }
 
-                // Å¸°Ù À§Ä¡ ¼³Á¤
+                // Å¸ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
                 targetPosition = new Vector3(killZoneX, transform.position.y, transform.position.z);
 
                 checkInit = true;
             }
 
-            // ¸ñÇ¥ ÁöÁ¡±îÁöÀÇ °Å¸® °è»ê
+            // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
             float distanceToTarget = Vector2.Distance(
                 new Vector2(transform.position.x, transform.position.y),
                 new Vector2(targetPosition.x, targetPosition.y)
             );
 
-            // ¸ñÇ¥ ÁöÁ¡¿¡ µµ´ÞÇß´ÂÁö È®ÀÎ
+            // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             if (distanceToTarget <= stopDistance)
             {
-                // Å³Á¸¿¡ µµÂøÇÏ¸é Chase Æ®¸®°Å ¹ß»ý
+                // Å³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Chase Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½
                 Controller.RegisterTrigger(Trigger.ChaseTarget);
                 return;
             }
 
-            // ¸ñÇ¥ ÁöÁ¡À» ÇâÇØ ÀÌµ¿
+            // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
             Vector3 direction;
 
             if (characterFSM.isEnemy)
             {
-                // ¿¡³Ê¹Ì´Â ¿ÞÂÊÀ¸·Î ÀÌµ¿
+                // ï¿½ï¿½ï¿½Ê¹Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
                 direction = Vector3.left;
             }
             else
             {
-                // À¯´ÖÀº ¿À¸¥ÂÊÀ¸·Î ÀÌµ¿
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
                 direction = Vector3.right;
             }
 
-            // ÀÌµ¿ Ã³¸®
+            // ï¿½Ìµï¿½ Ã³ï¿½ï¿½
             Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
 
-            // Y°ªÀº ¿ø·¡ °ª À¯Áö
+            // Yï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             newPosition.y = transform.position.y;
 
-            // À§Ä¡ ¾÷µ¥ÀÌÆ®
+            // ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             transform.position = newPosition;
 
         }

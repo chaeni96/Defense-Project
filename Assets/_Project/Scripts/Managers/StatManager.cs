@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BGDatabaseEnum.DataController;
 using UnityEngine;
-
 
 public interface IStatSubscriber
 {
@@ -56,11 +55,12 @@ public class StatManager : MonoBehaviour
 
     // StatSubject별 기본 스탯값 저장 (초기값 저장용)
     private Dictionary<StatSubject, List<StatStorage>> baseStats = new Dictionary<StatSubject, List<StatStorage>>();
+    
+    // StatSubject별 장착된 유물 스탯값 저장 (장착된 유물의 스탯값을 저장하는 용도)
+    private Dictionary<StatSubject, List<StatStorage>> equippedRelics = new Dictionary<StatSubject, List<StatStorage>>();
 
     // StatSubject별 구독자(BasicObject) 목록
     private Dictionary<StatSubject, List<IStatSubscriber>> subscribers = new Dictionary<StatSubject, List<IStatSubscriber>>();
-
-
 
     // 데이터베이스에서 유닛들의 기본 스탯을 읽어와서 초기화
     public void InitializeManager()
@@ -83,8 +83,9 @@ public class StatManager : MonoBehaviour
                 InitializeBaseStats(subject, statData.f_statName, statData.f_statValue, statData.f_valueMultiply);
             }
         });
-    }
 
+        equippedRelics = RelicDataController.Instance.GetCurrentEquippedRelicStatsDic();
+    }
 
     // 기본 스탯 저장
     private void InitializeBaseStats(StatSubject subject, StatName statName, int value, float multiply)
@@ -128,23 +129,43 @@ public class StatManager : MonoBehaviour
     // Subject의 모든 기본 스탯 가져오기
     public List<StatStorage> GetAllStatsForSubject(StatSubject subject)
     {
-        if (!baseStats.ContainsKey(subject))
+        var uniqueStats = new Dictionary<StatName, StatStorage>();
+
+        if (baseStats.TryGetValue(subject, out var baseStat))
         {
-            return new List<StatStorage>();
+            // 중복된 StatSubject가 있을수있으므로 중복 제거
+            foreach (var stat in baseStat)
+            {
+                if (!uniqueStats.ContainsKey(stat.statName))
+                {
+                    uniqueStats[stat.statName] = new StatStorage
+                    {
+                        statName = stat.statName,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
+            }
         }
 
-        // 중복된 StatSubject가 있을수있으므로 중복 제거
-        var uniqueStats = new Dictionary<StatName, StatStorage>();
-        foreach (var stat in baseStats[subject])
+        if (equippedRelics.TryGetValue(subject, out var relic))
         {
-            if (!uniqueStats.ContainsKey(stat.statName))
+            foreach (var stat in relic)
             {
-                uniqueStats[stat.statName] = new StatStorage
+                if (!uniqueStats.ContainsKey(stat.statName))
                 {
-                    statName = stat.statName,
-                    value = stat.value,
-                    multiply = stat.multiply
-                };
+                    uniqueStats[stat.statName] = new StatStorage
+                    {
+                        statName = stat.statName,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
+                else
+                {
+                    uniqueStats[stat.statName].value += stat.value;
+                    uniqueStats[stat.statName].multiply *= stat.multiply;
+                }
             }
         }
 
@@ -189,5 +210,4 @@ public class StatManager : MonoBehaviour
         baseStats.Clear();
         subscribers.Clear();
     }
-
 }

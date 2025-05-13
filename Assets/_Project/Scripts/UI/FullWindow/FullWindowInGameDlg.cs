@@ -75,6 +75,13 @@ public class FullWindowInGameDlg : FullWindowBase
     private Color equipTabOriginColor;
     private Color characterTabOriginColor;
 
+    //웨이브 진행 ui 관련 변수들
+    [SerializeField] private Transform progressInfoLayout; // HorizontalLayoutGroup이 붙은 오브젝트
+    [SerializeField] private GameObject gameProgressPrefab; // 프리팹 참조
+    private List<GameProgressObject> progressObjects = new List<GameProgressObject>();
+    private int maxProgressObjects = 6; // 한 번에 표시할 최대 객체 수
+    private int currentGroupStartIndex = 0; // 현재 표시 중인 웨이브 그룹의 시작 인덱스
+
 
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
     public override void InitializeUI()
@@ -91,17 +98,19 @@ public class FullWindowInGameDlg : FullWindowBase
         InitializeCardDecks();
         UpdateShopLevelUI();
         InitializeInventoryUI();
-        UpdateWaveIndex(1);
         UpdatePlacementCount(UnitManager.Instance.GetAllUnits().Count);
         OnCurrencyTabClicked();
 
         characterInfo.InitilazeCharacterInfo();
 
+        InitializeWaveProgressUI();
+
+
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
         UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
-        StageManager.Instance.OnWaveIndexChanged += UpdateWaveIndex;
+        StageManager.Instance.OnWaveIndexChanged += OnWaveIndexChanged;
         characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
 
     }
@@ -292,12 +301,6 @@ public class FullWindowInGameDlg : FullWindowBase
         //StartCoroutine(CheckAndFillCardDecks());
     }
 
-    private void UpdateWaveIndex(int currentIndex, int subIndex = 0)
-    {
-
-        progressWaveIndex.text = currentIndex.ToString();
-    }
-   
     private void UpdatePlacementCount(int count)
     {
         placementUnitCount.text = $"{ count} / {GameManager.Instance.GetSystemStat(StatName.UnitPlacementCount)}";
@@ -662,6 +665,112 @@ public class FullWindowInGameDlg : FullWindowBase
     }
 
 
+    // 웨이브 프로그레스 UI 초기화
+    private void InitializeWaveProgressUI()
+    {
+        // 프로그레스 오브젝트 생성
+        CreateProgressObjects();
+
+        // StageManager에서 웨이브 목록 가져오기
+        List<WaveBase> allWaves = StageManager.Instance.GetWaveList();
+        if (allWaves != null && allWaves.Count > 0)
+        {
+            // 초기 웨이브 설정
+            int currentWaveIndex = StageManager.Instance.currentWaveIndex;
+            currentGroupStartIndex = (currentWaveIndex / maxProgressObjects) * maxProgressObjects;
+
+            // UI 업데이트
+            UpdateProgressUI(allWaves, currentWaveIndex);
+        }
+    }
+
+    // 프로그레스 오브젝트 생성
+    private void CreateProgressObjects()
+    {
+        // 기존 객체 정리
+        foreach (var obj in progressObjects)
+        {
+            if (obj != null)
+                Destroy(obj.gameObject);
+        }
+        progressObjects.Clear();
+
+        // 새 객체 생성
+        for (int i = 0; i < maxProgressObjects; i++)
+        {
+            GameObject newObj = Instantiate(gameProgressPrefab, progressInfoLayout);
+            GameProgressObject progressObj = newObj.GetComponent<GameProgressObject>();
+            progressObjects.Add(progressObj);
+
+            // 초기에는 비활성화
+            newObj.SetActive(false);
+        }
+    }
+
+    private void OnWaveIndexChanged(int newIndex, int totalWaves)
+    {
+        // 기존 텍스트 업데이트
+        progressWaveIndex.text = newIndex.ToString();
+
+        // 웨이브 프로그레스 UI 업데이트
+        List<WaveBase> allWaves = StageManager.Instance.GetWaveList();
+        if (allWaves != null && allWaves.Count > 0)
+        {
+            // 인덱스는 0부터 시작하지만 UI 표시는 1부터 시작
+            int waveIndex = newIndex - 1;
+
+            // 그룹 시작 인덱스 계산
+            int newGroupStartIndex = (waveIndex / maxProgressObjects) * maxProgressObjects;
+
+            // 그룹이 변경되었으면 UI 전체 업데이트
+            if (newGroupStartIndex != currentGroupStartIndex)
+            {
+                currentGroupStartIndex = newGroupStartIndex;
+                UpdateProgressUI(allWaves, waveIndex);
+            }
+            else
+            {
+                // 같은 그룹 내에서는 활성화 상태만 업데이트
+                UpdateActiveState(allWaves, waveIndex);
+            }
+        }
+    }
+
+    // 프로그레스 UI 전체 업데이트
+    private void UpdateProgressUI(List<WaveBase> allWaves, int currentWaveIndex)
+    {
+        for (int i = 0; i < maxProgressObjects; i++)
+        {
+            int waveIndex = currentGroupStartIndex + i;
+
+            // 웨이브 인덱스가 유효한지 확인
+            if (waveIndex < allWaves.Count)
+            {
+                // 아이콘 및 활성화 상태 설정
+                progressObjects[i].gameObject.SetActive(true);
+                progressObjects[i].SetIcon(allWaves[waveIndex]);
+                progressObjects[i].SetActive(waveIndex == currentWaveIndex);
+            }
+            else
+            {
+                // 남은 슬롯은 비활성화
+                progressObjects[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    // 활성화 상태만 업데이트 (같은 그룹 내 웨이브 변경 시)
+    private void UpdateActiveState(List<WaveBase> allWaves, int currentWaveIndex)
+    {
+        for (int i = 0; i < maxProgressObjects; i++)
+        {
+            int waveIndex = currentGroupStartIndex + i;
+            if (waveIndex < allWaves.Count)
+                progressObjects[i].SetActive(waveIndex == currentWaveIndex);
+        }
+    }
+
+
     public override void HideUI()
     {
         CleanUp();
@@ -688,13 +797,21 @@ public class FullWindowInGameDlg : FullWindowBase
         // 리스트 정리
         cardDecks?.Clear();
 
+        // 웨이브 프로그레스 오브젝트 정리
+        foreach (var obj in progressObjects)
+        {
+            if (obj != null)
+                Destroy(obj.gameObject);
+        }
+        progressObjects.Clear();
+
         // 이벤트 구독 해제
         if (GameManager._instance != null)
         {
             GameManager.Instance.OnCostUsed -= OnCostUsed;
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
             UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
-            StageManager.Instance.OnWaveIndexChanged -= UpdateWaveIndex;
+            StageManager.Instance.OnWaveIndexChanged -= OnWaveIndexChanged;
             GameManager.Instance.OnCostAdd -= CostUse;
             InventoryManager.Instance.OnItemCountUpdate -= OnUpdateSlotCount;
             // 탭 버튼 이벤트 리스너 제거

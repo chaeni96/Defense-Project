@@ -3,11 +3,12 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using BansheeGz.BGDatabase;
+using Kylin.LWDI;
 
 namespace Kylin.FSM
 {
     /// <summary>
-    /// FSMObjectBase»ó¼Ó¹ÞÀº À¯´Ö ¿¹½ÃÀÓ.
+    /// FSMObjectBaseï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
     /// </summary>
     public class CatFSMObject : FSMObjectBase
     {
@@ -19,7 +20,7 @@ namespace Kylin.FSM
         }
         public void SkillFire()
         {
-            //½ºÅ³º° À¯´Öº° º°µµ ½ºÅ³ »ç¿ë >> Æ¯Á¤ ½ºÅ³ »ç¿ë
+            //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½Öºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ >> Æ¯ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½
         }
 
     }
@@ -30,16 +31,16 @@ namespace Kylin.FSM
 
     }
 
-    public abstract class FSMObjectBase : MonoBehaviour, IFSMSubscriber
+    public abstract class FSMObjectBase : MonoBehaviour, IFSMSubscriber, IDependencyObject
     {
-        [SerializeField] protected FSMDataCollection dataCollection; //ÀÓ½ÃÀÓ ³ªÁß¿¡ manager¿¡ µ¥ÀÌÅÍ º¸°üÇÏ´ø°¡ ÇÒ°Í(È¤Àº BG·Î ´Ù ³Ñ±â´ø°¡)
+        [SerializeField] protected FSMDataCollection dataCollection; //ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ managerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½(È¤ï¿½ï¿½ BGï¿½ï¿½ ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½)
         [SerializeField] protected string fsmId;
 
         protected FSMDataAsset cachedDataAsset;
         public StateController stateMachine;
 
         private CancellationTokenSource localCts;
-        private CancellationTokenSource linkedCts; //¾µÀÏ ÀÖÀ»Áö? ¹«¸®¾î¹Ì °°Àº°Å..?
+        private CancellationTokenSource linkedCts; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½..?
         public Animator animator;
 
 
@@ -78,20 +79,20 @@ namespace Kylin.FSM
             states = StateFactory.CreateStates(cachedDataAsset);
             transitions = TransitionConverter.ConvertToRuntimeTransitions(cachedDataAsset.Transitions);
 
-            // µ¥ÀÌÅÍ¿¡¼­ ÃÊ±â »óÅÂ ID ·Îµå
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ID ï¿½Îµï¿½
             initialStateId = cachedDataAsset.InitialStateId;
             var tempID = initialStateId;
-            // À¯È¿ÇÑ »óÅÂÀÎÁö °ËÁõ
+            // ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             bool validInitialState = states.Any(s => s != null && s.Id == tempID);
             if (!validInitialState && states.Length > 0)
             {
-                initialStateId = states[0].Id; // Ã¹ ¹øÂ° À¯È¿ÇÑ »óÅÂ·Î ´ëÃ¼
+                initialStateId = states[0].Id; // Ã¹ ï¿½ï¿½Â° ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½Ã¼
             }
         }
 
         void Awake()
         {
-            //ÀÏ´Ü ÅäÅ«¿©±â¼­ ¤·¤· ³ªÁß¿¡ ÃÊ±âÈ­·Î »©´øÁö ¤¡ ¸µÅ©´Â Àß ¸ð¸£°ÚÀ½ ÀÇ¹ÌÀÖ³ª
+            //ï¿½Ï´ï¿½ ï¿½ï¿½Å«ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ ï¿½ð¸£°ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½Ö³ï¿½
             localCts = new CancellationTokenSource();
             linkedCts = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token);
             Application.quitting += CancelFSM;
@@ -107,7 +108,7 @@ namespace Kylin.FSM
             stateMachine = new StateController();
             stateMachine.Initialize(states, transitions, initId, this);
             stateMachine.RegistFSMSubscriber(this);
-            // ¾÷µ¥ÀÌÆ® ·çÇÁ À¯´ÏÅ×½ºÅ©·Î Çß´Âµ¥ ¸Â³ª ¸ð¸£°ÚÀ½ È®ÀÎÇÒ°Í TODO : ±è±â¸°
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½Å©ï¿½ï¿½ ï¿½ß´Âµï¿½ ï¿½Â³ï¿½ ï¿½ð¸£°ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ò°ï¿½ TODO : ï¿½ï¿½â¸°
             RunLoop(linkedCts.Token).Forget();
         }
 
@@ -123,7 +124,7 @@ namespace Kylin.FSM
             }
             catch (System.OperationCanceledException)
             {
-                // Á¤»óÀûÀÎ Ãë¼­
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë¼­
             }
             catch (System.Exception e)
             {
@@ -149,12 +150,12 @@ namespace Kylin.FSM
             Application.quitting -= CancelFSM;
         }
 
-        //¼öÁ¤ÇØ¾ßµÉºÎºÐ Æ®¸®°Å ³ÖÀ¸¸é ¹«Á¶°Ç ¾Ö´Ï¸ÞÀÌ¼Ç Àç»ýµÊ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ßµÉºÎºï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         public void SetTrigger(Trigger trigger)
         {
             if (animator != null && trigger != Trigger.None)
             {
-                // ¿­°ÅÇü °ªÀÇ ÀÌ¸§À» ¾Ö´Ï¸ÞÀÌÅÍ Æ®¸®°Å·Î »ç¿ë
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½Å·ï¿½ ï¿½ï¿½ï¿½
                 string triggerName = trigger.ToString();
                 animator.SetTrigger(triggerName);
 
@@ -167,7 +168,7 @@ namespace Kylin.FSM
         }
 
 #if UNITY_EDITOR
-        // ¿¡µðÅÍ¿¡¼­ ÇöÀç »óÅÂ Ç¥½Ã¸¦ À§ÇÑ µð¹ö±× ¼Ó¼º
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½
         public string CurrentStateName
         {
             get
@@ -189,7 +190,7 @@ namespace Kylin.FSM
             }
         }
 
-        //ÇöFSM ID
+        //ï¿½ï¿½FSM ID
         public string CurrentFSMId => fsmId;
 #endif
     }

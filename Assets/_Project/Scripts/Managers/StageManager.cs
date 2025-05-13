@@ -18,7 +18,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     private Transform tileMapGrid;
 
     private D_StageData currentStage;
-    private int currentWaveIndex = 0;
+    public int currentWaveIndex = 0;
 
     //웨이브 관련 설명창
     private int currentWaveInfoScheduleUID = -1;
@@ -81,6 +81,11 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         CleanUp();
         placedMap = map;
         tileMapGrid = grid;
+    }
+
+    public List<WaveBase> GetWaveList()
+    {
+        return new List<WaveBase>(waveList); // 복사본 반환으로 안전하게 처리
     }
 
     public void StartStage(int stageNumber)
@@ -305,13 +310,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
 
         }
-        //전투 웨이브인 경우에는 살아남은 유닛들은 원래 있던 자리로 돌아가야됨
-
-        // 진행 중인 모든 투사체 제거
-        ProjectileManager.Instance.CleanUp();
-
-        // 진행중인 모든 스킬 제거
-        AttackSkillManager.Instance.CleanUp();
 
     }
 
