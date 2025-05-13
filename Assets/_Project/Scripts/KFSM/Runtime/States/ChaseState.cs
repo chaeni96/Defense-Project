@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Kylin.LWDI;
 using UnityEngine;
 namespace Kylin.FSM
 {
@@ -9,27 +10,25 @@ namespace Kylin.FSM
         private float lastTargetCheckTime;
         private float targetUpdateInterval = 0.1f;
         private Transform transform;
-        private CharacterFSMObject characterFSM;
-
+        [Inject] protected StateController Controller;
+        [Inject] protected CharacterFSMObject characterFSM;
         public override void OnEnter()
         {
-            Debug.Log("ChaseState ½ÃÀÛ");
+            Debug.Log("ChaseState ï¿½ï¿½ï¿½ï¿½");
             lastTargetCheckTime = 0f;
-            transform = Owner.transform;
+            transform = characterFSM.transform;
 
-            // Owner¸¦ CharacterFSMObject·Î Ä³½ºÆÃ
-            characterFSM = Owner as CharacterFSMObject;
-
+            // Ownerï¿½ï¿½ CharacterFSMObjectï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
             if (characterFSM != null)
             {
-                // Å¸°ÙÀÌ ¾øÀ¸¸é Å¸°Ù Ã£±â
+                // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ Ã£ï¿½ï¿½
                 if (characterFSM.CurrentTarget == null)
                 {
                     characterFSM.UpdateTarget();
 
                     if (characterFSM.CurrentTarget == null)
                     {
-                        // Å¸°ÙÀÌ ¾øÀ¸¸é ´ë±â »óÅÂ·Î
+                        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½
                         Controller.RegisterTrigger(Trigger.TargetMiss);
                         return;
                     }
@@ -37,29 +36,29 @@ namespace Kylin.FSM
             }
             else
             {
-                // CharacterFSMObject°¡ ¾Æ´Ï¸é Ã³¸®
+                // CharacterFSMObjectï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ Ã³ï¿½ï¿½
                 Controller.RegisterTrigger(Trigger.TargetMiss);
             }
         }
 
         public override void OnUpdate()
         {
-            // CharacterFSMObject È®ÀÎ
+            // CharacterFSMObject È®ï¿½ï¿½
             if (characterFSM == null) return;
 
-            // Á¤±âÀûÀ¸·Î Å¸°Ù »óÅÂ È®ÀÎ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             if (Time.time - lastTargetCheckTime > targetUpdateInterval)
             {
                 lastTargetCheckTime = Time.time;
 
-                // Å¸°Ù ÀÖ´ÂÁö È®ÀÎ
+                // Å¸ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
                 var target = characterFSM.CurrentTarget;
                 if (target == null || !target.gameObject.activeSelf)
                 {
-                    // Å¸°ÙÀÌ Á×¾ú°Å³ª »ç¶óÁ³À¸¸é »õ Å¸°Ù Ã£±â
+                    // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½ï¿½ Ã£ï¿½ï¿½
                     characterFSM.UpdateTarget();
 
-                    //Å¸°ÙÀÌ ¾Æ¿¹¾øÀ¸¸é idle·Î 
+                    //Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ idleï¿½ï¿½ 
                     if (characterFSM.CurrentTarget == null)
                     {
                         Controller.RegisterTrigger(Trigger.TargetMiss);
@@ -68,21 +67,21 @@ namespace Kylin.FSM
                 }
             }
 
-            // characterFSM.basicObject¿¡¼­ ½ºÅÈ °¡Á®¿À±â (CharacterFSMObject°¡ ÂüÁ¶ÇÏ´Â basicObject »ç¿ë)
+            // characterFSM.basicObjectï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (CharacterFSMObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ basicObject ï¿½ï¿½ï¿½)
             float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
             float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed) * 2;
 
-            // Å¸°Ù±îÁöÀÇ °Å¸® °è»ê
+            // Å¸ï¿½Ù±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½
             float distanceToTarget = characterFSM.GetDistanceToTarget();
 
-            // °ø°Ý ¹üÀ§ ¾È¿¡ µé¾î¿ÔÀ¸¸é °ø°Ý »óÅÂ·Î ÀüÈ¯
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½È¯
             if (distanceToTarget <= attackRange)
             {
                 Controller.RegisterTrigger(Trigger.AttackRequested);
                 return;
             }
 
-            // Å¸°Ù ¹æÇâÀ¸·Î ÀÌµ¿
+            // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
             Vector2 currentPos = new Vector2(transform.position.x, transform.position.y);
             Vector2 targetPos = new Vector2(characterFSM.CurrentTarget.transform.position.x, characterFSM.CurrentTarget.transform.position.y);
             Vector2 direction = (targetPos - currentPos).normalized;
@@ -95,7 +94,7 @@ namespace Kylin.FSM
 
         public override void OnExit()
         {
-            Debug.Log("ChaseState Á¾·á");
+            Debug.Log("ChaseState ï¿½ï¿½ï¿½ï¿½");
         }
     }
 }

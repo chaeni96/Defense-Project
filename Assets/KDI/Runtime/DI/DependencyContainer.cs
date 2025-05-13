@@ -154,8 +154,20 @@ namespace Kylin.LWDI
                 {
                     // 등록되지 않은 인터페이스
                     if (serviceType.IsInterface || serviceType.IsAbstract)
-                        throw new InvalidOperationException($"No registration found for {serviceType.Name}");
+                    {
+                        // 등록된 모든 타입 중에서 해당 서비스 타입을 구현/상속하는 것 찾기
+                        foreach (var reg in _registrations)
+                        {
+                            Type implementationType = reg.Key;
+                            if (serviceType.IsAssignableFrom(implementationType))
+                            {
+                                return Resolve(implementationType);  // 구현/상속 타입으로 해결
+                            }
+                        }
                 
+                        // 찾지 못한 경우 예외 발생
+                        throw new InvalidOperationException($"No registration found for {serviceType.Name}");
+                    }
                     // 등록되지 않은 구체 클래스는 자동 등록
                     if (typeof(IDependencyObject).IsAssignableFrom(serviceType))
                     {

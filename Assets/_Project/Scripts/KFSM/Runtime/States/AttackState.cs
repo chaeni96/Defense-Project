@@ -1,45 +1,46 @@
 using System;
 using UnityEngine;
 using Kylin.FSM;
+using Kylin.LWDI;
 
 [FSMContextFolder("Create/State/Attack")]
 public class AttackState : StateBase
 {
     [SerializeField] private string skillAddressableKey;
 
-    private float targetCheckInterval = 0.2f; // Å¸°Ù ¹× ¹üÀ§ Ã¼Å© ÁÖ±â
+    private float targetCheckInterval = 0.2f; // Å¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½Ö±ï¿½
     private float lastTargetCheckTime = 0f;
-    private CharacterFSMObject characterFSM;
 
-    // °ø°Ý ¾Ö´Ï¸ÞÀÌ¼Ç °ü·Ã Å¸ÀÌ¸Ó º¯¼ö
-    private float attackAnimationLength = 1.0f; // ±âº»°ª
-    private float damageApplyTime = 0.5f; // ±âº»°ª
-    private float attackTimer = 0f; // °ø°Ý Å¸ÀÌ¸Ó
-    private bool damageApplied = false; // µ¥¹ÌÁö Àû¿ë ¿©ºÎ
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private float attackAnimationLength = 1.0f; // ï¿½âº»ï¿½ï¿½
+    private float damageApplyTime = 0.5f; // ï¿½âº»ï¿½ï¿½
+    private float attackTimer = 0f; // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½
+    private bool damageApplied = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    // ¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸ °¡Á®¿À±â °ü·Ã º¯¼ö
+    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private bool animLengthChecked = false;
-    private float animCheckDelay = 0.05f; // ¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸ °¡Á®¿À±â Àü ´ë±â ½Ã°£
-    private float animCheckTimer = 0f; // ¾Ö´Ï¸ÞÀÌ¼Ç Ã¼Å© Å¸ÀÌ¸Ó
+    private float animCheckDelay = 0.05f; // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    private float animCheckTimer = 0f; // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Ã¼Å© Å¸ï¿½Ì¸ï¿½
 
-    // ¾Ö´Ï¸ÞÀÌ¼Ç °ü·Ã »ó¼ö
+    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     private const float DAMAGE_TIMING_RATIO = 0.4f;
     private const int LAYER_INDEX = 0; 
+    [Inject] protected StateController Controller;
+    [Inject] protected CharacterFSMObject characterFSM;
 
     public override void OnEnter()
     {
-        Debug.Log("AttackState ½ÃÀÛ");
+        Debug.Log("AttackState ï¿½ï¿½ï¿½ï¿½");
         lastTargetCheckTime = 0f;
 
-        // Owner¸¦ CharacterFSMObject·Î Ä³½ºÆÃ
-        characterFSM = Owner as CharacterFSMObject;
+        // Ownerï¿½ï¿½ CharacterFSMObjectï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
         if (characterFSM == null) return;
 
-        // Å¸°ÙÀÌ ¾ø´Ù¸é Ã£±â
+        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ Ã£ï¿½ï¿½
         if (characterFSM.CurrentTarget == null)
         {
             characterFSM.UpdateTarget();
-            // Å¸°ÙÀÌ ¾øÀ¸¸é Chase »óÅÂ·Î 
+            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Chase ï¿½ï¿½ï¿½Â·ï¿½ 
             if (characterFSM.CurrentTarget == null)
             {
                 Controller.RegisterTrigger(Trigger.TargetMiss);
@@ -48,42 +49,42 @@ public class AttackState : StateBase
         }
 
 
-        // °ø°Ý Å¸ÀÌ¸Ó ¹× »óÅÂ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         ResetAttack();
 
-        // ¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸ °¡Á®¿À±â ÃÊ±âÈ­
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         animLengthChecked = false;
         animCheckTimer = 0f;
     }
 
     public override void OnUpdate()
     {
-        // CharacterFSMObject È®ÀÎ
+        // CharacterFSMObject È®ï¿½ï¿½
         if (characterFSM == null) return;
 
-        // ¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸¸¦ ¾ÆÁ÷ °¡Á®¿ÀÁö ¾Ê¾Ò´Ù¸é
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½
         if (!animLengthChecked)
         {
             animCheckTimer += Time.deltaTime;
 
-            // ÀÏÁ¤ ½Ã°£ ÈÄ ¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸ °¡Á®¿À±â
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (animCheckTimer >= animCheckDelay)
             {
                 GetCurrentAnimationLength();
                 animLengthChecked = true;
 
-                // Å¸ÀÌ¸Ó ¸®¼Â (¾Ö´Ï¸ÞÀÌ¼Ç Á¤º¸¸¦ Á¤È®È÷ °¡Á®¿Â ½ÃÁ¡ºÎÅÍ Ä«¿îÆ®)
+                // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ®)
                 attackTimer = 0f;
             }
             return;
         }
 
-        // °ø°Ý Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®
+        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         attackTimer += Time.deltaTime;
 
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
-            //½ºÅ³ÀÌ ¾øÀ¸¸é Áï½Ã µ¥¹ÌÁö Àû¿ë
+            //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if(skillAddressableKey == null)
             {
                 ApplyDamage();
@@ -91,14 +92,14 @@ public class AttackState : StateBase
             else
             {
 
-                // Å¸°Ù ¹æÇâ °è»ê
+                // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
                 Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
 
-                //½ºÅ³ »ý¼º
+                //ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½
                 GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, characterFSM.transform.position, (int)ObjectLayer.IgnoereRayCast);
 
 
-                // Åõ»çÃ¼ ÃÊ±âÈ­
+                // ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Ê±ï¿½È­
                 SkillBase projectile = skillObj.GetComponent<SkillBase>();
                 if (projectile != null)
                 {
@@ -116,28 +117,28 @@ public class AttackState : StateBase
             damageApplied = true;
         }
 
-        // °ø°Ý ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³µ´Ù¸é
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½
         if (attackTimer >= attackAnimationLength)
         {
-            // Å¸°Ù À¯È¿¼º ¹× °Å¸® È®ÀÎ
+            // Å¸ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ ï¿½Å¸ï¿½ È®ï¿½ï¿½
             if (IsTargetValid() && IsTargetInRange())
             {
 
-                // °ø°Ý »óÅÂ ÃÊ±âÈ­ 
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
                 ResetAttack();
 
-                // ¾Ö´Ï¸ÞÀÌ¼Ç Ã¼Å© »óÅÂ ÃÊ±âÈ­
+                // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
                 animLengthChecked = false;
                 animCheckTimer = 0f;
             }
             else
             {
-                // Å¸°ÙÀÌ ¾ø°Å³ª ¹üÀ§ ¹ÛÀÌ¸é ´Ù¸¥ »óÅÂ·Î ÀüÈ¯
+                // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½È¯
                 Controller.RegisterTrigger(Trigger.AttackFinished);
             }
         }
 
-        // ÁÖ±âÀûÀ¸·Î Å¸°Ù »óÅÂ¿Í ¹üÀ§ È®ÀÎ
+        // ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (Time.time - lastTargetCheckTime > targetCheckInterval)
         {
             lastTargetCheckTime = Time.time;
@@ -147,7 +148,7 @@ public class AttackState : StateBase
                 return;
             }
 
-            // °ø°Ý ¹üÀ§ Ã¼Å©
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
             if (!IsTargetInRange())
             {
                 Controller.RegisterTrigger(Trigger.TargetMiss);
@@ -156,24 +157,24 @@ public class AttackState : StateBase
         }
     }
 
-    // ÇöÀç ¾Ö´Ï¸ÞÀÌ¼Ç ±æÀÌ °¡Á®¿À±â
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private void GetCurrentAnimationLength()
     {
         if (characterFSM?.animator == null) return;
 
-        // ÇöÀç ¾Ö´Ï¸ÞÀÌ¼Ç Å¬¸³ Á¤º¸ °¡Á®¿À±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         AnimatorClipInfo[] clipInfo = characterFSM.animator.GetCurrentAnimatorClipInfo(LAYER_INDEX);
 
         if (clipInfo.Length > 0)
         {
-            // ÇöÀç Àç»ý ÁßÀÎ Å¬¸³ÀÇ ±æÀÌ °¡Á®¿À±â
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             attackAnimationLength = clipInfo[0].clip.length;
             damageApplyTime = attackAnimationLength * DAMAGE_TIMING_RATIO;
         }
         
     }
 
-    // µ¥¹ÌÁö Àû¿ë ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private void ApplyDamage()
     {
         if (characterFSM != null && characterFSM.CurrentTarget != null)
@@ -183,7 +184,7 @@ public class AttackState : StateBase
                 var enemyObj = characterFSM.CurrentTarget.GetComponent<Enemy>();
                 if (enemyObj != null)
                 {
-                    // µ¥¹ÌÁö °è»ê ¹× Àû¿ë
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
                     enemyObj.OnDamaged(characterFSM.basicObject, damage);
                 }
@@ -193,7 +194,7 @@ public class AttackState : StateBase
                 var unitObj = characterFSM.CurrentTarget.GetComponent<UnitController>();
                 if (unitObj != null)
                 {
-                    // µ¥¹ÌÁö °è»ê ¹× Àû¿ë
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
                     unitObj.OnDamaged(characterFSM.basicObject, damage);
                 }
@@ -201,14 +202,14 @@ public class AttackState : StateBase
         }
     }
 
-    // °ø°Ý »óÅÂ ÃÊ±âÈ­ ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Þ¼ï¿½ï¿½ï¿½
     private void ResetAttack()
     {
         attackTimer = 0f;
         damageApplied = false;
     }
 
-    // Å¸°ÙÀÌ °ø°Ý ¹üÀ§ ³»¿¡ ÀÖ´ÂÁö È®ÀÎÇÏ´Â ¸Þ¼­µå
+    // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private bool IsTargetInRange()
     {
         if (characterFSM == null || characterFSM.basicObject == null)
@@ -218,39 +219,39 @@ public class AttackState : StateBase
         return characterFSM.GetDistanceToTarget() <= attackRange;
     }
 
-    // Å¸°Ù À¯È¿ Ã¼Å© ¸Þ¼­µå
+    // Å¸ï¿½ï¿½ ï¿½ï¿½È¿ Ã¼Å© ï¿½Þ¼ï¿½ï¿½ï¿½
     private bool IsTargetValid()
     {
         var target = characterFSM.CurrentTarget;
-        // Å¸°ÙÀÌ ¾øÀ¸¸é »õ Å¸°Ù Ã£±â
+        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½ï¿½ Ã£ï¿½ï¿½
         if (target == null)
         {
             characterFSM.UpdateTarget();
             if (characterFSM.CurrentTarget == null)
             {
-                // »õ Å¸°Ùµµ ¾øÀ¸¸é »óÅÂ ÀüÈ¯
+                // ï¿½ï¿½ Å¸ï¿½Ùµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
                 Controller.RegisterTrigger(Trigger.AttackFinished);
                 return false;
             }
 
             Controller.RegisterTrigger(Trigger.AttackRequested);
 
-            return true; // »õ Å¸°ÙÀÌ ÀÖÀ½
+            return true; // ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         if (!target.isActive)
         {
-            // Å¸°ÙÀÌ Á×¾úÀ¸¸é »õ Å¸°Ù Ã£±â
+            // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½ï¿½ Ã£ï¿½ï¿½
             characterFSM.UpdateTarget();
             if (characterFSM.CurrentTarget == null)
             {
-                // »õ Å¸°Ùµµ ¾øÀ¸¸é »óÅÂ ÀüÈ¯
+                // ï¿½ï¿½ Å¸ï¿½Ùµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
                 Controller.RegisterTrigger(Trigger.AttackFinished);
                 return false;
             }
             else
             {
-                // »õ Å¸°ÙÀÌ ÀÖÀ¸¸é Chase »óÅÂ·Î
+                // ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Chase ï¿½ï¿½ï¿½Â·ï¿½
                 Controller.RegisterTrigger(Trigger.TargetMiss);
                 return false;
             }
@@ -261,6 +262,6 @@ public class AttackState : StateBase
 
     public override void OnExit()
     {
-        Debug.Log("AttackState Á¾·á");
+        Debug.Log("AttackState ï¿½ï¿½ï¿½ï¿½");
     }
 }

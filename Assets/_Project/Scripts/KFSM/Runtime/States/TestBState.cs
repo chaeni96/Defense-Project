@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Kylin.LWDI;
 using UnityEngine;
 namespace Kylin.FSM
 {
@@ -11,6 +12,8 @@ namespace Kylin.FSM
         private float elapsedTime = 0f;
         private bool timerCompleted = false;
 
+        [Inject] protected StateController Controller;
+        
         public override void OnEnter()
         {
 

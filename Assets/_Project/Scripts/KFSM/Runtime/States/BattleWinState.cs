@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Kylin.LWDI;
 using UnityEngine;
 
 namespace Kylin.FSM
@@ -6,19 +7,14 @@ namespace Kylin.FSM
     [FSMContextFolder("Create/State/Battle")]
     public class BattleWinState : StateBase
     {
-
-        private CharacterFSMObject characterFSM;
-
         public override void OnEnter()
         {
             Debug.Log("BattleWinState : State Enter!!");
-            characterFSM = Owner as CharacterFSMObject;
-            if (characterFSM == null) return;
         }
 
         public override void OnUpdate()
         {
-            // ÇÊ¿äÇÑ °æ¿ì ¾÷µ¥ÀÌÆ® ·ÎÁ÷ Ãß°¡
+            // ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 
             CheckAllUnitsFinished();
 
@@ -27,7 +23,7 @@ namespace Kylin.FSM
 
         private void CheckAllUnitsFinished()
         {
-            // ¸ðµç À¯´ÖÀÌ ¾Ö´Ï¸ÞÀÌ¼ÇÀ» ³¡³Â´ÂÁö È®ÀÎ
+            // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             List<UnitController> units = UnitManager.Instance.GetAllUnits();
             bool allFinished = true;
 
@@ -43,7 +39,7 @@ namespace Kylin.FSM
                 }
             }
 
-            // ¸ðµç À¯´ÖÀÌ ¾Ö´Ï¸ÞÀÌ¼ÇÀ» ³¡³Â´Ù¸é ¿þÀÌºê ¿Ï·á Ã³¸®
+            // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´Ù¸ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ï·ï¿½ Ã³ï¿½ï¿½
             if (allFinished)
             {
 
