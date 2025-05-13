@@ -81,9 +81,9 @@ public class TheAOE : SkillBase
 
     public override void DestroySkill()
     {
-        owner = null;
+        base.DestroySkill();
 
-        PoolingManager.Instance.ReturnObject(gameObject);
+        owner = null;
 
         damagedTargets.Clear();
     }

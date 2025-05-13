@@ -30,12 +30,17 @@ public class TheDefaultProjectile : SkillBase
     public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
     {
         owner = user;
-        direction = targetDirection.normalized;
-        timer = 0f;
 
-        // 방향에 맞게 회전
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        if (target != null && target.isActive)
+        {
+            // 타겟이 있는 경우 현재 타겟 위치로 방향 재계산
+            direction = (target.transform.position - transform.position).normalized;
+        }
+        else
+        {
+            DestroySkill();
+        }
+        timer = 0f;
 
         // 충돌 레이어 설정 (소유자와 다른 레이어만 충돌)
         Collider2D collider = GetComponent<Collider2D>();
@@ -114,12 +119,7 @@ public class TheDefaultProjectile : SkillBase
         return damage * (1 + owner.GetStat(StatName.ATK) / 100f);
     }
 
-    public override void DestroySkill()
-    {
-        owner = null;
-        PoolingManager.Instance.ReturnObject(gameObject);
-
-    }
+  
     //protected virtual void DestroyProjectile()
     //{
     //    // 풀링 시스템 사용 시 반환, 아니면 파괴

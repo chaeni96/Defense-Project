@@ -896,7 +896,33 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     }
 
 
+    public void RefillHP()
+    {
+        // 현재 유닛이 활성화 상태인지 확인
+        if (!isActive || isDead) return;
 
+        // 최대 HP 계산
+        float maxHp = GetStat(StatName.MaxHP);
+
+        // 현재 HP를 최대 HP로 설정
+        if (currentStats.ContainsKey(StatName.CurrentHp))
+        {
+            currentStats[StatName.CurrentHp].value = Mathf.FloorToInt(maxHp);
+        }
+        else
+        {
+            // 현재 HP 스탯이 없으면 새로 생성
+            currentStats[StatName.CurrentHp] = new StatStorage
+            {
+                statName = StatName.CurrentHp,
+                value = Mathf.FloorToInt(maxHp),
+                multiply = 1f
+            };
+        }
+
+        // HP 바 업데이트
+        UpdateHpBar();
+    }
 
     public void ApplyEffect(float duration = 0.5f)
     {
