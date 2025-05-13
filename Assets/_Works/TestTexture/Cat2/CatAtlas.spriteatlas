@@ -68,8 +68,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 90028e18582d9c040a8374b9a1d1033f, type: 3}
   - {fileID: 21300000, guid: b6160e3861fc7ea40845696d222546fa, type: 3}
   - {fileID: 21300000, guid: b4ea71c864c8ed248a964c880a075125, type: 3}
+  - {fileID: 21300000, guid: 284150295d6ddc14bb988372d6504da5, type: 3}
   - {fileID: 21300000, guid: b31728996d302124b9c97d4bf8d0a03a, type: 3}
   - {fileID: 21300000, guid: 5c887eb97286ca04fa562db3633a5cb6, type: 3}
+  - {fileID: 21300000, guid: 70db49e9c1647ed448b55d90d9d51520, type: 3}
   - {fileID: 21300000, guid: 4cdd346a9451ee14eb0bbdc14e74c57d, type: 3}
   - {fileID: 21300000, guid: 13d332fa17f151c4381fe7f640de1043, type: 3}
   - {fileID: 21300000, guid: fa8d430b392e20e4b81178dfe46201be, type: 3}
@@ -104,8 +106,10 @@ SpriteAtlas:
   - face
   - top_8
   - top_9
+  - belt_1
   - right_arm_cloth_6
   - eye
+  - cape
   - eye_1
   - hairband
   - eye_2
