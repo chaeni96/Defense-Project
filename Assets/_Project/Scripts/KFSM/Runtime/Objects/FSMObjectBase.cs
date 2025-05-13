@@ -43,6 +43,7 @@ namespace Kylin.FSM
         private CancellationTokenSource linkedCts; //���� ������? ������� ������..?
         public Animator animator;
 
+        private IScope _currentScope;
 
         public bool isEnemy;
         public bool isFinished;
@@ -103,10 +104,12 @@ namespace Kylin.FSM
         protected virtual void Initialized()
         {
             ConfigureStateMachine(out var states, out var transitions, out var initId);
-
-
+            
+            _currentScope = DependencyInjector.CreateScope();
+            _currentScope.RegisterInstance(typeof(FSMObjectBase), this);
+            _currentScope.RegisterInstance(this.GetType(), this);
             stateMachine = new StateController();
-            stateMachine.Initialize(states, transitions, initId, this);
+            stateMachine.Initialize(states, transitions, initId, this, _currentScope);
             stateMachine.RegistFSMSubscriber(this);
             // ������Ʈ ���� �����׽�ũ�� �ߴµ� �³� �𸣰��� Ȯ���Ұ� TODO : ��⸰
             RunLoop(linkedCts.Token).Forget();

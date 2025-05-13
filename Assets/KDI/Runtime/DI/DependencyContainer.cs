@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 
 namespace Kylin.LWDI
@@ -18,7 +19,7 @@ namespace Kylin.LWDI
     }
     public interface IInjectable
     {
-        public void Inject();
+        void Inject(IScope scope = null);
     }
     
     public interface IFactory<T>
@@ -30,145 +31,227 @@ namespace Kylin.LWDI
     {
         T Create(TParam param);
     }
-    public class DependencyContainer
+     public class DependencyContainer
     {
+        private static readonly object _lock = new object();
         private static readonly DependencyContainer _instance = new DependencyContainer();
-        
         public static DependencyContainer Instance => _instance;
         
         // 등록 정보를 저장하는 클래스
         public class Registration
         {
+            public Type ServiceType { get; set; }
             public Type ImplementationType { get; set; }
             public object Instance { get; set; }
             public Lifetime Lifetime { get; set; }
             public Func<IScope, object> Factory { get; set; }
         }
         
-        // 등록 정보 저장소
+        // Type별 등록 정보 저장 (서비스 타입 -> 등록 정보)
         private readonly Dictionary<Type, Registration> _registrations = new Dictionary<Type, Registration>();
         
-        // 싱글톤 인스턴스 캐시
         private readonly Dictionary<Type, object> _singletonInstances = new Dictionary<Type, object>();
-        
-        //활성화된 스코프
-        private readonly Stack<Scope> _scopes = new Stack<Scope>();
-        
-        //멀티 스레드용 락
-        private readonly object _lock = new object(); //전반적으로 문제 생길곳에 다 쓸것.. 지금은 리졸브만 예시로 해뒀음 TODO : 김기린
+        // 활성 스코프 스택 - 항상 최소 하나의 루트 스코프가 존재
+        private readonly Stack<Scope> _scopeStack = new Stack<Scope>();
+        // 현재 실행 컨텍스트의 스코프
+        private readonly ThreadLocal<Scope> _executionContextScope = new ThreadLocal<Scope>();
         
         private DependencyContainer()
         {
-            PushScope();
+            // 루트 스코프 생성
+            var rootScope = new Scope(this, null);
+            _scopeStack.Push(rootScope);
         }
-        public IScope CreateScope()
+        
+        /// <summary>
+        /// 새 스코프 생성
+        /// </summary>
+        public IScope CreateScope(IScope parentScope = null)
         {
-            var scope = new Scope(this);
-            _scopes.Push(scope);
+            IScope parent = parentScope ?? CurrentScope;
+            var scope = new Scope(this, parent);
+            
+            lock (_lock)
+            {
+                _scopeStack.Push((Scope)scope);
+            }
+            
             return scope;
         }
         
-        private void PushScope()
+        /// <summary>
+        /// 현재 스코프를 실행 컨텍스트에 설정
+        /// </summary>
+        internal void SetCurrentExecutionScope(Scope scope)
         {
-            _scopes.Push(new Scope(this));
+            _executionContextScope.Value = scope;
         }
-        internal void PopScope(Scope scope)
+        
+        /// <summary>
+        /// 스코프 제거
+        /// </summary>
+        internal void RemoveScope(Scope scope)
         {
-            if (_scopes.Count > 0 && _scopes.Peek() == scope)
+            lock (_lock)
             {
-                _scopes.Pop();
-                
-                // 루트 스코프는 항상 유지
-                if (_scopes.Count == 0)
+                if (_scopeStack.Count > 1 && _scopeStack.Contains(scope))
                 {
-                    PushScope();
+                    // 스택에서 해당 스코프와 그 위의 모든 스코프 제거
+                    var tempStack = new Stack<Scope>();
+                    
+                    while (_scopeStack.Count > 0)
+                    {
+                        var current = _scopeStack.Pop();
+                        if (current == scope)
+                            break;
+                            
+                        tempStack.Push(current);
+                    }
+                    
+                    // 제거된 스코프 위에 있던 스코프들 복원
+                    while (tempStack.Count > 0)
+                    {
+                        _scopeStack.Push(tempStack.Pop());
+                    }
+                }
+                
+                // 실행 컨텍스트 스코프가 제거된 스코프인 경우 초기화
+                if (_executionContextScope.Value == scope)
+                {
+                    _executionContextScope.Value = null;
                 }
             }
         }
         
-        // 현재 스코프 가져오기
-        private Scope CurrentScope => _scopes.Count > 0 ? _scopes.Peek() : null;
+        /// <summary>
+        /// 현재 스코프 가져오기 (실행 컨텍스트 우선, 없으면 스택 맨 위)
+        /// </summary>
+        internal Scope CurrentScope
+        {
+            get
+            {
+                var executionScope = _executionContextScope.Value;
+                
+                if (executionScope != null)
+                    return executionScope;
+                    
+                lock (_lock)
+                {
+                    return _scopeStack.Count > 0 ? _scopeStack.Peek() : null;
+                }
+            }
+        }
         
-        // 등록 메서드 - 타입 기반
+        /// <summary>
+        /// 타입 등록 - 인터페이스와 구현 타입 지정
+        /// </summary>
         public void Register(Type serviceType, Type implementationType, Lifetime lifetime = Lifetime.Singleton)
         {
             if (!typeof(IDependencyObject).IsAssignableFrom(implementationType))
                 throw new ArgumentException($"Type {implementationType.Name} must implement IDependencyObject");
-                
-            _registrations[serviceType] = new Registration
+            
+            lock (_lock)
             {
-                ImplementationType = implementationType,
-                Lifetime = lifetime
-            };
+                _registrations[serviceType] = new Registration
+                {
+                    ServiceType = serviceType,
+                    ImplementationType = implementationType,
+                    Lifetime = lifetime
+                };
+            }
         }
         
-        // 등록 메서드 - 제네릭 버전
+        /// <summary>
+        /// 타입 등록 - 제네릭 버전
+        /// </summary>
         public void Register<TService, TImplementation>(Lifetime lifetime = Lifetime.Singleton)
-            where TImplementation : TService
             where TService : class
+            where TImplementation : class, TService, IDependencyObject
         {
-            if (!typeof(IDependencyObject).IsAssignableFrom(typeof(TImplementation)))
-            {
-                throw new ArgumentException($"Type {typeof(TImplementation).Name} must implement IDependencyObject");
-            }
-    
             Register(typeof(TService), typeof(TImplementation), lifetime);
         }
         
-        // 인스턴스 등록 메서드
-        public void RegisterInstance<TService>(TService instance)
+        /// <summary>
+        /// 인스턴스 등록
+        /// </summary>
+        public void RegisterInstance<TService>(TService instance) where TService : class
         {
-            if (instance is IDependencyObject dependencyObject)
+            if (instance is IDependencyObject)
             {
-                _registrations[typeof(TService)] = new Registration
+                lock (_lock)
                 {
-                    Instance = instance,
-                    Lifetime = Lifetime.Singleton
-                };
-                
-                // 싱글톤 캐시에 저장
-                _singletonInstances[typeof(TService)] = instance;
+                    var serviceType = typeof(TService);
+                    
+                    _registrations[serviceType] = new Registration
+                    {
+                        ServiceType = serviceType,
+                        Instance = instance,
+                        Lifetime = Lifetime.Singleton
+                    };
+                    
+                    // 싱글톤 캐시에 저장
+                    _singletonInstances[serviceType] = instance;
+                }
             }
             else
                 throw new ArgumentException($"Instance must implement IDependencyObject");
         }
         
-        // 팩토리 등록 메서드
+        /// <summary>
+        /// 팩토리 함수 등록
+        /// </summary>
         public void RegisterFactory<TService>(Func<IScope, TService> factory, Lifetime lifetime = Lifetime.Singleton)
             where TService : class
         {
-            _registrations[typeof(TService)] = new Registration
-            {
-                Factory = scope => factory(scope),
-                Lifetime = lifetime
-            };
-        }
-        
-        // 해결 메서드 - 타입 기반
-        public object Resolve(Type serviceType)
-        {
             lock (_lock)
             {
-                // 등록 정보 확인
+                var serviceType = typeof(TService);
+                
+                _registrations[serviceType] = new Registration
+                {
+                    ServiceType = serviceType,
+                    Factory = scope => factory(scope),
+                    Lifetime = lifetime
+                };
+            }
+        }
+        
+        /// <summary>
+        /// 의존성 해결 - 타입 기반
+        /// </summary>
+        public object Resolve(Type serviceType, IScope scope = null)
+        {
+            // 사용할 스코프 결정
+            var resolutionScope = (scope as Scope) ?? CurrentScope;
+            
+            lock (_lock)
+            {
+                // 1. 스코프에서 이미 존재하는 인스턴스 확인
+                if (resolutionScope != null)
+                {
+                    var scopedInstance = resolutionScope.GetInstance(serviceType);
+                    if (scopedInstance != null)
+                        return scopedInstance;
+                }
+                
+                // 2. 등록 정보 확인
                 if (!_registrations.TryGetValue(serviceType, out var registration))
                 {
-                    // 등록되지 않은 인터페이스
+                    // 인터페이스/추상 클래스인 경우 구현체 찾기
                     if (serviceType.IsInterface || serviceType.IsAbstract)
                     {
-                        // 등록된 모든 타입 중에서 해당 서비스 타입을 구현/상속하는 것 찾기
-                        foreach (var reg in _registrations)
+                        foreach (var reg in _registrations.Values)
                         {
-                            Type implementationType = reg.Key;
-                            if (serviceType.IsAssignableFrom(implementationType))
+                            if (serviceType.IsAssignableFrom(reg.ServiceType))
                             {
-                                return Resolve(implementationType);  // 구현/상속 타입으로 해결
+                                return Resolve(reg.ServiceType, resolutionScope);
                             }
                         }
-                
-                        // 찾지 못한 경우 예외 발생
+                        
                         throw new InvalidOperationException($"No registration found for {serviceType.Name}");
                     }
-                    // 등록되지 않은 구체 클래스는 자동 등록
+                    
+                    // 등록되지 않은 구체 클래스는 자동 등록 (IDependencyObject 구현 필수)
                     if (typeof(IDependencyObject).IsAssignableFrom(serviceType))
                     {
                         Register(serviceType, serviceType);
@@ -177,51 +260,71 @@ namespace Kylin.LWDI
                     else
                         throw new InvalidOperationException($"Type {serviceType.Name} must implement IDependencyObject");
                 }
-            
-                // 이미 인스턴스가 있는 경우
+                
+                // 3. 이미 존재하는 인스턴스 확인
                 if (registration.Instance != null)
                     return registration.Instance;
-            
-                // 라이프타임에 따른 인스턴스 생성
+                
+                // 4. 라이프타임별 인스턴스 생성
+                object instance;
+                
                 switch (registration.Lifetime)
                 {
                     case Lifetime.Singleton:
+                        // 싱글톤 캐시 확인
                         if (_singletonInstances.TryGetValue(serviceType, out var singletonInstance))
                             return singletonInstance;
+                            
+                        // 새 인스턴스 생성
+                        instance = CreateInstance(registration, resolutionScope);
+                        _singletonInstances[serviceType] = instance;
+                        break;
                         
-                        var newSingleton = CreateInstance(registration, serviceType);
-                        _singletonInstances[serviceType] = newSingleton;
-                        return newSingleton;
-                    
                     case Lifetime.Scoped:
-                        return CurrentScope.ResolveScoped(serviceType, registration);
-                    
+                        // 스코프 내 인스턴스 생성
+                        instance = CreateInstance(registration, resolutionScope);
+                        
+                        // 현재 스코프에 저장
+                        if (resolutionScope != null)
+                        {
+                            resolutionScope.RegisterInstance(serviceType, instance);
+                        }
+                        break;
+                        
                     case Lifetime.Transient:
-                        return CreateInstance(registration, serviceType);
-                    
+                        // 매번 새 인스턴스 생성
+                        instance = CreateInstance(registration, resolutionScope);
+                        break;
+                        
                     default:
                         throw new InvalidOperationException($"Unsupported lifetime: {registration.Lifetime}");
                 }
+                
+                return instance;
             }
         }
         
-        // 해결 메서드 - 제네릭 버전
-        public T Resolve<T>() where T : class
+        /// <summary>
+        /// 의존성 해결 - 제네릭 버전
+        /// </summary>
+        public T Resolve<T>(IScope scope = null) where T : class
         {
-            return (T)Resolve(typeof(T));
+            return (T)Resolve(typeof(T), scope);
         }
         
-        // 인스턴스 생성 메서드
-        private object CreateInstance(Registration registration, Type serviceType)
+        /// <summary>
+        /// 인스턴스 생성
+        /// </summary>
+        private object CreateInstance(Registration registration, IScope scope)
         {
-            // 팩토리가 있는 경우
+            // 1. 팩토리가 있는 경우
             if (registration.Factory != null)
-                return registration.Factory(CurrentScope);
+                return registration.Factory(scope);
                 
-            // 구현 타입
+            // 2. 구현 타입 확인
             var implementationType = registration.ImplementationType;
             
-            // 모든 생성자 확인
+            // 3. 생성자 선택 - 가장 많은 매개변수를 가진 생성자
             var constructors = implementationType.GetConstructors();
             if (constructors.Length == 0)
             {
@@ -229,7 +332,6 @@ namespace Kylin.LWDI
                 return Activator.CreateInstance(implementationType);
             }
             
-            // 가장 많은 매개변수를 가진 생성자 사용 (생성자 주입)
             var constructor = constructors
                 .OrderByDescending(c => c.GetParameters().Length)
                 .First();
@@ -241,14 +343,14 @@ namespace Kylin.LWDI
                 return Activator.CreateInstance(implementationType);
             }
             
-            // 매개변수 해결
+            // 4. 생성자 매개변수 해결
             var resolvedParams = new object[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {
                 var paramType = parameters[i].ParameterType;
                 try
                 {
-                    resolvedParams[i] = Resolve(paramType);
+                    resolvedParams[i] = Resolve(paramType, scope);
                 }
                 catch (Exception ex)
                 {
@@ -258,21 +360,26 @@ namespace Kylin.LWDI
                 }
             }
             
-            // 인스턴스 생성
+            // 5. 인스턴스 생성
             var instance = Activator.CreateInstance(implementationType, resolvedParams);
             
-            // 필드 주입 수행
-            InjectFields(instance);
+            // 6. 필드 주입 수행
+            InjectFields(instance, scope);
             
             return instance;
         }
         
-        // 필드 주입 메서드
-        public void InjectFields(object instance)
+        /// <summary>
+        /// 필드 주입
+        /// </summary>
+        public void InjectFields(object instance, IScope scope = null)
         {
+            if (instance == null)
+                return;
+                
             if (instance is IInjectable injectable)
             {
-                injectable.Inject();
+                injectable.Inject(scope);
             }
             else
             {
@@ -287,95 +394,128 @@ namespace Kylin.LWDI
                         var fieldType = field.FieldType;
                         try
                         {
-                            var dependency = Resolve(fieldType);
+                            var dependency = Resolve(fieldType, scope);
                             field.SetValue(instance, dependency);
                         }
                         catch (Exception ex)
                         {
-                            throw new InvalidOperationException(
-                                $"Error injecting field '{field.Name}' of type {fieldType.Name} in {instance.GetType().Name}",
-                                ex);
+                            Debug.LogError($"Error injecting field '{field.Name}' of type {fieldType.Name} in {instance.GetType().Name}: {ex.Message}");
                         }
                     }
                 }
             }
         }
         
-        // 모든 등록 가져오기
-        public IReadOnlyDictionary<Type, Type> GetAllRegistrations()
-        {
-            var result = new Dictionary<Type, Type>();
-            foreach (var kvp in _registrations)
-            {
-                if (kvp.Value.ImplementationType != null)
-                {
-                    result[kvp.Key] = kvp.Value.ImplementationType;
-                }
-            }
-            return result;
-        }
-        
-        // 모든 인스턴스 가져오기
+        /// <summary>
+        /// 모든 등록된 인스턴스 가져오기
+        /// </summary>
         public IReadOnlyDictionary<Type, object> GetAllInstances()
         {
-            var result = new Dictionary<Type, object>();
+            Dictionary<Type, object> allInstances = new Dictionary<Type, object>();
             
-            // 싱글톤 인스턴스
-            foreach (var kvp in _singletonInstances)
+            lock (_lock)
             {
-                result[kvp.Key] = kvp.Value;
+                // 1. 싱글톤 인스턴스 복사
+                foreach (var kvp in _singletonInstances)
+                {
+                    allInstances[kvp.Key] = kvp.Value;
+                }
+                
+                // 2. 현재 스코프의 인스턴스 복사
+                var scope = CurrentScope;
+                while (scope != null)
+                {
+                    var scopedInstances = scope.GetInstances();
+                    foreach (var kvp in scopedInstances)
+                    {
+                        if (!allInstances.ContainsKey(kvp.Key))
+                        {
+                            allInstances[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    
+                    // 부모 스코프로 이동
+                    scope = scope.Parent as Scope;
+                }
             }
             
-            // 현재 스코프의 인스턴스
-            if (CurrentScope != null)
+            return allInstances;
+        }
+        
+        /// <summary>
+        /// 모든 등록 정보 가져오기
+        /// </summary>
+        public IReadOnlyDictionary<Type, Type> GetAllRegistrations()
+        {
+            Dictionary<Type, Type> result = new Dictionary<Type, Type>();
+            
+            lock (_lock)
             {
-                foreach (var kvp in CurrentScope.GetScopedInstances())
+                foreach (var kvp in _registrations)
                 {
-                    result[kvp.Key] = kvp.Value;
+                    if (kvp.Value.ImplementationType != null)
+                    {
+                        result[kvp.Key] = kvp.Value.ImplementationType;
+                    }
                 }
             }
             
             return result;
         }
         
-        // 모든 등록 및 인스턴스 지우기
+        /// <summary>
+        /// 컨테이너 초기화
+        /// </summary>
         public void Clear()
         {
-            _registrations.Clear();
-            _singletonInstances.Clear();
-            
-            // 스코프 초기화
-            while (_scopes.Count > 0)
+            lock (_lock)
             {
-                _scopes.Pop();
+                // 모든 스코프 제거
+                while (_scopeStack.Count > 0)
+                {
+                    var scope = _scopeStack.Pop();
+                    scope.Dispose();
+                }
+                
+                // 등록 정보 및 인스턴스 초기화
+                _registrations.Clear();
+                _singletonInstances.Clear();
+                _executionContextScope.Value = null;
+                
+                // 루트 스코프 다시 생성
+                var rootScope = new Scope(this, null);
+                _scopeStack.Push(rootScope);
             }
-            
-            // 루트 스코프 생성
-            PushScope();
         }
         
-        // 씬 전환 시 스코프 지우기
+        /// <summary>
+        /// 씬 스코프 정리
+        /// </summary>
         public void ClearSceneScope(string currentScene)
         {
-            // 뷰모델 스코프 처리
-            var removeList = new List<Type>();
-            
-            foreach (var kvp in _registrations)
+            lock (_lock)
             {
-                var type = kvp.Value.ImplementationType ?? kvp.Key;
-                var attr = type.GetCustomAttributes(typeof(ViewModelAttribute), true)
-                    .FirstOrDefault() as ViewModelAttribute;
-                    
-                if (attr != null && !attr.IsGlobal && !attr.SceneNames.Contains(currentScene))
+                // 씬 전용 뷰모델 제거
+                var removeList = new List<Type>();
+                
+                foreach (var kvp in _registrations)
                 {
-                    removeList.Add(kvp.Key);
+                    var type = kvp.Value.ImplementationType ?? kvp.Key;
+                    var attr = type.GetCustomAttributes(typeof(ViewModelAttribute), true)
+                        .FirstOrDefault() as ViewModelAttribute;
+                        
+                    if (attr != null && !attr.IsGlobal && !attr.SceneNames.Contains(currentScene))
+                    {
+                        removeList.Add(kvp.Key);
+                    }
                 }
-            }
-            
-            foreach (var type in removeList)
-            {
-                _registrations.Remove(type);
-                _singletonInstances.Remove(type);
+                
+                // 제거 목록의 등록 및 인스턴스 제거
+                foreach (var type in removeList)
+                {
+                    _registrations.Remove(type);
+                    _singletonInstances.Remove(type);
+                }
             }
         }
     }

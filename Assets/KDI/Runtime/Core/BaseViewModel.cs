@@ -10,9 +10,9 @@ namespace Kylin.LWDI
             Inject();
         }
         
-        public void Inject() 
+        public void Inject(IScope scope = null)
         {
-            DependencyInjector.Inject(this);
+            DependencyInjector.Inject(this, scope);
         }
         
         public void AddReference()

@@ -23,10 +23,12 @@ namespace Kylin.FSM
 
         private FSMObjectBase _ownerObject; // ������ GameObject - �̰͵� �ٲ�ߵ�
 
+        private IScope _fsmScope;
 
-        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, FSMObjectBase owner)
+        public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, FSMObjectBase owner, IScope currentScope)
         {
             //_states = states;
+            _fsmScope = currentScope;
             _states = new Dictionary<int, StateBase>();
             foreach(var state in states)
             {
@@ -42,15 +44,13 @@ namespace Kylin.FSM
 
             _ownerObject = owner;
 
-            var fsmScope = DependencyInjector.CreateScope();
-            fsmScope.RegisterInstance(typeof(StateController), this);
-            fsmScope.RegisterInstance(typeof(CharacterFSMObject), _ownerObject);
+            _fsmScope.RegisterInstance(typeof(StateController), this);
 
             // ���� �ʱ�ȭ
             foreach (var s in states)
             {
                 //DependencyInjector.InjectWithScope(s, fsmScope);
-                s?.Initialize(fsmScope);
+                s?.Inject(_fsmScope);
             }
 
             ChangeState(initialStateId);
