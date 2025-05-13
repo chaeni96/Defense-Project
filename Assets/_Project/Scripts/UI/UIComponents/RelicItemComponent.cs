@@ -1,4 +1,5 @@
 using System;
+using AutoBattle.Scripts.Managers;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
 using BGDatabaseEnum.DataController;
@@ -20,6 +21,7 @@ namespace AutoBattle.Scripts.UI.UIComponents
         
         private BGId relicId;
         private string relicName;
+        private string iconKey;
         private int relicLevel;
         private int relicExp;
         private Grade relicGrade;
@@ -52,6 +54,7 @@ namespace AutoBattle.Scripts.UI.UIComponents
         {
             relicId = param.RelicId;
             relicName = param.RelicName;
+            iconKey = param.IconKey;
             relicLevel = param.RelicLevel;
             relicExp = param.RelicExp;
             relicGrade = param.RelicGrade;
@@ -81,11 +84,13 @@ namespace AutoBattle.Scripts.UI.UIComponents
         private void UpdateUI()
         {
             relicDimObject.SetActive(relicLevel <= 0);
+            relicInactiveIcon.sprite = AtlasManager.Instance.GetItemIcon(iconKey);
 
             if (relicDimObject.activeSelf == false)
             {
-                var currentRelic = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicId);
-                var expData = D_RelicItemExpData.GetRelicItemExpData(currentRelic.f_level);
+                var expData = D_RelicItemExpData.GetRelicItemExpData(relicLevel);
+
+                relicActiveIcon.sprite = AtlasManager.Instance.GetItemIcon(iconKey);
                 
                 relicExpSlider.value = expData.f_maxExp == 0 ? 0 : (float)relicExp / expData.f_maxExp;
                 relicExpText.text = $"{relicExp} / {expData.f_maxExp}";
@@ -97,6 +102,7 @@ namespace AutoBattle.Scripts.UI.UIComponents
     {
         public BGId RelicId;
         public string RelicName;
+        public string IconKey;
         public int RelicLevel;
         public int RelicExp;
         public Grade RelicGrade;
@@ -105,9 +111,11 @@ namespace AutoBattle.Scripts.UI.UIComponents
         public RelicItemDataParam(BGId relicId, string relicName, Grade relicGrade, string relicDescription)
         {
             var userRelicData = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicId);
+            var relicData = D_RelicItemData.FindEntity(data => data.Id == relicId);
             
             RelicId = relicId;
             RelicName = relicName;
+            IconKey = relicData.f_iconKey;
             RelicLevel = userRelicData?.f_level ?? 0;
             RelicExp = userRelicData?.f_exp ?? 0;
             RelicGrade = relicGrade;
