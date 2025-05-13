@@ -41,6 +41,46 @@ namespace BGDatabaseEnum.DataController
         private List<BGId> equippedRelics = new List<BGId>(MAX_EQUIP_SLOT_COUNT);
         
         private List<IRelicStateChangeSubscriber> subscribers = new();
+        
+        public Dictionary<StatSubject, List<StatStorage>> GetCurrentEquippedRelicStatsDic()
+        {
+            var stats = new Dictionary<StatSubject, List<StatStorage>>();
+            
+            foreach (var relicId in equippedRelics)
+            {
+                if(relicId == BGId.Empty) continue;
+                
+                var relicData = D_U_RelicData.FindEntity(data => data.f_relicData.Id == relicId);
+                if (relicData != null)
+                {
+                    var relicStats = relicData.f_relicData.f_relicEffectStats;
+                    
+                    foreach (var stat in relicStats)
+                    {
+                        var subject = stat.f_statSubjectType;
+
+                        // 해당 Subject가 Dictionary에 없으면 새로 생성
+                        if (!stats.ContainsKey(subject))
+                        {
+                            stats[subject] = new List<StatStorage>();
+                        }
+                        
+                        // StatStorage 생성
+                        var statStorage = new StatStorage
+                        {
+                            statName = stat.f_statName,
+                            value = stat.f_statValue,
+                            multiply = stat.f_statMultiply,
+                        };
+                        
+                        // Dictionary에 추가
+                        stats[subject].Add(statStorage);
+                    }
+                }
+            }
+
+            return stats;
+        }
 
         public void Initialize()
         {
