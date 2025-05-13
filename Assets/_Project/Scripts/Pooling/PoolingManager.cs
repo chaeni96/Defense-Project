@@ -63,6 +63,17 @@ public class PoolingManager : MonoBehaviour
                 CreatePool(poolData.f_PoolObjectAddressableKey, poolData.f_initialSize);
             }
         }
+
+         var skillDataList = D_SkillData.FindEntities(data => true);
+
+        foreach (var poolData in skillDataList)
+        {
+            if (!string.IsNullOrEmpty(poolData.f_addressableKey))
+            {
+                CreatePool(poolData.f_addressableKey, poolData.f_initalSize);
+            }
+        }
+
     }
 
     private void CreatePool(string addressableKey, int initialSize)
