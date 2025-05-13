@@ -3,69 +3,96 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class TheAOE : SkillBase, ITimeChangeSubscriber, IScheduleCompleteSubscriber
+public class TheAOE : SkillBase
 {
-    [SerializeField] float totalFXDelay = 0.5f;
-    [SerializeField] LayerMask enemyMask;
-    [SerializeField] Collider2D myCollider;
+    [Header("AOE 설정")]
+    public float radius = 1f;                // AOE 범위 반경
+    public float damage = 20f;               // 기본 데미지
+    public float duration = 1.0f;            // 지속 시간 (1초)
 
-    private HashSet<Enemy> damagedEnemies = new HashSet<Enemy>();  // 이미 데미지를 준 적들 
-    private int currentScheduleUID;
-    private float radius;
+    private float timer = 0f;                // 지속 시간 타이머
+    private HashSet<int> damagedTargets;     // 이미 데미지를 입힌 대상 추적
 
-    public override void Initialize(UnitController unit)
+    public override void Initialize(BasicObject unit)
     {
         base.Initialize(unit);
-
-        radius = owner.GetStat(StatName.AttackRange);
-        transform.localScale = new Vector3(radius * 2f, radius * 2f, radius * 2f);
-
+        damagedTargets = new HashSet<int>();
     }
 
-    public override void Fire(Vector3 targetPosition)
+    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
     {
-        transform.position = owner.transform.position;
+        owner = user;
+        timer = 0f;
+        damagedTargets.Clear();
 
-        currentScheduleUID = TimeTableManager.Instance.RegisterSchedule(totalFXDelay);
-        TimeTableManager.Instance.AddTimeChangeSubscriber(this);
-        TimeTableManager.Instance.AddScheduleCompleteTargetSubscriber(this, currentScheduleUID);
-        //soundEffect.PlaySound();
+        // 즉시 첫 번째 데미지 적용
+        ApplyDamageToTargetsInRange();
     }
 
-    public void OnChangeTime(int scheduleUID, float remainTime)
+    private void Update()
     {
-        if (currentScheduleUID != scheduleUID) return;
-
-        // 원형 범위 내의 모든 콜라이더 감지
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, radius, enemyMask);
-
-        float damage = owner.GetStat(StatName.ATK);
-        foreach (var hitCollider in hitColliders)
+        if (owner == null)
         {
-            //var enemy = EnemyManager.Instance.GetActiveEnemys(hitCollider);
-            //if (enemy != null && !damagedEnemies.Contains(enemy))
-            //{
-            //    enemy.onDamaged(owner, damage);
-            //    damagedEnemies.Add(enemy);
-            //}
+            DestroySkill();
+            return;
+        }
+
+        // 지속 시간 체크
+        timer += Time.deltaTime;
+        if (timer >= duration)
+        {
+            DestroySkill();
+            return;
         }
     }
 
-    public void OnCompleteSchedule(int scheduleUID)
+    private void ApplyDamageToTargetsInRange()
     {
-        if (currentScheduleUID != scheduleUID) return;
-        CleanUp();
-        PoolingManager.Instance.ReturnObject(gameObject);
+        // 현재 위치에서 radius 반경 내의 모든 콜라이더 검색
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
+
+        foreach (Collider2D collider in colliders)
+        {
+            // 같은 게임 오브젝트 제외
+            if (collider.gameObject == gameObject) continue;
+
+            // 이미 데미지를 입힌 대상 제외
+            int targetId = collider.gameObject.GetInstanceID();
+            if (damagedTargets.Contains(targetId)) continue;
+
+            // 대상이 BasicObject인지 확인
+            BasicObject targetObj = collider.GetComponent<BasicObject>();
+            if (targetObj == null)
+                targetObj = collider.GetComponentInParent<BasicObject>();
+
+            if (targetObj != null && targetObj.isEnemy != owner.isEnemy)
+            {
+                // 데미지 적용
+                targetObj.OnDamaged(owner, damage);
+
+                // 데미지를 입힌 대상 기록
+                damagedTargets.Add(targetId);
+
+                Debug.Log($"AOE 대상에게 데미지: {targetObj.name}, 데미지={damage}");
+            }
+        }
     }
 
-    public override void CleanUp()
+
+    public override void DestroySkill()
     {
-        TimeTableManager.Instance.RemoveTimeChangeSubscriber(this);
-        TimeTableManager.Instance.RemoveScheduleCompleteTargetSubscriber(currentScheduleUID);
+        owner = null;
 
-        // 리스트 정리
-        damagedEnemies.Clear();
+        PoolingManager.Instance.ReturnObject(gameObject);
 
+        damagedTargets.Clear();
+    }
+
+    // 디버그용 반경 그리기
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 
 

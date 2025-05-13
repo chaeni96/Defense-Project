@@ -82,17 +82,19 @@ public class ProjectileManager : MonoBehaviour
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
             TheProjectile projectile = activeProjectiles[i];
-            if (!IsTargetValid(projectile) || projectile.target.GetStat(StatName.CurrentHp) <= 0)  // HP 체크 추가
-            {
-                ReturnProjectile(projectile);
-            }
+            //if (!IsTargetValid(projectile) || projectile.target.GetStat(StatName.CurrentHp) <= 0)  // HP 체크 추가
+            //{
+            //    ReturnProjectile(projectile);
+            //}
         }
     }
 
     // 타겟 유효성 검사
     private bool IsTargetValid(TheProjectile projectile)
     {
-        return projectile.target != null && projectile.target.gameObject.activeSelf;
+        //return projectile.target != null && projectile.target.gameObject.activeSelf;
+
+        return true;
     }
 
     // JobSystem 배열 초기화 및 업데이트
@@ -110,8 +112,8 @@ public class ProjectileManager : MonoBehaviour
 
         for (int i = 0; i < activeProjectiles.Count; i++)
         {
-            targetPositions[i] = activeProjectiles[i].target.transform.position;
-            speeds[i] = activeProjectiles[i].storedSpeed;
+            //targetPositions[i] = activeProjectiles[i].target.transform.position;
+            //speeds[i] = activeProjectiles[i].storedSpeed;
         }
     }
 
@@ -159,7 +161,9 @@ public class ProjectileManager : MonoBehaviour
     // 충돌 거리 체크
     private bool IsHit(TheProjectile projectile)
     {
-        return Vector2.Distance(projectile.transform.position, projectile.target.transform.position) < 0.1f;
+        //return Vector2.Distance(projectile.transform.position, projectile.target.transform.position) < 0.1f;
+
+        return true;
     }
 
     // 데미지 적용
@@ -167,13 +171,15 @@ public class ProjectileManager : MonoBehaviour
     {
         if (IsTargetValid(projectile))
         {
-            projectile.target.onDamaged(projectile.owner, projectile.storedDamage);
+           // projectile.target.onDamaged(projectile.owner, projectile.storedDamage);
         }
     }
 
     public List<TheProjectile> GetProjectilesTargetingEnemy(Enemy enemy)
     {
-        return activeProjectiles.Where(p => p != null && p.target == enemy).ToList();
+        //return activeProjectiles.Where(p => p != null && p.target == enemy).ToList();
+
+        return null;
     }
 
 
@@ -184,7 +190,7 @@ public class ProjectileManager : MonoBehaviour
         if (!activeProjectiles.Contains(projectile))
         {
             // 발사 시점의 공격력 저장
-            projectile.storedDamage = projectile.owner.GetStat(StatName.ATK);
+           // projectile.storedDamage = projectile.owner.GetStat(StatName.ATK);
             activeProjectiles.Add(projectile);
         }
     }
@@ -192,7 +198,7 @@ public class ProjectileManager : MonoBehaviour
     // 투사체 오브젝트 풀 반환
     private void ReturnProjectile(TheProjectile projectile)
     {
-        projectile.CleanUp();
+        projectile.DestroySkill();
         PoolingManager.Instance.ReturnObject(projectile.gameObject);
         activeProjectiles.Remove(projectile);
     }
@@ -208,7 +214,7 @@ public class ProjectileManager : MonoBehaviour
         for (int i = activeProjectiles.Count - 1; i >= 0; i--)
         {
             TheProjectile projectile = activeProjectiles[i];
-            projectile.CleanUp();
+            projectile.DestroySkill();
             PoolingManager.Instance.ReturnObject(projectile.gameObject);
         }
 

@@ -202,12 +202,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8056660195421990234}
-  - component: {fileID: 5326549911378926689}
-  - component: {fileID: -7568365873451359913}
+  - component: {fileID: -8826810544737348872}
   - component: {fileID: 8056660195421990232}
   - component: {fileID: 8056660195421990233}
+  - component: {fileID: -7568365873451359913}
   m_Layer: 0
-  m_Name: ProjectileObject
+  m_Name: TheGuideProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -229,7 +229,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5326549911378926689
+--- !u!114 &-8826810544737348872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,23 +238,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8056660195421990236}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c44303d69cf2834595c9a9823cf9e84, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d2dd19098bcbf44388af2b0a9bbd171, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-7568365873451359913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8056660195421990236}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dda6e23009d957b48bbff87802c6ac7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundName: Projectile
-  volume: 0.5
+  owner: {fileID: 0}
+  soundEffect: {fileID: 0}
+  projectileSpeed: 10
+  lifeTime: 3
+  damage: 0
+  hitEffect: {fileID: 0}
+  rotationSpeed: 200
+  maxTrackingAngle: 90
 --- !u!50 &8056660195421990232
 Rigidbody2D:
   serializedVersion: 4
@@ -291,4 +285,18 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.49999997
+  m_Radius: 0.76
+--- !u!114 &-7568365873451359913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056660195421990236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dda6e23009d957b48bbff87802c6ac7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundName: Projectile
+  volume: 0.5

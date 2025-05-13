@@ -17,38 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: d1137a047b12532498ba2a21ca0ab6bc
   m_SerializeEntries:
-  - m_GUID: e9e7671da6a5cec46b3732af8d526900
-    m_Address: PlayerCamp
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8bdd5da0c075197458199b6ed365378e
-    m_Address: AoeRange
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a68d83ddc5345554d8cdcb3af8487797
-    m_Address: Projectile
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c5a041ec2a45cdb44b9ebddbdac20f59
-    m_Address: ExplosionEffectObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 895aa81cf239acf44b4f0d81e382bab6
     m_Address: UnitPreviewInstance
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dc741db8e1ed72a43a9e8f24eaceca11
-    m_Address: ObstacleTilemap1
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -61,18 +31,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 436850a8cd26d3a44ad95b08aa410b11
     m_Address: WildCardObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c1c22e3234d408448bc97e4ac3617332
-    m_Address: BuffRangeObject
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 160b6aae5c803d54aac7f06854c59a8f
-    m_Address: TrashCanObject
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -157,6 +115,24 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 45aa8fb2d8e22464cb1a57317d20488d
     m_Address: Cat_New
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffb261751d09f5d40a89af9300df9719
+    m_Address: TheDefaultProjectile
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c541b23800400244bba97b26daf4434e
+    m_Address: TargetBaseAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca4b8120d23cfcc44b65cfa7be51b15e
+    m_Address: TheGuideProjectile
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs

@@ -23,15 +23,8 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private Vector3 originalPosition;
     private bool isDragging = false;
 
-    
-    // 이벤트
-    public delegate void ItemDroppedHandler(D_ItemData item);
-    public event ItemDroppedHandler OnItemDropped;
-
     // 장비 시스템 참조
     private IEquipmentSystem equipmentSystem;
-
-
 
     private void Awake()
     {

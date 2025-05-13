@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.IO;
 using Unity.VisualScripting;
+using Kylin.FSM;
 
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
@@ -33,7 +34,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [HideInInspector] public GameObject itemSlotObject;
 
     public bool canAttack = true; 
-    public bool isActive = true;
 
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
@@ -55,10 +55,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [HideInInspector]
     public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
 
-    [SerializeField] private Slider hpBar;  // Inspector에서 할당
-
-    [SerializeField] private Canvas hpBarCanvas;  // Inspector에서 할당
-
 
     // 아이템 슬롯 프리팹 참조 (인스펙터에서 할당 필요)
     [SerializeField] private GameObject itemSlotPrefab;
@@ -77,7 +73,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         base.Initialize();
 
         gameObject.layer = LayerMask.NameToLayer("Player");  // 초기화할 때 레이어 설정
-        hpBarCanvas.worldCamera = GameManager.Instance.mainCamera;
 
         // 고유 ID 생성 (System.Guid 사용)
         uniqueId = System.Guid.NewGuid().ToString();
@@ -103,17 +98,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         return EnemyManager.Instance.GetNearestEnemy(transform.position);
     }
 
-
-    private void UpdateHpBar()
-    {
-        float currentHp = GetStat(StatName.CurrentHp);
-        float maxHp = GetStat(StatName.MaxHP);
-
-        if (hpBar != null && maxHp > 0)
-        {
-            hpBar.value = currentHp / maxHp;
-        }
-    }
 
     public void UpdateStarDisplay(int? starLevel = null)
     {
@@ -152,8 +136,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         isEnemy = false;
 
         unitData = unit;
-        attackType = unitData.f_SkillAttackType;
+
+
+        skillData = unit.f_skillData;
         unitType = unitData.f_UnitType;
+
+ 
 
         // 기존 스탯들 초기화
         baseStats.Clear();
@@ -318,35 +306,16 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         ApplyEffect();
     }
 
-
-    public void onDamaged(BasicObject attacker, float damage = 0)
-    {
-        if (attacker != null)
-        {
-            //attacker의 공격력 
-            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
-            {
-                hpStat.value -= (int)damage;
-                UpdateHpBar();
-                HitEffect();
-            }
-        }
-
-        if (GetStat(StatName.CurrentHp) <= 0)
-        {
-            OnDead();
-        }
-    }
-
     public void HitEffect()
     {
 
         // 데미지를 입으면 빨간색으로 깜빡임
     }
 
-    public void OnDead()
+    public override void OnDead()
     {
         isActive = false;
+        isDead = true;
         baseStats.Clear();
         currentStats.Clear();
 
