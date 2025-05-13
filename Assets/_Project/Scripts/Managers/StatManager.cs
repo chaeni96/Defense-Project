@@ -129,41 +129,43 @@ public class StatManager : MonoBehaviour
     // Subject의 모든 기본 스탯 가져오기
     public List<StatStorage> GetAllStatsForSubject(StatSubject subject)
     {
-        if (!baseStats.ContainsKey(subject))
-        {
-            return new List<StatStorage>();
-        }
-
-        // 중복된 StatSubject가 있을수있으므로 중복 제거
         var uniqueStats = new Dictionary<StatName, StatStorage>();
-        foreach (var stat in baseStats[subject])
+
+        if (baseStats.TryGetValue(subject, out var baseStat))
         {
-            if (!uniqueStats.ContainsKey(stat.statName))
+            // 중복된 StatSubject가 있을수있으므로 중복 제거
+            foreach (var stat in baseStat)
             {
-                uniqueStats[stat.statName] = new StatStorage
+                if (!uniqueStats.ContainsKey(stat.statName))
                 {
-                    statName = stat.statName,
-                    value = stat.value,
-                    multiply = stat.multiply
-                };
+                    uniqueStats[stat.statName] = new StatStorage
+                    {
+                        statName = stat.statName,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
             }
         }
 
-        foreach (var stat in equippedRelics[subject])
+        if (equippedRelics.TryGetValue(subject, out var relic))
         {
-            if (!uniqueStats.ContainsKey(stat.statName))
+            foreach (var stat in relic)
             {
-                uniqueStats[stat.statName] = new StatStorage
+                if (!uniqueStats.ContainsKey(stat.statName))
                 {
-                    statName = stat.statName,
-                    value = stat.value,
-                    multiply = stat.multiply
-                };
-            }
-            else
-            {
-                uniqueStats[stat.statName].value += stat.value;
-                uniqueStats[stat.statName].multiply *= stat.multiply;
+                    uniqueStats[stat.statName] = new StatStorage
+                    {
+                        statName = stat.statName,
+                        value = stat.value,
+                        multiply = stat.multiply
+                    };
+                }
+                else
+                {
+                    uniqueStats[stat.statName].value += stat.value;
+                    uniqueStats[stat.statName].multiply *= stat.multiply;
+                }
             }
         }
 
