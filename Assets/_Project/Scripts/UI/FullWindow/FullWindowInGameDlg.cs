@@ -44,7 +44,7 @@ public class FullWindowInGameDlg : FullWindowBase
     [SerializeField] private TMP_Text invenCount; //인벤토리 슬롯 수
 
 
-    [SerializeField] private Button startBattleBtn;
+    [SerializeField] private GameObject startBattleBtn;
     [SerializeField] private Transform inventorySlotParent; // 인벤토리 슬롯이 생성될 부모 Transform
     [SerializeField] private GameObject slotItemPrefab; // 슬롯 프리팹
     
@@ -104,13 +104,18 @@ public class FullWindowInGameDlg : FullWindowBase
         characterInfo.InitilazeCharacterInfo();
 
         InitializeWaveProgressUI();
-
+        if (startBattleBtn != null)
+        {
+            startBattleBtn.gameObject.SetActive(false);
+        }
 
         //이벤트 구독
         GameManager.Instance.OnCostUsed += OnCostUsed;
         UnitCardObject.OnCardUsed += OnUnitCardDestroyed;
         UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
         StageManager.Instance.OnWaveIndexChanged += OnWaveIndexChanged;
+        StageManager.Instance.OnBattleReady += UpdateBattleButtonState;
+
         characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
 
     }
@@ -769,7 +774,13 @@ public class FullWindowInGameDlg : FullWindowBase
                 progressObjects[i].SetActive(waveIndex == currentWaveIndex);
         }
     }
-
+    private void UpdateBattleButtonState(bool isBattleWave)
+    {
+        if (startBattleBtn != null)
+        {
+            startBattleBtn.gameObject.SetActive(isBattleWave);
+        }
+    }
 
     public override void HideUI()
     {
@@ -812,6 +823,7 @@ public class FullWindowInGameDlg : FullWindowBase
             UnitCardObject.OnCardUsed -= OnUnitCardDestroyed;
             UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
             StageManager.Instance.OnWaveIndexChanged -= OnWaveIndexChanged;
+            StageManager.Instance.OnBattleReady -= UpdateBattleButtonState;
             GameManager.Instance.OnCostAdd -= CostUse;
             InventoryManager.Instance.OnItemCountUpdate -= OnUpdateSlotCount;
             // 탭 버튼 이벤트 리스너 제거
@@ -827,6 +839,10 @@ public class FullWindowInGameDlg : FullWindowBase
                 characterInfo.OnSwitchToCharacterTab -= OnCharacterInfoTabClicked;
                 characterInfo.ClearCharacterInfo();
             }
+            if (startBattleBtn != null)
+            {
+                startBattleBtn.gameObject.SetActive(false);
+            }
 
         }
     }
@@ -840,6 +856,19 @@ public class FullWindowInGameDlg : FullWindowBase
 
     public void OnClickStartBattleBtn()
     {
+        // 현재 전투 웨이브가 아니면 무시
+        if (!StageManager.Instance.IsBattleWave())
+        {
+            return;
+        }
+
+
+        if (startBattleBtn != null)
+        {
+            startBattleBtn.gameObject.SetActive(false);
+        }
+
+
         // 모든 유닛을 UnitMoveToTargetState로 변경
         List<UnitController> units = UnitManager.Instance.GetAllUnits();
 

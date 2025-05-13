@@ -6589,7 +6589,7 @@ MonoBehaviour:
   progressWaveIndex: {fileID: 942141006713499738}
   placementUnitCount: {fileID: 8008686945006217818}
   invenCount: {fileID: 624629933505083607}
-  startBattleBtn: {fileID: 0}
+  startBattleBtn: {fileID: 2419340328606987148}
   inventorySlotParent: {fileID: 8077597232036669386}
   slotItemPrefab: {fileID: 6889168410095446944, guid: ed2241ea8c0932140bff3139622180bc, type: 3}
   unselectedTabColor: {r: 0.41568628, g: 0.41568628, b: 0.41568628, a: 1}
