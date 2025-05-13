@@ -2,7 +2,7 @@ using System;
 
 namespace Kylin.LWDI
 {
-    public class Factory<T> : IFactory<T>, IDependencyObject where T : IDependencyObject
+    public class Factory<T> : IFactory<T>, IDependencyObject where T : class, IDependencyObject
     {
         private readonly IScope _scope;
         
@@ -44,7 +44,7 @@ namespace Kylin.LWDI
     public static class FactoryExtensions
     {
         public static void RegisterFactory<T>(this DependencyContainer container)
-            where T : IDependencyObject
+            where T : class, IDependencyObject
         {
             // Factory<T>가 이제 IDependencyObject를 구현하므로 등록 가능
             container.Register<IFactory<T>, Factory<T>>(Lifetime.Transient);

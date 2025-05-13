@@ -9,6 +9,9 @@ namespace Kylin.LWDI
         /// 일단 DIBehaviour로 일반적인 유닛은 사용되니 view쓰려고 하지 말것 사실상 이름만 다르고 다 똑같은데 나중에 UI분리가 필요할까 해서 냅둠(참고)
         /// </summary>
         protected virtual void Awake() => Inject();
-        public void Inject() => DependencyInjector.Inject(this);
+        public void Inject(IScope scope = null)
+        {
+            DependencyInjector.Inject(this, scope);
+        }
     }
 }

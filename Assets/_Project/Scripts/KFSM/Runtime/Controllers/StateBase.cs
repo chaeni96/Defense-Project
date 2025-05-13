@@ -6,29 +6,22 @@ namespace Kylin.FSM
 {
     using UnityEngine;
 
-    public abstract class StateBase : IInjectable
+    public abstract class StateBase :  IDependencyObject, IInjectable
     {
         public int Id { get; private set; }
         
-        protected IScope fsmScope { get; private set; }
-
         internal void SetID(int Id)
         {
             this.Id = Id;
-        }
-        internal void Initialize(IScope fsmScope)
-        {
-            this.fsmScope = fsmScope;
-            
-            Inject();
         }
 
         public virtual void OnEnter() { }
         public virtual void OnUpdate() { }
         public virtual void OnExit() { }
-        public void Inject()
+
+        public void Inject(IScope scope = null)
         {
-            DependencyInjector.InjectWithScope(this, fsmScope);
+            DependencyInjector.Inject(this, scope);
         }
     }
 }
