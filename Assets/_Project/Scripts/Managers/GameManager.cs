@@ -462,6 +462,7 @@ public class GameManager : MonoBehaviour, IStatSubscriber
         StageManager.Instance.CleanUp();
         BuffManager.Instance.CleanUp();
         TimeTableManager.Instance.CleanUp();
+        SkillManager.Instance.ClearAllSkills();
 
         CleanUp();
     }

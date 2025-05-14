@@ -88,13 +88,23 @@ public enum CardGrade
 
 public enum UnitType
 {
-    Base,
+    Basic,
     Archer,
     Swordman,
     Spearman,
 
     
 }
+//공격 타입으로 구분해도됨
+public enum AnimControllerType
+{
+    None,
+    AttackBow,
+    AttackSpear,
+    AttackSword,
+}
+
+
 public enum BuffType
 {
     Temporal,      // 일정시간동안 효과가 발동하는 버프 - 시간기반

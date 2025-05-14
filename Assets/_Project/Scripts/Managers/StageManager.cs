@@ -42,6 +42,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public event Action<int> OnEnemyCountChanged; //enemy 생성 또는 삭제될때 발동 이벤트
     public event Action<int, int> OnWaveIndexChanged;
+    public event Action<bool> OnBattleReady; // bool 매개변수: 전투 웨이브인지 여부
 
     public static StageManager Instance
     {
@@ -183,6 +184,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         // 웨이브 인덱스 변경 알림
         OnWaveIndexChanged?.Invoke(currentWaveIndex + 1, waveList.Count);
 
+        OnBattleReady?.Invoke(false);
+
         // 웨이브 시작 이벤트 발생
         OnWaveStart?.Invoke();
 
@@ -267,6 +270,9 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
                 // 타일맵에 있던 원래 위치로 돌아가기
                 unit.ReturnToOriginalPosition();
+                unit.RefillHP(); // 체력 리필
+
+                //피채워주기
 
                 // 장착된 아이템이 있는지 확인 후 아이템 슬롯 활성화
                 if (unit.itemSlotObject != null)
@@ -334,7 +340,12 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
            
         }
     }
-  
+    public bool IsBattleWave()
+    {
+        return currentWave is BattleWaveBase;
+    }
+
+
     public void OnCompleteSchedule(int scheduleUID)
     {
         // 웨이브 소개 UI 표시 스케줄 완료
@@ -345,6 +356,10 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
             UIManager.Instance.CloseUI<InGameCountdownUI>();
             currentWaveInfoScheduleUID = -1;
+
+            // 전투 웨이브인지 확인하고 이벤트 발생
+            bool isBattleWave = currentWave is BattleWaveBase;
+            OnBattleReady?.Invoke(isBattleWave);
 
             // 실제 웨이브 시작
             if (currentWave != null)
@@ -371,6 +386,8 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     public void CleanUp()
     {
+        OnBattleReady?.Invoke(false);
+
 
         if (currentWaveInfoScheduleUID != -1)
         {

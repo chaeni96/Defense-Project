@@ -154,6 +154,7 @@ public class PrizeHuntingSelectUI : FloatingPopupBase
         {
             if (option != null)
             {
+                option.DestroyRTObject();
                 Destroy(option.gameObject);
             }
         }

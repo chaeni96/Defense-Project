@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CatDarkGame.PerObjectRTRenderForUGUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -13,57 +14,46 @@ public class HuntingOptionObject : MonoBehaviour
 
     public Image cardBackImage;
 
+    [SerializeField] private PerObjectRTRenderer unitRTObject;
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text enemyNameText;
-    [SerializeField] private Image enemyImage;
-    private bool isSelectable;
 
-    private AsyncOperationHandle<Sprite> imageLoadHandle;
+    private bool isSelectable;
+    private GameObject enemyObj;
 
     private D_HuntingOptionData optionData;
     private Action<D_HuntingOptionData> onOptionClicked;
-    public Action onCardRevealed; // 카드가 뒤집혔을 때 호출될 이벤트
 
+
+    public Action onCardRevealed; // 카드가 뒤집혔을 때 호출될 이벤트
 
     public void Initialize(D_HuntingOptionData data, System.Action<D_HuntingOptionData> callback)
     {
         optionData = data;
         onOptionClicked = callback;
-        enemyNameText.text = data.f_spawnEnemy.Name;
+        enemyNameText.text = data.f_f_bossEnemy.Name;
 
         // TODO: 프리뷰 이미지 로드 -> RT 렌더러로 가지고오기
-        //LoadEnemyPreviewImage();
+        LoadEnemyPreviewImage();
 
         UpdateUI();
     }
 
     private void LoadEnemyPreviewImage()
     {
-        // 이전에 로드한 이미지가 있으면 해제
-        if (imageLoadHandle.IsValid())
-        {
-            Addressables.Release(imageLoadHandle);
-        }
+        enemyObj = PoolingManager.Instance.GetObject(optionData.f_f_bossEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
 
-        // 프리뷰 이미지 주소 키가 유효한지 확인
-        if (!string.IsNullOrEmpty(optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey))
+        // 유닛 렌더링 설정
+        if (unitRTObject != null)
         {
-            // 비동기로 이미지 로드
-            imageLoadHandle = Addressables.LoadAssetAsync<Sprite>(optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey);
-            imageLoadHandle.Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    enemyImage.sprite = handle.Result;
-                }
-                else
-                {
-                    Debug.LogWarning($"프리뷰 이미지 로드 실패: {optionData.f_spawnEnemy.f_ObjectPoolKey.f_PoolObjectAddressableKey}");
-                }
-            };
+            // PerObjectRTSource 컴포넌트를 가진 게임 오브젝트 생성
+            PerObjectRTSource rtSource = enemyObj.GetComponent<PerObjectRTSource>();
+
+            // 필요한 경우 자식 오브젝트도 복사
+            // 여기서는 간단히 소스만 설정
+            unitRTObject.source = rtSource;
         }
-       
     }
 
     private void UpdateUI()
@@ -91,5 +81,11 @@ public class HuntingOptionObject : MonoBehaviour
             // 클릭 이벤트 콜백 실행
             onOptionClicked?.Invoke(optionData);
         }
+    }
+
+    public void DestroyRTObject()
+    {
+        PoolingManager.Instance.ReturnObject(enemyObj.gameObject);
+
     }
 }

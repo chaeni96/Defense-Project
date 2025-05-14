@@ -18,7 +18,7 @@ MonoBehaviour:
   - id: testFSM2
     data: {fileID: 11400000, guid: 04cd400010a94ea47b8be4fe2da8384a, type: 2}
   - id: testUnitFSM
-    data: {fileID: 11400000, guid: f1a8ecc4cca33544bb6c1d490eeb4089, type: 2}
+    data: {fileID: 0}
   - id: testUnitFSM2
     data: {fileID: 0}
   - id: testEnemyFSM
@@ -29,3 +29,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 312c73d2e6e457b4e99ad44a5816b217, type: 2}
   - id: CatSpearmanFSM
     data: {fileID: 11400000, guid: 7602015acfcec6e4dbf09a8111d83dfd, type: 2}
+  - id: CatTestFSM
+    data: {fileID: 0}
+  - id: CatArcherTEstFSM
+    data: {fileID: 0}

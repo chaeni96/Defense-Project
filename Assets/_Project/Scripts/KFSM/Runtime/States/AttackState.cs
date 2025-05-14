@@ -19,10 +19,10 @@ public class AttackState : StateBase
 
     // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private bool animLengthChecked = false;
-    private float animCheckDelay = 0.05f; // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    private float animCheckDelay = 0.05f; // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½Ã°ï¿½
     private float animCheckTimer = 0f; // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Ã¼Å© Å¸ï¿½Ì¸ï¿½
 
-    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?
     private const float DAMAGE_TIMING_RATIO = 0.4f;
     private const int LAYER_INDEX = 0; 
     [Inject] protected StateController Controller;
@@ -60,7 +60,12 @@ public class AttackState : StateBase
     public override void OnUpdate()
     {
         // CharacterFSMObject È®ï¿½ï¿½
-        if (characterFSM == null) return;
+        if(characterFSM == null || characterFSM.basicObject == null)
+         {
+            // FSM ê°ì²´ê°€ ?Œê´´??ê²½ìš° ?…ë°?´íŠ¸ ì¤‘ì?
+            Controller?.RegisterTrigger(Trigger.AttackFinished);
+            return;
+        }
 
         // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½
         if (!animLengthChecked)
@@ -84,36 +89,43 @@ public class AttackState : StateBase
 
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
-            //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-            if(skillAddressableKey == null)
+            //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            if(string.IsNullOrWhiteSpace(skillAddressableKey))
             {
                 ApplyDamage();
             }
             else
             {
-
-                // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
-                Vector3 targetDirection = (characterFSM.CurrentTarget.transform.position - characterFSM.transform.position).normalized;
-
-                //ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½
-                GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, characterFSM.transform.position, (int)ObjectLayer.IgnoereRayCast);
-
-
-                // ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Ê±ï¿½È­
-                SkillBase projectile = skillObj.GetComponent<SkillBase>();
-                if (projectile != null)
+                if (!string.IsNullOrEmpty(skillAddressableKey) && characterFSM.CurrentTarget != null)
                 {
-                    projectile.Initialize(characterFSM.basicObject);
-                    projectile.Fire(
-                        characterFSM.basicObject,
-                        characterFSM.CurrentTarget.transform.position,
-                        targetDirection,
-                        characterFSM.CurrentTarget
+                    // ÇöÀç Å¸°Ù À§Ä¡¸¦ ÀúÀå
+                    Vector3 currentTargetPosition = characterFSM.CurrentTarget.transform.position;
+                    Vector3 firingPosition = characterFSM.transform.position;
 
-                    );
+                    Vector3 targetDirection = (currentTargetPosition - firingPosition).normalized;
+
+                    // Åõ»çÃ¼ »ý¼º ¹× À§Ä¡ ¼³Á¤
+                    GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
+
+                    // Åõ»çÃ¼ ÃÊ±âÈ­ ¹× ¹ß»ç
+                    if (skillObj != null)
+                    {
+                        SkillBase projectile = skillObj.GetComponent<SkillBase>();
+                        if (projectile != null)
+                        {
+                            // ÃÊ±âÈ­ ÈÄ ¹Ù·Î ¹ß»ç
+                            projectile.Initialize(characterFSM.basicObject);
+                            projectile.Fire(
+                                characterFSM.basicObject,
+                                currentTargetPosition,  // ÀúÀåµÈ Å¸°Ù À§Ä¡ »ç¿ë
+                                targetDirection,
+                                characterFSM.CurrentTarget
+                            );
+                        }
+                    }
                 }
+            
             }
-
             damageApplied = true;
         }
 
@@ -167,7 +179,7 @@ public class AttackState : StateBase
 
         if (clipInfo.Length > 0)
         {
-            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             attackAnimationLength = clipInfo[0].clip.length;
             damageApplyTime = attackAnimationLength * DAMAGE_TIMING_RATIO;
         }
@@ -184,7 +196,7 @@ public class AttackState : StateBase
                 var enemyObj = characterFSM.CurrentTarget.GetComponent<Enemy>();
                 if (enemyObj != null)
                 {
-                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
                     enemyObj.OnDamaged(characterFSM.basicObject, damage);
                 }
@@ -194,7 +206,7 @@ public class AttackState : StateBase
                 var unitObj = characterFSM.CurrentTarget.GetComponent<UnitController>();
                 if (unitObj != null)
                 {
-                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     float damage = characterFSM.basicObject.GetStat(StatName.ATK);
                     unitObj.OnDamaged(characterFSM.basicObject, damage);
                 }
@@ -233,8 +245,6 @@ public class AttackState : StateBase
                 Controller.RegisterTrigger(Trigger.AttackFinished);
                 return false;
             }
-
-            Controller.RegisterTrigger(Trigger.AttackRequested);
 
             return true; // ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }

@@ -43,6 +43,7 @@ namespace Kylin.FSM
         private CancellationTokenSource linkedCts; //���� ������? ������� ������..?
         public Animator animator;
 
+        private IScope _currentScope;
 
         public bool isEnemy;
         public bool isFinished;
@@ -102,11 +103,14 @@ namespace Kylin.FSM
 
         protected virtual void Initialized()
         {
+
             ConfigureStateMachine(out var states, out var transitions, out var initId);
-
-
+            
+            _currentScope = DependencyInjector.CreateScope();
+            _currentScope.RegisterInstance(typeof(FSMObjectBase), this);
+            _currentScope.RegisterInstance(this.GetType(), this);
             stateMachine = new StateController();
-            stateMachine.Initialize(states, transitions, initId, this);
+            stateMachine.Initialize(states, transitions, initId, this, _currentScope);
             stateMachine.RegistFSMSubscriber(this);
             // ������Ʈ ���� �����׽�ũ�� �ߴµ� �³� �𸣰��� Ȯ���Ұ� TODO : ��⸰
             RunLoop(linkedCts.Token).Forget();
@@ -162,7 +166,26 @@ namespace Kylin.FSM
             }
         }
 
-      
+        // fsmId가 변경되었을 때 호출할 수 있는 메서드 추가
+        public void UpdateFSM(string newFsmId)
+        {
+            if (fsmId == newFsmId) return; // 이미 같은 ID면 변경 불필요
+
+            // 기존 FSM 정리
+            CancelFSM();
+
+            // 새 ID 설정
+            fsmId = newFsmId;
+
+            localCts = new CancellationTokenSource();
+            linkedCts = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token);
+            Application.quitting += CancelFSM;
+
+            // FSM 재초기화
+            Initialized();
+        }
+
+
         public void ChangeState(int stateID)
         {
         }

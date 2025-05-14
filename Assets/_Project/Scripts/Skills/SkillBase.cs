@@ -18,9 +18,19 @@ public abstract class SkillBase : MonoBehaviour
     public virtual void Initialize(BasicObject owner)
     {
         this.owner = owner;
+
+        // 스킬 매니저에 등록
+        SkillManager.Instance.RegisterSkill(this);
     }
     public abstract void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null);
 
-    public abstract void DestroySkill();
+    public virtual void DestroySkill()
+    {
+        // 스킬 매니저에서 등록 해제
+        SkillManager.Instance.UnregisterSkill(this);
+
+        owner = null;
+        PoolingManager.Instance.ReturnObject(gameObject);
+    }
 
 }

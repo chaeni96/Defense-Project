@@ -12,6 +12,8 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     public Animator animator;
 
     public Kylin.FSM.FSMObjectBase fsmObj;
+    public D_SkillData skillData;
+
 
     //처음 Subject에서 가져온 기본 스탯, 레벨업이나 버프 적용시 참조하는 기준값
     public Dictionary<StatName, StatStorage> baseStats = new Dictionary<StatName, StatStorage>();
@@ -27,10 +29,14 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     [SerializeField] protected Slider hpBar;  // Inspector에서 할당
     [SerializeField] protected Canvas hpBarCanvas;  // Inspector에서 할당
+
+
+    //TODO : 애니메이션 컨트롤하는 매핑 스크립트 따로 만들기
+    [SerializeField] protected RuntimeAnimatorController attackBowController;
+    [SerializeField] protected RuntimeAnimatorController attackSpearController;
+    [SerializeField] protected RuntimeAnimatorController attackSwordController;
+
     protected bool isDead = false;
-
-    public D_SkillData skillData;
-
     public virtual void Initialize()
     {
         foreach (var subject in subjects)
@@ -116,6 +122,25 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         }
     }
 
+
+    // 애니메이터 컨트롤러 변경 메서드
+    public virtual void SetAnimatorController(AnimControllerType unitType)
+    {
+        if (animator == null) return;
+
+        switch (unitType)
+        {
+            case AnimControllerType.AttackBow:
+                animator.runtimeAnimatorController = attackBowController;
+                break;
+            case AnimControllerType.AttackSpear:
+                animator.runtimeAnimatorController = attackSpearController;
+                break;
+            case AnimControllerType.AttackSword:
+                animator.runtimeAnimatorController = attackSwordController;
+                break;
+        }
+    }
 
 
     public virtual void OnDead()

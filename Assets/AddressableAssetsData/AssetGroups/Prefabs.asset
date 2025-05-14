@@ -137,6 +137,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0545526d93a0a484689c46edce24eaef
+    m_Address: Cat_Basic
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 454e8e378abf3ac44b3a23dc5436f15c
+    m_Address: TargetingLaserAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbb7c15c88f96b5419534eb98229807b
+    m_Address: StraightLaserAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9f8aa69b6aec9854e8a40358d3e1e686, type: 2}
   m_SchemaSet:
