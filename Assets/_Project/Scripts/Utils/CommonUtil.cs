@@ -48,5 +48,21 @@ namespace AutoBattle.Scripts.Utils
 
             return default(T);
         }
+        
+        public static string GetTimeText(int time)
+        {
+            if (time < 60)
+            {
+                return $"{time}s";
+            }
+            else if (time < 3600)
+            {
+                return $"{time / 60}m {time % 60}s";
+            }
+            else
+            {
+                return $"{time / 3600}h {time % 3600 / 60}m {time % 60}s";
+            }
+        }
     }
 }
