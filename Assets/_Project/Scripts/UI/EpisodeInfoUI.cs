@@ -1,82 +1,122 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EpisodeInfoUI : MonoBehaviour
 {
+    [Header("Episode Info")]
     [SerializeField] private TMP_Text episodeNumber;
     [SerializeField] private TMP_Text episodeTitle;
     [SerializeField] private TMP_Text clearStageNumber;
 
-    [SerializeField] private Button episodeButton;
+    [Header("Episode Control")] 
+    [SerializeField] private GameObject prevEpisodeDimObject;
+    [SerializeField] private GameObject nextEpisodeDimObject;
+    [SerializeField] private GameObject gameStartDimObject;
 
-    private D_EpisodeData episodeData;
-    private D_LocalUserData userData;
-
-    //클리어한 에피소드의 다음 에피소드 로드
-    public void CreateEpisodeInfo()
+    private EpisodeInfoParam currentEpisodeInfoParam;
+    
+    public void InitializeEpisodeInfo(EpisodeInfoParam episodeInfoParam)
     {
-        // 현재 유저의 클리어 에피소드 정보 가져오기
-        userData = D_LocalUserData.GetEntity(0);
-        int nextEpisodeNum = userData.f_clearEpisodeNumber + 1;
+        currentEpisodeInfoParam = episodeInfoParam;
 
-        // 표시할 에피소드 데이터 가져오기
-        D_EpisodeData episodeData = D_EpisodeData.FindEntity(e => e.f_episodeNumber == nextEpisodeNum);
-
+        var episodeData = currentEpisodeInfoParam.EpisodeData;
         if (episodeData == null)
         {
-            // 없으면 첫 번째 에피소드 보여주기
-            episodeData = D_EpisodeData.FindEntity(e => e.f_episodeNumber == 1);
+            Debug.LogError("EpisodeData is null");
+            return;
         }
-
-        // 에피소드 정보 설정
-        SetEpisodeInfo(episodeData);
+        
+        prevEpisodeDimObject.SetActive(episodeData.f_episodeNumber - 1 <= 0);
+        nextEpisodeDimObject.SetActive(episodeData.f_episodeNumber + 1 > D_EpisodeData.GetMaxEpisodeNumber());
+        
+        SetEpisodeInfo(currentEpisodeInfoParam.EpisodeData);
     }
 
-    public void SetEpisodeInfo(D_EpisodeData episode)
+    private void SetEpisodeInfo(D_EpisodeData episode)
     {
-        this.episodeData = episode;
-        episodeNumber.text = $"Episode {episodeData.f_episodeNumber}";
-        episodeTitle.text = $"{episodeData.f_episodeTitle}";
-        //TODO : 김채현
-        //해당 에피소드의 스테이지 넘버 받아와야됨
-        //각 에피소드마다 stage 개수 다를수있으므로 data 수정해야됨
-        if(userData.f_lastClearedStageNumber >= 5)
+        episodeNumber.text = $"Episode {episode.f_episodeNumber}";
+        episodeTitle.text = $"{episode.f_episodeTitle}";
+
+        var maxStageNumber = D_StageData.GetEntitiesByKeyEpisodeKey(episode).Count;
+        
+        if(currentEpisodeInfoParam.UserBestRecordStage >= episode.f_episodeNumber)
         {
             clearStageNumber.text = $"올 클리어";
         }
         else
         {
-
-            clearStageNumber.text = $"스테이지 돌파 : {userData.f_lastClearedStageNumber} / 5";
+            clearStageNumber.text = $"스테이지 돌파 : {currentEpisodeInfoParam.UserBestRecordStage} / {maxStageNumber}";
         }
+        
+        // 게임 시작 버튼 활성화
+        gameStartDimObject.SetActive(currentEpisodeInfoParam.CanPlay == false);
     }
 
-    //에피소드 선택 버튼
-    public async void OnClickSelectEpisodeBtn()
+    public void OnClickNextEpisode()
     {
-        var selectPopup =  await UIManager.Instance.ShowUI<EpisodeSelectPopup>();
-
-        // 생성된 팝업에 현재 에피소드 정보 전달
-        if (selectPopup != null)
+        // 다음 에피소드로 이동
+        if (currentEpisodeInfoParam.EpisodeData.f_episodeNumber + 1 <= D_EpisodeData.GetMaxEpisodeNumber())
         {
-            selectPopup.SetCurrentEpisode(episodeData);
-        }
+            var nextEpisode = D_EpisodeData.FindEntity(
+                e => e.f_episodeNumber == currentEpisodeInfoParam.EpisodeData.f_episodeNumber + 1
+            );
+            
+            var nextEpisodeStageDataList = D_StageData.GetEntitiesByKeyEpisodeKey(nextEpisode);
+            
+            if (nextEpisode != null && nextEpisodeStageDataList is {Count: > 0})
+            {
+                var nextMaxStageCount = nextEpisodeStageDataList.Count;
 
+                var userData = D_LocalUserData.GetEntity(0);
+                var canPlay = nextEpisode.f_episodeNumber == 1 || userData.f_clearEpisodeNumber >= nextEpisode.f_episodeNumber;
+                
+                InitializeEpisodeInfo(new EpisodeInfoParam(nextEpisode, 0, nextMaxStageCount, canPlay));
+            }
+        }
+        else
+        {
+            Debug.Log("다음 에피소드가 없습니다.");
+        }
+        
+    }
+    
+    public void OnClickPrevEpisode()
+    {
+        // 이전 에피소드로 이동
+        if (currentEpisodeInfoParam.EpisodeData.f_episodeNumber - 1 > 0)
+        {
+            var prevEpisode = D_EpisodeData.FindEntity(
+                e => e.f_episodeNumber == currentEpisodeInfoParam.EpisodeData.f_episodeNumber - 1
+            );
+            
+            var prevEpisodeStageDataList = D_StageData.GetEntitiesByKeyEpisodeKey(prevEpisode);
+            
+            if (prevEpisode != null && prevEpisodeStageDataList is {Count: > 0})
+            {
+                var prevMaxStageCount = prevEpisodeStageDataList.Count;
+                
+                var userData = D_LocalUserData.GetEntity(0);
+                var canPlay = prevEpisode.f_episodeNumber == 1 || userData.f_clearEpisodeNumber >= prevEpisode.f_episodeNumber;
+                InitializeEpisodeInfo(new EpisodeInfoParam(prevEpisode, 0, prevMaxStageCount, canPlay));
+            }
+        }
+        else
+        {
+            Debug.Log("이전 에피소드가 없습니다.");
+        }
     }
 
     public void OnClickGameStartBtn()
     {
-        if (GameManager.Instance.SelectEpisode(episodeData.f_episodeNumber))
+        if (GameManager.Instance.SelectEpisode(currentEpisodeInfoParam.EpisodeData.f_episodeNumber))
         {
             // 클리어한 스테이지의 다음 스테이지 찾기
-            int nextStageNumber = userData.f_lastClearedStageNumber + 1;
+            int nextStageNumber = currentEpisodeInfoParam.UserBestRecordStage + 1;
 
             // 해당 에피소드의 스테이지 중 다음 스테이지 가져오기
             var nextStage = D_StageData.FindEntity(
-                s => s.f_EpisodeData.Id == episodeData.Id && s.f_StageNumber == nextStageNumber
+                s => s.f_EpisodeData.Id == currentEpisodeInfoParam.EpisodeData.Id && s.f_StageNumber == nextStageNumber
             );
-
           
             // 스테이지가 있으면 바로 인게임으로 진입
             if (nextStage != null)
@@ -86,5 +126,22 @@ public class EpisodeInfoUI : MonoBehaviour
                 GameSceneManager.Instance.LoadScene(SceneKind.InGame);
             }
         }
+    }
+}
+
+public class EpisodeInfoParam
+{
+    public D_EpisodeData EpisodeData { get; }
+    public int UserBestRecordStage { get; }
+    public int MaxStageCount { get; }
+    
+    public bool CanPlay { get; }
+
+    public EpisodeInfoParam(D_EpisodeData episodeData, int userBestRecordStage, int maxStageCount, bool canPlay)
+    {
+        EpisodeData = episodeData;
+        UserBestRecordStage = userBestRecordStage;
+        MaxStageCount = maxStageCount;
+        CanPlay = canPlay;
     }
 }
