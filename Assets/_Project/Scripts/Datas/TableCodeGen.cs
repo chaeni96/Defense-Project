@@ -4615,6 +4615,12 @@ public partial class D_UnitAppearanceData : BGEntity
 		public const string SlotBodyLayeredSpriteKey = "SlotBodyLayeredSpriteKey";
 		public const string SlotBodyLayeredTint = "SlotBodyLayeredTint";
 		public const string SlotBodyLayeredEnabled = "SlotBodyLayeredEnabled";
+		public const string SlotWeaponThrowSpriteKey = "SlotWeaponThrowSpriteKey";
+		public const string SlotWeaponThrowTint = "SlotWeaponThrowTint";
+		public const string SlotWeaponThrowEnabled = "SlotWeaponThrowEnabled";
+		public const string SlotWeaponShieldSpriteKey = "SlotWeaponShieldSpriteKey";
+		public const string SlotWeaponShieldTint = "SlotWeaponShieldTint";
+		public const string SlotWeaponShieldEnabled = "SlotWeaponShieldEnabled";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(4729747390774859296UL,10352431840437797552UL), () => _metaDefault = null));
@@ -5105,6 +5111,36 @@ public partial class D_UnitAppearanceData : BGEntity
 		get => _f_SlotBodyLayeredEnabled[Index];
 		set => _f_SlotBodyLayeredEnabled[Index] = value;
 	}
+	public System.String f_SlotWeaponThrowSpriteKey
+	{
+		get => _f_SlotWeaponThrowSpriteKey[Index];
+		set => _f_SlotWeaponThrowSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotWeaponThrowTint
+	{
+		get => _f_SlotWeaponThrowTint[Index];
+		set => _f_SlotWeaponThrowTint[Index] = value;
+	}
+	public System.Boolean f_SlotWeaponThrowEnabled
+	{
+		get => _f_SlotWeaponThrowEnabled[Index];
+		set => _f_SlotWeaponThrowEnabled[Index] = value;
+	}
+	public System.String f_SlotWeaponShieldSpriteKey
+	{
+		get => _f_SlotWeaponShieldSpriteKey[Index];
+		set => _f_SlotWeaponShieldSpriteKey[Index] = value;
+	}
+	public UnityEngine.Color f_SlotWeaponShieldTint
+	{
+		get => _f_SlotWeaponShieldTint[Index];
+		set => _f_SlotWeaponShieldTint[Index] = value;
+	}
+	public System.Boolean f_SlotWeaponShieldEnabled
+	{
+		get => _f_SlotWeaponShieldEnabled[Index];
+		set => _f_SlotWeaponShieldEnabled[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5747305129318046422UL, 8466311968996001153UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotNeckFrontSpriteKey;
@@ -5299,6 +5335,18 @@ public partial class D_UnitAppearanceData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotBodyLayeredTint => _ufle12jhs77_f_SlotBodyLayeredTint ?? (_ufle12jhs77_f_SlotBodyLayeredTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5336853611726403324UL, 13790153205671773858UL), () => _ufle12jhs77_f_SlotBodyLayeredTint = null));
 	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotBodyLayeredEnabled;
 	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotBodyLayeredEnabled => _ufle12jhs77_f_SlotBodyLayeredEnabled ?? (_ufle12jhs77_f_SlotBodyLayeredEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5162761801079366242UL, 165038359842721711UL), () => _ufle12jhs77_f_SlotBodyLayeredEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotWeaponThrowSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotWeaponThrowSpriteKey => _ufle12jhs77_f_SlotWeaponThrowSpriteKey ?? (_ufle12jhs77_f_SlotWeaponThrowSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4751032145753769398UL, 605952766478933431UL), () => _ufle12jhs77_f_SlotWeaponThrowSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotWeaponThrowTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotWeaponThrowTint => _ufle12jhs77_f_SlotWeaponThrowTint ?? (_ufle12jhs77_f_SlotWeaponThrowTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5373694548131105852UL, 1269913570398579083UL), () => _ufle12jhs77_f_SlotWeaponThrowTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotWeaponThrowEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotWeaponThrowEnabled => _ufle12jhs77_f_SlotWeaponThrowEnabled ?? (_ufle12jhs77_f_SlotWeaponThrowEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(5080673722911389776UL, 17352024805244455070UL), () => _ufle12jhs77_f_SlotWeaponThrowEnabled = null));
+	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_SlotWeaponShieldSpriteKey;
+	public static BansheeGz.BGDatabase.BGFieldString _f_SlotWeaponShieldSpriteKey => _ufle12jhs77_f_SlotWeaponShieldSpriteKey ?? (_ufle12jhs77_f_SlotWeaponShieldSpriteKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(4756947807829496954UL, 1382766265934978960UL), () => _ufle12jhs77_f_SlotWeaponShieldSpriteKey = null));
+	private static BansheeGz.BGDatabase.BGFieldColor _ufle12jhs77_f_SlotWeaponShieldTint;
+	public static BansheeGz.BGDatabase.BGFieldColor _f_SlotWeaponShieldTint => _ufle12jhs77_f_SlotWeaponShieldTint ?? (_ufle12jhs77_f_SlotWeaponShieldTint = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldColor>(MetaDefault, new BGId(5523155513275816396UL, 3831962162656621746UL), () => _ufle12jhs77_f_SlotWeaponShieldTint = null));
+	private static BansheeGz.BGDatabase.BGFieldBool _ufle12jhs77_f_SlotWeaponShieldEnabled;
+	public static BansheeGz.BGDatabase.BGFieldBool _f_SlotWeaponShieldEnabled => _ufle12jhs77_f_SlotWeaponShieldEnabled ?? (_ufle12jhs77_f_SlotWeaponShieldEnabled = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldBool>(MetaDefault, new BGId(4872068177311812708UL, 7422226332080296067UL), () => _ufle12jhs77_f_SlotWeaponShieldEnabled = null));
 	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingunitAppearanceDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_unitAppearanceData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
