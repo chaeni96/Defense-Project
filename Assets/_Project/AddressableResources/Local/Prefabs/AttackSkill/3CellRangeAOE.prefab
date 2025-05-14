@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1183667827297006579}
-  - component: {fileID: 769517016649753561}
+  - component: {fileID: 5588867781165464785}
   - component: {fileID: 7789704312091564430}
   m_Layer: 2
-  m_Name: 1CellTargetBaseAOE
+  m_Name: 3CellRangeAOE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,14 +27,14 @@ Transform:
   m_GameObject: {fileID: 1183667827297006581}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 845213259821662789}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &769517016649753561
+--- !u!114 &5588867781165464785
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,14 +43,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1183667827297006581}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52707152c44e01c40b33f25e0572fb03, type: 3}
+  m_Script: {fileID: 11500000, guid: 05109556150fe05428252d1ba217a5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
   soundEffect: {fileID: 0}
-  radius: 1
+  radius: 1.5
   damage: 1
-  duration: 0.3
+  duration: 1
 --- !u!114 &7789704312091564430
 MonoBehaviour:
   m_ObjectHideFlags: 0

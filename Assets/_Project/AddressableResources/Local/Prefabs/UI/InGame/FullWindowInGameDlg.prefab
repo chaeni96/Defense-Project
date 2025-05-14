@@ -6573,6 +6573,10 @@ MonoBehaviour:
   currencyTabButton: {fileID: 5674352451568326036}
   equipmentTabButton: {fileID: 5354195049800667737}
   characterInfoTabButton: {fileID: 9190027684664426956}
+  rerollBtn: {fileID: 3600156529189690037}
+  shopUpgradeBtn: {fileID: 3436796121817928058}
+  unEquipBtn: {fileID: 9073117456903440424}
+  saleUnitBtn: {fileID: 393384617155465621}
   shopLevelText: {fileID: 5179829306478723476}
   shopLevelUpCostText: {fileID: 6440371727927142239}
   currentCostText: {fileID: 6140191026610060340}

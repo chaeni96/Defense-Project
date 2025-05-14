@@ -5,14 +5,14 @@ using UnityEngine;
 public class LaserAOE : SkillBase
 {
     [Header("레이저 AOE 설정")]
-    public bool straightLine = false;            // 일직선 레이저 모드 (타겟 위치 무시하고 직선 방향으로 발사)
-    public Vector2 size = new Vector2(10f, 1f);  // 레이저 크기 (길이, 폭)
-    public float damage = 30f;                   // 기본 데미지
-    public float duration = 1.0f;                // 지속 시간
-    public float delayBetweenDamage = 0.1f;      // 데미지 적용 간격 (DoT 효과용)
-    public bool isDOT = false;                   // 지속 데미지 여부
-    public bool followOwnerRotation = false;     // 소유자 회전 추적 여부
-    public float offsetFromPlayer = 1.0f;        // 플레이어로부터의 거리 오프셋
+    [SerializeField] private bool straightLine = false;            // 일직선 레이저 모드 (타겟 위치 무시하고 직선 방향으로 발사)
+    [SerializeField] private Vector2 size = new Vector2(10f, 1f);  // 레이저 크기 (길이, 폭)
+    [SerializeField] private float damage = 30f;                   // 기본 데미지
+    [SerializeField] private float duration = 1.0f;                // 지속 시간
+    [SerializeField] private bool isDOT = false;                   // 지속 데미지 여부
+    [SerializeField] private float delayBetweenDamage = 0.1f;      // 데미지 적용 간격 (DoT 효과용)
+    [SerializeField] private bool followOwnerRotation = false;     // 타겟 따라서 계속 회전할지 여부
+    [SerializeField] private float offsetFromPlayer = 1.0f;        // 플레이어로부터의 거리 오프셋
 
     protected float timer = 0f;                  // 지속 시간 타이머
     protected float damageTimer = 0f;            // 데미지 타이머

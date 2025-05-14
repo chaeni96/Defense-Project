@@ -177,7 +177,7 @@ public class CharacterInfo : MonoBehaviour
         if (clickUnit == null || unitSaleCostText == null) return;
 
         int starLevel = (int)clickUnit.GetStat(StatName.UnitStarLevel);
-        int saleValue = (clickUnit.unitType == UnitType.Basic) ? 0 : (starLevel == 1) ? 1 : starLevel - 1;
+        int saleValue = (clickUnit.unitType == UnitType.None) ? 0 : (starLevel == 1) ? 1 : starLevel - 1;
 
         unitSaleCostText.text = $"{saleValue}";
     }

@@ -12,7 +12,6 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     public Animator animator;
 
     public Kylin.FSM.FSMObjectBase fsmObj;
-    public D_SkillData skillData;
 
 
     //처음 Subject에서 가져온 기본 스탯, 레벨업이나 버프 적용시 참조하는 기준값
@@ -148,7 +147,12 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     }
 
-    public virtual BasicObject GetTarget()
+    public virtual BasicObject GetNearestTarget()
+    {
+        return null;
+    }
+
+    public virtual List<BasicObject> GetTargetList()
     {
         return null;
     }

@@ -28,9 +28,17 @@ public class Enemy : BasicObject
 
     }
 
-    public override BasicObject GetTarget()
+    public override BasicObject GetNearestTarget()
     {
         return UnitManager.Instance.GetNearestUnit(transform.position);
+    }
+
+    public override List<BasicObject> GetTargetList()
+    {
+        // Convert List<UnitController> to List<BasicObject>
+        List<UnitController> unitControllers = UnitManager.Instance.GetAllUnits();
+        List<BasicObject> basicObjects = new List<BasicObject>(unitControllers);
+        return basicObjects;
     }
 
     public void InitializeEnemyInfo(D_EnemyData data)

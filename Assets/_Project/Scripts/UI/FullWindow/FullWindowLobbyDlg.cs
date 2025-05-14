@@ -10,13 +10,9 @@ public class FullWindowLobbyDlg : FullWindowBase
 {
 
     //화면 패널
+    [SerializeField] private EpisodeInfoUI episodeUI;
     
-    [SerializeField] private GameObject campPanel;
-    [SerializeField] private GameObject inventoryPanel;
-    
-    [SerializeField] private Button campButton;
     [SerializeField] private Button inventoryButton;
-
 
     [SerializeField] private float transitionDuration = 0.3f;
     [SerializeField] private Ease transitionEase = Ease.OutQuad;
@@ -29,90 +25,57 @@ public class FullWindowLobbyDlg : FullWindowBase
 
     private bool initialized = false;
 
-    private EpisodeInfoUI episodeUI;
-    private RelicInventoryUI inventoryUI;
-
-
     public override void InitializeUI()
     {
         base.InitializeUI();
 
-        // 모든 패널과 버튼을 리스트로 관리
-        allPanels = new List<GameObject> { campPanel, inventoryPanel };
-        allButtons = new List<Button> { campButton, inventoryButton };
-
-        // 초기 패널 설정 (캠프 패널)
-        currentPanel = campPanel;
-        currentButton = campButton;
-
-        // 모든 패널 비활성화
-        foreach (var panel in allPanels)
-        {
-            panel.SetActive(false);
-        }
-
         OpenBaseUI();
     }
 
-
-    private async void OpenBaseUI()
+    private void OpenBaseUI()
     {
-        // 캠프 패널 활성화 및 초기 UI 표시
-        campPanel.SetActive(true);
-
-        // EpisodeInfoUI 표시 (캠프 패널의 내용)
-        if (episodeUI == null)
-        {
-            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
-            episodeUI.CreateEpisodeInfo();
-        }
+        InitializeEpisodeUI();
         
         initialized = true;
-
     }
-    // 캠프 패널로 전환
-    public async void SwitchToCampPanel()
+
+    private void InitializeEpisodeUI()
     {
-        if (!initialized || currentPanel == campPanel)
-            return;
+        var userData = D_LocalUserData.GetEntity(0);
+        int userBestRecordEpisode = userData.f_clearEpisodeNumber;
 
-        await SwitchPanel(campPanel, campButton);
-
-        // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
-        if (inventoryUI != null)
+        D_EpisodeData episodeData = null;
+        List<D_StageData> episodeStageDataList = null;
+        
+        // 유저가 진행해야할 에피소드 반환
+        episodeData = userBestRecordEpisode == 0
+            ? D_EpisodeData.FindEntity(e => e.f_episodeNumber == 1)
+            : D_EpisodeData.FindEntity(e => e.f_episodeNumber == userBestRecordEpisode + 1);
+        
+        episodeStageDataList = D_StageData.GetEntitiesByKeyEpisodeKey(episodeData);
+        
+        if (episodeStageDataList is { Count: > 0 })
         {
-            UIManager.Instance.CloseUI<RelicInventoryUI>();
+            // 에피소드 UI 초기화
+            bool canPlay = episodeData.f_episodeNumber == 1 || userData.f_clearEpisodeNumber >= episodeData.f_episodeNumber;
+            
+            episodeUI.InitializeEpisodeInfo(new EpisodeInfoParam(episodeData, userData.f_lastClearedStageNumber, episodeStageDataList.Count, canPlay));
         }
-
-        // 캠프 UI가 없으면 생성, 있으면 표시
-        if (episodeUI == null)
-        {
-            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
-            episodeUI.CreateEpisodeInfo();
-        }
-
     }
-
+    
     // 인벤토리(유물) 패널로 전환
-    public async void SwitchToInventoryPanel()
+    public async void OnClickRelicInventoryButton()
     {
-        // if (!initialized || currentPanel == inventoryPanel)
-        //     return;
-        //
-        // await SwitchPanel(inventoryPanel, inventoryButton);
-        //
-        // // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
-        // if (episodeUI != null)
-        // {
-        //    UIManager.Instance.CloseUI<EpisodeInfoUI>();
-        // }
-        //
-        // inventoryUI = await UIManager.Instance.ShowUI<RelicInventoryUI>(); // 여기에 실제 UI 타입 지정
-        // inventoryUI.InitLobbyDlg(this);
-
         var popup = await UIManager.Instance.ShowUI<RelicInventoryUI>();
-
     }
+    
+    public async void OnClickLobbySettingPopup()
+    {
+        await UIManager.Instance.ShowUI<LobbySettingPopup>();
+    }
+
+    #region Animation
+    
     // 애니메이션 없는 패널 전환용 메서드
     private Task SwitchPanel(GameObject targetPanel, Button clickedButton)
     {
@@ -122,8 +85,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         currentButton = clickedButton;
         return Task.CompletedTask;
     }
-
-
+    
     // 패널 전환 애니메이션
     private async Task SwitchPanelAnimation(GameObject targetPanel, Button clickedButton)
     {
@@ -160,9 +122,5 @@ public class FullWindowLobbyDlg : FullWindowBase
         return canvasGroup;
     }
 
-    public async void OnClickLobbySettingPopup()
-    {
-        await UIManager.Instance.ShowUI<LobbySettingPopup>();
-    }
-
+    #endregion
 }

@@ -23,7 +23,12 @@ namespace Kylin.FSM
         Idle = 1 << 14,
         BattleWin = 1 << 15,
         ReturnToOriginPos = 1 << 16,
-
+        TargetSelected = 1 << 17,
+        DamageFinished = 1 << 18,
+        SynergySkillREquest = 1 << 19,
+        SynergySkillFinished = 1 << 20,
+        FindNearestTargetRequested = 1 << 21,
+        FindLowestHpTargetRequested = 1 << 22,
 
     }
 }

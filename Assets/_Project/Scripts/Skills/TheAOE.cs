@@ -6,9 +6,9 @@ using static UnityEngine.GraphicsBuffer;
 public class TheAOE : SkillBase
 {
     [Header("AOE 설정")]
-    public float radius = 1f;                // AOE 범위 반경
-    public float damage = 20f;               // 기본 데미지
-    public float duration = 1.0f;            // 지속 시간 (1초)
+    [SerializeField] private float radius = 1f;                // AOE 범위 반경
+    [SerializeField] private float damage = 1f;               // 기본 데미지
+    [SerializeField] private float duration = 1.0f;            // 지속 시간 (1초)
 
     private float timer = 0f;                // 지속 시간 타이머
     private HashSet<int> damagedTargets;     // 이미 데미지를 입힌 대상 추적
@@ -24,6 +24,10 @@ public class TheAOE : SkillBase
         owner = user;
         timer = 0f;
         damagedTargets.Clear();
+
+        // 타겟위치로, 타겟 위치는 state에서 넘겨주기
+        transform.position = targetPos;
+
 
         // 즉시 첫 번째 데미지 적용
         ApplyDamageToTargetsInRange();

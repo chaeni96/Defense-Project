@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3902067790742518625}
-  - component: {fileID: 3902067790742518626}
   - component: {fileID: 3902067790742518624}
+  - component: {fileID: 3902067790742518626}
   m_Layer: 0
   m_Name: StraightLaserAOE
   m_TagString: Untagged
@@ -33,6 +33,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3902067790742518624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3902067790742518627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7d3b0e5e1a35e429407703c45ab836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  soundEffect: {fileID: 0}
+  straightLine: 1
+  size: {x: 4.06, y: 0.7}
+  damage: 1
+  duration: 1
+  isDOT: 0
+  delayBetweenDamage: 0.1
+  followOwnerRotation: 0
+  offsetFromPlayer: 0.5
 --- !u!212 &3902067790742518626
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -85,25 +107,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3902067790742518624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3902067790742518627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de7d3b0e5e1a35e429407703c45ab836, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  owner: {fileID: 0}
-  soundEffect: {fileID: 0}
-  size: {x: 4.06, y: 0.7}
-  damage: 1
-  duration: 1
-  delayBetweenDamage: 0.1
-  isDOT: 0
-  followOwnerRotation: 0
-  offsetFromPlayer: 0.5
-  straightLine: 1

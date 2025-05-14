@@ -69,25 +69,25 @@ public class EpisodePageObject : MonoBehaviour
     }
 
     //에피소드 선택 버튼
-    public async void OnClickSelectEpisodeBtn()
-    {
-        //EpisodeSelectPopup 닫기
-        //episodeUI 보여주기 대신에 선택된애가 있으면 얘로 보여주고 아니면 원래 눌렀던 애로
-
-        
-        // EpisodeInfoUI 찾거나 생성
-        var episodeInfoUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
-
-        if (episodeInfoUI != null)
-        {
-            // 선택한 에피소드 정보 설정
-            episodeInfoUI.SetEpisodeInfo(episodeData);
-        }
-
-        // EpisodeSelectPopup 닫기
-        UIManager.Instance.CloseUI<EpisodeSelectPopup>();
-       
-    }
+    // public async void OnClickSelectEpisodeBtn()
+    // {
+    //     //EpisodeSelectPopup 닫기
+    //     //episodeUI 보여주기 대신에 선택된애가 있으면 얘로 보여주고 아니면 원래 눌렀던 애로
+    //
+    //     
+    //     // EpisodeInfoUI 찾거나 생성
+    //     var episodeInfoUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>();
+    //
+    //     if (episodeInfoUI != null)
+    //     {
+    //         // 선택한 에피소드 정보 설정
+    //         episodeInfoUI.SetEpisodeInfo(episodeData);
+    //     }
+    //
+    //     // EpisodeSelectPopup 닫기
+    //     UIManager.Instance.CloseUI<EpisodeSelectPopup>();
+    //    
+    // }
 
     public void OnClickCancleBtn()
     {

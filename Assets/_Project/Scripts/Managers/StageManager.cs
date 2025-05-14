@@ -36,6 +36,12 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
     private bool isAssignWave = false;
 
+    private bool isBattleActive = false;
+    public bool IsBattleActive => isBattleActive;
+
+    // 전투 상태 변경 이벤트
+    public event Action<bool> OnBattleStateChanged;
+
     // 웨이브 시작/종료 관련 이벤트
     public event Action OnWaveStart;  // 웨이브 종료시 발생하는 이벤트
     public event Action OnWaveFinish;  // 웨이브 종료시 발생하는 이벤트
@@ -151,6 +157,21 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         Debug.LogError($"알 수 없는 웨이브 타입: {waveData.GetType().Name}");
         return null;
     }
+
+    // 전투 시작 메서드 (StartBattleBtn 버튼 클릭 시 호출)
+    public void StartBattle()
+    {
+        isBattleActive = true;
+        OnBattleStateChanged?.Invoke(true);
+    }
+
+    // 전투 종료 (CleanUpBeforeNextWave에서 호출)
+    private void EndBattle()
+    {
+        isBattleActive = false;
+        OnBattleStateChanged?.Invoke(false);
+    }
+
     public void SetNextWave(WaveBase nextWave)
     {
         nextAssignWave = nextWave;
@@ -262,6 +283,9 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
     {
         if(currentWave is BattleWaveBase )
         {
+
+            // 전투 종료 상태로 변경
+            EndBattle();
 
             var units = UnitManager.Instance.GetAllUnits();
             foreach (var unit in units)
