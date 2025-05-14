@@ -51,19 +51,31 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 3b35b5304c3ed824e80601b8c1da095d, type: 3}
+  - {fileID: 21300000, guid: 5a0a1d409a3caa743a02843797438eb6, type: 3}
   - {fileID: 21300000, guid: 29f9ef507cf588e418029d782243f3e2, type: 3}
+  - {fileID: 21300000, guid: acfd82e01d688b745a6fe64b2eadd55a, type: 3}
   - {fileID: 21300000, guid: 1ad736f077c1ab244a9f7342dcb8b745, type: 3}
   - {fileID: 21300000, guid: 1f4d4df00c65d494e9f45d33938eefb6, type: 3}
+  - {fileID: 21300000, guid: 3d1bed21a5e911b498ce5197edfd13d9, type: 3}
+  - {fileID: 21300000, guid: 01f89c51728e5b640903fec0c25115e0, type: 3}
   - {fileID: 21300000, guid: b8b1a6914beb5de409366dde5bb7b875, type: 3}
   - {fileID: 21300000, guid: 7c543ed16f5fa6c4385a258ac07c0eec, type: 3}
+  - {fileID: 21300000, guid: 39952922dee43e44d9562c8deee1e6f8, type: 3}
+  - {fileID: 21300000, guid: 667096729cb374e48a950a503fdc252a, type: 3}
   - {fileID: 21300000, guid: 15fc42a24f0200344bd45ccac81dd063, type: 3}
   - {fileID: 21300000, guid: ad0b6ef28a0369641879a259d8767b59, type: 3}
+  - {fileID: 21300000, guid: 66d9b2036a53cc54b99aa36b91495543, type: 3}
   - {fileID: 21300000, guid: 836f5373b2242874bbffa1449f2d8f18, type: 3}
   - {fileID: 21300000, guid: 212eee832f2ff6d4ca2021b7087e2388, type: 3}
   - {fileID: 21300000, guid: 0f08ad93511f1924ca54c6ee0a22f6ab, type: 3}
+  - {fileID: 21300000, guid: 449da5c3bbb15074c87408418d9d074a, type: 3}
+  - {fileID: 21300000, guid: 8949e4e3edeb4304fa2560fe804fe9e7, type: 3}
   - {fileID: 21300000, guid: 1cc13914d7abf3845895ff2ee5088c34, type: 3}
+  - {fileID: 21300000, guid: 3106853496eb40b4f9b85bacf2c88769, type: 3}
   - {fileID: 21300000, guid: 2eb143051090c90459f347b2770ddcbf, type: 3}
+  - {fileID: 21300000, guid: e629a305870c6e142842fd488f379291, type: 3}
   - {fileID: 21300000, guid: 08ff3405ffd87f24d836329fe781d44b, type: 3}
+  - {fileID: 21300000, guid: 039de01598ef94a41b656c53dc8fd81e, type: 3}
   - {fileID: 21300000, guid: c9648c656e0640a4d93344c34dc55f4d, type: 3}
   - {fileID: 21300000, guid: 30a35485f1212934e95addaec0d1d2c2, type: 3}
   - {fileID: 21300000, guid: 76a8c5a50e3f34947a8f5362d2570376, type: 3}
@@ -71,24 +83,35 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a23e23e59e61b2145a1d6359e7e50311, type: 3}
   - {fileID: 21300000, guid: a2bbe1f54c86546498093a425f87c5e2, type: 3}
   - {fileID: 21300000, guid: 35cf3606c8603a345a9afa1963116a8f, type: 3}
+  - {fileID: 21300000, guid: eef8093612754e64588cc30e0f78b753, type: 3}
   - {fileID: 21300000, guid: 1a422f7645708804288577ea979eaf45, type: 3}
+  - {fileID: 21300000, guid: 95de2eb626294af47ac5b75e89e6aeba, type: 3}
   - {fileID: 21300000, guid: 90028e18582d9c040a8374b9a1d1033f, type: 3}
   - {fileID: 21300000, guid: 66f558382afa84b44afaef134bc41253, type: 3}
+  - {fileID: 21300000, guid: d0a559382469f7b41b234269c0fdfe83, type: 3}
   - {fileID: 21300000, guid: b6160e3861fc7ea40845696d222546fa, type: 3}
+  - {fileID: 21300000, guid: 1ca542481fb23e0478fa8791104b41e6, type: 3}
   - {fileID: 21300000, guid: 86483b58bcdcec4438c87f07de52eec5, type: 3}
   - {fileID: 21300000, guid: 4fce6978d46304442ab798d7e5f74933, type: 3}
+  - {fileID: 21300000, guid: a047d8887df1ebc45a5d871ba3eb9c15, type: 3}
+  - {fileID: 21300000, guid: 6866e398b1ffd144aa9c854d5a5ddb28, type: 3}
   - {fileID: 21300000, guid: b4ea71c864c8ed248a964c880a075125, type: 3}
   - {fileID: 21300000, guid: 284150295d6ddc14bb988372d6504da5, type: 3}
+  - {fileID: 21300000, guid: c956f049d9fb7ca4b93ee8ee23a5ee26, type: 3}
+  - {fileID: 21300000, guid: 218ee989fc1814646becefc042a78d68, type: 3}
   - {fileID: 21300000, guid: b31728996d302124b9c97d4bf8d0a03a, type: 3}
   - {fileID: 21300000, guid: 5c887eb97286ca04fa562db3633a5cb6, type: 3}
   - {fileID: 21300000, guid: fd1ecc0a59ba58743a268e2440780691, type: 3}
   - {fileID: 21300000, guid: 4cdd346a9451ee14eb0bbdc14e74c57d, type: 3}
+  - {fileID: 21300000, guid: 4ae02beaba92ee440b11d00ef4da1424, type: 3}
   - {fileID: 21300000, guid: 13d332fa17f151c4381fe7f640de1043, type: 3}
   - {fileID: 21300000, guid: cd9dbefa6457ade42850bd747cc77239, type: 3}
   - {fileID: 21300000, guid: fa8d430b392e20e4b81178dfe46201be, type: 3}
   - {fileID: 21300000, guid: 6e58540b7eedac1499a3ec964fd353e9, type: 3}
   - {fileID: 21300000, guid: 547d733bfc0e01d479407020c944267e, type: 3}
+  - {fileID: 21300000, guid: b974953b2d5009f4693a15cdd02d7356, type: 3}
   - {fileID: 21300000, guid: 5f76f96b188d2904d84c92df8a122f11, type: 3}
+  - {fileID: 21300000, guid: 1c5ce53c035c3cc46b895a1b3163a1f2, type: 3}
   - {fileID: 21300000, guid: d2dc69dcc12a49144baaeeaeeff2ee11, type: 3}
   - {fileID: 21300000, guid: 887632ec0490f9c4c91736dfd95067b0, type: 3}
   - {fileID: 21300000, guid: 1b103efc754f34f498355007799101aa, type: 3}
@@ -103,25 +126,38 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 22ec5d8e28a50d143b3623500bc03a74, type: 3}
   - {fileID: 21300000, guid: e8e0b7fe0bb94bb46803c0fc0d35eee4, type: 3}
   - {fileID: 21300000, guid: 0ac8879f23b76c040b2360a490b3fdce, type: 3}
+  - {fileID: 21300000, guid: 1f9731af69677414098c74c0f2fd5367, type: 3}
   - {fileID: 21300000, guid: 07b5f6cf8528cb449914183f68636f92, type: 3}
   - {fileID: 21300000, guid: 0d9372efd6be05240be54425d7b6985c, type: 3}
   - {fileID: 21300000, guid: 0a10beef3ed9835478b4f37410d12278, type: 3}
   - {fileID: 21300000, guid: 77df55ff1dff6f846b4d811aa7554a15, type: 3}
   m_PackedSpriteNamesToIndex:
   - face_pattern_2
+  - rod_1
   - top_6
+  - crossbow_1
   - wings_left
   - hairband_2
+  - emblem_1
+  - bow_4
   - hair_5
   - shoulder_item_left
+  - left_hand_1
+  - emblem_4
   - nose
   - body
+  - bow_3
   - left_arm_cloth
   - right_arm_cloth
   - left_arm_
+  - nose_3
+  - emblem_3
   - dog hair
+  - potion_1
   - hair_7_back
+  - bow_2
   - top_7
+  - emblem_7
   - tail_2
   - right_leg
   - bag_1
@@ -129,24 +165,35 @@ SpriteAtlas:
   - shoulder_item_right
   - cape_6
   - right_arm
+  - shield_1
   - hair_7_front
+  - longsword_1
   - face
   - top_11
+  - right_hand_1
   - top_8
+  - sword
   - right_arm_hand_big
   - tie_3
+  - spear_1
+  - emblem_8
   - top_9
   - belt_1
+  - emblem_2
+  - emblem_5
   - right_arm_cloth_6
   - eye
   - top_10
   - eye_1
+  - shortsword_1
   - hairband
   - top_5
   - eye_2
   - cheek_4
   - ear_inner
+  - wand_1
   - hair_6_front
+  - emblem_6
   - top_1
   - cape_1
   - _glasses
@@ -161,6 +208,7 @@ SpriteAtlas:
   - hair_6_back
   - left_arm_cloth_6
   - hair_8_front
+  - bow_1
   - tail_3
   - face_2
   - cheek
