@@ -15,7 +15,7 @@ public class TheGuideProjectile : TheDefaultProjectile
     {
         base.Fire(user, targetPos, targetDirection, target);
 
-        // 타겟 설정
+        // 타겟 설정 ->state에서 해주기
         this.target = target;
         hasTarget = target != null;
     }
