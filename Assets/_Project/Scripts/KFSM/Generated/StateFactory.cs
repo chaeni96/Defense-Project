@@ -23,6 +23,7 @@ namespace Kylin.FSM
             {
                 case "AttackState": state = new AttackState(); break;
                 case "DefaultDamageState": state = new DefaultDamageState(); break;
+                case "ManaFullSkillState": state = new ManaFullSkillState(); break;
                 case "SynergySkillState": state = new SynergySkillState(); break;
                 case "TargetingLowestHPState": state = new TargetingLowestHPState(); break;
                 case "TargetingNearestState": state = new TargetingNearestState(); break;
