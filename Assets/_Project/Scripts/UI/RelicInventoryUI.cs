@@ -1,9 +1,9 @@
+using AutoBattle.Scripts.DataController;
 using AutoBattle.Scripts.UI;
 using AutoBattle.Scripts.UI.UIComponents;
 using AutoBattle.Scripts.Utils;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
-using BGDatabaseEnum.DataController;
 using UnityEngine;
 
 [UIInfo("RelicInventoryUI", "RelicInventoryUI", false)]

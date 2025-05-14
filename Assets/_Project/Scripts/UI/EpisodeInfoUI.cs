@@ -39,7 +39,7 @@ public class EpisodeInfoUI : MonoBehaviour
 
         var maxStageNumber = D_StageData.GetEntitiesByKeyEpisodeKey(episode).Count;
         
-        if(currentEpisodeInfoParam.UserBestRecordStage >= episode.f_episodeNumber)
+        if(currentEpisodeInfoParam.UserBestRecordStage >= maxStageNumber)
         {
             clearStageNumber.text = $"올 클리어";
         }
@@ -69,8 +69,8 @@ public class EpisodeInfoUI : MonoBehaviour
 
                 var userData = D_LocalUserData.GetEntity(0);
                 var canPlay = nextEpisode.f_episodeNumber == 1 || userData.f_clearEpisodeNumber >= nextEpisode.f_episodeNumber;
-                
-                InitializeEpisodeInfo(new EpisodeInfoParam(nextEpisode, 0, nextMaxStageCount, canPlay));
+                var userBestRecordStage = GetUserBestRecordStageByEpisode(nextEpisode);
+                InitializeEpisodeInfo(new EpisodeInfoParam(nextEpisode, userBestRecordStage, nextMaxStageCount, canPlay));
             }
         }
         else
@@ -97,7 +97,8 @@ public class EpisodeInfoUI : MonoBehaviour
                 
                 var userData = D_LocalUserData.GetEntity(0);
                 var canPlay = prevEpisode.f_episodeNumber == 1 || userData.f_clearEpisodeNumber >= prevEpisode.f_episodeNumber;
-                InitializeEpisodeInfo(new EpisodeInfoParam(prevEpisode, 0, prevMaxStageCount, canPlay));
+                var userBestRecordStage = GetUserBestRecordStageByEpisode(prevEpisode);
+                InitializeEpisodeInfo(new EpisodeInfoParam(prevEpisode, userBestRecordStage, prevMaxStageCount, canPlay));
             }
         }
         else
@@ -126,6 +127,27 @@ public class EpisodeInfoUI : MonoBehaviour
                 GameSceneManager.Instance.LoadScene(SceneKind.InGame);
             }
         }
+    }
+
+    private int GetUserBestRecordStageByEpisode(D_EpisodeData episodeData)
+    {
+        var userData = D_LocalUserData.GetEntity(0);
+
+        if (Mathf.Abs(userData.f_clearEpisodeNumber - episodeData.f_episodeNumber) == 1)
+        {
+            return userData.f_lastClearedStageNumber;
+        }
+
+        if (episodeData.f_episodeNumber <= userData.f_clearEpisodeNumber)
+        {
+            var stageDataList = D_StageData.GetEntitiesByKeyEpisodeKey(episodeData);
+            if (stageDataList != null && stageDataList.Count > 0)
+            {
+                return stageDataList.Count;
+            }
+        }
+
+        return 0;
     }
 }
 

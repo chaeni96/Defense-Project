@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using AutoBattle.Scripts.Utils;
 using BansheeGz.BGDatabase;
 
-namespace BGDatabaseEnum.DataController
+namespace AutoBattle.Scripts.DataController
 {
     public enum RelicStateEventType
     {

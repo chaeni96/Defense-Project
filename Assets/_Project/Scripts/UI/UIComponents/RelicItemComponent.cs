@@ -1,8 +1,8 @@
 using System;
+using AutoBattle.Scripts.DataController;
 using AutoBattle.Scripts.Managers;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
-using BGDatabaseEnum.DataController;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
