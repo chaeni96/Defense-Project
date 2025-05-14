@@ -126,7 +126,7 @@ MonoBehaviour:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c541b23800400244bba97b26daf4434e
-    m_Address: TargetBaseAOE
+    m_Address: 1CellRangeAOE
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -151,6 +151,18 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dbb7c15c88f96b5419534eb98229807b
     m_Address: StraightLaserAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00fd6769f12c6394b80cd9104518c111
+    m_Address: 2CellRangeAOE
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1954894a7fcbba44999ccfd033f6124
+    m_Address: 3CellRangeAOE
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs

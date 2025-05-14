@@ -5,9 +5,9 @@ using Kylin.LWDI;
 using UnityEngine;
 
 [FSMContextFolder("Create/State/Attack")]
-public class DefaultDamageState : StateBase
+public class ManaFullSkillState : StateBase
 {
-    [SerializeField] private string defaultSkillAddressableKey; // 스킬 어드레서블 키, 평타로 스킬 쓰는거 (null이면 직접 데미지)
+    [SerializeField] private string manaFullSkillAddressableKey; // 스킬 어드레서블 키, 평타로 스킬 쓰는거 (null이면 직접 데미지)
 
 
     [Inject] protected StateController Controller;
@@ -15,7 +15,7 @@ public class DefaultDamageState : StateBase
 
     public override void OnEnter()
     {
-        Debug.Log("Attack_DamageState 진입");
+        Debug.Log("마나 풀 스킬 진입");
 
         // CharacterFSMObject 확인
         if (characterFSM == null)
@@ -34,7 +34,7 @@ public class DefaultDamageState : StateBase
         //TODO: 분기문 필요 마나 다 차면 스킬 사용하는것과 아닌것으로
 
         // skillAddressableKey가 null이면 직접 데미지, 아니면 스킬 사용
-        if (string.IsNullOrEmpty(defaultSkillAddressableKey))
+        if (string.IsNullOrEmpty(manaFullSkillAddressableKey))
         {
             ApplyDamage();
         }
@@ -72,7 +72,7 @@ public class DefaultDamageState : StateBase
         Vector3 targetDirection = (currentTargetPosition - firingPosition).normalized;
 
         // 풀링 매니저에서 스킬 오브젝트 가져오기
-        GameObject skillObj = PoolingManager.Instance.GetObject(defaultSkillAddressableKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
+        GameObject skillObj = PoolingManager.Instance.GetObject(manaFullSkillAddressableKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
 
         // 스킬 초기화 및 발사
         if (skillObj != null)
@@ -80,7 +80,7 @@ public class DefaultDamageState : StateBase
             SkillBase skill = skillObj.GetComponent<SkillBase>();
             if (skill != null)
             {
-                Debug.Log($"스킬 발사: {defaultSkillAddressableKey}, 타겟: {characterFSM.CurrentTarget.name}");
+                Debug.Log($"스킬 발사: {manaFullSkillAddressableKey}, 타겟: {characterFSM.CurrentTarget.name}");
 
                 skill.Initialize(characterFSM.basicObject);
                 skill.Fire(
@@ -92,12 +92,12 @@ public class DefaultDamageState : StateBase
             }
             else
             {
-                Debug.LogError($"스킬 컴포넌트가 없습니다: {defaultSkillAddressableKey}");
+                Debug.LogError($"스킬 컴포넌트가 없습니다: {manaFullSkillAddressableKey}");
             }
         }
         else
         {
-            Debug.LogError($"스킬 오브젝트를 가져오는데 실패했습니다: {defaultSkillAddressableKey}");
+            Debug.LogError($"스킬 오브젝트를 가져오는데 실패했습니다: {manaFullSkillAddressableKey}");
         }
     }
 

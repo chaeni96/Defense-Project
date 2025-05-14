@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b13a68fa8c6e98147a3805e1502d3cd8, type: 3}
-  m_Name: Dog_RogueFSM
+  m_Name: Enemy_SeparmanFSM
   m_EditorClassIdentifier: 
   InitialStateId: 0
   StateEntries:
@@ -79,7 +79,7 @@ MonoBehaviour:
       StringValue: 0.5
     - Name: damageApplyTime
       Type: 1
-      StringValue: 0.4
+      StringValue: 0.5
   - Id: 3
     stateTypeName: DefaultDamageState
     position: {x: 1396, y: 316}
@@ -105,7 +105,7 @@ MonoBehaviour:
       StringValue: 0.5
     - Name: damageApplyTime
       Type: 1
-      StringValue: 0.4
+      StringValue: 0.5
   - Id: 7
     stateTypeName: SynergySkillState
     position: {x: 1414, y: 124}
@@ -115,7 +115,7 @@ MonoBehaviour:
       StringValue: 
   - Id: 8
     stateTypeName: ManaFullSkillState
-    position: {x: 1154, y: 47}
+    position: {x: 1116, y: 36}
     Parameters:
     - Name: manaFullSkillAddressableKey
       Type: 3

@@ -110,7 +110,6 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
             {
                 hpStat.value -= (int)damage;
                 UpdateHpBar();
-                //HitEffect();
             }
         }
 

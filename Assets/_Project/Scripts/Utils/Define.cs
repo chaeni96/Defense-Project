@@ -30,6 +30,14 @@ public enum StatSubject
     EnemySwordman,
     EnemySpearman,
 
+    RangeDealer, //원거리 딜러
+    MeleeDealer, //근거리 딜러
+    Support, //서포터
+    Tank, //탱커
+
+
+
+
 }
 
 

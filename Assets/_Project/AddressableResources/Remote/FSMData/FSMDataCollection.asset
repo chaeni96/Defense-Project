@@ -25,3 +25,9 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 17722cc66895f114eb79e341c37a0254, type: 2}
   - id: Dog_BoxingFSM
     data: {fileID: 11400000, guid: 43197de2d0570c34994513fab96b6435, type: 2}
+  - id: Enemy_ArcherFSM
+    data: {fileID: 11400000, guid: e6e681201d617a84897c3d14721d73f4, type: 2}
+  - id: Enemy_SeparmanFSM
+    data: {fileID: 11400000, guid: f2b05efbe78243c4a8c5c4d35449a8e9, type: 2}
+  - id: Enemy_SwordmanFSM
+    data: {fileID: 11400000, guid: 6229aac22b1990c49a9d079b473766f7, type: 2}

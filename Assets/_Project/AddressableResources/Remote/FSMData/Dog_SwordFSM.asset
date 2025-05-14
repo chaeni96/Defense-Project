@@ -73,7 +73,13 @@ MonoBehaviour:
   - Id: 5
     stateTypeName: TargetingNearestState
     position: {x: 1017, y: 569}
-    Parameters: []
+    Parameters:
+    - Name: damageTiming
+      Type: 1
+      StringValue: 0.7
+    - Name: damageApplyTime
+      Type: 1
+      StringValue: 0.6
   - Id: 3
     stateTypeName: DefaultDamageState
     position: {x: 1396, y: 316}
@@ -94,11 +100,21 @@ MonoBehaviour:
     - Name: useHPPercentage
       Type: 2
       StringValue: false
+    - Name: damageTiming
+      Type: 1
+      StringValue: 0.5
   - Id: 7
     stateTypeName: SynergySkillState
     position: {x: 1414, y: 124}
     Parameters:
     - Name: skillAddressableKey
+      Type: 3
+      StringValue: 
+  - Id: 8
+    stateTypeName: ManaFullSkillState
+    position: {x: 1170, y: 47}
+    Parameters:
+    - Name: manaFullSkillAddressableKey
       Type: 3
       StringValue: 
   Transitions:
