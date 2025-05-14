@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13a68fa8c6e98147a3805e1502d3cd8, type: 3}
+  m_Name: CatArcherTEstFSM
+  m_EditorClassIdentifier: 
+  InitialStateId: 0
+  StateEntries:
+  - Id: -1
+    stateTypeName: AnyState
+    position: {x: 100, y: 100}
+    Parameters: []
+  - Id: 0
+    stateTypeName: IdleState
+    position: {x: 531, y: 123}
+    Parameters:
+    - Name: testValueIdle
+      Type: 0
+      StringValue: 0
+  - Id: 1
+    stateTypeName: MoveForwardState
+    position: {x: 815, y: 239}
+    Parameters:
+    - Name: targetPosition
+      Type: 5
+      StringValue: (665.71,699.2805,649.2805)
+    - Name: moveSpeed
+      Type: 1
+      StringValue: 2.5
+    - Name: unitTargetPos
+      Type: 1
+      StringValue: 4
+    - Name: enemyTargetPos
+      Type: 1
+      StringValue: 14
+    - Name: stopDistance
+      Type: 1
+      StringValue: 0.1
+  - Id: 2
+    stateTypeName: ChaseState
+    position: {x: 540, y: 408}
+    Parameters:
+    - Name: testIntValue
+      Type: 0
+      StringValue: 0
+    - Name: testIntValue2
+      Type: 1
+      StringValue: 0
+    - Name: testIntValue3
+      Type: 3
+      StringValue: 
+    - Name: testIntValue4
+      Type: 2
+      StringValue: false
+    - Name: testIntValue5
+      Type: 0
+      StringValue: 0
+    - Name: testIntValue6
+      Type: 0
+      StringValue: 0
+  - Id: 3
+    stateTypeName: AttackState
+    position: {x: 962, y: 502}
+    Parameters:
+    - Name: skillAddressableKey
+      Type: 3
+      StringValue: TheGuideProjectile
+  - Id: 4
+    stateTypeName: BattleWinState
+    position: {x: 322, y: 33}
+    Parameters: []
+  Transitions:
+  - FromStateId: 0
+    ToStateId: 1
+    RequiredTriggers: 0000000001000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 0
+    ToStateId: 2
+    RequiredTriggers: 0000000000200000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 2
+    ToStateId: 0
+    RequiredTriggers: 0000000000020000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 2
+    ToStateId: 3
+    RequiredTriggers: 0000000002000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 0
+    ToStateId: 3
+    RequiredTriggers: 0000000002000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 3
+    ToStateId: 0
+    RequiredTriggers: 0000000040000000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 3
+    ToStateId: 2
+    RequiredTriggers: 0000000000020000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 1
+    ToStateId: 2
+    RequiredTriggers: 0000000000200000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: -1
+    ToStateId: 4
+    RequiredTriggers: 0000000000800000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 4
+    ToStateId: 0
+    RequiredTriggers: 0000000000000100
+    IgnoreTriggers: 
+    Priority: 0

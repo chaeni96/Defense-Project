@@ -29,3 +29,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 312c73d2e6e457b4e99ad44a5816b217, type: 2}
   - id: CatSpearmanFSM
     data: {fileID: 11400000, guid: 7602015acfcec6e4dbf09a8111d83dfd, type: 2}
+  - id: CatTestFSM
+    data: {fileID: 11400000, guid: ddea18c9df7c1e04ba20778d23835cab, type: 2}
+  - id: CatArcherTEstFSM
+    data: {fileID: 11400000, guid: 861ba5c12dded9948b17e52897c4aeda, type: 2}

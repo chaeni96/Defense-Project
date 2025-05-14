@@ -10,6 +10,7 @@ using DG.Tweening;
 using System.IO;
 using Unity.VisualScripting;
 using Kylin.FSM;
+using BansheeGz.BGDatabase;
 
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
@@ -33,7 +34,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public GameObject unitStarObject;
     [HideInInspector] public GameObject itemSlotObject;
 
-    public bool canAttack = true; 
+    public bool canAttack = true;
+    public UnitAppearanceProvider appearanceProvider;
+
 
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
@@ -141,7 +144,26 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         skillData = unit.f_skillData;
         unitType = unitData.f_UnitType;
 
- 
+        fsmObj.UpdateFSM(unitData.f_fsmId);
+
+        SetAnimatorController(unitData.f_animControllerType);
+
+        // 외형 설정 로직 추가
+        if (appearanceProvider != null && unitData.f_unitAppearanceData != null)
+        {
+            // 기존에 unitAppearance가 null이면 새로 생성
+            if (appearanceProvider.unitAppearance == null)
+            {
+                appearanceProvider.unitAppearance = new BGEntityGo();
+            }
+
+            // Entity 속성을 통해 외형 데이터를 설정
+            appearanceProvider.unitAppearance.Entity = unitData.f_unitAppearanceData;
+
+            // 외형 로드
+            appearanceProvider.LoadAppearance();
+        }
+
 
         // 기존 스탯들 초기화
         baseStats.Clear();
@@ -575,7 +597,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 코스트 정산
         int refundCost = 0;
 
-        if (unitType == UnitType.Base)
+        if (unitType == UnitType.Basic)
         {
             refundCost = -1;
         }
