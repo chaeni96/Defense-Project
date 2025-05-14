@@ -34,7 +34,9 @@ public enum StatSubject
     MeleeDealer, //근거리 딜러
     Support, //서포터
     Tank, //탱커
-
+    Dog_Rogue,
+    Dog_Sword,
+    Dog_Boxing,
 
 
 
@@ -83,6 +85,8 @@ public enum StatName
     InventoryCount,//유저 인벤토리 개수
     UnitInventoryCount, // 유닛 당 가질수있는 인벤토리 개수
     UnitPlacementCount, //배치할수 있느 유닛 개수 
+    CurrentMana,
+    MaxMana,
 
 }
 

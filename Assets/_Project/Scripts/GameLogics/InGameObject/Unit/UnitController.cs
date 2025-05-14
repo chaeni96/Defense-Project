@@ -15,8 +15,7 @@ using BansheeGz.BGDatabase;
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
 {
-    [HideInInspector]
-    public float attackTimer = 0f;  // 타이머 추가
+    
 
     [HideInInspector]
     public Vector2 tilePosition;
@@ -305,38 +304,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-    public void ModifyStat(StatName statName, int value, float multiply)
-    {
-        // 현재 스탯이 있으면 값 수정
-        if (currentStats.TryGetValue(statName, out var currentStat))
-        {
-            currentStat.value += value;
-            currentStat.multiply *= multiply;
-        }
-        // 없으면 새 스탯 추가
-        else
-        {
-            currentStats[statName] = new StatStorage
-            {
-                statName = statName,
-                value = value,
-                multiply = multiply
-            };
-        }
-
-        // 스탯 변경에 따른 효과 적용 (HP 바 업데이트 등)
-        if (statName == StatName.CurrentHp || statName == StatName.MaxHP)
-        {
-            UpdateHpBar();
-        }
-        else if (statName == StatName.AttackSpeed)
-        {
-            attackTimer = 0;
-        }
-
-        // 기타 필요한 효과
-        ApplyEffect();
-    }
 
     public void HitEffect()
     {

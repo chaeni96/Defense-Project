@@ -80,6 +80,9 @@ MonoBehaviour:
     - Name: damageApplyTime
       Type: 1
       StringValue: 0.5
+    - Name: onDamageTime
+      Type: 1
+      StringValue: 0.5
   - Id: 3
     stateTypeName: DefaultDamageState
     position: {x: 1396, y: 316}
@@ -104,6 +107,9 @@ MonoBehaviour:
       Type: 1
       StringValue: 0.5
     - Name: damageApplyTime
+      Type: 1
+      StringValue: 0.5
+    - Name: onDamageTime
       Type: 1
       StringValue: 0.5
   - Id: 7
@@ -145,7 +151,7 @@ MonoBehaviour:
     ToStateId: 4
     RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
-    Priority: 0
+    Priority: 100
   - FromStateId: 4
     ToStateId: 0
     RequiredTriggers: 0000000000000100

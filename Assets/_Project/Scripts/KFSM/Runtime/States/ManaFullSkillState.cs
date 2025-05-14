@@ -31,38 +31,32 @@ public class ManaFullSkillState : StateBase
             return;
         }
 
-        //TODO: 분기문 필요 마나 다 차면 스킬 사용하는것과 아닌것으로
+        // 마나 확인
+        float currentMana = characterFSM.basicObject.GetStat(StatName.CurrentMana);
+        float maxMana = characterFSM.basicObject.GetStat(StatName.MaxMana);
+        Debug.Log($"{currentMana}");
 
-        // skillAddressableKey가 null이면 직접 데미지, 아니면 스킬 사용
-        if (string.IsNullOrEmpty(manaFullSkillAddressableKey))
+        // 마나가 충분한지 확인
+        if (currentMana < maxMana)
         {
-            ApplyDamage();
+            Debug.Log($"{currentMana}");
+            // 마나가 부족하면 일반 공격 상태로 전환
+            Debug.Log("마나가 부족하여 일반 공격으로 전환합니다.");
+            Controller.RegisterTrigger(Trigger.TargetSelected);
+            return;
         }
-        else
-        {
-            ActiveDefaultSkill();
-        }
+
+        characterFSM.basicObject.ModifyStat(StatName.CurrentMana, -Mathf.RoundToInt(currentMana), 1f);
+
+        // 마나가 충분하면 궁극기 사용
+        ActiveManaFullSkill();
 
         // 즉시 공격 완료 트리거 발생
         Controller.RegisterTrigger(Trigger.DamageFinished);
     }
 
-    // 직접 데미지 적용 메서드
-    private void ApplyDamage()
-    {
-        if (characterFSM == null || characterFSM.CurrentTarget == null) return;
-
-        // 데미지 계산 (캐릭터의 공격력 가져오기)
-        float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-
-        // 타겟에게 데미지 적용
-        characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject, damage);
-
-        Debug.Log($"직접 데미지 적용: 대상={characterFSM.CurrentTarget.name}, 타겟 체력 ={characterFSM.CurrentTarget.GetStat(StatName.CurrentHp)}, 데미지={damage}");
-    }
-
     // 스킬 발동 메서드
-    private void ActiveDefaultSkill()
+    private void ActiveManaFullSkill()
     {
         if (characterFSM == null || characterFSM.CurrentTarget == null) return;
 

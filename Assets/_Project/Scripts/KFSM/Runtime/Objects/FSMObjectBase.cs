@@ -173,23 +173,18 @@ namespace Kylin.FSM
                 // 2. 트리거가 애니메이터에 없으면 실행하지 않음
                 if (!triggerExists)
                 {
-                    // 디버그 로그만 출력하고 트리거 실행하지 않음
-                    Debug.Log($"애니메이터에 '{triggerName}' 트리거가 없습니다. 애니메이션 변경하지 않음.");
                     return;
                 }
 
                 // 3. 현재 실행 중인 애니메이션과 동일한 트리거인지 확인
                 if (currentAnimTrigger == triggerName)
                 {
-                    // 같은 애니메이션 트리거면 다시 실행하지 않음
-                    Debug.Log($"현재 '{triggerName}' 애니메이션이 이미 실행 중입니다. 트리거 스킵.");
                     return;
                 }
 
                 // 4. 트랜지션 스킵 옵션 확인
                 if (skipNextAnimationTransition)
                 {
-                    Debug.Log($"애니메이션 트랜지션 스킵: {triggerName}");
                     skipNextAnimationTransition = false; // 플래그 리셋
                     return;
                 }
