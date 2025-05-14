@@ -66,30 +66,37 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 08ff3405ffd87f24d836329fe781d44b, type: 3}
   - {fileID: 21300000, guid: c9648c656e0640a4d93344c34dc55f4d, type: 3}
   - {fileID: 21300000, guid: 30a35485f1212934e95addaec0d1d2c2, type: 3}
+  - {fileID: 21300000, guid: 76a8c5a50e3f34947a8f5362d2570376, type: 3}
   - {fileID: 21300000, guid: 1e5820d5f08af0f4bb2629eb9cd948c4, type: 3}
   - {fileID: 21300000, guid: a23e23e59e61b2145a1d6359e7e50311, type: 3}
   - {fileID: 21300000, guid: a2bbe1f54c86546498093a425f87c5e2, type: 3}
   - {fileID: 21300000, guid: 35cf3606c8603a345a9afa1963116a8f, type: 3}
   - {fileID: 21300000, guid: 1a422f7645708804288577ea979eaf45, type: 3}
-  - {fileID: 21300000, guid: ae13e0d6f207c2c4aa7d25ff89c938ee, type: 3}
   - {fileID: 21300000, guid: 90028e18582d9c040a8374b9a1d1033f, type: 3}
+  - {fileID: 21300000, guid: 66f558382afa84b44afaef134bc41253, type: 3}
   - {fileID: 21300000, guid: b6160e3861fc7ea40845696d222546fa, type: 3}
+  - {fileID: 21300000, guid: 86483b58bcdcec4438c87f07de52eec5, type: 3}
+  - {fileID: 21300000, guid: 4fce6978d46304442ab798d7e5f74933, type: 3}
   - {fileID: 21300000, guid: b4ea71c864c8ed248a964c880a075125, type: 3}
   - {fileID: 21300000, guid: 284150295d6ddc14bb988372d6504da5, type: 3}
   - {fileID: 21300000, guid: b31728996d302124b9c97d4bf8d0a03a, type: 3}
   - {fileID: 21300000, guid: 5c887eb97286ca04fa562db3633a5cb6, type: 3}
+  - {fileID: 21300000, guid: fd1ecc0a59ba58743a268e2440780691, type: 3}
   - {fileID: 21300000, guid: 4cdd346a9451ee14eb0bbdc14e74c57d, type: 3}
   - {fileID: 21300000, guid: 13d332fa17f151c4381fe7f640de1043, type: 3}
   - {fileID: 21300000, guid: cd9dbefa6457ade42850bd747cc77239, type: 3}
   - {fileID: 21300000, guid: fa8d430b392e20e4b81178dfe46201be, type: 3}
+  - {fileID: 21300000, guid: 6e58540b7eedac1499a3ec964fd353e9, type: 3}
   - {fileID: 21300000, guid: 547d733bfc0e01d479407020c944267e, type: 3}
   - {fileID: 21300000, guid: 5f76f96b188d2904d84c92df8a122f11, type: 3}
   - {fileID: 21300000, guid: d2dc69dcc12a49144baaeeaeeff2ee11, type: 3}
   - {fileID: 21300000, guid: 887632ec0490f9c4c91736dfd95067b0, type: 3}
   - {fileID: 21300000, guid: 1b103efc754f34f498355007799101aa, type: 3}
   - {fileID: 21300000, guid: 9f6f771d27b7a314abb3be1b9f9d8f61, type: 3}
+  - {fileID: 21300000, guid: 34acd73d7eb9ad540b16493237cfe226, type: 3}
   - {fileID: 21300000, guid: b6eda35d4094e4a448bd9afd8b44a7aa, type: 3}
   - {fileID: 21300000, guid: 6de8045db5a722f459667c8a9c29ce1c, type: 3}
+  - {fileID: 21300000, guid: ba91777dac8a20645b80415f169fd56e, type: 3}
   - {fileID: 21300000, guid: de05f8fd40c14b948bea9a0cf01f5a83, type: 3}
   - {fileID: 21300000, guid: ef0d8afdeb682264eb0dd17f9239346e, type: 3}
   - {fileID: 21300000, guid: da29e07e645aa8e4193345284ec6d3d6, type: 3}
@@ -98,6 +105,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0ac8879f23b76c040b2360a490b3fdce, type: 3}
   - {fileID: 21300000, guid: 07b5f6cf8528cb449914183f68636f92, type: 3}
   - {fileID: 21300000, guid: 0d9372efd6be05240be54425d7b6985c, type: 3}
+  - {fileID: 21300000, guid: 0a10beef3ed9835478b4f37410d12278, type: 3}
   - {fileID: 21300000, guid: 77df55ff1dff6f846b4d811aa7554a15, type: 3}
   m_PackedSpriteNamesToIndex:
   - face_pattern_2
@@ -116,30 +124,37 @@ SpriteAtlas:
   - top_7
   - tail_2
   - right_leg
+  - bag_1
   - hair_8_back
   - shoulder_item_right
   - cape_6
   - right_arm
   - hair_7_front
-  - top
   - face
+  - top_11
   - top_8
+  - right_arm_hand_big
+  - tie_3
   - top_9
   - belt_1
   - right_arm_cloth_6
   - eye
+  - top_10
   - eye_1
   - hairband
   - top_5
   - eye_2
+  - cheek_4
   - ear_inner
   - hair_6_front
   - top_1
   - cape_1
   - _glasses
   - left_leg
+  - cloak_3
   - wings_right
   - face_pattern
+  - cloak_4
   - ear_inner 1
   - top_4
   - tail
@@ -148,6 +163,7 @@ SpriteAtlas:
   - hair_8_front
   - tail_3
   - face_2
+  - cheek
   - ear_default
   m_RenderDataMap: {}
   m_Tag: CatAtlas
