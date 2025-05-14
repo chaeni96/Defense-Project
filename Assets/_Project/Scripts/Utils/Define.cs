@@ -165,6 +165,13 @@ public enum ItemType
     Equipment_Item,
 }
 
+public enum CurrencyType
+{
+    Heart,
+    Gold,
+    Gem,
+}
+
 public enum ItemGrade
 {
     Normal = 0,
