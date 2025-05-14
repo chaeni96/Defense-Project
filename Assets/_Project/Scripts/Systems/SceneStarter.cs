@@ -92,19 +92,4 @@ public class SceneStarter : MonoBehaviour
         GameManager.Instance.ChangeState(new GamePlayState());
 
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            var all = D_U_RelicData.FindEntities(data => true);
-
-            foreach (var a in all)
-            {
-                a.Delete();
-            }
-            
-            SaveLoadManager.Instance.SaveData();
-        }
-    }
 }
