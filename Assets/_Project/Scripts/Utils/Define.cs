@@ -88,10 +88,10 @@ public enum CardGrade
 
 public enum UnitType
 {
-    Basic,
-    Archer,
-    Swordman,
-    Spearman,
+    None,
+    Dog_Sword,
+    Dog_Rogue,
+    Dog_Boxing,
 
     
 }

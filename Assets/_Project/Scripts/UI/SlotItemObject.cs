@@ -77,6 +77,9 @@ public class SlotItemObject : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         if (itemData == null) return;
 
+        if (StageManager.Instance.IsBattleActive)
+            return;
+
         isDragging = true;
         originalParent = transform.parent;
         originalPosition = transform.position;

@@ -189,7 +189,7 @@ public class MultiTileUnitController : UnitController
         // 코스트 정산
         int refundCost = 0;
 
-        if (unitType == UnitType.Basic)
+        if (unitType == UnitType.None)
         {
             refundCost = -1;
         }

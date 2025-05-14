@@ -3936,7 +3936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataCollection: {fileID: 11400000, guid: 5273f65290b95ef41b4ac4fa1a75ef24, type: 2}
-  fsmId: CatArcherFSM
+  fsmId: Dog_SwordFSM
   animator: {fileID: 5747223416929348838}
   isEnemy: 0
   isFinished: 0

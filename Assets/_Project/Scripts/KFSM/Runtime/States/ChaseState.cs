@@ -28,7 +28,7 @@ namespace Kylin.FSM
 
                     if (characterFSM.CurrentTarget == null)
                     {
-                        // Ÿ���� ������ ��� ���·�
+                        // Ÿ���� ������ ���?���·�
                         Controller.RegisterTrigger(Trigger.TargetMiss);
                         return;
                     }
@@ -55,7 +55,7 @@ namespace Kylin.FSM
                 var target = characterFSM.CurrentTarget;
                 if (target == null || !target.gameObject.activeSelf)
                 {
-                    // Ÿ���� �׾��ų� ��������� �� Ÿ�� ã��
+                    // Ÿ���� �׾��ų� ���������?�� Ÿ�� ã��
                     characterFSM.UpdateTarget();
 
                     //Ÿ���� �ƿ������� idle�� 
@@ -67,17 +67,17 @@ namespace Kylin.FSM
                 }
             }
 
-            // characterFSM.basicObject���� ���� �������� (CharacterFSMObject�� �����ϴ� basicObject ���)
+            // characterFSM.basicObject���� ���� �������� (CharacterFSMObject�� �����ϴ� basicObject ���?
             float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
             float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed) * 2;
 
-            // Ÿ�ٱ����� �Ÿ� ���
+            // Ÿ�ٱ����� �Ÿ� ���?
             float distanceToTarget = characterFSM.GetDistanceToTarget();
 
             // ���� ���� �ȿ� �������� ���� ���·� ��ȯ
             if (distanceToTarget <= attackRange)
             {
-                Controller.RegisterTrigger(Trigger.AttackRequested);
+                Controller.RegisterTrigger(Trigger.FindNearestTargetRequested);
                 return;
             }
 

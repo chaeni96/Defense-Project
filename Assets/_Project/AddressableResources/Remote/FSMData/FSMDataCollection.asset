@@ -17,19 +17,11 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 52cc34370a7f28a41b5c894630bd445b, type: 2}
   - id: testFSM2
     data: {fileID: 11400000, guid: 04cd400010a94ea47b8be4fe2da8384a, type: 2}
-  - id: testUnitFSM
-    data: {fileID: 0}
-  - id: testUnitFSM2
-    data: {fileID: 0}
   - id: testEnemyFSM
     data: {fileID: 11400000, guid: f6ad7e1b1aec4e94f99c81be594a1d8b, type: 2}
-  - id: CatArcherFSM
-    data: {fileID: 11400000, guid: e547d6aa036c06d43941a2fb4ac9a0cf, type: 2}
-  - id: CatSwordmanFSM
-    data: {fileID: 11400000, guid: 312c73d2e6e457b4e99ad44a5816b217, type: 2}
-  - id: CatSpearmanFSM
-    data: {fileID: 11400000, guid: 7602015acfcec6e4dbf09a8111d83dfd, type: 2}
-  - id: CatTestFSM
-    data: {fileID: 0}
-  - id: CatArcherTEstFSM
-    data: {fileID: 0}
+  - id: Dog_RogueFSM
+    data: {fileID: 11400000, guid: 30bfc613bf5a9be43beab55547f0496f, type: 2}
+  - id: Dog_SwordFSM
+    data: {fileID: 11400000, guid: 17722cc66895f114eb79e341c37a0254, type: 2}
+  - id: Dog_BoxingFSM
+    data: {fileID: 11400000, guid: 43197de2d0570c34994513fab96b6435, type: 2}

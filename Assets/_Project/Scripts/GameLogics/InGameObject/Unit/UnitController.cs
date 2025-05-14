@@ -95,10 +95,17 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
       
     }
 
-    public override BasicObject GetTarget()
+    public override BasicObject GetNearestTarget()
     {
         // EnemyManager에서 가장 가까운 적을 찾음
         return EnemyManager.Instance.GetNearestEnemy(transform.position);
+    }
+
+    public override List<BasicObject> GetTargetList()
+    {
+        List<Enemy> enemys = EnemyManager.Instance.GetAllEnemys();
+        List<BasicObject> basicObjects = new List<BasicObject>(enemys);
+        return basicObjects;
     }
 
 
@@ -374,6 +381,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 클릭 이벤트만 처리
         if (!hasDragged)
         {
+            if (StageManager.Instance.IsBattleActive)
+                return;
+
             OnUnitClicked?.Invoke(this);
         }
     }
@@ -381,6 +391,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 드래그 시작 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
+        if (StageManager.Instance.IsBattleActive)
+            return;
+
         if (!isActive) return;
 
         isDragging = true;
@@ -600,7 +613,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 코스트 정산
         int refundCost = 0;
 
-        if (unitType == UnitType.Basic)
+        if (unitType == UnitType.None)
         {
             refundCost = -1;
         }

@@ -6,7 +6,7 @@ using Kylin.LWDI;
 using UnityEngine;
 namespace Kylin.FSM
 {
-    public class StateController : IDependencyObject //��ǻ� FSM�� ��ü?��
+    public class StateController : IDependencyObject //��ǻ�?FSM�� ��ü?��
     {
         private Dictionary<int, StateBase> _states;
         //private StateBase[] _states;
@@ -21,7 +21,7 @@ namespace Kylin.FSM
 
         private HashSet<IFSMSubscriber> subscribers = new();
 
-        private FSMObjectBase _ownerObject; // ������ GameObject - �̰͵� �ٲ�ߵ�
+        private FSMObjectBase _ownerObject; // ������ GameObject - �̰͵� �ٲ�ߵ�?
 
         private IScope _fsmScope;
 

@@ -132,6 +132,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     // 드래그 시작: 코스트 체크 후 프리뷰 인스턴스 생성
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (StageManager.Instance.IsBattleActive)
+            return;
+
         if (GameManager.Instance.GetSystemStat(StatName.Cost) < cardCost) return;
 
         isDragging = true;

@@ -40,7 +40,7 @@ namespace Kylin.FSM
                 var oldTarget = CurrentTarget;
 
                 // »õ Å¸°Ù Ã£±â
-                var newTarget = basicObject.GetTarget();
+                var newTarget = basicObject.GetNearestTarget();
 
                 if (newTarget != null)
                 {

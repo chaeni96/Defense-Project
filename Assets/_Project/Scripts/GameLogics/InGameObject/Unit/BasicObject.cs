@@ -147,7 +147,12 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     }
 
-    public virtual BasicObject GetTarget()
+    public virtual BasicObject GetNearestTarget()
+    {
+        return null;
+    }
+
+    public virtual List<BasicObject> GetTargetList()
     {
         return null;
     }

@@ -22,6 +22,12 @@ public class FullWindowInGameDlg : FullWindowBase
     public Button equipmentTabButton; // 장비 탭 버튼
     public Button characterInfoTabButton; //캐릭터 인포 탭 버튼
 
+    [SerializeField] private Button rerollBtn;
+    [SerializeField] private Button shopUpgradeBtn;
+    [SerializeField] private Button unEquipBtn;
+    [SerializeField] private Button saleUnitBtn;
+
+
     [SerializeField] private TMP_Text shopLevelText;  // 현재 상점레벨
     [SerializeField] private TMP_Text shopLevelUpCostText;  // 업그레이드 비용 표시 텍스트
     [SerializeField] private TMP_Text currentCostText;
@@ -81,6 +87,7 @@ public class FullWindowInGameDlg : FullWindowBase
     private List<GameProgressObject> progressObjects = new List<GameProgressObject>();
     private int maxProgressObjects = 6; // 한 번에 표시할 최대 객체 수
     private int currentGroupStartIndex = 0; // 현재 표시 중인 웨이브 그룹의 시작 인덱스
+    private bool uiInteractionEnabled = true;
 
 
     //상점에서 확률 가지고 와서 카드 덱 4개 설치 
@@ -115,6 +122,7 @@ public class FullWindowInGameDlg : FullWindowBase
         UnitManager.Instance.OnUnitCountChanged += UpdatePlacementCount;
         StageManager.Instance.OnWaveIndexChanged += OnWaveIndexChanged;
         StageManager.Instance.OnBattleReady += UpdateBattleButtonState;
+        StageManager.Instance.OnBattleStateChanged += OnBattleStateChanged;
 
         characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
 
@@ -251,6 +259,41 @@ public class FullWindowInGameDlg : FullWindowBase
             characterInfoTabButton.GetComponent<Image>().color = characterTabOriginColor;
 
         }
+
+    }
+
+    private void OnBattleStateChanged(bool isBattleActive)
+    {
+        // 전투 중에는 UI 상호작용 비활성화
+        uiInteractionEnabled = !isBattleActive;
+
+        // UI 버튼 상호작용 설정
+        SetUIInteraction(uiInteractionEnabled);
+    }
+
+    private void SetUIInteraction(bool enabled)
+    {
+        // 탭 버튼 상호작용 설정
+        if (currencyTabButton != null)
+            currencyTabButton.interactable = enabled;
+
+        if (equipmentTabButton != null)
+            equipmentTabButton.interactable = enabled;
+
+        if (characterInfoTabButton != null)
+            characterInfoTabButton.interactable = enabled;
+
+        if (rerollBtn != null)
+            rerollBtn.interactable = enabled;
+
+        if (shopUpgradeBtn != null)
+            shopUpgradeBtn.interactable = enabled;
+
+        if (unEquipBtn != null)
+            unEquipBtn.interactable = enabled;
+
+        if (saleUnitBtn != null)
+            saleUnitBtn.interactable = enabled;
 
     }
 
@@ -610,7 +653,24 @@ public class FullWindowInGameDlg : FullWindowBase
 
     public void OnShopLevelUpgradeClick()
     {
+        int nextShopLevel = shopLevel + 1;
+        var nextLevelData = D_UnitShopChanceData.GetEntityByKeyShopLevel(nextShopLevel);
+
+        // 다음 레벨 데이터가 없으면 최대 레벨에 도달한 것
+        if (nextLevelData == null)
+        {
+            Debug.Log("이미 최대 상점 레벨에 도달했습니다.");
+            return;
+        }
+
         var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
+
+        // shopProbabilityData가 null인지 확인
+        if (shopProbabilityData == null)
+        {
+            Debug.LogError($"상점 레벨 {shopLevel}에 대한 데이터를 찾을 수 없습니다.");
+            return;
+        }
 
         shopUpgradeCost = shopProbabilityData.f_upgradeCost;
 
@@ -635,10 +695,6 @@ public class FullWindowInGameDlg : FullWindowBase
 
             // UI 업데이트
             UpdateShopLevelUI();
-
-            // CostGauge UI 갱신
-            //CostGaugeUI costUI = CostGauge.GetComponent<CostGaugeUI>();
-            //costUI.Initialize(newShopLevel);
         }
     }
 
@@ -824,6 +880,8 @@ public class FullWindowInGameDlg : FullWindowBase
             UnitManager.Instance.OnUnitCountChanged -= UpdatePlacementCount;
             StageManager.Instance.OnWaveIndexChanged -= OnWaveIndexChanged;
             StageManager.Instance.OnBattleReady -= UpdateBattleButtonState;
+            StageManager.Instance.OnBattleStateChanged -= OnBattleStateChanged;
+
             GameManager.Instance.OnCostAdd -= CostUse;
             InventoryManager.Instance.OnItemCountUpdate -= OnUpdateSlotCount;
             // 탭 버튼 이벤트 리스너 제거
@@ -868,6 +926,8 @@ public class FullWindowInGameDlg : FullWindowBase
             startBattleBtn.gameObject.SetActive(false);
         }
 
+        // 전투 시작 상태로 설정
+        StageManager.Instance.StartBattle();
 
         // 모든 유닛을 UnitMoveToTargetState로 변경
         List<UnitController> units = UnitManager.Instance.GetAllUnits();
