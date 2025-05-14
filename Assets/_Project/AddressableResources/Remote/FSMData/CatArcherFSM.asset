@@ -72,7 +72,7 @@ MonoBehaviour:
     Parameters:
     - Name: skillAddressableKey
       Type: 3
-      StringValue: TheDefaultProjectile
+      StringValue: StraightLaserAOE
   - Id: 4
     stateTypeName: BattleWinState
     position: {x: 322, y: 33}
