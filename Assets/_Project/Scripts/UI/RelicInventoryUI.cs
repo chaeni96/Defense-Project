@@ -4,11 +4,14 @@ using AutoBattle.Scripts.UI.UIComponents;
 using AutoBattle.Scripts.Utils;
 using BansheeGz.BGDatabase;
 using BGDatabaseEnum;
+using TMPro;
 using UnityEngine;
 
 [UIInfo("RelicInventoryUI", "RelicInventoryUI", false)]
-public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
+public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber, ICurrencyChangedSubscriber
 {
+    private const int RELIC_SUMMON_COST = 10;
+    
     [SerializeField] private RelicItemComponent relicItemComponent;
 
     [Header("Item Grid Parent")]
@@ -21,6 +24,9 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
     [Header("Equipped Relic Slots")]
     [SerializeField] private RelicEquipSlotComponent[] relicEquipSlots;
     
+    [Header("Currency Info")]
+    [SerializeField] private TMP_Text gemAmountText;
+    
     private FullWindowLobbyDlg lobbyDlg;
     
     // 현재 장착 모드에서 선택된 유물 ID
@@ -32,11 +38,15 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
 
         InitializeRelicItemUI();
         InitializeEquipSlots();
+        InitializeCurrencyUI();
     }
 
     public override void HideUI()
     {
         base.HideUI();
+        
+        CurrencyDataController.Instance.Unsubscribe(this);
+        
         SaveLoadManager.Instance.SaveData();
     }
 
@@ -47,6 +57,13 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
 
     public void OnClickGetRelicButton()
     {
+        var currencyData = CurrencyDataController.Instance.GetCurrencyData(CurrencyType.Gem);
+
+        if (currencyData.f_amount < RELIC_SUMMON_COST) return;
+        
+        // 10개 소모
+        CurrencyDataController.Instance.AddCurrency(CurrencyType.Gem, -RELIC_SUMMON_COST);
+        
         var result = D_RelicItemData.GetAllRelicItems().RandomRatePick(data => data.f_weight);
 
         if (result != null)
@@ -105,6 +122,14 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
                 RelicDataController.Instance.AddSubscriber(relicEquipSlots[i]);
             }
         }
+    }
+
+    private void InitializeCurrencyUI()
+    {
+        CurrencyDataController.Instance.Subscribe(CurrencyType.Gem, this);
+        
+        var currencyData = CurrencyDataController.Instance.GetCurrencyData(CurrencyType.Gem);
+        gemAmountText.text = currencyData.f_amount.ToString();
     }
     
     // 장착 모드 활성화
@@ -168,6 +193,13 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
         }
     }
     
+    public void OnCurrencyChanged(CurrencyChangedEvent currencyChangedEvent)
+    {
+        if(currencyChangedEvent.currencyType != CurrencyType.Gem) return;
+        
+        InitializeCurrencyUI();
+    }
+    
 #if UNITY_EDITOR
     private void Update()
     {
@@ -177,4 +209,5 @@ public class RelicInventoryUI : FloatingPopupBase, IRelicStateChangeSubscriber
         }
     }
 #endif
+    
 }

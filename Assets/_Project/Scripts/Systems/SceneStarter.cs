@@ -44,6 +44,7 @@ public class SceneStarter : MonoBehaviour
         if (scenekind == SceneKind.Lobby)
         {
             // 로비 초기화 작업이 있다면 여기서 수행
+            CurrencyDataController.Instance.InitializeController();
             RelicDataController.Instance.Initialize();
             AtlasManager.Instance.Initialize();
         }

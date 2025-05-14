@@ -1,3 +1,4 @@
+using AutoBattle.Scripts.DataController;
 using TMPro;
 using UnityEngine;
 
@@ -109,6 +110,10 @@ public class EpisodeInfoUI : MonoBehaviour
 
     public void OnClickGameStartBtn()
     {
+        var heartData = CurrencyDataController.Instance.GetCurrencyData(CurrencyType.Heart);
+        
+        if(heartData.f_amount <= 0) return;
+        
         if (GameManager.Instance.SelectEpisode(currentEpisodeInfoParam.EpisodeData.f_episodeNumber))
         {
             // 클리어한 스테이지의 다음 스테이지 찾기
@@ -123,6 +128,8 @@ public class EpisodeInfoUI : MonoBehaviour
             if (nextStage != null)
             {
                 GameManager.Instance.SelectedStageNumber = nextStage.f_StageNumber;
+
+                CurrencyDataController.Instance.AddCurrency(CurrencyType.Heart, -1);
 
                 GameSceneManager.Instance.LoadScene(SceneKind.InGame);
             }

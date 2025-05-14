@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoBattle.Scripts.UI.HUD;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,8 @@ public class FullWindowLobbyDlg : FullWindowBase
 
     [SerializeField] private float transitionDuration = 0.3f;
     [SerializeField] private Ease transitionEase = Ease.OutQuad;
+    
+    [SerializeField] private HudItemController hudItemController;
 
     // 현재 활성화된 패널과 버튼 추적
     private GameObject currentPanel;
@@ -28,6 +31,8 @@ public class FullWindowLobbyDlg : FullWindowBase
     public override void InitializeUI()
     {
         base.InitializeUI();
+        
+        hudItemController.Initialize();
 
         OpenBaseUI();
     }
