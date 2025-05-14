@@ -63,7 +63,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         // EpisodeInfoUI 표시 (캠프 패널의 내용)
         if (episodeUI == null)
         {
-            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
+            //episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
             episodeUI.CreateEpisodeInfo();
         }
         
@@ -87,7 +87,7 @@ public class FullWindowLobbyDlg : FullWindowBase
         // 캠프 UI가 없으면 생성, 있으면 표시
         if (episodeUI == null)
         {
-            episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
+            //episodeUI = await UIManager.Instance.ShowUI<EpisodeInfoUI>(campPanel.transform);
             episodeUI.CreateEpisodeInfo();
         }
 
@@ -96,22 +96,7 @@ public class FullWindowLobbyDlg : FullWindowBase
     // 인벤토리(유물) 패널로 전환
     public async void SwitchToInventoryPanel()
     {
-        // if (!initialized || currentPanel == inventoryPanel)
-        //     return;
-        //
-        // await SwitchPanel(inventoryPanel, inventoryButton);
-        //
-        // // 이전 UI 숨기기 (현재 활성화된 UI가 있다면)
-        // if (episodeUI != null)
-        // {
-        //    UIManager.Instance.CloseUI<EpisodeInfoUI>();
-        // }
-        //
-        // inventoryUI = await UIManager.Instance.ShowUI<RelicInventoryUI>(); // 여기에 실제 UI 타입 지정
-        // inventoryUI.InitLobbyDlg(this);
-
         var popup = await UIManager.Instance.ShowUI<RelicInventoryUI>();
-
     }
     // 애니메이션 없는 패널 전환용 메서드
     private Task SwitchPanel(GameObject targetPanel, Button clickedButton)

@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[UIInfo("EpisodeInfoUI", "EpisodeInfoUI", false)]
-
-public class EpisodeInfoUI : FloatingPopupBase
+public class EpisodeInfoUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text episodeNumber;
     [SerializeField] private TMP_Text episodeTitle;
@@ -16,10 +12,6 @@ public class EpisodeInfoUI : FloatingPopupBase
 
     private D_EpisodeData episodeData;
     private D_LocalUserData userData;
-    public override void InitializeUI()
-    {
-        base.InitializeUI();
-    }
 
     //클리어한 에피소드의 다음 에피소드 로드
     public void CreateEpisodeInfo()
@@ -92,12 +84,7 @@ public class EpisodeInfoUI : FloatingPopupBase
                 GameManager.Instance.SelectedStageNumber = nextStage.f_StageNumber;
 
                 GameSceneManager.Instance.LoadScene(SceneKind.InGame);
-
             }
-
-            // EpisodeInfoUI 닫기
-            UIManager.Instance.CloseUI<EpisodeInfoUI>();
-
         }
     }
 }
