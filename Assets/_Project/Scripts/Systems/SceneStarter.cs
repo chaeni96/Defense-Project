@@ -1,6 +1,6 @@
 using System.Collections;
+using AutoBattle.Scripts.DataController;
 using AutoBattle.Scripts.Managers;
-using BGDatabaseEnum.DataController;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 

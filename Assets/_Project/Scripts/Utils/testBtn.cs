@@ -2,16 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class testBtn : MonoBehaviour
+public class testBtn
 {
-    [SerializeField]private Kylin.FSM.CharacterFSMObject fsmobj;
-
-
-    public void OnclickTest()
-    {
-        fsmobj.stateMachine.RegisterTrigger(Kylin.FSM.Trigger.MoveRequested);
-    }
-
-
+    public string SlotWeaponShieldSpriteKey;
+    public Color SlotWeaponShieldTint;
+    public bool SlotWeaponShieldEnabled;
 
 }
