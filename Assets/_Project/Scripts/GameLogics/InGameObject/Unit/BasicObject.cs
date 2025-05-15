@@ -35,6 +35,8 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     [SerializeField] protected RuntimeAnimatorController attackBowController;
     [SerializeField] protected RuntimeAnimatorController attackSpearController;
     [SerializeField] protected RuntimeAnimatorController attackSwordController;
+    [SerializeField] protected RuntimeAnimatorController attackThrowController;
+    [SerializeField] protected RuntimeAnimatorController attackPunchController;
 
     protected bool isDead = false;
     public virtual void Initialize()

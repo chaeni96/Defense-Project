@@ -37,6 +37,11 @@ public enum StatSubject
     Dog_Rogue,
     Dog_Sword,
     Dog_Boxing,
+    Dog_Jester,
+    Dog_Hunter,
+    Royal_Spear,
+    Royal_Sword,
+
 
 
 
@@ -101,11 +106,15 @@ public enum CardGrade
 public enum UnitType
 {
     None,
-    Dog_Sword,
     Dog_Rogue,
+    Dog_Sword,
     Dog_Boxing,
+    Dog_Jester,
+    Dog_Hunter,
+    Royal_Spear,
+    Royal_Sword,
 
-    
+
 }
 //공격 타입으로 구분해도됨
 public enum AnimControllerType
@@ -114,6 +123,8 @@ public enum AnimControllerType
     AttackBow,
     AttackSpear,
     AttackSword,
+    AttackPunch,
+    AttackThrow,
 }
 
 

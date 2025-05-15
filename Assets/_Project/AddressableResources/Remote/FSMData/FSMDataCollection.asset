@@ -31,3 +31,11 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: f2b05efbe78243c4a8c5c4d35449a8e9, type: 2}
   - id: Enemy_SwordmanFSM
     data: {fileID: 11400000, guid: 6229aac22b1990c49a9d079b473766f7, type: 2}
+  - id: Dog_JesterFSM
+    data: {fileID: 11400000, guid: f7128a2c18320ad4ea4508314ebef278, type: 2}
+  - id: Dog_HunterFSM
+    data: {fileID: 11400000, guid: cbac8cef8021985489e0d7afa617f630, type: 2}
+  - id: Royal_SwordFSM
+    data: {fileID: 11400000, guid: e7c46460e30f168439865714a65a01d5, type: 2}
+  - id: Royal_SpearFSM
+    data: {fileID: 11400000, guid: 4e147fb79d7135c4b8f6229d005deb84, type: 2}

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b13a68fa8c6e98147a3805e1502d3cd8, type: 3}
-  m_Name: Dog_RogueFSM
+  m_Name: Dog_JesterFSM
   m_EditorClassIdentifier: 
   InitialStateId: 0
   StateEntries:
@@ -92,7 +92,7 @@ MonoBehaviour:
       StringValue: TheDefaultProjectile
     - Name: defaultSkillAddressableKey
       Type: 3
-      StringValue: 
+      StringValue: DogJester_BasicAttackSkill
     - Name: manaFullSkillAddressableKey
       Type: 3
       StringValue: 
@@ -125,7 +125,7 @@ MonoBehaviour:
     Parameters:
     - Name: manaFullSkillAddressableKey
       Type: 3
-      StringValue: DogRogue_ManaFullSkill
+      StringValue: 2CellRangeAOE
   Transitions:
   - FromStateId: 0
     ToStateId: 1
@@ -207,11 +207,6 @@ MonoBehaviour:
     RequiredTriggers: 0000000000004000
     IgnoreTriggers: 
     Priority: 0
-  - FromStateId: 5
-    ToStateId: 8
-    RequiredTriggers: 0000000000000200
-    IgnoreTriggers: 
-    Priority: 10
   - FromStateId: 8
     ToStateId: 3
     RequiredTriggers: 0000000000000200

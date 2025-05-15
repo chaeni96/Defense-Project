@@ -3902,6 +3902,7 @@ MonoBehaviour:
   animator: {fileID: 5747223416929348838}
   fsmObj: {fileID: 1811286175735672980}
   subjects: 
+  attackTimer: 0
   isEnemy: 0
   isActive: 1
   hpBar: {fileID: 6105847057938998826}
@@ -3909,7 +3910,8 @@ MonoBehaviour:
   attackBowController: {fileID: 9100000, guid: ee6a5310d4512f94ca199a6fa3f6a4a4, type: 2}
   attackSpearController: {fileID: 9100000, guid: e630e80bad941ec488407ec27ec8d739, type: 2}
   attackSwordController: {fileID: 9100000, guid: 6e3b7f781a6269f4c86c2d353d0c17a4, type: 2}
-  attackTimer: 0
+  attackThrowController: {fileID: 9100000, guid: 2df3b292105e57542bc5c3813795c48b, type: 2}
+  attackPunchController: {fileID: 9100000, guid: 0932ad35a22328346a398e7b9f151134, type: 2}
   tilePosition: {x: 0, y: 0}
   attackType: 0
   starObjects: []

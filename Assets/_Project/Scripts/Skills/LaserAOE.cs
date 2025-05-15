@@ -25,7 +25,7 @@ public class LaserAOE : SkillBase
         base.Initialize(unit);
         damagedTargets = new HashSet<int>();
 
-        transform.localScale = new Vector3(size.x, size.y, 1f);
+        //transform.localScale = new Vector3(size.x, size.y, 1f);
     }
 
     public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
