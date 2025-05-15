@@ -71,6 +71,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
         if(rtSource != null && unitRTObject != null)
         {
+            unitRTObject.CalculateAutoRect();
             unitRTObject.source = rtSource;
             rtSource.CalculateAutoBounds();
 

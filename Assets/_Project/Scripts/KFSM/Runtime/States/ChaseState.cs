@@ -77,7 +77,7 @@ namespace Kylin.FSM
             // ���� ���� �ȿ� �������� ���� ���·� ��ȯ
             if (distanceToTarget <= attackRange)
             {
-                Controller.RegisterTrigger(Trigger.FindNearestTargetRequested);
+                Controller.RegisterTrigger(Trigger.AttackRequested);
                 return;
             }
 

@@ -31,6 +31,13 @@ public class ManaFullSkillState : StateBase
             return;
         }
 
+        if(string.IsNullOrEmpty(manaFullSkillAddressableKey))
+        {
+            Debug.LogError("마나 스킬이 없습니다.");
+            Controller.RegisterTrigger(Trigger.TargetSelected);
+            return;
+        }
+
         // 마나 확인
         float currentMana = characterFSM.basicObject.GetStat(StatName.CurrentMana);
         float maxMana = characterFSM.basicObject.GetStat(StatName.MaxMana);

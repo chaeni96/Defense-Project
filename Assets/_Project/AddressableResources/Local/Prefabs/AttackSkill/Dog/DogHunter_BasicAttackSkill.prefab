@@ -63,7 +63,7 @@ MonoBehaviour:
   owner: {fileID: 0}
   soundEffect: {fileID: 0}
   damage: 1
-  duration: 1
+  duration: 0.4
 --- !u!1001 &6680971308663186684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85,19 +85,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3710121333938866029, guid: 74d5349f6adaa5f4aae1da4684cd9b01, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3710121333938866029, guid: 74d5349f6adaa5f4aae1da4684cd9b01, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.2
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3710121333938866029, guid: 74d5349f6adaa5f4aae1da4684cd9b01, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3710121333938866029, guid: 74d5349f6adaa5f4aae1da4684cd9b01, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.79
+      value: -0.92
       objectReference: {fileID: 0}
     - target: {fileID: 3710121333938866029, guid: 74d5349f6adaa5f4aae1da4684cd9b01, type: 3}
       propertyPath: m_LocalPosition.y

@@ -157,42 +157,41 @@ namespace Kylin.FSM
         {
             if (animator != null && trigger != Trigger.None)
             {
+                //string triggerName = trigger.ToString();
+
+                //// 1. 트리거가 애니메이터에 존재하는지 확인
+                //bool triggerExists = false;
+                //foreach (AnimatorControllerParameter param in animator.parameters)
+                //{
+                //    if (param.name == triggerName && param.type == AnimatorControllerParameterType.Trigger)
+                //    {
+                //        triggerExists = true;
+                //        break;
+                //    }
+                //}
+
+                //// 2. 트리거가 애니메이터에 없으면 실행하지 않음
+                //if (!triggerExists)
+                //{
+                //    return;
+                //}
+
+                //// 3. 현재 실행 중인 애니메이션과 동일한 트리거인지 확인
+                //if (currentAnimTrigger == triggerName)
+                //{
+                //    return;
+                //}
+
+                //// 4. 트랜지션 스킵 옵션 확인
+                //if (skipNextAnimationTransition)
+                //{
+                //    skipNextAnimationTransition = false; // 플래그 리셋
+                //    return;
+                //}
+
+                //// 5. 애니메이션 트리거 실행
                 string triggerName = trigger.ToString();
-
-                // 1. 트리거가 애니메이터에 존재하는지 확인
-                bool triggerExists = false;
-                foreach (AnimatorControllerParameter param in animator.parameters)
-                {
-                    if (param.name == triggerName && param.type == AnimatorControllerParameterType.Trigger)
-                    {
-                        triggerExists = true;
-                        break;
-                    }
-                }
-
-                // 2. 트리거가 애니메이터에 없으면 실행하지 않음
-                if (!triggerExists)
-                {
-                    return;
-                }
-
-                // 3. 현재 실행 중인 애니메이션과 동일한 트리거인지 확인
-                if (currentAnimTrigger == triggerName)
-                {
-                    return;
-                }
-
-                // 4. 트랜지션 스킵 옵션 확인
-                if (skipNextAnimationTransition)
-                {
-                    skipNextAnimationTransition = false; // 플래그 리셋
-                    return;
-                }
-
-                // 5. 애니메이션 트리거 실행
                 animator.SetTrigger(triggerName);
-                currentAnimTrigger = triggerName; // 현재 트리거 업데이트
-                Debug.Log($"애니메이션 트리거 설정: {triggerName}");
             }
         }
 

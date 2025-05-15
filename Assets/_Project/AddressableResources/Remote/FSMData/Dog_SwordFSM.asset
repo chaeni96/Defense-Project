@@ -70,45 +70,6 @@ MonoBehaviour:
     stateTypeName: BattleWinState
     position: {x: 322, y: 33}
     Parameters: []
-  - Id: 5
-    stateTypeName: TargetingNearestState
-    position: {x: 1017, y: 569}
-    Parameters:
-    - Name: damageTiming
-      Type: 1
-      StringValue: 0.7
-    - Name: damageApplyTime
-      Type: 1
-      StringValue: 0.6
-    - Name: onDamageTime
-      Type: 1
-      StringValue: 0.5
-  - Id: 3
-    stateTypeName: DefaultDamageState
-    position: {x: 1396, y: 316}
-    Parameters:
-    - Name: skillAddressableKey
-      Type: 3
-      StringValue: TheDefaultProjectile
-    - Name: defaultSkillAddressableKey
-      Type: 3
-      StringValue: 
-    - Name: manaFullSkillAddressableKey
-      Type: 3
-      StringValue: 
-  - Id: 6
-    stateTypeName: TargetingLowestHPState
-    position: {x: 1052, y: 277}
-    Parameters:
-    - Name: useHPPercentage
-      Type: 2
-      StringValue: false
-    - Name: damageTiming
-      Type: 1
-      StringValue: 0.5
-    - Name: onDamageTime
-      Type: 1
-      StringValue: 0.5
   - Id: 7
     stateTypeName: SynergySkillState
     position: {x: 1414, y: 124}
@@ -116,10 +77,13 @@ MonoBehaviour:
     - Name: skillAddressableKey
       Type: 3
       StringValue: 
-  - Id: 8
-    stateTypeName: ManaFullSkillState
-    position: {x: 1170, y: 47}
+  - Id: 6
+    stateTypeName: AttackState
+    position: {x: 930, y: 278}
     Parameters:
+    - Name: skillAddressableKey
+      Type: 3
+      StringValue: 
     - Name: manaFullSkillAddressableKey
       Type: 3
       StringValue: DogSword_ManaFullSkill
@@ -155,38 +119,8 @@ MonoBehaviour:
     IgnoreTriggers: 
     Priority: 0
   - FromStateId: 0
-    ToStateId: 5
-    RequiredTriggers: 0000000000002000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 5
-    ToStateId: 0
-    RequiredTriggers: 0000000040000000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 2
-    ToStateId: 5
-    RequiredTriggers: 0000000000002000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 5
-    ToStateId: 2
-    RequiredTriggers: 0000000000020000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 5
-    ToStateId: 3
-    RequiredTriggers: 0000000000000200
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 3
-    ToStateId: 5
-    RequiredTriggers: 0000000000000400
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 0
     ToStateId: 6
-    RequiredTriggers: 0000000000004000
+    RequiredTriggers: 0000000002000000
     IgnoreTriggers: 
     Priority: 0
   - FromStateId: 6
@@ -194,28 +128,13 @@ MonoBehaviour:
     RequiredTriggers: 0000000040000000
     IgnoreTriggers: 
     Priority: 0
+  - FromStateId: 2
+    ToStateId: 6
+    RequiredTriggers: 0000000002000000
+    IgnoreTriggers: 
+    Priority: 0
   - FromStateId: 6
     ToStateId: 2
     RequiredTriggers: 0000000000020000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 2
-    ToStateId: 6
-    RequiredTriggers: 0000000000004000
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 5
-    ToStateId: 8
-    RequiredTriggers: 0000000000000200
-    IgnoreTriggers: 
-    Priority: 10
-  - FromStateId: 8
-    ToStateId: 5
-    RequiredTriggers: 0000000000000400
-    IgnoreTriggers: 
-    Priority: 0
-  - FromStateId: 8
-    ToStateId: 3
-    RequiredTriggers: 0000000000000200
     IgnoreTriggers: 
     Priority: 0

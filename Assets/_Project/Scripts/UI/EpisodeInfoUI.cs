@@ -112,7 +112,7 @@ public class EpisodeInfoUI : MonoBehaviour
     {
         var heartData = CurrencyDataController.Instance.GetCurrencyData(CurrencyType.Heart);
         
-        if(heartData.f_amount <= 0) return;
+        //if(heartData.f_amount <= 0) return;
         
         if (GameManager.Instance.SelectEpisode(currentEpisodeInfoParam.EpisodeData.f_episodeNumber))
         {

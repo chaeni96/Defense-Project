@@ -188,7 +188,7 @@ namespace CatDarkGame.PerObjectRTRenderForUGUI
                 {
                     Material material = MaterialRefs[k];
                     if(!material) continue;
-                    //int shaderPassIndex = 0;   // Shader에서 첫번째 선언 Pass만 렌더링 호출 (Pass 코드가 맨 위에 선언되야함)
+                    //int shaderPassIndex = 0;   // Shader?�서 첫번�??�언 Pass�??�더�??�출 (Pass 코드가 �??�에 ?�언?�야??
                     cmd.DrawRenderer(r, material, k, 0);
                 }
             }

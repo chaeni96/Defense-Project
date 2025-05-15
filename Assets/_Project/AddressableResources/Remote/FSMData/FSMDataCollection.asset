@@ -39,3 +39,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: e7c46460e30f168439865714a65a01d5, type: 2}
   - id: Royal_SpearFSM
     data: {fileID: 11400000, guid: 4e147fb79d7135c4b8f6229d005deb84, type: 2}
+  - id: Royal_wandFSM
+    data: {fileID: 11400000, guid: bee6fbe159d659a4a87f7a45806d2ea3, type: 2}
+  - id: Boss_ShieldFSM
+    data: {fileID: 11400000, guid: 9236ac5a5ac18904a96d95866edb9a5a, type: 2}

@@ -925,6 +925,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
+       ModifyStat(StatName.CurrentMana, -Mathf.RoundToInt(GetStat(StatName.CurrentMana)), 1f);
+
+
         // HP 바 업데이트
         UpdateHpBar();
     }
