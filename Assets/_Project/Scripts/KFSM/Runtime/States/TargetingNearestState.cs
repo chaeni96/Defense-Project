@@ -15,7 +15,7 @@ public class TargetingNearestState : StateBase
 
     // 애니메이션 관련 변수
     private float attackAnimationLength = 1.0f;  // 기본값
-    [SerializeField] private float damageApplyTime = 0.5f;        // 기본값
+    private float damageApplyTime = 0.5f;        // 기본값
     private float attackTimer = 0f;              // 공격 타이머
     private bool damageApplied = false;          // 데미지 적용 여부
 
@@ -25,7 +25,7 @@ public class TargetingNearestState : StateBase
     private float animCheckTimer = 0f;           // 애니메이션 체크 타이머
 
     // 애니메이션 관련 상수
-    private float damageTiming = 0.4f;
+    [SerializeField] private float onDamageTime = 0.4f;
     private const int LAYER_INDEX = 0;
 
     [Inject] protected StateController Controller;
@@ -172,7 +172,7 @@ public class TargetingNearestState : StateBase
         {
             // 현재 재생중인 클립의 길이 가져오기
             attackAnimationLength = clipInfo[0].clip.length;
-            damageApplyTime = attackAnimationLength * damageTiming;
+            damageApplyTime = attackAnimationLength * onDamageTime;
         }
     }
 

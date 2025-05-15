@@ -22,7 +22,8 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     //구독중인 
     public List<StatSubject> subjects = new List<StatSubject>();
-
+    [HideInInspector]
+    public float attackTimer = 0f;  // 타이머 추가
     public bool isEnemy = false;
     public bool isActive = false;
 
@@ -97,6 +98,38 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         return 0f;
     }
 
+
+    public void ModifyStat(StatName statName, int value, float multiply)
+    {
+        // 현재 스탯이 있으면 값 수정
+        if (currentStats.TryGetValue(statName, out var currentStat))
+        {
+            currentStat.value += value;
+            currentStat.multiply *= multiply;
+        }
+        // 없으면 새 스탯 추가
+        else
+        {
+            currentStats[statName] = new StatStorage
+            {
+                statName = statName,
+                value = value,
+                multiply = multiply
+            };
+        }
+
+        // 스탯 변경에 따른 효과 적용 (HP 바 업데이트 등)
+        if (statName == StatName.CurrentHp || statName == StatName.MaxHP)
+        {
+            UpdateHpBar();
+        }
+        else if (statName == StatName.AttackSpeed)
+        {
+            attackTimer = 0;
+        }
+
+
+    }
 
     public void OnDamaged(BasicObject attacker, float damage = 0)
     {

@@ -80,9 +80,12 @@ MonoBehaviour:
     - Name: damageApplyTime
       Type: 1
       StringValue: 0.4
+    - Name: onDamageTime
+      Type: 1
+      StringValue: 0.5
   - Id: 3
     stateTypeName: DefaultDamageState
-    position: {x: 1396, y: 316}
+    position: {x: 1510, y: 354}
     Parameters:
     - Name: skillAddressableKey
       Type: 3
@@ -106,20 +109,23 @@ MonoBehaviour:
     - Name: damageApplyTime
       Type: 1
       StringValue: 0.4
+    - Name: onDamageTime
+      Type: 1
+      StringValue: 0.5
   - Id: 7
     stateTypeName: SynergySkillState
-    position: {x: 1414, y: 124}
+    position: {x: 1716, y: 162}
     Parameters:
     - Name: skillAddressableKey
       Type: 3
       StringValue: 
   - Id: 8
     stateTypeName: ManaFullSkillState
-    position: {x: 1170, y: 123}
+    position: {x: 1396, y: 180}
     Parameters:
     - Name: manaFullSkillAddressableKey
       Type: 3
-      StringValue: 
+      StringValue: 3CellRangeAOE
   Transitions:
   - FromStateId: 0
     ToStateId: 1
@@ -145,7 +151,7 @@ MonoBehaviour:
     ToStateId: 4
     RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
-    Priority: 0
+    Priority: 100
   - FromStateId: 4
     ToStateId: 0
     RequiredTriggers: 0000000000000100
@@ -201,3 +207,18 @@ MonoBehaviour:
     RequiredTriggers: 0000000000004000
     IgnoreTriggers: 
     Priority: 0
+  - FromStateId: 8
+    ToStateId: 3
+    RequiredTriggers: 0000000000000200
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 8
+    ToStateId: 5
+    RequiredTriggers: 0000000000000400
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 5
+    ToStateId: 8
+    RequiredTriggers: 0000000000000200
+    IgnoreTriggers: 
+    Priority: 10

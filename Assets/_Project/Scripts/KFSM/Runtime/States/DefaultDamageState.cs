@@ -43,6 +43,7 @@ public class DefaultDamageState : StateBase
             ActiveDefaultSkill();
         }
 
+        characterFSM.basicObject.ModifyStat(StatName.CurrentMana, 10, 1f);
         // 즉시 공격 완료 트리거 발생
         Controller.RegisterTrigger(Trigger.DamageFinished);
     }
