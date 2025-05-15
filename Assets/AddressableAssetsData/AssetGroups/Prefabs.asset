@@ -113,18 +113,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 45aa8fb2d8e22464cb1a57317d20488d
-    m_Address: Cat_New
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0545526d93a0a484689c46edce24eaef
-    m_Address: Cat_Basic
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 22ff7480273a864438066d638c213771
     m_Address: DogBoxing_ManaFullSkill
     m_ReadOnly: 0

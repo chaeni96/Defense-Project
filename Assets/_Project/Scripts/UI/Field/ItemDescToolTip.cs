@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 
 [UIInfo("ItemDescToolTip", "ItemDescToolTip", false)]

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 using DG.Tweening;
-using static UnityEditor.PlayerSettings;
 
 
 [UIInfo("FullWindowInGameDlg", "FullWindowInGameDlg", true)]
@@ -126,6 +125,8 @@ public class FullWindowInGameDlg : FullWindowBase
 
         characterInfo.OnSwitchToCharacterTab += OnCharacterInfoTabClicked;
 
+
+        OnUpdateSlotCount(0);
     }
 
 
@@ -549,52 +550,72 @@ public class FullWindowInGameDlg : FullWindowBase
     public D_TileCardData GetCardKeyBasedOnProbability()
     {
 
-        //상점 레벨에 따른 확률 데이터 로드
+        // 상점 레벨에 따른 확률 데이터 로드
         var shopProbabilityData = D_UnitShopChanceData.GetEntityByKeyShopLevel(shopLevel);
 
         // 각 등급 확률 계산
-        var normalProb = shopProbabilityData.f_normalGradeChance;  // 100 or 70
-        var rareProb = normalProb + shopProbabilityData.f_rareGradeChance;  // 100 or 85
-        var epicProb = rareProb + shopProbabilityData.f_epicGradeChance;    // 100 or 90
-        var legendaryProb = epicProb + shopProbabilityData.f_legendaryGradeChance; // 100 or 95
-        var mythicProb = legendaryProb + shopProbabilityData.f_mythicGradeChance;  // 100 or 100
+        var normalProb = shopProbabilityData.f_normalGradeChance;
+        var rareProb = normalProb + shopProbabilityData.f_rareGradeChance;
+        var epicProb = rareProb + shopProbabilityData.f_epicGradeChance;
+        var legendaryProb = epicProb + shopProbabilityData.f_legendaryGradeChance;
+        var mythicProb = legendaryProb + shopProbabilityData.f_mythicGradeChance;
 
+        // 초기 슬롯 등급 설정
+        UnitGrade slotGrade = UnitGrade.Normal; // 기본값
+        bool gradeFound = false;
 
+        // 최대 5번 시도 (모든 등급을 한 번씩 시도)
+        int attempts = 0;
 
-        //랜덤값 생성
-        int rand = UnityEngine.Random.Range(0, 100);
-
-        UnitGrade slotGrade;
-
-        //TODO :  확률에 따라 등급 선택
-        if (rand <= normalProb)
+        while (!gradeFound && attempts < 5)
         {
-            slotGrade = UnitGrade.Normal;
-        }
-        else if (rand <= rareProb)
-        {
-            slotGrade = UnitGrade.Rare;
-        }
-        else if (rand <= epicProb)
-        {
-            slotGrade = UnitGrade.Epic;
-        }
-        else if (rand <= legendaryProb)
-        {
-            slotGrade = UnitGrade.Legendary;
-        }
-        else
-        {
-            slotGrade = UnitGrade.Mythic;
-        }
-        var possibleUnitList = D_TileCardData.FindEntities(data => data.f_grade == slotGrade);
+            // 랜덤값 생성
+            int rand = UnityEngine.Random.Range(0, 100);
 
+            // 확률에 따라 등급 선택
+            if (rand <= normalProb)
+            {
+                slotGrade = UnitGrade.Normal;
+            }
+            else if (rand <= rareProb)
+            {
+                slotGrade = UnitGrade.Rare;
+            }
+            else if (rand <= epicProb)
+            {
+                slotGrade = UnitGrade.Epic;
+            }
+            else if (rand <= legendaryProb)
+            {
+                slotGrade = UnitGrade.Legendary;
+            }
+            else
+            {
+                slotGrade = UnitGrade.Mythic;
+            }
 
-        var selectedUnit = possibleUnitList.OrderBy(_ => Guid.NewGuid()).First();
+            // 선택한 등급의 유닛 목록 가져오기
+            var possibleUnitList = D_TileCardData.FindEntities(data => data.f_grade == slotGrade);
 
-        
-        return selectedUnit; // 선택된 유닛의 이름 반환
-       
+            // 목록이 비어있지 않으면 랜덤하게 유닛 선택
+            if (possibleUnitList != null && possibleUnitList.Count > 0)
+            {
+                gradeFound = true;
+                return possibleUnitList.OrderBy(_ => Guid.NewGuid()).First();
+            }
+
+            attempts++;
+        }
+
+        // 여전히 유닛을 찾지 못했다면 모든 유닛 중에서 선택
+        var allUnits = D_TileCardData.FindEntities(data => true);
+        if (allUnits != null && allUnits.Count > 0)
+        {
+            return allUnits.OrderBy(_ => Guid.NewGuid()).First();
+        }
+
+        return null; // 호출하는 측에서 null 체크 필요
+
 
     }
 

@@ -70,12 +70,26 @@ public class ObjectPool : MonoBehaviour
     // 풀 파괴
     public void DestroyPool()
     {
-        // availableObjects 큐에 있는 모든 오브젝트 제거
+        // 큐에 있는 모든 오브젝트의 참조를 리스트로 복사
+        List<GameObject> objectsToDestroy = new List<GameObject>();
         while (availableObjects.Count > 0)
         {
             PooledObject obj = availableObjects.Dequeue();
-            Destroy(obj.gameObject);
+            if (obj != null && obj.gameObject != null)
+            {
+                objectsToDestroy.Add(obj.gameObject);
+            }
         }
+
+        // 큐를 비운 후에 오브젝트들을 파괴
+        foreach (var obj in objectsToDestroy)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+
         // 오브젝트 풀 게임 오브젝트 제거
         Destroy(gameObject);
     }

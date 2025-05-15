@@ -88,6 +88,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
         CleanUp();
         placedMap = map;
         tileMapGrid = grid;
+        isBattleActive = false;
     }
 
     public List<WaveBase> GetWaveList()

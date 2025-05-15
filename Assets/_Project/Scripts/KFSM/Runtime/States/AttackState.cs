@@ -292,11 +292,6 @@ public class AttackState : StateBase
                 Controller.RegisterTrigger(Trigger.TargetMiss);
                 return false;
             }
-            else
-            {
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-                return false;
-            }
         }
 
         return true;
