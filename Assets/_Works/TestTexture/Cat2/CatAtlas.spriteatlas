@@ -51,6 +51,7 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 3b35b5304c3ed824e80601b8c1da095d, type: 3}
+  - {fileID: 21300000, guid: 72a4c6405e066e842abd645a4fd76d59, type: 3}
   - {fileID: 21300000, guid: 5a0a1d409a3caa743a02843797438eb6, type: 3}
   - {fileID: 21300000, guid: 29f9ef507cf588e418029d782243f3e2, type: 3}
   - {fileID: 21300000, guid: acfd82e01d688b745a6fe64b2eadd55a, type: 3}
@@ -63,6 +64,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 39952922dee43e44d9562c8deee1e6f8, type: 3}
   - {fileID: 21300000, guid: 667096729cb374e48a950a503fdc252a, type: 3}
   - {fileID: 21300000, guid: 15fc42a24f0200344bd45ccac81dd063, type: 3}
+  - {fileID: 21300000, guid: 978bdcb28fe47d64292f289805c6d775, type: 3}
   - {fileID: 21300000, guid: ad0b6ef28a0369641879a259d8767b59, type: 3}
   - {fileID: 21300000, guid: 66d9b2036a53cc54b99aa36b91495543, type: 3}
   - {fileID: 21300000, guid: 836f5373b2242874bbffa1449f2d8f18, type: 3}
@@ -124,6 +126,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ef0d8afdeb682264eb0dd17f9239346e, type: 3}
   - {fileID: 21300000, guid: da29e07e645aa8e4193345284ec6d3d6, type: 3}
   - {fileID: 21300000, guid: 22ec5d8e28a50d143b3623500bc03a74, type: 3}
+  - {fileID: 21300000, guid: 5f2aedae8478d704cb0a78578754129d, type: 3}
   - {fileID: 21300000, guid: e8e0b7fe0bb94bb46803c0fc0d35eee4, type: 3}
   - {fileID: 21300000, guid: 0ac8879f23b76c040b2360a490b3fdce, type: 3}
   - {fileID: 21300000, guid: 1f9731af69677414098c74c0f2fd5367, type: 3}
@@ -133,6 +136,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 77df55ff1dff6f846b4d811aa7554a15, type: 3}
   m_PackedSpriteNamesToIndex:
   - face_pattern_2
+  - rod_2
   - rod_1
   - top_6
   - crossbow_1
@@ -145,6 +149,7 @@ SpriteAtlas:
   - left_hand_1
   - emblem_4
   - nose
+  - hammer_2
   - body
   - bow_3
   - left_arm_cloth
@@ -206,6 +211,7 @@ SpriteAtlas:
   - top_4
   - tail
   - hair_6_back
+  - shield_2
   - left_arm_cloth_6
   - hair_8_front
   - bow_1
