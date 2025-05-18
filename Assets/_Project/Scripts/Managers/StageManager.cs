@@ -196,7 +196,6 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         if (currentWaveIndex >= waveList.Count)
         {
-            Debug.Log("모든 웨이브 완료!");
             OnGameClear();
             return;
         }

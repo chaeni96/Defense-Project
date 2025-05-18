@@ -174,7 +174,13 @@ MonoBehaviour:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 698bd01e2d90e1249a6f159fdacb4612
-    m_Address: Cat_BasicModel
+    m_Address: Unit_Basic
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c01107d104122442997f5317ae11190
+    m_Address: Enemy_Basic
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs

@@ -34,7 +34,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     [HideInInspector] public GameObject itemSlotObject;
 
     public bool canAttack = true;
-    public UnitAppearanceProvider appearanceProvider;
 
 
     // 드래그 앤 드롭을 위한 변수 추가

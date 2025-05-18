@@ -30,6 +30,9 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     [SerializeField] protected Slider hpBar;  // Inspector에서 할당
     [SerializeField] protected Canvas hpBarCanvas;  // Inspector에서 할당
 
+    
+    [SerializeField] protected UnitAppearanceProvider appearanceProvider;
+
 
     //TODO : 애니메이션 컨트롤하는 매핑 스크립트 따로 만들기
     [SerializeField] protected RuntimeAnimatorController attackBowController;
@@ -171,6 +174,12 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
                 break;
             case AnimControllerType.AttackSword:
                 animator.runtimeAnimatorController = attackSwordController;
+                break;
+            case AnimControllerType.AttackPunch:
+                animator.runtimeAnimatorController = attackPunchController;
+                break;
+            case AnimControllerType.AttackThrow:
+                animator.runtimeAnimatorController = attackThrowController;
                 break;
         }
     }

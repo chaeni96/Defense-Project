@@ -14,21 +14,21 @@ namespace Kylin.FSM
         [Inject] protected CharacterFSMObject characterFSM;
         public override void OnEnter()
         {
-            Debug.Log("ChaseState ����");
+            Debug.Log("ChaseState ????");
             lastTargetCheckTime = 0f;
             transform = characterFSM.transform;
 
-            // Owner�� CharacterFSMObject�� ĳ����
+            // Owner?? CharacterFSMObject?? ĳ????
             if (characterFSM != null)
             {
-                // Ÿ���� ������ Ÿ�� ã��
+                // ????? ?????? ??? ???
                 if (characterFSM.CurrentTarget == null)
                 {
                     characterFSM.UpdateTarget();
 
                     if (characterFSM.CurrentTarget == null)
                     {
-                        // Ÿ���� ������ ���?���·�
+                        // ????? ?????? ???????·?
                         Controller.RegisterTrigger(Trigger.TargetMiss);
                         return;
                     }
@@ -36,29 +36,29 @@ namespace Kylin.FSM
             }
             else
             {
-                // CharacterFSMObject�� �ƴϸ� ó��
+                // CharacterFSMObject?? ???? ???
                 Controller.RegisterTrigger(Trigger.TargetMiss);
             }
         }
 
         public override void OnUpdate()
         {
-            // CharacterFSMObject Ȯ��
+            // CharacterFSMObject ???
             if (characterFSM == null) return;
 
-            // ���������� Ÿ�� ���� Ȯ��
+            // ?????????? ??? ???? ???
             if (Time.time - lastTargetCheckTime > targetUpdateInterval)
             {
                 lastTargetCheckTime = Time.time;
 
-                // Ÿ�� �ִ��� Ȯ��
+                // ??? ????? ???
                 var target = characterFSM.CurrentTarget;
                 if (target == null || !target.gameObject.activeSelf)
                 {
-                    // Ÿ���� �׾��ų� ���������?�� Ÿ�� ã��
+                    // ????? ?????? ???????????? ??? ???
                     characterFSM.UpdateTarget();
 
-                    //Ÿ���� �ƿ������� idle�� 
+                    //????? ????????? idle?? 
                     if (characterFSM.CurrentTarget == null)
                     {
                         Controller.RegisterTrigger(Trigger.TargetMiss);
@@ -67,21 +67,21 @@ namespace Kylin.FSM
                 }
             }
 
-            // characterFSM.basicObject���� ���� �������� (CharacterFSMObject�� �����ϴ� basicObject ���?
+            // characterFSM.basicObject???? ???? ???????? (CharacterFSMObject?? ??????? basicObject ????
             float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
             float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed) * 2;
 
-            // Ÿ�ٱ����� �Ÿ� ���?
+            // ???????? ??? ????
             float distanceToTarget = characterFSM.GetDistanceToTarget();
 
-            // ���� ���� �ȿ� �������� ���� ���·� ��ȯ
+            // ???? ???? ??? ???????? ???? ???·? ???
             if (distanceToTarget <= attackRange)
             {
                 Controller.RegisterTrigger(Trigger.AttackRequested);
                 return;
             }
 
-            // Ÿ�� �������� �̵�
+            // ??? ???????? ???
             Vector2 currentPos = new Vector2(transform.position.x, transform.position.y);
             Vector2 targetPos = new Vector2(characterFSM.CurrentTarget.transform.position.x, characterFSM.CurrentTarget.transform.position.y);
             Vector2 direction = (targetPos - currentPos).normalized;
@@ -94,7 +94,7 @@ namespace Kylin.FSM
 
         public override void OnExit()
         {
-            Debug.Log("ChaseState ����");
+            Debug.Log("ChaseState ????");
         }
     }
 }

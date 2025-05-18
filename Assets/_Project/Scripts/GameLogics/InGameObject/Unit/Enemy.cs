@@ -3,6 +3,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BansheeGz.BGDatabase;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -45,6 +46,28 @@ public class Enemy : BasicObject
     {
         enemyData = data;
 
+        //fsmID 설정
+        fsmObj.UpdateFSM(enemyData.f_fsmID);
+        // 애니메이터 컨트롤러 설정
+        SetAnimatorController(enemyData.f_animControllType);
+        
+        // 외형 설정 로직 추가
+        if (appearanceProvider != null && enemyData.f_appearanceData != null)
+        {
+            // 기존에 unitAppearance가 null이면 새로 생성
+            if (appearanceProvider.unitAppearance == null)
+            {
+                appearanceProvider.unitAppearance = new BGEntityGo();
+            }
+
+            // Entity 속성을 통해 외형 데이터를 설정
+            appearanceProvider.unitAppearance.Entity = enemyData.f_appearanceData;
+
+            // 외형 로드
+            appearanceProvider.LoadAppearance();
+        }
+        
+        
         baseStats.Clear();
         currentStats.Clear();
 
