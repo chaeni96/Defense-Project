@@ -1,25 +1,10 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading;
 using System.Linq;
 using BansheeGz.BGDatabase;
 using Kylin.LWDI;
 
 namespace Kylin.FSM
 {
-    public class CatFSMObject : FSMObjectBase
-    {
-        public CatFSMObject(D_UnitData unitData)
-        {
-            //fsmId = unitData.f_FsmID;
-
-            Initialized();
-        }
-        public void SkillFire()
-        {
-        }
-
-    }
     public interface IFSMSubscriber
     {
         abstract void SetTrigger(Trigger trigger);
@@ -29,20 +14,17 @@ namespace Kylin.FSM
 
     public abstract class FSMObjectBase : MonoBehaviour, IFSMSubscriber, IDependencyObject
     {
-        [SerializeField] protected FSMDataCollection dataCollection; // µ¥ÀÌÅÍ ÄÃ·º¼Ç
+        [SerializeField] protected FSMDataCollection dataCollection; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½
         [SerializeField] protected string fsmId;
 
         protected FSMDataAsset cachedDataAsset;
         public StateController stateMachine;
-
-        private CancellationTokenSource localCts;
-        private CancellationTokenSource linkedCts;
         public Animator animator;
 
         private IScope _currentScope;
 
-        private string currentAnimTrigger = ""; // ÇöÀç ½ÇÇà ÁßÀÎ ¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å
-        private bool skipNextAnimationTransition = false; // ´ÙÀ½ ¾Ö´Ï¸ÞÀÌ¼Ç Æ®·£Áö¼Ç ½ºÅµ ¿©ºÎ
+        private string currentAnimTrigger = ""; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½
+        private bool skipNextAnimationTransition = false; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ ï¿½ï¿½ï¿½ï¿½
 
         public bool isEnemy;
         public bool isFinished;
@@ -79,144 +61,80 @@ namespace Kylin.FSM
             states = StateFactory.CreateStates(cachedDataAsset);
             transitions = TransitionConverter.ConvertToRuntimeTransitions(cachedDataAsset.Transitions);
 
-            // ±âº» ÃÊ±â »óÅÂ ID ¼³Á¤
+            // ï¿½âº» ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ID ï¿½ï¿½ï¿½ï¿½
             initialStateId = cachedDataAsset.InitialStateId;
             var tempID = initialStateId;
-            // À¯È¿ÇÑ »óÅÂÀÎÁö È®ÀÎ
+            // ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             bool validInitialState = states.Any(s => s != null && s.Id == tempID);
             if (!validInitialState && states.Length > 0)
             {
-                initialStateId = states[0].Id; // Ã¹ ¹øÂ° À¯È¿ÇÑ »óÅÂ·Î ´ëÃ¼
+                initialStateId = states[0].Id; // Ã¹ ï¿½ï¿½Â° ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½Ã¼
             }
-        }
-
-        void Awake()
-        {
-            localCts = new CancellationTokenSource();
-            linkedCts = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token);
-            Application.quitting += CancelFSM;
-
-            Initialized();
         }
 
         protected virtual void Initialized()
         {
 
             ConfigureStateMachine(out var states, out var transitions, out var initId);
+            if (stateMachine == null)
+            {
+                stateMachine = new StateController();
+            }
+            stateMachine.Clear();
             
             _currentScope = DependencyInjector.CreateScope();
-            _currentScope.RegisterInstance(typeof(FSMObjectBase), this);
-            _currentScope.RegisterInstance(this.GetType(), this);
-            stateMachine = new StateController();
-            stateMachine.Initialize(states, transitions, initId, this, _currentScope);
-            stateMachine.RegistFSMSubscriber(this);
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½Å©ï¿½ï¿½ ï¿½ß´Âµï¿½ ï¿½Â³ï¿½ ï¿½ð¸£°ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ò°ï¿½ TODO : ï¿½ï¿½â¸?
-            RunLoop(linkedCts.Token).Forget();
+            using (_currentScope.Activate())
+            {
+                _currentScope.RegisterInstance(typeof(FSMObjectBase), this);
+                _currentScope.RegisterInstance(this.GetType(), this);
+                stateMachine.Initialize(states, transitions, initId, this, _currentScope);
+                stateMachine.RegistFSMSubscriber(this);    
+            }
         }
 
-        private async UniTaskVoid RunLoop(CancellationToken token)
+        private void Update()
         {
-            try
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    stateMachine?.Update();
-                    await UniTask.Yield(PlayerLoopTiming.Update, token);
-                }
-            }
-            catch (System.OperationCanceledException)
-            {
-                // Ãë¼Ò ¿¹¿Ü Ã³¸®
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Error in FSM update loop: {e.Message}\n{e.StackTrace}");
-            }
+            stateMachine?.Update();
         }
-
+        
         public virtual void CancelFSM()
         {
-
-            stateMachine.CancleFSMSubscriber(this);
-
-            if (localCts != null && !localCts.IsCancellationRequested)
-            {
-                localCts.Cancel();
-            }
+            stateMachine?.CancleFSMSubscriber(this);
         }
 
         void OnDestroy()
         {
             CancelFSM();
-
-            Application.quitting -= CancelFSM;
         }
 
-        //¾Ö´Ï¸ÞÀÌ¼Ç Àç»ý ¸Þ¼­µå
+        //ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         public virtual void SetTrigger(Trigger trigger)
         {
             if (animator != null && trigger != Trigger.None)
             {
-                //string triggerName = trigger.ToString();
-
-                //// 1. Æ®¸®°Å°¡ ¾Ö´Ï¸ÞÀÌÅÍ¿¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
-                //bool triggerExists = false;
-                //foreach (AnimatorControllerParameter param in animator.parameters)
-                //{
-                //    if (param.name == triggerName && param.type == AnimatorControllerParameterType.Trigger)
-                //    {
-                //        triggerExists = true;
-                //        break;
-                //    }
-                //}
-
-                //// 2. Æ®¸®°Å°¡ ¾Ö´Ï¸ÞÀÌÅÍ¿¡ ¾øÀ¸¸é ½ÇÇàÇÏÁö ¾ÊÀ½
-                //if (!triggerExists)
-                //{
-                //    return;
-                //}
-
-                //// 3. ÇöÀç ½ÇÇà ÁßÀÎ ¾Ö´Ï¸ÞÀÌ¼Ç°ú µ¿ÀÏÇÑ Æ®¸®°ÅÀÎÁö È®ÀÎ
-                //if (currentAnimTrigger == triggerName)
-                //{
-                //    return;
-                //}
-
-                //// 4. Æ®·£Áö¼Ç ½ºÅµ ¿É¼Ç È®ÀÎ
-                //if (skipNextAnimationTransition)
-                //{
-                //    skipNextAnimationTransition = false; // ÇÃ·¡±× ¸®¼Â
-                //    return;
-                //}
-
-                //// 5. ¾Ö´Ï¸ÞÀÌ¼Ç Æ®¸®°Å ½ÇÇà
                 string triggerName = trigger.ToString();
                 animator.SetTrigger(triggerName);
             }
         }
 
-        // ´ÙÀ½ ¾Ö´Ï¸ÞÀÌ¼Ç Æ®·£Áö¼ÇÀ» ½ºÅµÇÏµµ·Ï ¼³Á¤ÇÏ´Â ¸Þ¼­µå
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         public void SkipNextAnimationTransition()
         {
             skipNextAnimationTransition = true;
         }
 
-        // FSM ID¸¦ ¾÷µ¥ÀÌÆ®ÇÏ´Â ¸Þ¼­µå
+        // FSM IDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         public void UpdateFSM(string newFsmId)
         {
-            if (fsmId == newFsmId) return; // °°Àº ID¸é º¯°æ ºÒÇÊ¿ä
+            if (fsmId == newFsmId) return; // ï¿½ï¿½ï¿½ï¿½ IDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½
 
-            // ±âÁ¸ FSM Á¤¸®
+            // ï¿½ï¿½ï¿½ï¿½ FSM ï¿½ï¿½ï¿½ï¿½
             CancelFSM();
 
-            // »õ ID ¼³Á¤
+            // ï¿½ï¿½ ID ï¿½ï¿½ï¿½ï¿½
             fsmId = newFsmId;
 
-            localCts = new CancellationTokenSource();
-            linkedCts = CancellationTokenSource.CreateLinkedTokenSource(localCts.Token);
-            Application.quitting += CancelFSM;
-
-            // FSM ÀçÃÊ±âÈ­
+            // FSM ï¿½ï¿½ï¿½Ê±ï¿½È­
             Initialized();
         }
 
@@ -226,7 +144,7 @@ namespace Kylin.FSM
         }
 
 #if UNITY_EDITOR
-        // ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½Ó¼ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½Ó¼ï¿½
         public string CurrentStateName
         {
             get

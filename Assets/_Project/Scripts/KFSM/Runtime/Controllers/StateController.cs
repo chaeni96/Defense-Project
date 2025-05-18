@@ -6,7 +6,7 @@ using Kylin.LWDI;
 using UnityEngine;
 namespace Kylin.FSM
 {
-    public class StateController : IDependencyObject //��ǻ�?FSM�� ��ü?��
+    public class StateController : IDependencyObject //��ǻ�?FSM�� ��ü?��
     {
         private Dictionary<int, StateBase> _states;
         //private StateBase[] _states;
@@ -21,15 +21,16 @@ namespace Kylin.FSM
 
         private HashSet<IFSMSubscriber> subscribers = new();
 
-        private FSMObjectBase _ownerObject; // ������ GameObject - �̰͵� �ٲ�ߵ�?
-
-        private IScope _fsmScope;
+        private FSMObjectBase _ownerObject; // ������ GameObject - �̰͵� �ٲ�ߵ�?
 
         public void Initialize(StateBase[] states, Transition[] transitions, int initialStateId, FSMObjectBase owner, IScope currentScope)
         {
-            //_states = states;
-            _fsmScope = currentScope;
-            _states = new Dictionary<int, StateBase>();
+            Clear();
+            
+            if (_states == null)
+            {
+                _states = new Dictionary<int, StateBase>();
+            }
             foreach(var state in states)
             {
                 _states[state.Id] = state;
@@ -44,18 +45,43 @@ namespace Kylin.FSM
 
             _ownerObject = owner;
 
-            _fsmScope.RegisterInstance(typeof(StateController), this);
+            currentScope.RegisterInstance(typeof(StateController), this);
 
             // ���� �ʱ�ȭ
             foreach (var s in states)
             {
                 //DependencyInjector.InjectWithScope(s, fsmScope);
-                s?.Inject(_fsmScope);
+                s?.Inject(currentScope);
             }
+            
+            
+            
+            
+            
+            
 
             ChangeState(initialStateId);
         }
-
+        public void Clear()
+        {
+            subscribers.Clear();
+            
+            // 현재 상태 종료
+            if (_states != null && _states.ContainsKey(_currentStateId))
+            {
+                _states[_currentStateId]?.OnExit();
+            }
+            
+            // 필드 초기화
+            _states?.Clear();
+            _transitionsByState?.Clear();
+            _ownerObject = null;
+            _currentStateId = 0;
+            _persistentMask = 0;
+            _eventMask = 0;
+        }
+        
+        
         public void RegistFSMSubscriber(IFSMSubscriber fSMSubscriber)
         {
             subscribers.Add(fSMSubscriber);
