@@ -84,15 +84,7 @@ public class TileMapManager : MonoBehaviour
         return new Vector3Int(unityX, unityY, 0);
     }
 
-    //endTile에 playerCamp 설치
-    public void InitializeTiles()
-    {
-        //tileMap 설치
-        InstallTileMap(mapData);
-
-    }
-
-    public void InstallTileMap(D_MapData mapData)
+    public void InstallTileMap()
     {
         // 기본적으로 모든 타일을 먼저 사용 가능한 상태로 초기화
         foreach (var position in tileMap.cellBounds.allPositionsWithin)
@@ -157,74 +149,64 @@ public class TileMapManager : MonoBehaviour
     }
 
 
-    //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드
-    public bool CanPlaceObject(Vector2 basePosition, List<Vector2> tileOffsets, Dictionary<int, UnitController> previewUnits)
+    //드래그 도중 오브젝트 배치 가능한지 체크하는 메서드 - 오버로딩해서 멀티타일용 따로 빼둠
+    public bool CanPlaceObject(Vector2 position, UnitController previewUnit)
     {
-        // 멀티타일 유닛 확인
-        bool isMultiTileUnit = false;
-        MultiTileUnitController multiTileUnit = null;
-
-        if (previewUnits.Count == 1 && previewUnits.ContainsKey(0) && previewUnits[0].isMultiUnit)
+        if (previewUnit.isMultiUnit)
         {
-            isMultiTileUnit = true;
-            multiTileUnit = previewUnits[0] as MultiTileUnitController;
+            return false;
         }
-
-        // 멀티타일 유닛의 경우 특별 처리
-        if (isMultiTileUnit && multiTileUnit != null)
+    
+        // 타일 데이터와 타일 존재 여부 확인
+        var tileData = GetTileData(position);
+        Vector3Int unityPos = ConvertToUnityCoordinates(position);
+    
+        // 타일이 없거나 맵 밖이면 배치 불가
+        if (tileData == null || !tileMap.HasTile(unityPos))
         {
-            // 멀티타일 유닛용 배치 가능 여부 확인
-            return CheckMultiTilePlacement(basePosition, multiTileUnit);
+            return false;
         }
-
-        // 일반 유닛 처리 (기존 로직)
-        for (int i = 0; i < tileOffsets.Count; i++)
+    
+        // 이미 유닛이 배치되어 있는 경우 합성 가능 여부 검사
+        if (tileData.placedUnit != null)
         {
-            Vector2 checkPosition = basePosition + tileOffsets[i];
-            var tileData = GetTileData(checkPosition);
-
-            // 사용자 정의 좌표를 Unity 좌표로 변환하여 타일 존재 여부 확인
-            Vector3Int unityPos = ConvertToUnityCoordinates(checkPosition);
-
-            if (tileData == null || !tileMap.HasTile(unityPos))
+            var placedUnit = tileData.placedUnit;
+        
+            // 현재 스탯에서 직접 레벨 가져오기
+            int previewLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
+            int placedLevel = (int)placedUnit.GetStat(StatName.UnitStarLevel);
+        
+            // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 5성 미만, 멀티타일 여부 동일
+            bool canMerge = (previewUnit.unitType == placedUnit.unitType) && (previewLevel == placedLevel) && (placedLevel < 5) ;
+        
+            // 합성 불가능하면 배치 불가
+            if (!canMerge)
             {
                 return false;
             }
-
-            // 배치된 유닛이 있는 경우 타입 비교
-            if (tileData?.placedUnit != null)
-            {
-                // 인덱스가 Dictionary에 존재하는지 확인
-                if (!previewUnits.ContainsKey(i))
-                {
-                    return false;
-                }
-
-                var placedUnit = tileData.placedUnit;
-                var previewUnit = previewUnits[i];
-
-                // 현재 스탯에서 직접 레벨 가져오기
-                int previewLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
-                int placedLevel = (int)placedUnit.GetStat(StatName.UnitStarLevel);
-
-                // 합성 가능 조건 - 같은 타입, 같은 레벨, 최대 5성 미만
-                bool canMerge = (previewUnit.unitType == placedUnit.unitType) &&
-                      (previewLevel == placedLevel) &&
-                      (placedLevel < 5) &&
-                      (previewUnit.isMultiUnit == placedUnit.isMultiUnit);
-
-                // 합성 불가능하면 배치 불가
-                if (!canMerge)
-                {
-                    return false;
-                }
-            }
         }
-
+    
         return true;
     }
 
-    // 멀티타일 유닛의 배치 가능 여부 확인 (별도 메서드)
+    // 멀티타일 유닛의 배치 가능 여부 확인 
+    public bool CanPlaceObject(Vector2 basePosition, Dictionary<int, MultiTileUnitController> previewUnits)
+    {
+        // 멀티타일 유닛의 경우 특별 처리
+        if (previewUnits[0].isMultiUnit )
+        {
+            // 멀티타일 유닛용 배치 가능 여부 확인
+            return CheckMultiTilePlacement(basePosition, previewUnits[0]);
+        }
+    
+        // 일반 유닛인 경우 더 간단한 오버로드 메서드를 사용하도록 리다이렉트
+        if (previewUnits.Count > 0)
+        {
+            return CanPlaceObject(basePosition, previewUnits[0]);
+        }
+    
+        return false;
+    }
     private bool CheckMultiTilePlacement(Vector2 basePosition, MultiTileUnitController multiTileUnit)
     {
         // 원래 위치의 타일들 임시 저장

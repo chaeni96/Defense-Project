@@ -616,7 +616,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             // 배치 가능성 확인
             List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
             Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-            bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, tileOffsets, units);
+            bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, units[0]);
 
             // 원래 타일 상태 복원
             if (originalTileData != null)

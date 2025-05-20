@@ -107,7 +107,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
         //타일맵 매니저 초기화, 타일맵 data 전달
         TileMapManager.Instance.InitializeManager(placedMap, stageData.f_mapData, tileMapGrid);
-        TileMapManager.Instance.InitializeTiles();
+        TileMapManager.Instance.InstallTileMap();
 
         // 웨이브 데이터 초기화
         InitializeWaves();
