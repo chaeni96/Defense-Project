@@ -111,9 +111,7 @@ public class MultiTileUnitController : UnitController
 
         // 확장 타일 위치도 업데이트
         OnPositionChanged?.Invoke(targetPosition);
-
-        // 프리뷰 머테리얼 설정
-        SetPreviewMaterial(canPlace);
+        
     }
 
     // 드래그 위치 업데이트
@@ -122,7 +120,6 @@ public class MultiTileUnitController : UnitController
         Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
         newPosition.z = -0.1f;
         transform.position = newPosition;
-        SetPreviewMaterial(canPlace);
 
         // 위치 변경 이벤트 발생
         OnPositionChanged?.Invoke(newPosition);

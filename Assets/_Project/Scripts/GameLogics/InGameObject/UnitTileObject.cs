@@ -7,13 +7,11 @@ public class UnitTileObject : MonoBehaviour
     public Image backgroundImage;
 
 
-    public void InitUnitImage(Sprite sprite, bool isBase = false)
+    public void InitTileImage(bool isShow = false)
     {
-      
-        // 배경 이미지 활성화/비활성화 (sprite가 있거나 isBase가 true일 때)
         if (backgroundImage != null)
         {
-            backgroundImage.enabled = (sprite != null || isBase);
+            backgroundImage.enabled = isShow;
         }
     }
 

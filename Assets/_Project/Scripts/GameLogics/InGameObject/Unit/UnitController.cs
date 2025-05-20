@@ -11,12 +11,10 @@ using System.IO;
 using Unity.VisualScripting;
 using Kylin.FSM;
 using BansheeGz.BGDatabase;
-
+using Sequence = DG.Tweening.Sequence;
 
 public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerClickHandler
 {
-    
-
     [HideInInspector]
     public Vector2 tilePosition;
 
@@ -35,7 +33,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public bool canAttack = true;
 
-
     // 드래그 앤 드롭을 위한 변수 추가
     public bool isDragging = false;
     public Vector3 originalPosition;
@@ -49,13 +46,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     protected int originalStarLevel = 0;
     protected bool isShowingMergePreview = false;
 
-    //합성 불가할대 위치 변환 
+    //합성 불가할때 위치 변환 
     private UnitController swapTargetUnit = null;
     private bool isSwapping = false;
 
     [HideInInspector]
     public bool isMultiUnit = false; // 여러 타일을 차지하는 멀티 유닛인지
-
 
     // 아이템 슬롯 프리팹 참조 (인스펙터에서 할당 필요)
     [SerializeField] private GameObject itemSlotPrefab;
@@ -66,7 +62,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 유닛 인스턴스별 고유 ID 추가
     public string uniqueId { get; private set; }
 
-    // UnitController.cs에 추가
+    // 단일 타일 유닛용 정적 오프셋 및 딕셔너리
+    private static readonly List<Vector2> singleTileOffset = new List<Vector2>(1) { Vector2.zero };
+    private Dictionary<int, UnitController> tempUnitDict = new Dictionary<int, UnitController>(1);
+
+    // UnitController 이벤트
     public static event System.Action<UnitController> OnUnitClicked;
 
     public override void Initialize()
@@ -77,8 +77,12 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 고유 ID 생성 (System.Guid 사용)
         uniqueId = System.Guid.NewGuid().ToString();
+        
         // 아이템 슬롯 초기화
         InitializeItemSlot();
+        
+        // 임시 딕셔너리 초기화
+        tempUnitDict.Clear();
     }
 
     private void InitializeItemSlot()
@@ -90,7 +94,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             itemSlotComponent = itemSlotObject.GetComponent<UnitItemSlotObject>();
             itemSlotObject.SetActive(false);
         }
-      
     }
 
     public override BasicObject GetNearestTarget()
@@ -106,24 +109,23 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         return basicObjects;
     }
 
-
     public void UpdateStarDisplay(int? starLevel = null)
     {
         if (unitStarObject == null) return;
 
-        int currentStarLevel = Mathf.RoundToInt(GetStat(StatName.UnitStarLevel));
+        int currentStarLevel = starLevel ?? Mathf.RoundToInt(GetStat(StatName.UnitStarLevel));
 
-        if(starLevel != null)
-        {
-            currentStarLevel = starLevel.Value;
-        }
-
+        // 현재 표시된 별 개수가 같으면 불필요한 작업 스킵
+        if (starObjects.Count == currentStarLevel) return;
+        
+        // 기존 별 제거
         foreach (var star in starObjects)
         {
             Destroy(star);
         }
         starObjects.Clear();
 
+        // 새 별 생성
         float spacing = 1.5f;
         float totalWidth = (currentStarLevel - 1) * spacing;
         float startX = -totalWidth / 2f;
@@ -136,8 +138,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-    //유닛 정보 초기화
-    public void InitializeUnitInfo(D_UnitData unit, D_TileCardData tileCard = null)
+    // 유닛 정보 초기화
+    public virtual void InitializeUnitInfo(D_UnitData unit, D_TileCardData tileCard = null)
     {
         if (unit == null) return;
 
@@ -146,8 +148,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         unitData = unit;
         unitType = unitData.f_UnitType;
 
-        //fsmID 설정
+        // fsmID 설정
         fsmObj.UpdateFSM(unitData.f_fsmId);
+        
         // 애니메이터 컨트롤러 설정
         SetAnimatorController(unitData.f_animControllerType);
 
@@ -173,7 +176,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         if (tileCard != null)
         {
-
             isMultiUnit = tileCard.f_isMultiTileUinit;
         }
 
@@ -188,7 +190,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     public void SaveOriginalUnitPos()
     {
         originalPosition = transform.position;
-
     }
 
     private void SettingBasicStats()
@@ -222,7 +223,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             AddSubject(subject);
         }
 
-
         // 현재 스탯을 기본 스탯으로 초기화
         foreach (var baseStat in baseStats)
         {
@@ -242,7 +242,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             };
         }
 
-
         // currentHP를 maxHP로 초기화
         if (!currentStats.ContainsKey(StatName.CurrentHp))
         {
@@ -254,9 +253,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 multiply = 1f
             };
         }
-
     }
-
 
     public void EquipItemSlot(Sprite itemIcon)
     {
@@ -277,10 +274,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 아이템 슬롯 활성화
         itemSlotObject.SetActive(true);
-
     }
 
-    //스탯 변경시 할 행동들
+    // 스탯 변경시 할 행동들
     public override void OnStatChanged(StatSubject subject, StatStorage statChange)
     {
         if (GetStat(StatName.CurrentHp) <= 0) return;  // 이미 죽었거나 죽는 중이면 스탯 변경 무시
@@ -290,26 +286,17 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 체력 관련 스탯이 변경되었을 때
         if (statChange.statName == StatName.CurrentHp || statChange.statName == StatName.MaxHP)
         {
-
             // HP 바 업데이트
             UpdateHpBar();
         }
-        ApplyEffect();
-
-        //attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
+        
+        // attackSpeed 바뀌었을때는 attackTimer 0부터 다시 시작
         if (statChange.statName == StatName.AttackSpeed)
         {
             attackTimer = 0;
         }
     }
-
-
-    public void HitEffect()
-    {
-
-        // 데미지를 입으면 빨간색으로 깜빡임
-    }
-
+    
     public override void OnDead()
     {
         isActive = false;
@@ -319,9 +306,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 기존 단일 타일 로직
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
+        
         // 유닛 매니저에서 등록 해제
         UnitManager.Instance.UnregisterUnit(this);
-
         UnitManager.Instance.NotifyUnitDead(this);
     }
 
@@ -333,18 +320,16 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             attackTimer = 0f;  // 타이머 리셋
         }
     }
+    
     public void CheckAttackAvailability()
     {
-
         // y가 9보다 크면 공격 불가
         canAttack = tilePosition.y < 9;
-
     }
-
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
-        // 클릭 이벤트만 처리
+        // 클릭 이벤트만 처리 (드래그가 아닌 경우)
         if (!hasDragged)
         {
             if (StageManager.Instance.IsBattleActive)
@@ -373,12 +358,8 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 합성 관련 변수 초기화
         mergeTargetTile = null;
         isShowingMergePreview = false;
-
-        // 드래그 시작 설정
-        Vector3 position = transform.position;
-        position.z = -1;
-        transform.position = position;
-
+        swapTargetUnit = null;
+        isSwapping = false;
         canPlace = false;
     }
 
@@ -394,53 +375,43 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         worldPos.z = 0;
 
         Vector2 currentTilePos = TileMapManager.Instance.GetWorldToTilePosition(worldPos);
+        
+        // 위치가 변경되지 않았으면 불필요한 처리 스킵
+        if (currentTilePos == previousTilePosition) return;
 
         // 배치 가능 여부 확인
         canPlace = CheckPlacementPossibility(currentTilePos);
 
         // 현재 타일 정보 가져오기
         TileData tileData = TileMapManager.Instance.GetTileData(currentTilePos);
-
-
-        // 타일 위치가 변경되었거나 합성 상태가 변경된 경우에만 처리
-        bool canUpdatePreview = currentTilePos != previousTilePosition ||
-                           (tileData != null && CanMergeWithTarget(tileData) != isShowingMergePreview) ||
-                           (tileData != null && CanSwapWithTarget(tileData) != isSwapping);
-
-        if (canUpdatePreview)
+        
+        // 이전 상태 초기화
+        ResetPreviewStates();
+        
+        // 상태 우선순위에 따라 처리 (합성 > 교환 > 일반 이동)
+        if (tileData != null && CanMergeWithTarget(tileData))
         {
-            // 이전 합성 프리뷰 상태 초기화
-            ResetMergePreview();
-
-            // 합성 가능 여부 확인 및 프리뷰 표시
-            if (CanMergeWithTarget(tileData))
-            {
-                ShowMergePreview(tileData);
-            }
-            // 합성이 불가능하지만 교환은 가능한 경우
-            else if (CanSwapWithTarget(tileData))
-            {
-                ShowSwapPreview(tileData);
-            }
-            else
-            {
-                UpdateDragPosition(currentTilePos);
-            }
-
-            previousTilePosition = currentTilePos;
+            ShowMergePreview(tileData);
         }
+        else if (tileData != null && CanSwapWithTarget(tileData))
+        {
+            ShowSwapPreview(tileData);
+        }
+        else
+        {
+            UpdateUnitPosition(TileMapManager.Instance.GetTileToWorldPosition(currentTilePos));
+        }
+        
+        previousTilePosition = currentTilePos;
     }
 
-    private void UpdateDragPosition(Vector2 currentTilePos)
+    // 유닛 위치 업데이트 공통 메서드
+    private void UpdateUnitPosition(Vector3 targetPosition)
     {
-        // 일반 이동 - 정확히 마우스 위치에 배치
-        Vector3 newPosition = TileMapManager.Instance.GetTileToWorldPosition(currentTilePos);
-        newPosition.z = -0.1f;
-        transform.position = newPosition;
-        SetPreviewMaterial(canPlace);
-
+        targetPosition.z = -0.1f;
+        transform.position = targetPosition;
     }
-
+    
     // 드래그 종료
     public virtual void OnPointerUp(PointerEventData eventData)
     {
@@ -486,6 +457,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         if (swapTargetUnit == null) return;
 
+        // 타겟 타일 데이터 확인
         TileData targetTileData = TileMapManager.Instance.GetTileData(previousTilePosition);
         if (targetTileData == null) return;
 
@@ -500,27 +472,26 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         TileMapManager.Instance.ReleaseTile(myOriginalPos);
         TileMapManager.Instance.ReleaseTile(targetOriginalPos);
 
-        // 타겟 유닛의 위치 업데이트
+        // 타겟 유닛 위치 업데이트
         swapTargetUnit.tilePosition = myOriginalPos;
-        List<Vector2> targetTileOffsets = new List<Vector2>() { Vector2.zero };
-        Dictionary<int, UnitController> targetUnits = new Dictionary<int, UnitController>() { { 0, swapTargetUnit } };
-        TileMapManager.Instance.OccupyTiles(myOriginalPos, targetTileOffsets, targetUnits);
+        tempUnitDict.Clear();
+        tempUnitDict[0] = swapTargetUnit;
+        TileMapManager.Instance.OccupyTiles(myOriginalPos, singleTileOffset, tempUnitDict);
 
-        // 현재 유닛의 위치 업데이트
+        // 현재 유닛 위치 업데이트
         tilePosition = targetOriginalPos;
-        List<Vector2> myTileOffsets = new List<Vector2>() { Vector2.zero };
-        Dictionary<int, UnitController> myUnits = new Dictionary<int, UnitController>() { { 0, this } };
-        TileMapManager.Instance.OccupyTiles(targetOriginalPos, myTileOffsets, myUnits);
+        tempUnitDict.Clear();
+        tempUnitDict[0] = this;
+        TileMapManager.Instance.OccupyTiles(targetOriginalPos, singleTileOffset, tempUnitDict);
 
         // 애니메이션 적용
         transform.DOMove(targetWorldPos, 0.3f).SetEase(Ease.OutBack);
         swapTargetUnit.transform.DOMove(myWorldPos, 0.3f).SetEase(Ease.OutBack);
 
-
-
         ResetPreviewStates();
     }
 
+    // 프리뷰 상태 초기화 (합성, 교환 등)
     private void ResetPreviewStates()
     {
         // 합성 프리뷰 초기화
@@ -536,10 +507,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             }
 
             // 내 유닛을 원래 레벨로 복원
-            if (GetStat(StatName.UnitStarLevel) != originalStarLevel)
-            {
-                UpGradeUnitLevel(originalStarLevel);
-            }
+            UpdateStarDisplay(originalStarLevel);
 
             isShowingMergePreview = false;
             mergeTargetTile = null;
@@ -552,7 +520,6 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             swapTargetUnit = null;
         }
     }
-
 
     public virtual void DeleteUnit()
     {
@@ -570,7 +537,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
             }
         }
 
-        // 기존 단일 타일 로직
+        // 타일 해제
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
 
         // 유닛 매니저에서 등록 해제
@@ -600,34 +567,30 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     // 배치 가능한지 확인
     protected virtual bool CheckPlacementPossibility(Vector2 targetPos)
     {
+        // 원래 타일 데이터 임시 수정
+        TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
+        bool originalAvailable = false;
+
+        if (originalTileData != null)
         {
-            // 기존 단일 타일 로직
-            TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
-            bool originalAvailable = false;
-
-            if (originalTileData != null)
-            {
-                originalAvailable = originalTileData.isAvailable;
-                originalTileData.isAvailable = true;
-                originalTileData.placedUnit = null;
-                TileMapManager.Instance.SetTileData(originalTileData);
-            }
-
-            // 배치 가능성 확인
-            List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
-            Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-            bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, units[0]);
-
-            // 원래 타일 상태 복원
-            if (originalTileData != null)
-            {
-                originalTileData.isAvailable = originalAvailable;
-                originalTileData.placedUnit = this;
-                TileMapManager.Instance.SetTileData(originalTileData);
-            }
-
-            return canPlace;
+            originalAvailable = originalTileData.isAvailable;
+            originalTileData.isAvailable = true;
+            originalTileData.placedUnit = null;
+            TileMapManager.Instance.SetTileData(originalTileData);
         }
+
+        // 배치 가능성 확인
+        bool canPlace = TileMapManager.Instance.CanPlaceObject(targetPos, this);
+
+        // 원래 타일 상태 복원
+        if (originalTileData != null)
+        {
+            originalTileData.isAvailable = originalAvailable;
+            originalTileData.placedUnit = this;
+            TileMapManager.Instance.SetTileData(originalTileData);
+        }
+
+        return canPlace;
     }
 
     public void UnequipItemSlot()
@@ -639,41 +602,11 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         }
     }
 
-
-    // 합성 프리뷰 초기화
-    private void ResetMergePreview()
-    {
-        // 이전 타겟이 있고, 현재 합성 프리뷰를 보여주고 있다면
-        if (mergeTargetTile != null && isShowingMergePreview)
-        {
-            // 타겟 유닛의 별 복원
-            if (mergeTargetTile.placedUnit != null)
-            {
-                foreach (var star in mergeTargetTile.placedUnit.starObjects)
-                {
-                    star.SetActive(true);
-                }
-            }
-
-            // 내 유닛을 원래 레벨로 복원 (시각적으로만)
-            UpdateStarDisplay(originalStarLevel);
-
-            isShowingMergePreview = false;
-            mergeTargetTile = null;
-        }
-
-        // 위치 교환 프리뷰 초기화
-        if (swapTargetUnit != null && isSwapping)
-        {
-            isSwapping = false;
-            swapTargetUnit = null;
-        }
-    }
-
-    // 합성 가능 여부 확인
+    // 합성 가능 여부 확인 - 최적화
     protected virtual bool CanMergeWithTarget(TileData tileData)
     {
-        if (tileData?.placedUnit == null || tileData.placedUnit == this)
+        // 타일 데이터나 배치된 유닛이 없거나 자기 자신인 경우
+        if (tileData == null || tileData.placedUnit == null || tileData.placedUnit == this)
             return false;
 
         var targetUnit = tileData.placedUnit;
@@ -681,19 +614,21 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 멀티 유닛은 합성 불가능
         if (isMultiUnit || targetUnit.isMultiUnit)
             return false;
-
+            
+        // 유닛 타입이 다르면 합성 불가
+        if (unitType != targetUnit.unitType)
+            return false;
+            
+        // 레벨 관련 검사
         int currentStarLevel = (int)GetStat(StatName.UnitStarLevel);
         int targetStarLevel = (int)targetUnit.GetStat(StatName.UnitStarLevel);
-
-        return unitType == targetUnit.unitType &&
-               currentStarLevel == targetStarLevel &&
-               targetStarLevel < 5;
+            
+        return currentStarLevel == targetStarLevel && targetStarLevel < 5;
     }
 
     // 합성 프리뷰 표시
     private void ShowMergePreview(TileData tileData)
     {
-
         mergeTargetTile = tileData;
         isShowingMergePreview = true;
 
@@ -709,23 +644,18 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         // 임시로 표시용 레벨 변경 (실제 값은 변경 안함)
         UpdateStarDisplay(newStarLevel);
+        // 효과 적용
+        ApplyEffect(0.3f);
 
-        // 중요: 드래그 중인 유닛을 정확히 합성 대상 유닛 위에 배치
+        // 유닛 위치 업데이트
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
-        targetPosition.z = -0.1f;
-        transform.position = targetPosition;
-
-        // 프리뷰 머테리얼 설정
-        SetPreviewMaterial(canPlace);
-
-        // TODO: 합성했을시 시각적 효과 (한 번만 실행)
-
+        UpdateUnitPosition(targetPosition);
     }
 
-    // 위치 교환 가능 여부 확인
+    // 위치 교환 가능 여부 확인 - 최적화
     public bool CanSwapWithTarget(TileData tileData)
     {
-        if (tileData?.placedUnit == null || tileData.placedUnit == this)
+        if (tileData == null || tileData.placedUnit == null || tileData.placedUnit == this)
             return false;
 
         var targetUnit = tileData.placedUnit;
@@ -746,37 +676,27 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         if (tileData?.placedUnit == null) return;
 
-        TileData originalTileData = TileMapManager.Instance.GetTileData(originalTilePosition);
-        if (originalTileData == null) return;
-
         swapTargetUnit = tileData.placedUnit;
         isSwapping = true;
 
-        // 현재 드래그 중인 유닛의 위치를 교환 대상 유닛 위치로 설정
+        // 유닛 위치 업데이트
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));
-        targetPosition.z = -0.1f;
-        transform.position = targetPosition;
-
-        //합성 가능한지 아닌지로 적용
-        SetPreviewMaterial(canPlace);
-
+        UpdateUnitPosition(targetPosition);
     }
 
-    // 유닛 이동
+    // 유닛 이동 
     protected virtual void MoveUnit()
     {
         // 원래 상태로 복원
-        ResetMergePreview();
+        ResetPreviewStates();
        
-        // 기존 단일 타일 로직
         // 원본 타일에서 유닛 제거
         TileMapManager.Instance.ReleaseTile(originalTilePosition);
 
-        // 새 타일 점유
-        List<Vector2> tileOffsets = new List<Vector2>() { Vector2.zero };
-        Dictionary<int, UnitController> units = new Dictionary<int, UnitController>() { { 0, this } };
-        TileMapManager.Instance.OccupyTiles(previousTilePosition, tileOffsets, units);
-       
+        // 새 타일 점유 - 미리 만들어둔 객체 재사용
+        tempUnitDict.Clear();
+        tempUnitDict[0] = this;
+        TileMapManager.Instance.OccupyTiles(previousTilePosition, singleTileOffset, tempUnitDict);
 
         // 유닛 위치 업데이트
         tilePosition = previousTilePosition;
@@ -790,7 +710,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
     {
         if (mergeTargetTile == null || mergeTargetTile.placedUnit == null)
         {
-            ResetMergePreview();
+            ResetPreviewStates();
             return;
         }
 
@@ -800,7 +720,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 타겟 유닛 업그레이드
         UnitController targetUnit = mergeTargetTile.placedUnit;
 
-        // 현재 레벨을 기준으로 새 레벨 계산 (originalStarLevel 대신)
+        // 현재 레벨을 기준으로 새 레벨 계산
         int currentStarLevel = (int)GetStat(StatName.UnitStarLevel);
         int targetStarLevel = (int)targetUnit.GetStat(StatName.UnitStarLevel);
 
@@ -815,13 +735,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         int newStarLevel = currentStarLevel + 1;
         targetUnit.UpGradeUnitLevel(newStarLevel);
 
-        // 효과 적용
-        targetUnit.ApplyEffect(1.0f);
-
         // 원본 유닛 제거
         UnitManager.Instance.UnregisterUnit(this);
         Destroy(gameObject);
-
     }
 
     // 원래 위치로 돌아가기
@@ -830,36 +746,36 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutBack);
     }
 
-
+    // 유닛 레벨 업그레이드 - 최적화
     public void UpGradeUnitLevel(int value)
     {
-
         if (!currentStats.ContainsKey(StatName.UnitStarLevel)) return;
+        
+        // 레벨이 이미 같으면 불필요한 작업 스킵
+        if (currentStats[StatName.UnitStarLevel].value == value) return;
 
         // 새로운 StarLevel 설정
         currentStats[StatName.UnitStarLevel].value = value;
-
-        // originalStarLevel도 업데이트 - 중요 추가 사항
         originalStarLevel = value;
 
-        // StarLevel이 변경되었으므로 다른 모든 스탯도 새로운 StarLevel에 맞춰 조정
+        // 각 스탯별 업그레이드 
         foreach (var stat in currentStats)
         {
             if (stat.Key == StatName.UnitStarLevel) continue;
 
             float upgradePercent = GetStatUpgradePercent(stat.Key);
-
+            
             if (upgradePercent == 100)
             {
-                // 100은 level만큼 곱하는 특수 케이스 (Atk, ProjectileCount 등)
-                stat.Value.value = baseStats[stat.Key].value * value;
+                // level만큼 곱하는 케이스
+                currentStats[stat.Key].value = baseStats[stat.Key].value * value;
             }
             else if (upgradePercent > 0)
             {
-                // 일반적인 퍼센트 증가
+                // 퍼센트 증가 케이스
                 float percentIncrease = (value == 3) ? upgradePercent * 2 : upgradePercent;
                 float multiplier = 1 + (percentIncrease / 100f);
-                stat.Value.value = Mathf.RoundToInt(baseStats[stat.Key].value * multiplier);
+                currentStats[stat.Key].value = Mathf.RoundToInt(baseStats[stat.Key].value * multiplier);
             }
         }
 
@@ -883,24 +799,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 return 0;    // 증가하지 않음
         }
     }
-
-
-
-    public virtual void SetPreviewMaterial(bool canPlace)
-    {
-        // 배치 가능 여부에 따라 타일 색상 변경
-        UnityEngine.Color tileColor = canPlace ? UnityEngine.Color.green : UnityEngine.Color.red;
-
-        // 알파값 조정 (반투명하게)
-        tileColor.a = 0.5f;
-
-        // 현재 유닛이 위치한 타일 색상 변경
-        //TileMapManager.Instance.SetTileColor(tilePosition, tileColor);
-
-    }
-
-
-    public void RefillHP()
+    public void RefillHp()
     {
         // 현재 유닛이 활성화 상태인지 확인
         if (!isActive || isDead) return;
@@ -923,16 +822,35 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
                 multiply = 1f
             };
         }
-
-       ModifyStat(StatName.CurrentMana, -Mathf.RoundToInt(GetStat(StatName.CurrentMana)), 1f);
-
-
+       
+        // 현재 마나 소모
+        ModifyStat(StatName.CurrentMana, -Mathf.RoundToInt(GetStat(StatName.CurrentMana)), 1f);
+       
         // HP 바 업데이트
         UpdateHpBar();
     }
 
+    // 유닛에 효과 적용 (띠용 효과)
     public void ApplyEffect(float duration = 0.5f)
     {
+        if(this == null || transform == null) return;
+        
+        // 기존 Tween 종료
+        transform.DOKill(true);
+   
+        // 원래 스케일 저장
+        Vector3 originalScale = transform.localScale;
+   
+        // 띠용 효과 시퀀스
+        Sequence sequence = DOTween.Sequence();
+   
+        // 1. 커지는 효과
+        sequence.Append(transform.DOScale(originalScale * 1.7f, duration * 0.3f).SetEase(Ease.OutQuad));
+   
+        // 2. 작아지는 효과
+        sequence.Append(transform.DOScale(originalScale * 0.8f, duration * 0.2f).SetEase(Ease.InQuad));
+   
+        // 3. 원래 크기로 돌아오기
+        sequence.Append(transform.DOScale(originalScale, duration * 0.5f).SetEase(Ease.OutElastic, 1.2f, 0.5f));
     }
-
 }

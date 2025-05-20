@@ -1086,7 +1086,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
-  _poolIndex: 1
+  _poolIndex: 0
   _source: {fileID: 0}
 --- !u!1 &8705583923275233734
 GameObject:

@@ -102,7 +102,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         }
     }
 
-    // UI 요소 가시성 설정
     private void SetUIVisibility(bool visible)
     {
         foreach (int index in activeImageIndices)
@@ -272,7 +271,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         
         // 일반 배치
         previewUnit.transform.position = newPosition;
-        previewUnit.SetPreviewMaterial(canPlace);
     }
 
     // 합성 프리뷰 표시
@@ -291,10 +289,9 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         int currentLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
         int newLevel = currentLevel + 1;
         previewUnit.UpdateStarDisplay(newLevel);
-        
+        previewUnit.ApplyEffect(0.3f);
         // 위치 및 머티리얼 설정
         previewUnit.transform.position = position;
-        previewUnit.SetPreviewMaterial(true);
     }
 
     // 유닛 배치
@@ -357,9 +354,6 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 타겟 유닛 업그레이드
         int newLevel = (int)targetUnit.GetStat(StatName.UnitStarLevel) + 1;
         targetUnit.UpGradeUnitLevel(newLevel);
-        
-        // 효과 적용
-        targetUnit.ApplyEffect(1.0f);
         
         // 코스트 사용
         UseCardCost();
@@ -434,7 +428,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
                 activeImageIndices.Add(tileImages.Count - 1);
             }
             // 프리뷰 초기화
-            tileObject.InitUnitImage(null, false);
+            tileObject.InitTileImage(true);
         }
     }
 

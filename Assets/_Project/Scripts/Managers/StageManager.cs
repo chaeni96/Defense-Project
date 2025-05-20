@@ -294,7 +294,7 @@ public class StageManager : MonoBehaviour, ITimeChangeSubscriber, IScheduleCompl
 
                 // 타일맵에 있던 원래 위치로 돌아가기
                 unit.ReturnToOriginalPosition();
-                unit.RefillHP(); // 체력 리필
+                unit.RefillHp(); // 체력 리필
 
                 //피채워주기
 

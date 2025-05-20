@@ -264,23 +264,6 @@ public class TileMapManager : MonoBehaviour
     }
 
 
-    // 특정 타일 색상 변경 
-    public void SetTileColors(int baseX, int baseY, List<(int x, int y)> offsets, Color color)
-    {
-        foreach (var offset in offsets)
-        {
-            int x = baseX + offset.x;
-            int y = baseY + offset.y;
-
-            Vector3Int position = ConvertToUnityCoordinates(new Vector2(x, y));
-
-            if (tileMap.HasTile(position))
-            {
-                tileMap.SetTileFlags(position, TileFlags.None);
-                tileMap.SetColor(position, color);
-            }
-        }
-    }
     // 타일에서 제거
     public void ReleaseTile(Vector2 tilePos)
     {
