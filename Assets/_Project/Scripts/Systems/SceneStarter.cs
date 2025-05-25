@@ -1,6 +1,8 @@
 using System.Collections;
+using _Project.Scripts.KFSM.Runtime.Services;
 using AutoBattle.Scripts.DataController;
 using AutoBattle.Scripts.Managers;
+using Kylin.LWDI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -85,6 +87,10 @@ public class SceneStarter : MonoBehaviour
         StatManager.Instance.InitializeManager();
 
         GameManager.Instance.LoadSystemStats();
+
+        DependencyContainer.Instance.Clear();
+        DependencyContainer.Instance.Register<LowestHpDetectService, LowestHpDetectService>();
+        DependencyContainer.Instance.Register<NearestEnemyDetectService, NearestEnemyDetectService>();
 
 
         StageManager.Instance.StartStage(GameManager.Instance.SelectedStageNumber);
