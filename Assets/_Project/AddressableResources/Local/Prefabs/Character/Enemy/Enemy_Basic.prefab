@@ -4067,14 +4067,15 @@ MonoBehaviour:
   attackTimer: 0
   isEnemy: 0
   isActive: 0
+  canChase: 0
   hpBar: {fileID: 1059283037408173403}
   hpBarCanvas: {fileID: 1479797295434602773}
   appearanceProvider: {fileID: 4542264115260101136}
   attackBowController: {fileID: 9100000, guid: ee6a5310d4512f94ca199a6fa3f6a4a4, type: 2}
-  attackSpearController: {fileID: 9100000, guid: e630e80bad941ec488407ec27ec8d739, type: 2}
-  attackSwordController: {fileID: 9100000, guid: 6e3b7f781a6269f4c86c2d353d0c17a4, type: 2}
-  attackThrowController: {fileID: 9100000, guid: 2df3b292105e57542bc5c3813795c48b, type: 2}
-  attackPunchController: {fileID: 9100000, guid: 0932ad35a22328346a398e7b9f151134, type: 2}
+  attackSpearController: {fileID: 9100000, guid: 02bd3d52bf9aa434da82faf3c99bc49a, type: 2}
+  attackSwordController: {fileID: 9100000, guid: 3288d10b87e3249418607c2955e23feb, type: 2}
+  attackThrowController: {fileID: 9100000, guid: b8f39ff0950209641bbeb21c519c3526, type: 2}
+  attackPunchController: {fileID: 9100000, guid: b6c2b2f1b88ffeb4dbeabc7d03f5edfe, type: 2}
 --- !u!210 &9056778004169992680
 SortingGroup:
   m_ObjectHideFlags: 0

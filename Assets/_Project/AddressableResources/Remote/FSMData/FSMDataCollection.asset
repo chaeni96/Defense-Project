@@ -13,33 +13,13 @@ MonoBehaviour:
   m_Name: FSMDataCollection
   m_EditorClassIdentifier: 
   entries:
-  - id: testFSM
-    data: {fileID: 11400000, guid: 52cc34370a7f28a41b5c894630bd445b, type: 2}
-  - id: testFSM2
-    data: {fileID: 11400000, guid: 04cd400010a94ea47b8be4fe2da8384a, type: 2}
-  - id: testEnemyFSM
-    data: {fileID: 11400000, guid: f6ad7e1b1aec4e94f99c81be594a1d8b, type: 2}
-  - id: Dog_RogueFSM
-    data: {fileID: 11400000, guid: 30bfc613bf5a9be43beab55547f0496f, type: 2}
-  - id: Dog_SwordFSM
-    data: {fileID: 11400000, guid: 17722cc66895f114eb79e341c37a0254, type: 2}
-  - id: Dog_BoxingFSM
-    data: {fileID: 11400000, guid: 43197de2d0570c34994513fab96b6435, type: 2}
   - id: Enemy_ArcherFSM
     data: {fileID: 11400000, guid: e6e681201d617a84897c3d14721d73f4, type: 2}
   - id: Enemy_SeparmanFSM
-    data: {fileID: 11400000, guid: f2b05efbe78243c4a8c5c4d35449a8e9, type: 2}
+    data: {fileID: 11400000, guid: a8fe7a40f7d12af47b2254aec8a9211f, type: 2}
   - id: Enemy_SwordmanFSM
-    data: {fileID: 11400000, guid: 6229aac22b1990c49a9d079b473766f7, type: 2}
-  - id: Dog_JesterFSM
-    data: {fileID: 11400000, guid: f7128a2c18320ad4ea4508314ebef278, type: 2}
-  - id: Dog_HunterFSM
-    data: {fileID: 11400000, guid: cbac8cef8021985489e0d7afa617f630, type: 2}
-  - id: Royal_SwordFSM
-    data: {fileID: 11400000, guid: e7c46460e30f168439865714a65a01d5, type: 2}
+    data: {fileID: 11400000, guid: 5033c956ae0815a43a7be61ba439c871, type: 2}
   - id: Royal_SpearFSM
-    data: {fileID: 11400000, guid: 4e147fb79d7135c4b8f6229d005deb84, type: 2}
-  - id: Royal_wandFSM
-    data: {fileID: 11400000, guid: bee6fbe159d659a4a87f7a45806d2ea3, type: 2}
-  - id: Boss_ShieldFSM
-    data: {fileID: 11400000, guid: 9236ac5a5ac18904a96d95866edb9a5a, type: 2}
+    data: {fileID: 11400000, guid: 0cc21520984391141bd915b0a3dfaaaa, type: 2}
+  - id: Royal_SwordFSM
+    data: {fileID: 11400000, guid: 396a2426aecde7149a712beaab49d39f, type: 2}

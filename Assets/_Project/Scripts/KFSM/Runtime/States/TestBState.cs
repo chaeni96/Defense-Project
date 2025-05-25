@@ -30,7 +30,7 @@ namespace Kylin.FSM
                 if (elapsedTime >= testTimer)
                 {
                     Debug.Log("B : A Trigger Regist");
-                    Controller.RegisterTrigger(Trigger.TestATrigger);
+                    //Controller.RegisterTrigger(Trigger.TestATrigger);
                     timerCompleted = true;
                 }
             }

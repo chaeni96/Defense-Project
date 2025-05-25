@@ -3,6 +3,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using BansheeGz.BGDatabase;
 using TMPro;
 using Unity.Mathematics;
@@ -34,11 +35,17 @@ public class Enemy : BasicObject
         return UnitManager.Instance.GetNearestUnit(transform.position);
     }
 
-    public override List<BasicObject> GetTargetList()
+    public override List<BasicObject> GetActiveTargetList()
     {
         // Convert List<UnitController> to List<BasicObject>
         List<UnitController> unitControllers = UnitManager.Instance.GetAllUnits();
-        List<BasicObject> basicObjects = new List<BasicObject>(unitControllers);
+        // 체력이 0보다 크고 활성화된 유닛만 필터링
+        List<BasicObject> basicObjects = unitControllers
+            .Where(unit => unit != null && 
+                           unit.GetStat(StatName.CurrentHp) > 0 && 
+                           unit.isActive)
+            .Cast<BasicObject>()
+            .ToList();
         return basicObjects;
     }
 

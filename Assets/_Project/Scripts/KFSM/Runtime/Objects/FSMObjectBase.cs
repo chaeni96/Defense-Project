@@ -20,9 +20,7 @@ namespace Kylin.FSM
         protected FSMDataAsset cachedDataAsset;
         public StateController stateMachine;
         public Animator animator;
-
-        private IScope _currentScope;
-
+        
         private string currentAnimTrigger = ""; // ���� ���� ���� �ִϸ��̼� Ʈ����
         private bool skipNextAnimationTransition = false; // ���� �ִϸ��̼� Ʈ������ ��ŵ ����
 
@@ -82,13 +80,12 @@ namespace Kylin.FSM
             }
             stateMachine.Clear();
             
-            _currentScope = DependencyInjector.CreateScope();
-            using (_currentScope.Activate())
+            using (var scope = DependencyInjector.CreateScope())
             {
-                _currentScope.RegisterInstance(typeof(FSMObjectBase), this);
-                _currentScope.RegisterInstance(this.GetType(), this);
-                stateMachine.Initialize(states, transitions, initId, this, _currentScope);
-                stateMachine.RegistFSMSubscriber(this);    
+                scope.RegisterInstance(typeof(FSMObjectBase), this);
+                scope.RegisterInstance(this.GetType(), this);
+                stateMachine.Initialize(states, transitions, initId, this, scope);
+                stateMachine.RegistFSMSubscriber(this);
             }
         }
 

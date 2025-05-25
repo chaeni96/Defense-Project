@@ -24,7 +24,7 @@ namespace Kylin.FSM
                 // ????? ?????? ??? ???
                 if (characterFSM.CurrentTarget == null)
                 {
-                    characterFSM.UpdateTarget();
+                    //characterFSM.UpdateTarget();
 
                     if (characterFSM.CurrentTarget == null)
                     {
@@ -56,7 +56,7 @@ namespace Kylin.FSM
                 if (target == null || !target.gameObject.activeSelf)
                 {
                     // ????? ?????? ???????????? ??? ???
-                    characterFSM.UpdateTarget();
+                    //characterFSM.UpdateTarget();
 
                     //????? ????????? idle?? 
                     if (characterFSM.CurrentTarget == null)
@@ -72,7 +72,7 @@ namespace Kylin.FSM
             float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed) * 2;
 
             // ???????? ??? ????
-            float distanceToTarget = characterFSM.GetDistanceToTarget();
+            float distanceToTarget = 5;
 
             // ???? ???? ??? ???????? ???? ???·? ???
             if (distanceToTarget <= attackRange)

@@ -42,7 +42,7 @@ public class AttackState : StateBase
         // 필요시 타겟 찾기
         if (characterFSM.CurrentTarget == null)
         {
-            characterFSM.UpdateTarget();
+            //characterFSM.UpdateTarget();
             // 타겟이 없으면 추격 상태로 전환
             if (characterFSM.CurrentTarget == null)
             {
@@ -263,7 +263,7 @@ public class AttackState : StateBase
             return false;
 
         float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
-        return characterFSM.GetDistanceToTarget() <= attackRange;
+        return false;
     }
 
     // 타겟 유효성 체크
@@ -274,7 +274,7 @@ public class AttackState : StateBase
         // 현재 타겟이 없으면 새 타겟 찾기
         if (target == null)
         {
-            characterFSM.UpdateTarget();
+            //characterFSM.UpdateTarget();
             if (characterFSM.CurrentTarget == null)
             {
                 Controller.RegisterTrigger(Trigger.TargetMiss);
@@ -286,7 +286,7 @@ public class AttackState : StateBase
         // 타겟이 활성화 상태인지 체크
         if (!target.isActive)
         {
-            characterFSM.UpdateTarget();
+           // characterFSM.UpdateTarget();
             if (characterFSM.CurrentTarget == null)
             {
                 Controller.RegisterTrigger(Trigger.TargetMiss);

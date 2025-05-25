@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using Kylin.FSM;
 using BansheeGz.BGDatabase;
@@ -102,10 +103,17 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         return EnemyManager.Instance.GetNearestEnemy(transform.position);
     }
 
-    public override List<BasicObject> GetTargetList()
+    public override List<BasicObject> GetActiveTargetList()
     {
         List<Enemy> enemys = EnemyManager.Instance.GetAllEnemys();
-        List<BasicObject> basicObjects = new List<BasicObject>(enemys);
+        
+        
+        List<BasicObject> basicObjects = enemys
+            .Where(enemy => enemy != null && 
+                            enemy.GetStat(StatName.CurrentHp) > 0 && 
+                            enemy.isActive)
+            .Cast<BasicObject>()
+            .ToList();
         return basicObjects;
     }
 
@@ -144,6 +152,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         if (unit == null) return;
 
         isEnemy = false;
+        canChase = false;
 
         unitData = unit;
         unitType = unitData.f_UnitType;
@@ -189,6 +198,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
     public void SaveOriginalUnitPos()
     {
+        canChase = true;
         originalPosition = transform.position;
     }
 

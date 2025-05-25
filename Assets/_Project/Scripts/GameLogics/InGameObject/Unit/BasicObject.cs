@@ -26,6 +26,7 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     public float attackTimer = 0f;  // 타이머 추가
     public bool isEnemy = false;
     public bool isActive = false;
+    public bool canChase = false;
 
     [SerializeField] protected Slider hpBar;  // Inspector에서 할당
     [SerializeField] protected Canvas hpBarCanvas;  // Inspector에서 할당
@@ -195,7 +196,7 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
         return null;
     }
 
-    public virtual List<BasicObject> GetTargetList()
+    public virtual List<BasicObject> GetActiveTargetList()
     {
         return null;
     }

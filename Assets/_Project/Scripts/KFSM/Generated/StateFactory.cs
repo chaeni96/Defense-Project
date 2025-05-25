@@ -25,13 +25,10 @@ namespace Kylin.FSM
                 case "DefaultDamageState": state = new DefaultDamageState(); break;
                 case "ManaFullSkillState": state = new ManaFullSkillState(); break;
                 case "SynergySkillState": state = new SynergySkillState(); break;
-                case "TargetingLowestHPState": state = new TargetingLowestHPState(); break;
-                case "TargetingNearestState": state = new TargetingNearestState(); break;
                 case "BattleWinState": state = new BattleWinState(); break;
                 case "ChaseState": state = new ChaseState(); break;
                 case "IdleState": state = new IdleState(); break;
                 case "MoveForwardState": state = new MoveForwardState(); break;
-                case "MoveToKillZoneState": state = new MoveToKillZoneState(); break;
                 case "TestAState": state = new TestAState(); break;
                 case "TestBState": state = new TestBState(); break;
                 default:

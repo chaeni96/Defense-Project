@@ -19,7 +19,7 @@ public class SynergySkillState : StateBase
         // CharacterFSMObject 확인
         if (characterFSM == null)
         {
-            Controller?.RegisterTrigger(Trigger.SynergySkillFinished);
+            //Controller?.RegisterTrigger(Trigger.SynergySkillFinished);
             return;
         }
 
@@ -34,7 +34,7 @@ public class SynergySkillState : StateBase
         CastSkill();
 
         // 즉시 스킬 완료 트리거 발생
-        Controller.RegisterTrigger(Trigger.SynergySkillFinished);
+        //Controller.RegisterTrigger(Trigger.SynergySkillFinished);
     }
 
     // 스킬 발동 메서드
