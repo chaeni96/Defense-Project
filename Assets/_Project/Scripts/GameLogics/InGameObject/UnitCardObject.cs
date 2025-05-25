@@ -289,7 +289,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         int currentLevel = (int)previewUnit.GetStat(StatName.UnitStarLevel);
         int newLevel = currentLevel + 1;
         previewUnit.UpdateStarDisplay(newLevel);
-        previewUnit.ApplyEffect(0.3f);
+        //previewUnit.ApplyEffect(0.3f);
         // 위치 및 머티리얼 설정
         previewUnit.transform.position = position;
     }

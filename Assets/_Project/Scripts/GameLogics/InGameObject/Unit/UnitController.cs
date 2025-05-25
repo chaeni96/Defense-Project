@@ -655,7 +655,7 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
         // 임시로 표시용 레벨 변경 (실제 값은 변경 안함)
         UpdateStarDisplay(newStarLevel);
         // 효과 적용
-        ApplyEffect(0.3f);
+        //ApplyEffect(0.3f);
 
         // 유닛 위치 업데이트
         Vector3 targetPosition = TileMapManager.Instance.GetTileToWorldPosition(new Vector2(tileData.tilePosX, tileData.tilePosY));

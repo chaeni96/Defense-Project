@@ -74,12 +74,52 @@ namespace Kylin.FSM
                 {
                     try
                     {
-                        var value = param.GetValue();
-                        fieldInfo.SetValue(state, value);
+                        if (param.Type == SerializableParameter.ParameterType.ServiceReference)
+                        {
+                            // 서비스 인스턴스 생성
+                            if (!string.IsNullOrEmpty(param.ServiceImplementationType))
+                            {
+                                Debug.Log($"Creating service: {param.ServiceImplementationType}");
+
+                                // 타입 찾기
+                                Type serviceType = null;
+                                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                                {
+                                    serviceType = assembly.GetType(param.ServiceImplementationType);
+                                    if (serviceType != null) break;
+                                }
+
+                                if (serviceType != null)
+                                {
+                                    // 일반 클래스로 생성
+                                    var serviceInstance = Activator.CreateInstance(serviceType);
+
+                                    if (serviceInstance != null)
+                                    {
+                                        fieldInfo.SetValue(state, serviceInstance);
+                                        Debug.Log($"Set {param.Name} to {serviceInstance.GetType().Name}");
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.LogError($"Service type not found: {param.ServiceImplementationType}");
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"ServiceImplementationType is empty for {param.Name}");
+                            }
+                        }
+                        else
+                        {
+                            // 기존 타입 처리
+                            var value = param.GetValue();
+                            fieldInfo.SetValue(state, value);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogError($"Failed to set parameter {param.Name} on state {typeName}: {ex.Message}");
+                        Debug.LogError($"Failed to set parameter {param.Name}: {ex.Message}");
                     }
                 }
             }
@@ -99,5 +139,8 @@ namespace Kylin.FSM
             }
             return list.ToArray();
         }
+        
+        
+        
     }
 }

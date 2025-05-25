@@ -38,56 +38,44 @@ namespace Kylin.FSM
 
                 if (characterFSM.isEnemy)
                 {
-                    // ���ʹ̴� ���ʿ� �ִ� ų������ �̵�
                     killZoneX = enemyTargetPos;
                 }
                 else
                 {
-                    // ������ �����ʿ� �ִ� ų������ �̵�
                     killZoneX = unitTargetPos;
                 }
 
-                // Ÿ�� ��ġ ����
                 targetPosition = new Vector3(killZoneX, transform.position.y, transform.position.z);
 
                 checkInit = true;
             }
 
-            // ��ǥ ���������� �Ÿ� ���
             float distanceToTarget = Vector2.Distance(
                 new Vector2(transform.position.x, transform.position.y),
                 new Vector2(targetPosition.x, targetPosition.y)
             );
 
-            // ��ǥ ������ �����ߴ��� Ȯ��
             if (distanceToTarget <= stopDistance)
             {
-                // ų���� �����ϸ� Chase Ʈ���� �߻�
-                Controller.RegisterTrigger(Trigger.ChaseTarget);
+                Controller.RegisterTrigger(Trigger.DetectTarget);
                 return;
             }
 
-            // ��ǥ ������ ���� �̵�
             Vector3 direction;
 
             if (characterFSM.isEnemy)
             {
-                // ���ʹ̴� �������� �̵�
                 direction = Vector3.left;
             }
             else
             {
-                // ������ ���������� �̵�
                 direction = Vector3.right;
             }
 
-            // �̵� ó��
             Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
 
-            // Y���� ���� �� ����
             newPosition.y = transform.position.y;
 
-            // ��ġ ������Ʈ
             transform.position = newPosition;
 
         }

@@ -8,12 +8,6 @@ using Kylin.LWDI;
 [FSMContextFolder("Create/State/Attack")]
 public class AttackState : StateBase
 {
-    [SerializeField] private string skillAddressableKey; // 기본 스킬 어드레서블 키
-    [SerializeField] private string manaFullSkillAddressableKey; // 마나풀 스킬 어드레서블 키
-
-    private float targetCheckInterval = 0.2f; // 타겟 체크 간격
-    private float lastTargetCheckTime = 0f;
-
     // 공격 애니메이션 타이밍
     private float attackAnimationLength = 1.0f; // 기본값
     private float damageApplyTime = 0.5f; // 기본값
@@ -34,23 +28,11 @@ public class AttackState : StateBase
     public override void OnEnter()
     {
         Debug.Log("공격 상태 진입");
-        lastTargetCheckTime = 0f;
+        Debug.Log($"현재 타겟 hp : {characterFSM.CurrentTarget.GetStat(StatName.CurrentHp)}");
 
         // 캐릭터 FSM 존재 확인
         if (characterFSM == null) return;
-
-        // 필요시 타겟 찾기
-        if (characterFSM.CurrentTarget == null)
-        {
-            //characterFSM.UpdateTarget();
-            // 타겟이 없으면 추격 상태로 전환
-            if (characterFSM.CurrentTarget == null)
-            {
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-                return;
-            }
-        }
-
+        
         // 공격 타이머와 플래그 초기화
         ResetAttack();
 
@@ -91,40 +73,7 @@ public class AttackState : StateBase
         // 적절한 시간에 데미지 적용
         if (!damageApplied && attackTimer >= damageApplyTime)
         {
-            // 마나 확인
-            int currentMana = (int)characterFSM.basicObject.GetStat(StatName.CurrentMana);
-            float maxMana = characterFSM.basicObject.GetStat(StatName.MaxMana);
-
-            // 마나가 가득 찼고 마나풀 스킬이 있는 경우 마나풀 스킬 사용
-            if (currentMana >= maxMana && !string.IsNullOrEmpty(manaFullSkillAddressableKey))
-            {
-                Debug.Log("마나가 가득 찼습니다! 마나풀 스킬을 사용합니다.");
-                FireSkill(manaFullSkillAddressableKey);
-                // 마나 소모
-                characterFSM.basicObject.ModifyStat(StatName.CurrentMana, -currentMana, 1f); // 마나 모두 소모
-            }
-            // 그렇지 않으면 일반 공격/스킬 사용
-            else
-            {
-                if (string.IsNullOrWhiteSpace(skillAddressableKey))
-                {
-                    // 직접 데미지 적용
-                    ApplyDamage();
-                }
-                else
-                {
-                    // 기본 스킬 사용
-                    if (characterFSM.CurrentTarget != null)
-                    {
-                        FireSkill(skillAddressableKey);
-                    }
-                }
-
-                // 공격 시 소량의 마나 획득
-                int manaGain = 10; // 필요에 따라 이 값 조정
-                characterFSM.basicObject.ModifyStat(StatName.CurrentMana, manaGain, 1f);
-            }
-
+            //공격 메서드 필요
             damageApplied = true;
         }
 
@@ -132,79 +81,22 @@ public class AttackState : StateBase
         if (attackTimer >= attackAnimationLength)
         {
             // 타겟이 여전히 유효하고 사거리 내에 있는지 확인
-            if (IsTargetValid() && IsTargetInRange())
-            {
-                // 다음 공격을 위한 초기화
-                ResetAttack();
-                animLengthChecked = false;
-                animCheckTimer = 0f;
-            }
-            else
-            {
-                // 타겟이 더 이상 유효하지 않거나 사거리 밖에 있으면 공격 상태 종료
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-            }
+            // if (IsTargetValid() && IsTargetInRange())
+            // {
+            //     // 다음 공격을 위한 초기화
+            //     ResetAttack();
+            //     animLengthChecked = false;
+            //     animCheckTimer = 0f;
+            // }
+            // else
+            // {
+            //     // 타겟이 더 이상 유효하지 않거나 사거리 밖에 있으면 공격 상태 종료
+            //     Controller.RegisterTrigger(Trigger.TargetMiss);
+            // }
         }
-
-        // 주기적으로 타겟 유효성 및 사거리 체크
-        if (Time.time - lastTargetCheckTime > targetCheckInterval)
-        {
-            lastTargetCheckTime = Time.time;
-
-            if (!IsTargetValid())
-            {
-                return;
-            }
-
-            // 타겟이 사거리 내에 있는지 체크
-            if (!IsTargetInRange())
-            {
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-                return;
-            }
-        }
+        
     }
-
-    // 타겟에게 스킬 발사 메소드
-    private void FireSkill(string skillKey)
-    {
-        if (characterFSM.CurrentTarget == null) return;
-
-        // 타겟 위치와 방향 가져오기
-        Vector3 currentTargetPosition = characterFSM.CurrentTarget.transform.position;
-        Vector3 firingPosition = characterFSM.transform.position;
-        Vector3 targetDirection = (currentTargetPosition - firingPosition).normalized;
-
-        // 풀에서 스킬 오브젝트 가져오기
-        GameObject skillObj = PoolingManager.Instance.GetObject(skillKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
-
-        // 투사체 초기화 및 발사
-        if (skillObj != null)
-        {
-            SkillBase projectile = skillObj.GetComponent<SkillBase>();
-            if (projectile != null)
-            {
-                projectile.Initialize(characterFSM.basicObject);
-                projectile.Fire(
-                    characterFSM.basicObject,
-                    currentTargetPosition,
-                    targetDirection,
-                    characterFSM.CurrentTarget
-                );
-
-                Debug.Log($"스킬 발사: {skillKey}, 타겟: {characterFSM.CurrentTarget.name}");
-            }
-            else
-            {
-                Debug.LogError($"스킬 컴포넌트가 없습니다: {skillKey}");
-            }
-        }
-        else
-        {
-            Debug.LogError($"스킬 오브젝트를 가져오는데 실패했습니다: {skillKey}");
-        }
-    }
-
+    
     // 현재 애니메이션 길이 가져오기
     private void GetCurrentAnimationLength()
     {
@@ -220,34 +112,7 @@ public class AttackState : StateBase
             damageApplyTime = attackAnimationLength * DAMAGE_TIMING_RATIO;
         }
     }
-
-    // 타겟에게 직접 데미지 적용
-    private void ApplyDamage()
-    {
-        if (characterFSM != null && characterFSM.CurrentTarget != null)
-        {
-            if (characterFSM.CurrentTarget.isEnemy)
-            {
-                var enemyObj = characterFSM.CurrentTarget.GetComponent<Enemy>();
-                if (enemyObj != null)
-                {
-                    float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                    enemyObj.OnDamaged(characterFSM.basicObject, damage);
-                    Debug.Log($"직접 데미지 적용: {characterFSM.CurrentTarget.name}, 데미지={damage}");
-                }
-            }
-            else
-            {
-                var unitObj = characterFSM.CurrentTarget.GetComponent<UnitController>();
-                if (unitObj != null)
-                {
-                    float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                    unitObj.OnDamaged(characterFSM.basicObject, damage);
-                    Debug.Log($"직접 데미지 적용: {characterFSM.CurrentTarget.name}, 데미지={damage}");
-                }
-            }
-        }
-    }
+    
 
     // 공격 상태 초기화
     private void ResetAttack()

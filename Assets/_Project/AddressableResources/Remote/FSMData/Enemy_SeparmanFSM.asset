@@ -63,7 +63,7 @@ MonoBehaviour:
       ServiceImplementationType: 
   - Id: 2
     stateTypeName: ChaseState
-    position: {x: 437, y: 595}
+    position: {x: 428, y: 600}
     Parameters:
     - Name: testIntValue
       Type: 0
@@ -93,6 +93,16 @@ MonoBehaviour:
     - Name: testIntValue6
       Type: 0
       StringValue: 0
+      ServiceInterfaceType: 
+      ServiceImplementationType: 
+    - Name: detectService
+      Type: 6
+      StringValue: 
+      ServiceInterfaceType: _Project.Scripts.KFSM.Runtime.Services.IDetectService
+      ServiceImplementationType: _Project.Scripts.KFSM.Runtime.Services.NearestEnemyDetectService
+    - Name: retargetInterval
+      Type: 1
+      StringValue: 1
       ServiceInterfaceType: 
       ServiceImplementationType: 
   - Id: 4

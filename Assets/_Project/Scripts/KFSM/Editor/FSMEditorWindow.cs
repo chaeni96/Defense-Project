@@ -2092,7 +2092,9 @@ namespace Kylin.FSM
             {
                 Name = original.Name,
                 Type = original.Type,
-                StringValue = original.StringValue
+                StringValue = original.StringValue,
+                ServiceInterfaceType = original.ServiceInterfaceType,   
+                ServiceImplementationType = original.ServiceImplementationType
             };
         }
 

@@ -95,6 +95,16 @@ MonoBehaviour:
       StringValue: 0
       ServiceInterfaceType: 
       ServiceImplementationType: 
+    - Name: detectService
+      Type: 6
+      StringValue: 
+      ServiceInterfaceType: _Project.Scripts.KFSM.Runtime.Services.IDetectService
+      ServiceImplementationType: _Project.Scripts.KFSM.Runtime.Services.LowestHpDetectService
+    - Name: retargetInterval
+      Type: 1
+      StringValue: 1
+      ServiceInterfaceType: 
+      ServiceImplementationType: 
   - Id: 4
     stateTypeName: BattleWinState
     position: {x: 322, y: 33}
