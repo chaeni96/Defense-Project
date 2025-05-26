@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Kylin.FSM
 {
-    [Serializable]
+   [Serializable]
     public class SerializableParameter
     {
         public enum ParameterType
@@ -13,25 +13,17 @@ namespace Kylin.FSM
             Bool,
             String,
             Vector2,
-            Vector3,
-            ServiceReference  
+            Vector3
         }
 
         public string Name;
         public ParameterType Type;
         public string StringValue;
-        
-        // 서비스 참조용 필드 추가
-        public string ServiceInterfaceType;
-        public string ServiceImplementationType;
 
         public object GetValue()
         {
             switch (Type)
             {
-                case ParameterType.ServiceReference:
-                    // 서비스는 StateFactory에서 처리하므로 null 반환
-                    return null;
                 case ParameterType.Int:
                     return int.TryParse(StringValue, out int intValue) ? intValue : 0;
                 case ParameterType.Float:
@@ -80,9 +72,6 @@ namespace Kylin.FSM
 
             switch (Type)
             {
-                case ParameterType.ServiceReference:
-                    // 서비스 참조는 별도 필드에서 관리
-                    break;
                 case ParameterType.Int:
                     if (value is int intValue)
                     {

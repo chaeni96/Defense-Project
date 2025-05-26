@@ -23,9 +23,5 @@ namespace Kylin.FSM
         {
             DependencyInjector.Inject(this, scope);
         }
-
-        public virtual void RegisterServices(IScope scope)
-        {
-        }
     }
 }

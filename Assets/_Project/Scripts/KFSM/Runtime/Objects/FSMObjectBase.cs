@@ -84,15 +84,6 @@ namespace Kylin.FSM
             {
                 scope.RegisterInstance(typeof(FSMObjectBase), this);
                 scope.RegisterInstance(this.GetType(), this);
-                // 여기서 각 State의 RegisterServices를 먼저 호출
-                foreach (var state in states)
-                {
-                    if (state != null)
-                    {
-                        state.RegisterServices(scope);
-                    }
-                }
-                
                 stateMachine.Initialize(states, transitions, initId, this, scope);
                 stateMachine.RegistFSMSubscriber(this);
             }

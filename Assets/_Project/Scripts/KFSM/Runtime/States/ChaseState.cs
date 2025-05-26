@@ -8,7 +8,7 @@ namespace Kylin.FSM
     [FSMContextFolder("Create/State/Move")]
     public class ChaseState : StateBase
     {
-        [SerializeField] private IDetectService detectService;
+        private IDetectService detectService;
         [SerializeField] private float retargetInterval = 1f; // 재탐색 주기
 
         
@@ -17,14 +17,7 @@ namespace Kylin.FSM
         
         private Transform transform;
         private float lastRetargetTime;
-
-        public override void RegisterServices(IScope scope)
-        {
-            if (detectService != null && scope != null)
-            {
-                scope.RegisterInstance<IDetectService>(detectService);
-            }
-        }
+        
         
         public override void OnEnter()
         {
