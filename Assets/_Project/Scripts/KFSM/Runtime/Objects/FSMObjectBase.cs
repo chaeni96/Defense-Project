@@ -104,21 +104,39 @@ namespace Kylin.FSM
             CancelFSM();
         }
 
-        //�ִϸ��̼� ��� �޼���
         public virtual void SetTrigger(Trigger trigger)
         {
             if (animator != null && trigger != Trigger.None)
             {
                 string triggerName = trigger.ToString();
-                animator.SetTrigger(triggerName);
+
+                if (HasAnimatorTrigger(triggerName))
+                {
+                    animator.SetTrigger(triggerName);
+                }
+                else
+                {
+                    Debug.LogWarning($"Animator에 '{triggerName}' 트리거가 없습니다.");
+                }
             }
         }
-
-        // ���� �ִϸ��̼� Ʈ�������� ��ŵ�ϵ��� �����ϴ� �޼���
-        public void SkipNextAnimationTransition()
+        
+        private bool HasAnimatorTrigger(string triggerName)
         {
-            skipNextAnimationTransition = true;
+            if (animator == null || animator.runtimeAnimatorController == null)
+                return false;
+        
+            foreach (var parameter in animator.parameters)
+            {
+                if (parameter.name == triggerName && parameter.type == AnimatorControllerParameterType.Trigger)
+                {
+                    return true;
+                }
+            }
+    
+            return false;
         }
+        
 
         // FSM ID�� ������Ʈ�ϴ� �޼���
         public void UpdateFSM(string newFsmId)

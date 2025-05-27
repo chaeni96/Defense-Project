@@ -20,5 +20,7 @@ namespace Kylin.FSM
         ReturnToOriginPos = 1 << 11,
         TargetSelected = 1 << 12,
         DamageFinished = 1 << 13,
+        SkillRequested = 1 << 14,
+        SkillFinished = 1 << 15,
     }
 }

@@ -25,13 +25,9 @@ MonoBehaviour:
     - Name: testValueIdle
       Type: 0
       StringValue: 0
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: checkInterval
       Type: 1
       StringValue: 0.5
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
   - Id: 1
     stateTypeName: MoveForwardState
     position: {x: 863, y: 85}
@@ -39,28 +35,18 @@ MonoBehaviour:
     - Name: targetPosition
       Type: 5
       StringValue: (665.71,699.2805,649.2805)
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: moveSpeed
       Type: 1
       StringValue: 2.5
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: unitTargetPos
       Type: 1
       StringValue: 4
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: enemyTargetPos
       Type: 1
       StringValue: 14
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: stopDistance
       Type: 1
       StringValue: 0.1
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
   - Id: 2
     stateTypeName: ChaseState
     position: {x: 437, y: 595}
@@ -68,43 +54,30 @@ MonoBehaviour:
     - Name: testIntValue
       Type: 0
       StringValue: 0
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: testIntValue2
       Type: 1
       StringValue: 0
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: testIntValue3
       Type: 3
       StringValue: 
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: testIntValue4
       Type: 2
       StringValue: false
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: testIntValue5
       Type: 0
       StringValue: 0
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: testIntValue6
       Type: 0
       StringValue: 0
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: detectService
       Type: 6
       StringValue: 
-      ServiceInterfaceType: _Project.Scripts.KFSM.Runtime.Services.IDetectService
-      ServiceImplementationType: _Project.Scripts.KFSM.Runtime.Services.LowestHpDetectService
     - Name: retargetInterval
       Type: 1
-      StringValue: 1
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
+      StringValue: 0.5
+    - Name: priorityUpdateInterval
+      Type: 1
+      StringValue: 0.2
   - Id: 4
     stateTypeName: BattleWinState
     position: {x: 322, y: 33}
@@ -116,13 +89,13 @@ MonoBehaviour:
     - Name: skillAddressableKey
       Type: 3
       StringValue: 
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
     - Name: manaFullSkillAddressableKey
       Type: 3
       StringValue: 
-      ServiceInterfaceType: 
-      ServiceImplementationType: 
+  - Id: 3
+    stateTypeName: SkillState
+    position: {x: 1352, y: 314}
+    Parameters: []
   Transitions:
   - FromStateId: 0
     ToStateId: 1
@@ -167,5 +140,15 @@ MonoBehaviour:
   - FromStateId: 6
     ToStateId: 2
     RequiredTriggers: 0000000000010000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 6
+    ToStateId: 3
+    RequiredTriggers: 0000000000400000
+    IgnoreTriggers: 
+    Priority: 0
+  - FromStateId: 3
+    ToStateId: 2
+    RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
     Priority: 0

@@ -11,7 +11,6 @@ public class EnemyManager : MonoBehaviour
 {
     private static EnemyManager _instance;
 
-    //경로 변수
     private List<Enemy> enemies = new List<Enemy>();
 
     public event System.Action OnEnemyDeath;

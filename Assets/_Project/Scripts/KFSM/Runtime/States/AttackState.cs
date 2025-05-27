@@ -12,7 +12,7 @@ public class AttackState : StateBase
     private float attackAnimationLength = 1.0f; // 기본값
     private float damageApplyTime = 0.5f; // 기본값
     private float attackTimer = 0f; // 공격 타이머
-    private bool damageApplied = false; // 데미지 적용 여부
+    private bool skillTransitioned = false; // 스킬 전환 여부
 
     // 애니메이션 길이 체크
     private bool animLengthChecked = false;
@@ -32,13 +32,13 @@ public class AttackState : StateBase
 
         // 캐릭터 FSM 존재 확인
         if (characterFSM == null) return;
-        
-        // 공격 타이머와 플래그 초기화
-        ResetAttack();
 
-        // 애니메이션 길이 체크 초기화
-        animLengthChecked = false;
-        animCheckTimer = 0f;
+        if (characterFSM.CurrentTarget == null)
+        {
+            Controller.RegisterTrigger(Trigger.TargetMiss);
+        }
+        // 공격 타이머와 플래그, 애니메이션 관련 초기화
+        ResetAll();
     }
 
     public override void OnUpdate()
@@ -50,7 +50,7 @@ public class AttackState : StateBase
             return;
         }
 
-        // 아직 체크하지 않았다면 애니메이션 길이 체크
+         // 아직 체크하지 않았다면 애니메이션 길이 체크
         if (!animLengthChecked)
         {
             animCheckTimer += Time.deltaTime;
@@ -60,9 +60,7 @@ public class AttackState : StateBase
             {
                 GetCurrentAnimationLength();
                 animLengthChecked = true;
-
-                // 공격 타이머 리셋 (애니메이션 체크 딜레이 보정)
-                attackTimer = 0f;
+                attackTimer = 0f; // 타이머 리셋
             }
             return;
         }
@@ -70,37 +68,51 @@ public class AttackState : StateBase
         // 공격 타이머 업데이트
         attackTimer += Time.deltaTime;
 
-        // 적절한 시간에 데미지 적용
-        if (!damageApplied && attackTimer >= damageApplyTime)
+        // 적절한 시간에 스킬로 전환
+        if (!skillTransitioned && attackTimer >= damageApplyTime)
         {
-            //공격 메서드 필요
-            damageApplied = true;
-        }
-
-        // 공격 애니메이션 완료 여부 체크
-        if (attackTimer >= attackAnimationLength)
-        {
-            // 타겟이 여전히 유효하고 사거리 내에 있는지 확인
-            // if (IsTargetValid() && IsTargetInRange())
-            // {
-            //     // 다음 공격을 위한 초기화
-            //     ResetAttack();
-            //     animLengthChecked = false;
-            //     animCheckTimer = 0f;
-            // }
-            // else
-            // {
-            //     // 타겟이 더 이상 유효하지 않거나 사거리 밖에 있으면 공격 상태 종료
-            //     Controller.RegisterTrigger(Trigger.TargetMiss);
-            // }
+            // 타겟 유효성 체크
+            if (IsTargetValidAndInRange())
+            {
+                Controller.RegisterTrigger(Trigger.SkillRequested);
+                skillTransitioned = true;
+            }
+            else
+            {
+                // 타겟이 없거나 사거리 밖
+                Controller.RegisterTrigger(Trigger.TargetMiss);
+                return;
+            }
         }
         
+    }
+    
+    // 타겟 유효성 및 사거리 체크
+    private bool IsTargetValidAndInRange()
+    {
+        var target = characterFSM.CurrentTarget;
+        
+        // 타겟 존재 및 생존 체크
+        if (target == null || target.GetStat(StatName.CurrentHp) <= 0)
+        {
+            return false;
+        }
+        
+        // 사거리 체크
+        float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
+        float distance = Vector2.Distance(characterFSM.transform.position, target.transform.position);
+        
+        return distance <= attackRange;
     }
     
     // 현재 애니메이션 길이 가져오기
     private void GetCurrentAnimationLength()
     {
-        if (characterFSM?.animator == null) return;
+        if (characterFSM?.animator == null) 
+        {
+            // 애니메이터가 없으면 기본값 사용
+            return;
+        }
 
         // 현재 애니메이션 클립 정보 가져오기
         AnimatorClipInfo[] clipInfo = characterFSM.animator.GetCurrentAnimatorClipInfo(LAYER_INDEX);
@@ -110,57 +122,27 @@ public class AttackState : StateBase
             // 애니메이션 길이와 데미지 타이밍 설정
             attackAnimationLength = clipInfo[0].clip.length;
             damageApplyTime = attackAnimationLength * DAMAGE_TIMING_RATIO;
+            
+            Debug.Log($"공격 애니메이션 길이: {attackAnimationLength}, 스킬 전환 타이밍: {damageApplyTime}");
         }
+    }
+
+    // 모든 상태 초기화 (중요!)
+    private void ResetAll()
+    {
+        // 타이머 초기화
+        attackTimer = 0f;
+        animCheckTimer = 0f;
+        
+        // 플래그 초기화
+        skillTransitioned = false;
+        animLengthChecked = false;
+        
+        // 애니메이션 길이 초기화 (기본값)
+        attackAnimationLength = 1.0f;
+        damageApplyTime = 0.5f;
     }
     
-
-    // 공격 상태 초기화
-    private void ResetAttack()
-    {
-        attackTimer = 0f;
-        damageApplied = false;
-    }
-
-    // 타겟이 사거리 내에 있는지 확인
-    private bool IsTargetInRange()
-    {
-        if (characterFSM == null || characterFSM.basicObject == null)
-            return false;
-
-        float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
-        return false;
-    }
-
-    // 타겟 유효성 체크
-    private bool IsTargetValid()
-    {
-        var target = characterFSM.CurrentTarget;
-
-        // 현재 타겟이 없으면 새 타겟 찾기
-        if (target == null)
-        {
-            //characterFSM.UpdateTarget();
-            if (characterFSM.CurrentTarget == null)
-            {
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-                return false;
-            }
-            return true;
-        }
-
-        // 타겟이 활성화 상태인지 체크
-        if (!target.isActive)
-        {
-           // characterFSM.UpdateTarget();
-            if (characterFSM.CurrentTarget == null)
-            {
-                Controller.RegisterTrigger(Trigger.TargetMiss);
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public override void OnExit()
     {

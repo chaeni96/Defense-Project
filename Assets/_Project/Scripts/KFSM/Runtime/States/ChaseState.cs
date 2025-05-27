@@ -8,121 +8,99 @@ namespace Kylin.FSM
     [FSMContextFolder("Create/State/Move")]
     public class ChaseState : StateBase
     {
-        private IDetectService detectService;
-        [SerializeField] private float retargetInterval = 1f; // 재탐색 주기
-
-        
-        [Inject] protected StateController Controller;
+        [Inject] private NearestEnemyDetectService detectService;
+        [Inject] protected StateController controller;
         [Inject] protected CharacterFSMObject characterFSM;
         
         private Transform transform;
-        private float lastRetargetTime;
         
+        [SerializeField] private float priorityUpdateInterval = 0.167f; // 10틱마다
+        [SerializeField] private float retargetInterval = 0.5f; // 재타겟 주기
+        
+        private float lastPriorityUpdateTime;
+        private float lastRetargetTime;
         
         public override void OnEnter()
         {
             Debug.Log("ChaseState 상태 진입");
             transform = characterFSM.transform;
             
+            lastPriorityUpdateTime = 0f;
             lastRetargetTime = 0f;
             
-          
-
+            // 진입 시 즉시 우선도 업데이트
+            detectService.UpdateTargetPriority(characterFSM);
             
+            var initialTarget = detectService.DetectTarget(characterFSM);
+            if (initialTarget != null)
+            {
+                characterFSM.CurrentTarget = initialTarget;
+                Debug.Log($"초기 타겟 설정: {initialTarget.name}, HP: {initialTarget.GetStat(StatName.CurrentHp)}");
+            }
+            else
+            {
+                Debug.Log("초기 타겟을 찾을 수 없음");
+                controller.RegisterTrigger(Trigger.TargetMiss);
+            }
         }
 
         public override void OnUpdate()
         {
-           
-            if (characterFSM == null) return;
-            
-            // 진입 시 타겟 탐색
-            if (detectService != null)
+            // 주기적으로 우선도 업데이트
+            if (Time.time - lastPriorityUpdateTime > priorityUpdateInterval)
             {
-                var targetList = characterFSM.basicObject.GetActiveTargetList();
-                var temp = detectService.DetectTarget(transform, targetList, !characterFSM.isEnemy);
-                
-                if (temp != null)
-                {
-                    characterFSM.CurrentTarget = temp;
-                    
-                    Debug.Log($"타겟 찾음 {temp} : {temp.GetStat(StatName.MaxHP)}");
-                }
+                detectService.UpdateTargetPriority(characterFSM);
+                lastPriorityUpdateTime = Time.time;
             }
             
-            var target = characterFSM.CurrentTarget;
-            
-            
-            // 타겟이 없거나 유효하지 않으면 재탐색
-            if (target == null || !IsValidTarget(target))
+            // 주기적으로 타겟 재선택
+            if (Time.time - lastRetargetTime > retargetInterval || characterFSM.CurrentTarget == null)
             {
-                if (detectService != null)
-                {
-                    var targetList = characterFSM.basicObject.GetActiveTargetList();
-                    target = detectService.DetectTarget(transform, targetList, !characterFSM.isEnemy);
-                    
-                    if (target != null)
-                    {
-                        characterFSM.CurrentTarget = target;
-                    }
-                    else
-                    {
-                        Controller.RegisterTrigger(Trigger.TargetMiss);
-                        return;
-                    }
-                }
-                else
-                {
-                    Controller.RegisterTrigger(Trigger.TargetMiss);
-                    return;
-                }
-            }
-            
-            // 주기적 재탐색
-            if (detectService != null && Time.time - lastRetargetTime > retargetInterval)
-            {
-                lastRetargetTime = Time.time;
-                
-                var targetList = characterFSM.basicObject.GetActiveTargetList();
-                var newTarget = detectService.DetectTarget(transform, targetList, !characterFSM.isEnemy);
+                var newTarget = detectService.DetectTarget(characterFSM);
                 
                 if (newTarget != null)
                 {
                     characterFSM.CurrentTarget = newTarget;
-                    target = newTarget;
                 }
+                else
+                {
+                    controller.RegisterTrigger(Trigger.TargetMiss);
+                    return;
+                }
+                
+                lastRetargetTime = Time.time;
             }
             
-            // 스탯 가져오기
-            float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed);
-            float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
+            var target = characterFSM.CurrentTarget;
             
-            // 타겟까지의 거리 계산
+            // 타겟 유효성 체크
+            if (target == null || target.GetStat(StatName.CurrentHp) <= 0)
+            {
+                controller.RegisterTrigger(Trigger.TargetMiss);
+                return;
+            }
+            
+            // 공격 범위 체크
+            float attackRange = characterFSM.basicObject.GetStat(StatName.AttackRange);
             float distance = Vector2.Distance(transform.position, target.transform.position);
             
-            // 공격 범위 내에 있으면 공격 요청
             if (distance <= attackRange)
             {
-                characterFSM.CurrentTarget = target;
-                Controller.RegisterTrigger(Trigger.AttackRequested);
+                controller.RegisterTrigger(Trigger.AttackRequested);
                 return;
             }
             
             // 타겟을 향해 이동
+            float moveSpeed = characterFSM.basicObject.GetStat(StatName.MoveSpeed);
             Vector2 direction = (target.transform.position - transform.position).normalized;
             transform.position += (Vector3)direction * (moveSpeed * Time.deltaTime);
-          
+
         }
 
         public override void OnExit()
         {
         }
         
-        private bool IsValidTarget(BasicObject target)
-        {
-            return target != null && 
-                   target.GetStat(StatName.CurrentHp) > 0 && 
-                   target.gameObject.activeSelf;
-        }
+       
     }
 }

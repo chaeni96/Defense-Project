@@ -29,6 +29,7 @@ namespace Kylin.FSM
                 case "ChaseState": state = new ChaseState(); break;
                 case "IdleState": state = new IdleState(); break;
                 case "MoveForwardState": state = new MoveForwardState(); break;
+                case "SkillState": state = new SkillState(); break;
                 case "TestAState": state = new TestAState(); break;
                 case "TestBState": state = new TestBState(); break;
                 default:
@@ -46,7 +47,7 @@ namespace Kylin.FSM
             return state;
         }
 
-      private static void InitializeStateParameters(StateBase state, StateEntry stateEntry)
+        private static void InitializeStateParameters(StateBase state, StateEntry stateEntry)
         {
             Type stateType = state.GetType();
             string typeName = stateType.FullName;
@@ -99,6 +100,5 @@ namespace Kylin.FSM
             }
             return list.ToArray();
         }
-        
     }
 }

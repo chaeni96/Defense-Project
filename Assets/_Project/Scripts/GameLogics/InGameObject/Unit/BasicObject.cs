@@ -200,6 +200,7 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     {
         return null;
     }
+    
     protected virtual void CleanUp()
     {
 
