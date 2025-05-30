@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8965098060453542879}
   - component: {fileID: 8965098060453542878}
   m_Layer: 0
-  m_Name: RoyalSpear_2CellStraightLaser
+  m_Name: RoyalSpear_ManaFullSkill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   soundEffect: {fileID: 0}
   straightLine: 1
   size: {x: 2.99, y: 0.7}
-  damage: 10
+  damage: 0
   duration: 1
   isDOT: 0
   delayBetweenDamage: 0.1

@@ -156,6 +156,9 @@ public class UnitController : BasicObject, IPointerDownHandler, IDragHandler, IP
 
         unitData = unit;
         unitType = unitData.f_UnitType;
+        
+        basicSkillData = unitData.f_basicSkillData;
+        manaFullSkillData = unitData.f_ManaFullSkillData;
 
         // fsmID ¼³Á¤
         fsmObj.UpdateFSM(unitData.f_fsmId);

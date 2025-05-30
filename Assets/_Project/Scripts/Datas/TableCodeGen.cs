@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BansheeGz.BGDatabase;
 using Alias_rifegrt_unitBuildData = D_unitBuildData;
 using Alias_rifegrt_SpecialTile = D_SpecialTile;
-using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_EnemyData = D_EnemyData;
 using Alias_rifegrt_enemyGroup = D_enemyGroup;
 using Alias_rifegrt_HuntingOptionData = D_HuntingOptionData;
@@ -19,6 +18,7 @@ using Alias_rifegrt_DropItemEventData = D_DropItemEventData;
 using Alias_rifegrt_NormalBattleWaveData = D_NormalBattleWaveData;
 using Alias_rifegrt_BossBattleWaveData = D_BossBattleWaveData;
 using Alias_rifegrt_EventEnemyWaveData = D_EventEnemyWaveData;
+using Alias_rifegrt_UnitData = D_UnitData;
 using Alias_rifegrt_U_RelicData = D_U_RelicData;
 
 //=============================================================
@@ -266,10 +266,11 @@ public partial class D_UnitData : BGEntity
 		public const string name = "name";
 		public const string UnitType = "UnitType";
 		public const string StatSubject = "StatSubject";
-		public const string UnitPoolingKey = "UnitPoolingKey";
 		public const string fsmId = "fsmId";
 		public const string unitAppearanceData = "unitAppearanceData";
 		public const string animControllerType = "animControllerType";
+		public const string basicSkillData = "basicSkillData";
+		public const string ManaFullSkillData = "ManaFullSkillData";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5098187849243670608UL,7590059858118427043UL), () => _metaDefault = null));
@@ -290,11 +291,6 @@ public partial class D_UnitData : BGEntity
 		get => BGCodeGenUtils.EnumListGet<StatSubject>(_f_StatSubject, Index);
 		set => BGCodeGenUtils.EnumListSet<StatSubject>(_f_StatSubject, Index, value);
 	}
-	public D_ObjectPoolData f_UnitPoolingKey
-	{
-		get => (D_ObjectPoolData) _f_UnitPoolingKey[Index];
-		set => _f_UnitPoolingKey[Index] = value;
-	}
 	public System.String f_fsmId
 	{
 		get => _f_fsmId[Index];
@@ -310,20 +306,32 @@ public partial class D_UnitData : BGEntity
 		get => (AnimControllerType) _f_animControllerType.GetStoredValue(Index);
 		set => _f_animControllerType.SetStoredValue(Index, (System.Int32) value);
 	}
+	public D_SkillData f_basicSkillData
+	{
+		get => (D_SkillData) _f_basicSkillData[Index];
+		set => _f_basicSkillData[Index] = value;
+	}
+	public D_SkillData f_ManaFullSkillData
+	{
+		get => (D_SkillData) _f_ManaFullSkillData[Index];
+		set => _f_ManaFullSkillData[Index] = value;
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(4978381386621882592UL, 9377071611302703509UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_UnitType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_UnitType => _ufle12jhs77_f_UnitType ?? (_ufle12jhs77_f_UnitType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4766701231171255779UL, 8920734757428101046UL), () => _ufle12jhs77_f_UnitType = null));
 	private static BansheeGz.BGDatabase.BGFieldEnumList _ufle12jhs77_f_StatSubject;
 	public static BansheeGz.BGDatabase.BGFieldEnumList _f_StatSubject => _ufle12jhs77_f_StatSubject ?? (_ufle12jhs77_f_StatSubject = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnumList>(MetaDefault, new BGId(5195431396154430378UL, 4516171086743362447UL), () => _ufle12jhs77_f_StatSubject = null));
-	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_UnitPoolingKey;
-	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_UnitPoolingKey => _ufle12jhs77_f_UnitPoolingKey ?? (_ufle12jhs77_f_UnitPoolingKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4766850798404632622UL, 6480570574369079984UL), () => _ufle12jhs77_f_UnitPoolingKey = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_fsmId;
 	public static BansheeGz.BGDatabase.BGFieldString _f_fsmId => _ufle12jhs77_f_fsmId ?? (_ufle12jhs77_f_fsmId = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5002854245621455623UL, 3297439355615264898UL), () => _ufle12jhs77_f_fsmId = null));
 	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_unitAppearanceData;
 	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_unitAppearanceData => _ufle12jhs77_f_unitAppearanceData ?? (_ufle12jhs77_f_unitAppearanceData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4821492265578371606UL, 2446832775141775790UL), () => _ufle12jhs77_f_unitAppearanceData = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_animControllerType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_animControllerType => _ufle12jhs77_f_animControllerType ?? (_ufle12jhs77_f_animControllerType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4779062487584931533UL, 12448610886094849951UL), () => _ufle12jhs77_f_animControllerType = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_basicSkillData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_basicSkillData => _ufle12jhs77_f_basicSkillData ?? (_ufle12jhs77_f_basicSkillData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4772338742718102677UL, 2677650401530079115UL), () => _ufle12jhs77_f_basicSkillData = null));
+	private static BansheeGz.BGDatabase.BGFieldRelationSingle _ufle12jhs77_f_ManaFullSkillData;
+	public static BansheeGz.BGDatabase.BGFieldRelationSingle _f_ManaFullSkillData => _ufle12jhs77_f_ManaFullSkillData ?? (_ufle12jhs77_f_ManaFullSkillData = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldRelationSingle>(MetaDefault, new BGId(4951209085747298543UL, 9936721586649386652UL), () => _ufle12jhs77_f_ManaFullSkillData = null));
 	public List<Alias_rifegrt_unitBuildData> RelatedunitBuildDataListUsingunitDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_unitBuildData>(Alias_rifegrt_unitBuildData._f_unitData, Id);
 	public List<Alias_rifegrt_SpecialTile> RelatedSpecialTileListUsingspecialObjectRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_SpecialTile>(Alias_rifegrt_SpecialTile._f_specialObject, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
@@ -695,7 +703,6 @@ public partial class D_ObjectPoolData : BGEntity
 	public static BansheeGz.BGDatabase.BGFieldString _f_PoolObjectAddressableKey => _ufle12jhs77_f_PoolObjectAddressableKey ?? (_ufle12jhs77_f_PoolObjectAddressableKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5761746857104736445UL, 14334273623888862142UL), () => _ufle12jhs77_f_PoolObjectAddressableKey = null));
 	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_SceneType;
 	public static BansheeGz.BGDatabase.BGFieldEnum _f_SceneType => _ufle12jhs77_f_SceneType ?? (_ufle12jhs77_f_SceneType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(5559553276269621835UL, 2058884527795876747UL), () => _ufle12jhs77_f_SceneType = null));
-	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingUnitPoolingKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_UnitPoolingKey, Id);
 	public List<Alias_rifegrt_EnemyData> RelatedEnemyDataListUsingObjectPoolKeyRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_EnemyData>(Alias_rifegrt_EnemyData._f_ObjectPoolKey, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
@@ -5929,6 +5936,7 @@ public partial class D_SkillData : BGEntity
 		public const string name = "name";
 		public const string initalSize = "initalSize";
 		public const string addressableKey = "addressableKey";
+		public const string skillAcivationType = "skillAcivationType";
 	}
 	private static BansheeGz.BGDatabase.BGMetaRow _metaDefault;
 	public static BansheeGz.BGDatabase.BGMetaRow MetaDefault => _metaDefault ?? (_metaDefault = BGCodeGenUtils.GetMeta<BansheeGz.BGDatabase.BGMetaRow>(new BGId(5202656253718521891UL,13474457663860886711UL), () => _metaDefault = null));
@@ -5949,12 +5957,21 @@ public partial class D_SkillData : BGEntity
 		get => _f_addressableKey[Index];
 		set => _f_addressableKey[Index] = value;
 	}
+	public SkillAcivationType f_skillAcivationType
+	{
+		get => (SkillAcivationType) _f_skillAcivationType.GetStoredValue(Index);
+		set => _f_skillAcivationType.SetStoredValue(Index, (System.Int32) value);
+	}
 	private static BansheeGz.BGDatabase.BGFieldEntityName _ufle12jhs77_f_name;
 	public static BansheeGz.BGDatabase.BGFieldEntityName _f_name => _ufle12jhs77_f_name ?? (_ufle12jhs77_f_name = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEntityName>(MetaDefault, new BGId(5202830994654811541UL, 1169720678486236062UL), () => _ufle12jhs77_f_name = null));
 	private static BansheeGz.BGDatabase.BGFieldInt _ufle12jhs77_f_initalSize;
 	public static BansheeGz.BGDatabase.BGFieldInt _f_initalSize => _ufle12jhs77_f_initalSize ?? (_ufle12jhs77_f_initalSize = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldInt>(MetaDefault, new BGId(4704729361873333330UL, 7680011544076814766UL), () => _ufle12jhs77_f_initalSize = null));
 	private static BansheeGz.BGDatabase.BGFieldString _ufle12jhs77_f_addressableKey;
 	public static BansheeGz.BGDatabase.BGFieldString _f_addressableKey => _ufle12jhs77_f_addressableKey ?? (_ufle12jhs77_f_addressableKey = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldString>(MetaDefault, new BGId(5444465267898499911UL, 7200366453917525176UL), () => _ufle12jhs77_f_addressableKey = null));
+	private static BansheeGz.BGDatabase.BGFieldEnum _ufle12jhs77_f_skillAcivationType;
+	public static BansheeGz.BGDatabase.BGFieldEnum _f_skillAcivationType => _ufle12jhs77_f_skillAcivationType ?? (_ufle12jhs77_f_skillAcivationType = BGCodeGenUtils.GetField<BansheeGz.BGDatabase.BGFieldEnum>(MetaDefault, new BGId(4916275382549270440UL, 5420416643704822967UL), () => _ufle12jhs77_f_skillAcivationType = null));
+	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingbasicSkillDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_basicSkillData, Id);
+	public List<Alias_rifegrt_UnitData> RelatedUnitDataListUsingManaFullSkillDataRelation => BGCodeGenUtils.GetRelatedInbound<Alias_rifegrt_UnitData>(Alias_rifegrt_UnitData._f_ManaFullSkillData, Id);
 	private static readonly D_TileCardData.Factory _factory0_PFS = new D_TileCardData.Factory();
 	private static readonly D_LocalUserData.Factory _factory1_PFS = new D_LocalUserData.Factory();
 	private static readonly D_UnitData.Factory _factory2_PFS = new D_UnitData.Factory();

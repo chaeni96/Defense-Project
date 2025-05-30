@@ -148,7 +148,7 @@ MonoBehaviour:
     IgnoreTriggers: 
     Priority: 0
   - FromStateId: 3
-    ToStateId: 2
+    ToStateId: 6
     RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
     Priority: 0

@@ -74,7 +74,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 화면 밖 위치에 프리뷰 유닛 생성
         Vector3 offscreenPos = new Vector3(3000f, 0f, 0f);
         GameObject previewInstance = PoolingManager.Instance.GetObject(
-            unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey,
+            "Unit_Basic",
             offscreenPos,
             (int)ObjectLayer.Player
         );
@@ -307,7 +307,7 @@ public class UnitCardObject : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         // 새로운 유닛 생성 및 배치
         Vector3 unitPos = TileMapManager.Instance.GetTileToWorldPosition(previousTilePosition);
         GameObject unitInstance = PoolingManager.Instance.GetObject(
-            unitData.f_UnitPoolingKey.f_PoolObjectAddressableKey,
+            "Unit_Basic",
             unitPos,
             (int)ObjectLayer.Player
         );

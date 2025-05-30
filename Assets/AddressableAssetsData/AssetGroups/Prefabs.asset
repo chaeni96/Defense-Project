@@ -113,44 +113,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 22ff7480273a864438066d638c213771
-    m_Address: DogBoxing_ManaFullSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6aa4e367a716829429692c4bd1b989a8
-    m_Address: DogHunter_BasicAttackSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d5d9a5163221c04695f39982f45acbc
-    m_Address: DogJester_BasicAttackSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4e2818462ef959b488764d3ebd6c9393
-    m_Address: DogRogue_ManaFullSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7e4f88bd44c1ab644bacdf706a3b7ece
-    m_Address: DogSword_ManaFullSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f084c9450f964f346a7cb2ae1484c3a5
-    m_Address: RoyalSpear_2CellStraightLaser
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 521ee4b1f7653d94d99c0883bcf45d3b
-    m_Address: RoyalSword_2CellAOE
+    m_Address: RoyalSword_ManaFullSkill
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1fd4433356b20543bb7aa7258515a93
+    m_Address: RoyalPriest_BasicAttack
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b87d1e87ab6ab0345bd1544de85dfdd4
+    m_Address: RoyalPriest_ManaFullSkill
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs
@@ -167,12 +143,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - InGameScenePrefabs
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 60c652ca3777154469ee3442076390b0
-    m_Address: BossShield_ManaFullSkill
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - InGameScenePrefabs
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 698bd01e2d90e1249a6f159fdacb4612
     m_Address: Unit_Basic
     m_ReadOnly: 0
@@ -181,6 +151,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c01107d104122442997f5317ae11190
     m_Address: Enemy_Basic
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - InGameScenePrefabs
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d7f6a539057a8a40abaeaa93ea31958
+    m_Address: RoyalSpear_ManaFullSkill
     m_ReadOnly: 0
     m_SerializedLabels:
     - InGameScenePrefabs

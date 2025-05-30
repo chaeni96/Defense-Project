@@ -269,6 +269,19 @@ public enum CurrencyType
     Gem,
 }
 
+public enum SkillAcivationType
+{
+    None = 0,
+    ReplaceBasicAttack, //일반 마나 스킬(마나 소모하고 평타 대신 사용)
+    Persistent, // 평타와 별개로 항상 켜짐 ex)대장냥 오우라 - 마나 스킬 0
+    Conditional, //특정 조건에서만 발동 - 조건에 맞는곳에 스킬 사용
+    
+    //트리거형 스킬(즉정 이벤트 발생시)
+    OnHIt,
+    OnKill,
+    OnDamaged,
+}
+
 public enum ItemGrade
 {
     Normal = 0,
@@ -278,11 +291,4 @@ public enum ItemGrade
     Mythic,
 }
 
-public enum TriggerKeyword
-{
-    None = 0,
-    Idle,
-    Run,
-    Attack,
 
-}

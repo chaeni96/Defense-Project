@@ -34,6 +34,11 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
     
     [SerializeField] protected UnitAppearanceProvider appearanceProvider;
 
+    //스킬 관련 코드
+    
+    public D_SkillData basicSkillData;
+    public D_SkillData manaFullSkillData;
+    
 
     //TODO : 애니메이션 컨트롤하는 매핑 스크립트 따로 만들기
     [SerializeField] protected RuntimeAnimatorController attackBowController;

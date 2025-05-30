@@ -9,58 +9,114 @@ namespace Kylin.FSM
         [Inject] private StateController controller;
         [Inject] private CharacterFSMObject characterFSM;
         
+        private float remainingAttackTime = 0f;
+        private bool waitingForAttackFinish = false;
+        
+        // 타이밍 상수
+        private const float ATTACK_ANIMATION_DURATION = 1.0f;
+        private const float SKILL_TIMING = 0.667f; // 40프레임 = 0.667초
+
+        
         public override void OnEnter()
         {
-            // 마나 체크
-            // float currentMana = characterFSM.basicObject.GetStat(StatName.CurrentMana);
-            // float requiredMana = characterFSM.basicObject.GetStat(StatName.MaxMana);
-            //
-            // if (currentMana < requiredMana)
-            // {
-            //     // 마나 부족 시 평타 공격
-            //     if (characterFSM.CurrentTarget != null)
-            //     {
-            //         
-            //         float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-            //         characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject,damage);
-            //     }
-            //
-            //     controller.RegisterTrigger(Trigger.SkillFinished);
-            //     
-            //     return;
-            // }
-            
-            // 스킬 실행
-            //ExecuteSkill();
-            
-            // 마나 소모
-            
-            if (characterFSM.CurrentTarget != null)
+            if (!characterFSM.CurrentTarget.isActive)
             {
-                    
+                controller.RegisterTrigger(Trigger.SkillFinished);
+                return;
+            }
+            
+            // 공격 애니메이션의 남은 시간 계산 (1초 - 0.4초 = 0.6초)
+            remainingAttackTime = ATTACK_ANIMATION_DURATION - SKILL_TIMING;
+            waitingForAttackFinish = false;
+            
+            // 마나 체크
+            float currentMana = characterFSM.basicObject.GetStat(StatName.CurrentMana);
+            float maxMana = characterFSM.basicObject.GetStat(StatName.MaxMana);
+
+            if (characterFSM.basicObject.isEnemy)
+            {
                 float damage = characterFSM.basicObject.GetStat(StatName.ATK);
                 characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject,damage);
+                waitingForAttackFinish = true;
+                return;
             }
-            // 스킬 후 공격으로 
-            controller.RegisterTrigger(Trigger.SkillFinished);
+            
+            if (currentMana < maxMana)
+            {
+                // 마나 부족 시 평타 공격
+                if (characterFSM.CurrentTarget.isActive)
+                {
+                    if (characterFSM.basicObject.basicSkillData != null)
+                    {
+                        ExecuteSkill(characterFSM.basicObject.basicSkillData.f_addressableKey);   
+                    }
+                    else
+                    {
+                        float damage = characterFSM.basicObject.GetStat(StatName.ATK);
+                        characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject,damage);
+                    }
+                }
+                characterFSM.basicObject.ModifyStat(StatName.CurrentMana, 10, 1f);
+                waitingForAttackFinish = true;
+                return;
+            }
+            
+            // 마나 소모, 스킬 사용
+            if (characterFSM.CurrentTarget.isActive && characterFSM.basicObject.manaFullSkillData != null)
+            {
+                characterFSM.basicObject.ModifyStat(StatName.CurrentMana, -Mathf.RoundToInt(currentMana), 1f);
+                ExecuteSkill(characterFSM.basicObject.manaFullSkillData.f_addressableKey);   
+            }
+            
+            waitingForAttackFinish = true;
         }
         
-        private void ExecuteSkill()
+        public override void OnUpdate()
         {
-            // 스킬 타입 가져오기 시리얼라이즈 필드로 받기 
-            string skillPrefabName = "";
-            
-            // 풀에서 스킬 오브젝트 가져오기
-            var skillObject = PoolingManager.Instance.GetObject(skillPrefabName);
-            if (skillObject != null)
+            // 공격 애니메이션이 끝날 때까지 대기
+            if (waitingForAttackFinish)
             {
-                var skill = skillObject.GetComponent<SkillBase>();
+                remainingAttackTime -= Time.deltaTime;
+                
+                if (remainingAttackTime <= 0f)
+                {
+                    // 공격 애니메이션이 끝났으니 AttackState로 돌아감
+                    controller.RegisterTrigger(Trigger.SkillFinished);
+                }
+            }
+        }
+        
+        private void ExecuteSkill(string skillAddressableKey)
+        {
+            Vector3 currentTargetPosition = characterFSM.CurrentTarget.transform.position;
+            Vector3 firingPosition = characterFSM.transform.position;
+            Vector3 targetDirection = (currentTargetPosition - firingPosition).normalized;
+
+            GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
+
+            if (skillObj != null)
+            {
+                SkillBase skill = skillObj.GetComponent<SkillBase>();
                 if (skill != null)
                 {
-                    // 스킬 초기화 및 실행
+                    Debug.Log($"스킬 발사: {skillAddressableKey}, 타겟: {characterFSM.CurrentTarget.name}");
+
                     skill.Initialize(characterFSM.basicObject);
-                    //skill.Fire();
+                    skill.Fire(
+                        characterFSM.basicObject,
+                        currentTargetPosition,
+                        targetDirection,
+                        characterFSM.CurrentTarget
+                    );
                 }
+                else
+                {
+                    Debug.LogError($"스킬 컴포넌트가 없습니다: {skillAddressableKey}");
+                }
+            }
+            else
+            {
+                Debug.LogError($"스킬 오브젝트를 가져오는데 실패했습니다: {skillAddressableKey}");
             }
         }
     }

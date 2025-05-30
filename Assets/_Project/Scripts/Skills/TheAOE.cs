@@ -7,7 +7,7 @@ public class TheAOE : SkillBase
 {
     [Header("AOE 설정")]
     [SerializeField] private float radius = 1f;                // AOE 범위 반경
-    [SerializeField] private float damage = 1f;               // 기본 데미지
+    [SerializeField] private float damage = 0f;               // 기본 데미지
     [SerializeField] private float duration = 1.0f;            // 지속 시간 (1초)
 
     private float timer = 0f;                // 지속 시간 타이머

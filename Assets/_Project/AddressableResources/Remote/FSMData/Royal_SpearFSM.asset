@@ -94,7 +94,7 @@ MonoBehaviour:
       StringValue: 
   - Id: 3
     stateTypeName: SkillState
-    position: {x: 1352, y: 314}
+    position: {x: 1290, y: 139}
     Parameters: []
   Transitions:
   - FromStateId: 0
@@ -148,7 +148,7 @@ MonoBehaviour:
     IgnoreTriggers: 
     Priority: 0
   - FromStateId: 3
-    ToStateId: 2
+    ToStateId: 6
     RequiredTriggers: 0000000000800000
     IgnoreTriggers: 
     Priority: 0
