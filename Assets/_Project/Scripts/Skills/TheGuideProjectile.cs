@@ -11,9 +11,9 @@ public class TheGuideProjectile : TheDefaultProjectile
     private BasicObject target;                // 추적 대상
     private bool hasTarget = false;            // 대상 존재 여부
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
-        base.Fire(user, targetPos, targetDirection, target);
+        base.Fire(target);
 
         // 타겟 설정 ->state에서 해주기
         this.target = target;
@@ -22,7 +22,7 @@ public class TheGuideProjectile : TheDefaultProjectile
 
     protected  override void Update()
     {
-        if (owner == null)
+        if (ownerObj == null)
         {
             Destroy(gameObject);
             return;
@@ -31,7 +31,7 @@ public class TheGuideProjectile : TheDefaultProjectile
         // 시간 초과 확인
         float timer = 0f;
         timer += Time.deltaTime;
-        if (timer >= lifeTime)
+        if (timer >= duration)
         {
             DestroySkill();
             return;

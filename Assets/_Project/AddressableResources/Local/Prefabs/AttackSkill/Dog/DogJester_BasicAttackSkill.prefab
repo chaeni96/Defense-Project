@@ -46,11 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05109556150fe05428252d1ba217a5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
-  soundEffect: {fileID: 0}
-  radius: 0.5
-  damage: 15
   duration: 1
+  damage: 15
+  damageMultiplier: 1
+  radius: 0.5
 --- !u!114 &7789704312091564430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,6 +71,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1183667827297006579}
     m_Modifications:
+    - target: {fileID: 3121847219011696122, guid: f5fbdd99fba33c94cba4f486a2490313, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3121847219011696123, guid: f5fbdd99fba33c94cba4f486a2490313, type: 3}
       propertyPath: m_RootOrder
       value: 0

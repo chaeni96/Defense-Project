@@ -7,8 +7,6 @@ public class TheAOE : SkillBase
 {
     [Header("AOE 설정")]
     [SerializeField] private float radius = 1f;                // AOE 범위 반경
-    [SerializeField] private float damage = 0f;               // 기본 데미지
-    [SerializeField] private float duration = 1.0f;            // 지속 시간 (1초)
 
     private float timer = 0f;                // 지속 시간 타이머
     private HashSet<int> damagedTargets;     // 이미 데미지를 입힌 대상 추적
@@ -19,15 +17,13 @@ public class TheAOE : SkillBase
         damagedTargets = new HashSet<int>();
     }
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
-        owner = user;
         timer = 0f;
         damagedTargets.Clear();
 
         // 타겟위치로, 타겟 위치는 state에서 넘겨주기
-        transform.position = targetPos;
-
+        transform.position = target.transform.position;
 
         // 즉시 첫 번째 데미지 적용
         ApplyDamageToTargetsInRange();
@@ -35,7 +31,7 @@ public class TheAOE : SkillBase
 
     private void Update()
     {
-        if (owner == null)
+        if (ownerObj == null)
         {
             DestroySkill();
             return;
@@ -69,10 +65,10 @@ public class TheAOE : SkillBase
             if (targetObj == null)
                 targetObj = collider.GetComponentInParent<BasicObject>();
 
-            if (targetObj != null && targetObj.isEnemy != owner.isEnemy)
+            if (targetObj != null && targetObj.isEnemy != ownerObj.isEnemy)
             {
                 // 데미지 적용
-                targetObj.OnDamaged(owner, damage);
+                targetObj.OnDamaged(damage);
 
                 // 데미지를 입힌 대상 기록
                 damagedTargets.Add(targetId);
@@ -87,7 +83,7 @@ public class TheAOE : SkillBase
     {
         base.DestroySkill();
 
-        owner = null;
+        ownerObj = null;
 
         damagedTargets.Clear();
     }

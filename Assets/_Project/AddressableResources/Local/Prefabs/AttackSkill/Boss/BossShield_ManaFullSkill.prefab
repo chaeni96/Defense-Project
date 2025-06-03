@@ -46,11 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05109556150fe05428252d1ba217a5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
-  soundEffect: {fileID: 0}
-  radius: 1.5
-  damage: 5
   duration: 1
+  damage: 5
+  damageMultiplier: 1
+  radius: 1.5
 --- !u!114 &7789704312091564430
 MonoBehaviour:
   m_ObjectHideFlags: 0

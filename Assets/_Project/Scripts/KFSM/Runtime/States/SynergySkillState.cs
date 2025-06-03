@@ -66,9 +66,6 @@ public class SynergySkillState : StateBase
 
                 skill.Initialize(characterFSM.basicObject);
                 skill.Fire(
-                    characterFSM.basicObject,
-                    currentTargetPosition,  // Å¸°Ù À§Ä¡
-                    targetDirection,        // Å¸°Ù ¹æÇâ
                     characterFSM.CurrentTarget  // Å¸°Ù ¿ÀºêÁ§Æ®
                 );
             }

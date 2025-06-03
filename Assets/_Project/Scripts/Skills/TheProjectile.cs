@@ -12,14 +12,14 @@ public class TheProjectile : SkillBase
 
     }
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
       
     }
 
     public override void DestroySkill()
     {
-        owner = null;
+        ownerObj = null;
     }
 
 }

@@ -22,8 +22,6 @@ namespace Kylin.FSM
             switch (stateEntry.stateTypeName)
             {
                 case "AttackState": state = new AttackState(); break;
-                case "DefaultDamageState": state = new DefaultDamageState(); break;
-                case "ManaFullSkillState": state = new ManaFullSkillState(); break;
                 case "SynergySkillState": state = new SynergySkillState(); break;
                 case "BattleWinState": state = new BattleWinState(); break;
                 case "ChaseState": state = new ChaseState(); break;

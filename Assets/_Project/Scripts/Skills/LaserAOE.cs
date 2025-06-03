@@ -7,8 +7,6 @@ public class LaserAOE : SkillBase
     [Header("레이저 AOE 설정")]
     [SerializeField] private bool straightLine = false;            // 일직선 레이저 모드 (타겟 위치 무시하고 직선 방향으로 발사)
     [SerializeField] private Vector2 size = new Vector2(10f, 1f);  // 레이저 크기 (길이, 폭)
-    [SerializeField] private float damage = 30f;                   // 기본 데미지
-    [SerializeField] private float duration = 1.0f;                // 지속 시간
     [SerializeField] private bool isDOT = false;                   // 지속 데미지 여부
     [SerializeField] private float delayBetweenDamage = 0.1f;      // 데미지 적용 간격 (DoT 효과용)
     [SerializeField] private bool followOwnerRotation = false;     // 타겟 따라서 계속 회전할지 여부
@@ -28,9 +26,8 @@ public class LaserAOE : SkillBase
         //transform.localScale = new Vector3(size.x, size.y, 1f);
     }
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
-        owner = user;
         timer = 0f;
         damageTimer = 0f;
         damagedTargets.Clear();
@@ -39,12 +36,12 @@ public class LaserAOE : SkillBase
         if (straightLine)
         {
             // 일직선 레이저 모드: 플레이어의 현재 방향(right)을 사용
-            direction = user.transform.right.normalized;
+            direction = ownerObj.transform.right.normalized;
         }
         else
         {
             // 타겟 방향 모드: 전달받은 타겟 방향 사용
-            direction = targetDirection.normalized;
+            direction = (target.transform.position - ownerObj.transform.position).normalized;
         }
 
         // 레이저 위치 및 회전 설정
@@ -60,11 +57,11 @@ public class LaserAOE : SkillBase
         }
     }
 
-    // 레이저 위치와 회전 업데이트 메서드 분리 (재사용성 향상)
+    // 레이저 위치와 회전 업데이트 메서드 분리 
     protected virtual void UpdateLaserPositionAndRotation()
     {
         // 1. 먼저 플레이어로부터 offsetFromPlayer 거리만큼 떨어진 위치 계산
-        Vector3 laserStartPos = owner.transform.position + direction * offsetFromPlayer;
+        Vector3 laserStartPos = ownerObj.transform.position + direction * offsetFromPlayer;
 
         // 2. 레이저 중심점 = 시작점 + (레이저 길이 / 2) -> OverlapBoxAll 함수때문에 중심으로 해야함
         transform.position = laserStartPos + direction * (size.x / 2f);
@@ -76,7 +73,7 @@ public class LaserAOE : SkillBase
 
     private void Update()
     {
-        if (owner == null)
+        if (ownerObj == null)
         {
             DestroySkill();
             return;
@@ -107,21 +104,21 @@ public class LaserAOE : SkillBase
 
     protected IEnumerator FollowOwnerRotation()
     {
-        while (owner != null && timer < duration)
+        while (ownerObj != null && timer < duration)
         {
             if (straightLine)
             {
                 // 일직선 레이저 모드: 방향은 항상 플레이어의 현재 방향
-                direction = owner.transform.right.normalized;
+                direction = ownerObj.transform.right.normalized;
             }
             else
             {
                 // 타겟 방향 모드: 방향은 소유자의 현재 방향
-                direction = owner.transform.right.normalized;
+                direction = ownerObj.transform.right.normalized;
             }
 
             // 플레이어로부터 offsetFromPlayer 거리만큼 떨어진 위치 계산
-            Vector3 laserStartPos = owner.transform.position + direction * offsetFromPlayer;
+            Vector3 laserStartPos = ownerObj.transform.position + direction * offsetFromPlayer;
 
             // 레이저 중심점 = 시작점 + (레이저 길이 / 2)
             transform.position = laserStartPos + direction * (size.x / 2f);
@@ -154,10 +151,10 @@ public class LaserAOE : SkillBase
             if (targetObj == null)
                 targetObj = collider.GetComponentInParent<BasicObject>();
 
-            if (targetObj != null && targetObj.isEnemy != owner.isEnemy)
+            if (targetObj != null && targetObj.isEnemy != ownerObj.isEnemy)
             {
                 // 데미지 적용
-                targetObj.OnDamaged(owner, damage);
+                targetObj.OnDamaged(damage);
 
                 // 데미지를 입힌 대상 기록
                 damagedTargets.Add(targetId);
@@ -172,7 +169,7 @@ public class LaserAOE : SkillBase
 
         // 기본 정리
         base.DestroySkill();
-        owner = null;
+        ownerObj = null;
         damagedTargets.Clear();
     }
 

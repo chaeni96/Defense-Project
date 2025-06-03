@@ -36,7 +36,7 @@ namespace Kylin.FSM
             if (characterFSM.basicObject.isEnemy)
             {
                 float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject,damage);
+                characterFSM.CurrentTarget.OnDamaged(damage);
                 waitingForAttackFinish = true;
                 return;
             }
@@ -53,7 +53,7 @@ namespace Kylin.FSM
                     else
                     {
                         float damage = characterFSM.basicObject.GetStat(StatName.ATK);
-                        characterFSM.CurrentTarget.OnDamaged(characterFSM.basicObject,damage);
+                        characterFSM.CurrentTarget.OnDamaged(damage);
                     }
                 }
                 characterFSM.basicObject.ModifyStat(StatName.CurrentMana, 10, 1f);
@@ -88,10 +88,7 @@ namespace Kylin.FSM
         
         private void ExecuteSkill(string skillAddressableKey)
         {
-            Vector3 currentTargetPosition = characterFSM.CurrentTarget.transform.position;
             Vector3 firingPosition = characterFSM.transform.position;
-            Vector3 targetDirection = (currentTargetPosition - firingPosition).normalized;
-
             GameObject skillObj = PoolingManager.Instance.GetObject(skillAddressableKey, firingPosition, (int)ObjectLayer.IgnoereRayCast);
 
             if (skillObj != null)
@@ -103,9 +100,6 @@ namespace Kylin.FSM
 
                     skill.Initialize(characterFSM.basicObject);
                     skill.Fire(
-                        characterFSM.basicObject,
-                        currentTargetPosition,
-                        targetDirection,
                         characterFSM.CurrentTarget
                     );
                 }

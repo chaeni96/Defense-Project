@@ -142,21 +142,17 @@ public class BasicObject : MonoBehaviour, IStatSubscriber
 
     }
 
-    public void OnDamaged(BasicObject attacker, float damage = 0)
+    public void OnDamaged(float damage)
     {
         // 이미 죽었다면 데미지 처리 중단
         if (isDead) return;
 
-        if (attacker != null)
+        if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
         {
-            //attacker의 공격력 
-            if (currentStats.TryGetValue(StatName.CurrentHp, out var hpStat))
-            {
-                hpStat.value -= (int)damage;
-                UpdateHpBar();
-            }
+            hpStat.value -= (int)damage;
+            UpdateHpBar();
         }
-
+        
         if (GetStat(StatName.CurrentHp) <= 0)
         {
             isDead = true;

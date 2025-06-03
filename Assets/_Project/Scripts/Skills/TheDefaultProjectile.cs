@@ -6,8 +6,6 @@ public class TheDefaultProjectile : SkillBase
 {
     [Header("투사체 설정")]
     public float projectileSpeed = 10f;       // 투사체 속도
-    public float lifeTime = 3f;              // 최대 생존 시간
-    public float damage = 10f;               // 기본 데미지
     public GameObject hitEffect;             // 히트 이펙트 (선택사항)
 
     private Vector3 direction;               // 이동 방향
@@ -27,10 +25,8 @@ public class TheDefaultProjectile : SkillBase
         }
     }
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
-        owner = user;
-
         if (target != null && target.isActive)
         {
             // 타겟이 있는 경우 현재 타겟 위치로 방향 재계산
@@ -55,7 +51,7 @@ public class TheDefaultProjectile : SkillBase
 
     protected virtual void Update()
     {
-        if (owner == null)
+        if (ownerObj == null)
         {
             Destroy(gameObject);
             return;
@@ -63,7 +59,7 @@ public class TheDefaultProjectile : SkillBase
 
         // 시간 초과 확인
         timer += Time.deltaTime;
-        if (timer >= lifeTime)
+        if (timer >= duration)
         {
             DestroySkill();
             return;
@@ -77,18 +73,18 @@ public class TheDefaultProjectile : SkillBase
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 소유자가 아닌지 확인
-        if (owner == null)
+        if (ownerObj == null)
         {
             DestroySkill();
             return;
         }
 
-        if (collision.gameObject == owner.gameObject) return;
+        if (collision.gameObject == ownerObj.gameObject) return;
 
 
         // 적 레이어 확인
         BasicObject hitObject = collision.GetComponent<BasicObject>();
-        if (hitObject != null && hitObject.isEnemy != owner.isEnemy)
+        if (hitObject != null && hitObject.isEnemy != ownerObj.isEnemy)
         {
             // 데미지 적용
             ApplyDamage(hitObject);
@@ -110,13 +106,13 @@ public class TheDefaultProjectile : SkillBase
         float actualDamage = CalculateDamage();
 
         // 데미지 적용
-        target.OnDamaged(owner, actualDamage);
+        target.OnDamaged(actualDamage);
     }
 
     protected virtual float CalculateDamage()
     {
         // 기본 데미지 + 소유자의 공격력 비율
-        return damage * (1 + owner.GetStat(StatName.ATK) / 100f);
+        return damage * (1 + ownerObj.GetStat(StatName.ATK) / 100f);
     }
 
   

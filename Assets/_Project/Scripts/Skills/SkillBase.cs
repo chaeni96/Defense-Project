@@ -4,32 +4,27 @@ using UnityEngine;
 
 public abstract class SkillBase : MonoBehaviour
 {
-    /// <summary>
-    /// targetposition을 받아서 스킬을 발동시키는 역할
-    /// </summary>
-    /// <param name="targetPosition"></param>
-    /// 
+    protected BasicObject ownerObj; //스킬을 발동한 주체
 
-    public BasicObject owner; //스킬을 발동한 주체
-    public SoundPlayer soundEffect;
-
-    protected float attackDamage = 0; //스킬의 공격력
-    
+    //스킬 이펙트 사용하는 경우 이펙트의 duration 값 동일하게 입력 
+    [SerializeField] protected float duration = 0f;
+    [SerializeField] protected float damage = 0f; //스킬의 공격력
+    [SerializeField] protected float damageMultiplier = 1f;
     public virtual void Initialize(BasicObject owner)
     {
-        this.owner = owner;
+        this.ownerObj = owner;
 
         // 스킬 매니저에 등록
         SkillManager.Instance.RegisterSkill(this);
     }
-    public abstract void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null);
+    public abstract void Fire(BasicObject target);
 
     public virtual void DestroySkill()
     {
         // 스킬 매니저에서 등록 해제
         SkillManager.Instance.UnregisterSkill(this);
 
-        owner = null;
+        ownerObj = null;
         PoolingManager.Instance.ReturnObject(gameObject);
     }
 

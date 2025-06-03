@@ -5,8 +5,6 @@ using UnityEngine;
 public class TheTargetDamageSkill : SkillBase
 {
     [Header("타겟 스킬 설정")]
-    [SerializeField] private float damage = 1f;        // 기본 데미지
-    [SerializeField] private float duration = 0.5f;    // 스킬 지속 시간
     private float timer = 0f;                         // 지속 시간 타이머
     private BasicObject targetObject;                 // 타겟 오브젝트 저장
 
@@ -15,16 +13,15 @@ public class TheTargetDamageSkill : SkillBase
         base.Initialize(unit);
     }
 
-    public override void Fire(BasicObject user, Vector3 targetPos, Vector3 targetDirection, BasicObject target = null)
+    public override void Fire(BasicObject target)
     {
-        owner = user;
         timer = 0f;
         targetObject = target;
 
-        transform.position = targetPos;
+        transform.position = targetObject.transform.position;
 
         // 타겟이 존재하면 즉시 데미지 적용
-        if (targetObject != null && targetObject.isEnemy != owner.isEnemy)
+        if (targetObject != null && targetObject.isEnemy != ownerObj.isEnemy)
         {
             ApplyDamageToTarget();
         }
@@ -37,7 +34,7 @@ public class TheTargetDamageSkill : SkillBase
 
     private void Update()
     {
-        if (owner == null || targetObject == null)
+        if (ownerObj == null || targetObject == null)
         {
             DestroySkill();
             return;
@@ -57,7 +54,7 @@ public class TheTargetDamageSkill : SkillBase
         if (targetObject != null)
         {
             // 데미지 적용
-            targetObject.OnDamaged(owner, damage);
+            targetObject.OnDamaged(damage);
             Debug.Log($"타겟 스킬 데미지 적용: {targetObject.name}, 데미지={damage}");
         }
     }
@@ -65,7 +62,7 @@ public class TheTargetDamageSkill : SkillBase
     public override void DestroySkill()
     {
         base.DestroySkill();
-        owner = null;
+        ownerObj = null;
         targetObject = null;
     }
 }
